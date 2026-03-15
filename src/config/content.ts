@@ -39,7 +39,7 @@ export const slothLabsContent = {
         logo: null,
         by: '· SlothLabs ·',
         desc: 'The answer to the DynamoDB, CouchDB, and time-series headache. Query easily, save and export built queries, and stream data in real time for debugging — no more fear of using those DBs.',
-        tags: [],
+        tags: ['DynamoDB', 'CouchDB', 'Time-series'],
         cta: null,
         live: false,
         accent: '#4DA6FF',
