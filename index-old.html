@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudSwitch — AWS access for developers who refuse to compromise</title>
+  <meta name="description" content="Native macOS app for AWS SSO, role switching, EKS, EC2 SSM, and Web Console. No Electron, no Chromium — works behind Cloudflare Zero Trust and corporate VPNs." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ══ Nav ══════════════════════════════════════════════════════════════════ -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="#">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
+        <span>CloudSwitch</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#security">Security</a>
+        <a href="#plugins">Plugins</a>
+        <a href="#names">Name it</a>
+      </div>
+      <a class="btn-nav-gh" href="https://github.com/your-org/aws-switch-tauri" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        GitHub
+      </a>
+    </div>
+  </nav>
+
+  <!-- ══ Hero ══════════════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="badge">✦ Built with Rust · Tauri 2 · Works on Cloudflare VPN</div>
+        <h1>AWS access<br><span class="grad">for devs who<br>refuse to compromise.</span></h1>
+        <p class="hero-sub">Native macOS app for SSO login, role switching, EKS config, EC2 SSM connect, and Web Console. No Electron. No 400 MB install. No "network service crashed."</p>
+        <div class="hero-ctas">
+          <a href="#" class="btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download for macOS
+          </a>
+          <a href="#" class="btn-secondary">View Source →</a>
+        </div>
+        <p class="hero-note">macOS 13+  ·  Apple Silicon &amp; Intel  ·  MIT License</p>
+      </div>
+
+      <!-- App mockup (pure CSS — replace with real screenshots when available) -->
+      <div class="app-mockup" aria-hidden="true">
+        <div class="mock-sidebar">
+          <div class="mock-logo"></div>
+          <div class="mock-label"></div>
+          <div class="mock-conn">
+            <div class="mock-dot green"></div>
+            <div class="mock-text long"></div>
+          </div>
+          <div class="mock-account indent">
+            <div class="mock-text medium"></div>
+          </div>
+          <div class="mock-role active indent2">
+            <div class="mock-dot green-sm"></div>
+            <div class="mock-text short"></div>
+          </div>
+          <div class="mock-role indent2">
+            <div class="mock-dot ring"></div>
+            <div class="mock-text short"></div>
+          </div>
+          <div class="mock-conn" style="margin-top:8px">
+            <div class="mock-dot grey"></div>
+            <div class="mock-text medium"></div>
+          </div>
+        </div>
+        <div class="mock-main">
+          <div class="mock-topbar">
+            <div class="mock-pill">
+              <div class="mock-dot green-sm"></div>
+              <div class="mock-text short" style="background:rgba(255,255,255,.15)"></div>
+              <div class="mock-text short" style="background:var(--accent);opacity:.6;border-radius:4px;padding:0 8px"></div>
+            </div>
+            <div style="display:flex;gap:6px">
+              <div style="width:24px;height:24px;border-radius:6px;border:1px solid rgba(255,255,255,.1)"></div>
+              <div style="width:24px;height:24px;border-radius:6px;border:1px solid rgba(255,255,255,.1)"></div>
+              <div style="width:24px;height:24px;border-radius:6px;border:1px solid rgba(255,255,255,.1)"></div>
+            </div>
+          </div>
+          <div class="mock-tabs">
+            <div class="mock-tab active">EKS Clusters <span>3</span></div>
+            <div class="mock-tab">EC2 Instances <span>12</span></div>
+          </div>
+          <div class="mock-cards">
+            <div class="mock-card">
+              <div class="mock-card-top"><div class="mock-dot green"></div><div class="mock-text medium"></div><div class="mock-badge">k8s 1.30</div></div>
+              <div class="mock-text short" style="margin:8px 0 12px;opacity:.4"></div>
+              <div class="mock-divider"></div>
+              <div class="mock-card-btn active">kubectl configured ✓</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card-top"><div class="mock-dot green"></div><div class="mock-text long"></div><div class="mock-badge">k8s 1.29</div></div>
+              <div class="mock-text short" style="margin:8px 0 12px;opacity:.4"></div>
+              <div class="mock-divider"></div>
+              <div class="mock-card-btn">Configure kubectl</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-card-top"><div class="mock-dot yellow"></div><div class="mock-text medium"></div><div class="mock-badge">k8s 1.28</div></div>
+              <div class="mock-text short" style="margin:8px 0 12px;opacity:.4"></div>
+              <div class="mock-divider"></div>
+              <div class="mock-card-btn">Configure kubectl</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Problem ══════════════════════════════════════════════════════════════ -->
+  <section class="problem">
+    <div class="container">
+      <div class="problem-card">
+        <div class="problem-icon">😤</div>
+        <div>
+          <h3>Tired of "network service terminated"?</h3>
+          <p>Leapp, Granted, and other Electron-based AWS tools use Chromium's own TLS stack — which ignores your system certificate store. If your company uses <strong>Cloudflare Zero Trust</strong>, a <strong>corporate CA</strong>, or any SSL-inspecting proxy, those apps simply crash or refuse to connect.</p>
+          <p style="margin-top:10px">CloudSwitch is built on <strong>Tauri</strong>, which uses <strong>WKWebView</strong> on macOS. WKWebView trusts the exact same certificates as Safari and your system browser — so corporate VPN, Cloudflare Gateway, or custom CA certificates work out of the box. <em>No configuration needed.</em></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Features ══════════════════════════════════════════════════════════════ -->
+  <section id="features" class="features">
+    <div class="container">
+      <div class="section-eyebrow">Features</div>
+      <h2>Everything you need to work with AWS.<br>Nothing you don't.</h2>
+      <p class="section-sub">CloudSwitch covers the full AWS developer workflow — from SSO login to terminal sessions inside EC2 instances.</p>
+
+      <div class="features-grid">
+        <div class="feat-card">
+          <div class="feat-icon" style="--c:#6366f1">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3>SSO Login</h3>
+          <p>Browser-based OIDC device flow. The browser opens on your system, so corporate CAs are always trusted. SSO tokens go into the macOS Keychain and <code>~/.aws/sso/cache/</code> (compatible with AWS CLI).</p>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon" style="--c:#8b5cf6">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Multi-Account Roles</h3>
+          <p>Assume any role across all your accounts with one click. Credentials are written to <code>~/.aws/credentials</code> in the standard AWS CLI format — every tool just works.</p>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon" style="--c:#06b6d4">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="22"/><line x1="2" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="22" y2="12"/></svg>
+          </div>
+          <h3>EKS Discovery</h3>
+          <p>Auto-discover all EKS clusters in the active region. One click configures <code>~/.kube/config</code> with the correct exec credential plugin — no manual <code>aws eks update-kubeconfig</code>.</p>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon" style="--c:#f59e0b">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </div>
+          <h3>AWS Web Console</h3>
+          <p>Open the AWS Management Console already signed in as the assumed role. Uses the federation sign-in endpoint — no re-authentication needed, and it opens the correct regional console.</p>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon" style="--c:#22c55e">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </div>
+          <h3>EC2 via SSM</h3>
+          <p>List all EC2 instances and connect to any running instance via AWS Systems Manager Session Manager. No SSH keys, no bastion hosts, no open ports. Opens in your default terminal (Terminal.app or iTerm2).</p>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon" style="--c:#ef4444">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </div>
+          <h3>Copy Credentials</h3>
+          <p>Copy the current role's credentials as shell <code>export</code> statements in one click. Paste into any terminal to set <code>AWS_ACCESS_KEY_ID</code>, <code>SECRET_ACCESS_KEY</code>, and <code>SESSION_TOKEN</code> instantly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Security ═════════════════════════════════════════════════════════════ -->
+  <section id="security" class="security">
+    <div class="container">
+      <div class="section-eyebrow">Security</div>
+      <h2>Your credentials. Truly yours.</h2>
+      <p class="section-sub">Everything stays on your machine. No cloud sync, no telemetry, no third-party servers.</p>
+
+      <div class="security-grid">
+        <div class="sec-card">
+          <div class="sec-icon">🔐</div>
+          <h3>System Vault</h3>
+          <p>SSO access tokens are stored in the <strong>macOS Keychain</strong> (Windows: Credential Vault, Linux: Libsecret) via the <a href="https://crates.io/crates/keyring" target="_blank" rel="noopener">keyring</a> crate. Tokens are encrypted at rest using the OS's own crypto — the same protection used by your browser's saved passwords.</p>
+        </div>
+        <div class="sec-card">
+          <div class="sec-icon">🌐</div>
+          <h3>Direct to AWS</h3>
+          <p>All API calls go directly from the Rust backend to AWS endpoints. There is no proxy, no relay, and no analytics service. The app has no network calls outside of <code>*.amazonaws.com</code> and <code>signin.aws.amazon.com</code>.</p>
+        </div>
+        <div class="sec-card">
+          <div class="sec-icon">🔗</div>
+          <h3>CLI Compatible</h3>
+          <p>Credentials are written to <code>~/.aws/credentials</code> and SSO tokens to <code>~/.aws/sso/cache/</code> in the exact format the AWS CLI uses. Terraform, kubectl, Pulumi — every tool picks them up automatically.</p>
+        </div>
+      </div>
+
+      <div class="security-table-wrap">
+        <h3>Where is data stored?</h3>
+        <table class="security-table">
+          <thead>
+            <tr><th>Data</th><th>Storage</th><th>Encrypted</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>SSO access token</td><td>macOS Keychain + <code>~/.aws/sso/cache/</code></td><td><span class="yes">✓ Keychain</span></td></tr>
+            <tr><td>AWS temporary credentials</td><td><code>~/.aws/credentials</code></td><td><span class="partial">File perms only</span></td></tr>
+            <tr><td>kubeconfig</td><td><code>~/.kube/config</code></td><td><span class="partial">File perms only</span></td></tr>
+            <tr><td>SSO profile config</td><td><code>~/.aws/config</code></td><td><span class="partial">File perms only</span></td></tr>
+          </tbody>
+        </table>
+        <p class="table-note">This matches what the AWS CLI, Leapp, and Granted do — the standard for AWS tooling on developer machines. Future versions will optionally store all secrets in the Keychain.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Why Rust ══════════════════════════════════════════════════════════════ -->
+  <section class="why-rust">
+    <div class="container">
+      <div class="rust-layout">
+        <div class="rust-text">
+          <div class="section-eyebrow">Built with Rust + Tauri</div>
+          <h2>No GC. No overhead.<br>No Electron.</h2>
+          <p>CloudSwitch is a native binary — not a bundled Node.js server wrapped in Chromium. It starts in milliseconds and uses a fraction of the RAM.</p>
+          <div class="rust-stats">
+            <div class="stat">
+              <span class="stat-val">~12 MB</span>
+              <span class="stat-label">app bundle</span>
+            </div>
+            <div class="stat-sep"></div>
+            <div class="stat">
+              <span class="stat-val">&lt; 50 MB</span>
+              <span class="stat-label">memory at rest</span>
+            </div>
+            <div class="stat-sep"></div>
+            <div class="stat">
+              <span class="stat-val">0</span>
+              <span class="stat-label">GC pauses</span>
+            </div>
+          </div>
+          <div class="rust-pills">
+            <span>Memory-safe by design</span>
+            <span>No null pointer crashes</span>
+            <span>No data races</span>
+            <span>AWS SDK for Rust</span>
+            <span>Tokio async runtime</span>
+          </div>
+        </div>
+        <div class="rust-code">
+          <div class="code-header">
+            <span class="code-dot red"></span>
+            <span class="code-dot yellow"></span>
+            <span class="code-dot green"></span>
+            <span class="code-file">credentials.rs</span>
+          </div>
+          <pre><code><span class="c">// Credentials own their data — the compiler</span>
+<span class="c">// guarantees they can't outlive the session.</span>
+<span class="kw">#[derive</span>(Serialize)<span class="kw">]</span>
+<span class="kw">pub struct</span> <span class="ty">Credentials</span> {
+    <span class="kw">pub</span> access_key_id:     <span class="ty">String</span>,
+    <span class="kw">pub</span> secret_access_key: <span class="ty">String</span>,
+    <span class="kw">pub</span> session_token:     <span class="ty">String</span>,
+    <span class="kw">pub</span> expires_at: <span class="ty">Option</span>&lt;<span class="ty">String</span>&gt;,
+}
+
+<span class="c">// ? propagates errors — no try/catch,</span>
+<span class="c">// no uncaught exceptions, no silent failures.</span>
+<span class="kw">pub async fn</span> <span class="fn">assume_role</span>(…) <span class="kw">-&gt;</span> <span class="ty">Result</span>&lt;<span class="ty">Credentials</span>, <span class="ty">String</span>&gt; {
+    <span class="kw">let</span> token = read_cached_token(&amp;start_url)
+        .ok_or(<span class="s">"Not logged in"</span>)<span class="op">?</span>;
+    <span class="kw">let</span> resp  = sso.get_role_credentials()
+        .send().await
+        .map_err(|e| e.to_string())<span class="op">?</span>;
+    <span class="ty">Ok</span>(<span class="ty">Credentials</span> { … })
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Plugin Architecture ═══════════════════════════════════════════════════ -->
+  <section id="plugins" class="plugins">
+    <div class="container">
+      <div class="section-eyebrow">Roadmap</div>
+      <h2>Plugin architecture — coming soon</h2>
+      <p class="section-sub">The goal is a lightweight, shell-first plugin system. No JavaScript bundles, no npm, no build steps — just scripts and config.</p>
+
+      <div class="plugin-layout">
+        <div class="plugin-cards">
+          <div class="plugin-card">
+            <div class="plugin-icon">🪝</div>
+            <h3>Lifecycle Hooks</h3>
+            <p>Shell scripts that fire on <code>pre-login</code>, <code>post-assume-role</code>, <code>on-expiry</code> events. Trigger Slack notifications, refresh kubeconfigs, update .envrc files automatically.</p>
+          </div>
+          <div class="plugin-card">
+            <div class="plugin-icon">🔌</div>
+            <h3>Credential Types</h3>
+            <p>Add new credential sources beyond SSO: IAM User access keys, cross-account chains, OIDC providers (Okta, Azure AD, Google Workspace). Each type is a Rust trait implementation.</p>
+          </div>
+          <div class="plugin-card">
+            <div class="plugin-icon">📊</div>
+            <h3>Dashboard Panels</h3>
+            <p>Embed custom WebView panels into the main content area. Build a cost dashboard, a CloudWatch widget, or a custom resource viewer — all from a single URL.</p>
+          </div>
+        </div>
+        <div class="plugin-config">
+          <div class="code-header">
+            <span class="code-dot red"></span>
+            <span class="code-dot yellow"></span>
+            <span class="code-dot green"></span>
+            <span class="code-file">~/.config/aws-switch/plugins.toml</span>
+          </div>
+          <pre><code><span class="c"># Notify Slack when a role is assumed</span>
+[[<span class="ty">plugin</span>]]
+name    = <span class="s">"slack-notify"</span>
+type    = <span class="s">"hook"</span>
+on      = <span class="s">"post-assume-role"</span>
+command = <span class="s">"~/.aws-switch/slack.sh"</span>
+args    = [<span class="s">"--channel"</span>, <span class="s">"#aws-access"</span>]
+
+<span class="c"># Auto-refresh .envrc in current project</span>
+[[<span class="ty">plugin</span>]]
+name    = <span class="s">"direnv-refresh"</span>
+type    = <span class="s">"hook"</span>
+on      = <span class="s">"post-assume-role"</span>
+command = <span class="s">"direnv allow ."</span>
+
+<span class="c"># Custom cost dashboard panel</span>
+[[<span class="ty">plugin</span>]]
+name  = <span class="s">"cost-panel"</span>
+type  = <span class="s">"panel"</span>
+url   = <span class="s">"http://localhost:8080/costs"</span>
+icon  = <span class="s">"💰"</span>
+title = <span class="s">"Cost Explorer"</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Screenshots placeholder ═══════════════════════════════════════════════ -->
+  <section class="screenshots">
+    <div class="container">
+      <div class="section-eyebrow">Screenshots</div>
+      <h2>See it in action</h2>
+      <p class="section-sub">Real screenshots coming soon. In the meantime, grab the app and see for yourself.</p>
+      <div class="ss-grid">
+        <div class="ss-placeholder">
+          <span>SSO Login &amp; Account List</span>
+        </div>
+        <div class="ss-placeholder">
+          <span>EKS Cluster Discovery</span>
+        </div>
+        <div class="ss-placeholder">
+          <span>EC2 Instance Manager</span>
+        </div>
+        <div class="ss-placeholder">
+          <span>AWS Web Console Federation</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Name the app ══════════════════════════════════════════════════════════ -->
+  <section id="names" class="naming">
+    <div class="container">
+      <div class="section-eyebrow">Community Input</div>
+      <h2>Help us pick a name</h2>
+      <p class="section-sub">We're using "CloudSwitch" as a working title. Vote for your favorite on GitHub Discussions, or suggest a new one.</p>
+      <div class="names-grid">
+        <div class="name-card top">
+          <span class="name-badge">⭐ Top pick</span>
+          <span class="name-title">Nimbus</span>
+          <span class="name-desc">Cloud layer · clean · memorable</span>
+          <span class="name-domain">getnimbus.dev</span>
+        </div>
+        <div class="name-card top">
+          <span class="name-badge">⭐ Top pick</span>
+          <span class="name-title">Ferrite</span>
+          <span class="name-desc">Iron compound → Rust reference</span>
+          <span class="name-domain">ferrite.dev</span>
+        </div>
+        <div class="name-card top">
+          <span class="name-badge">⭐ Top pick</span>
+          <span class="name-title">Stratus</span>
+          <span class="name-desc">Cloud layer · sophisticated</span>
+          <span class="name-domain">stratus.app</span>
+        </div>
+        <div class="name-card"><span class="name-title">CloudForge</span><span class="name-desc">forge your cloud access</span></div>
+        <div class="name-card"><span class="name-title">IronKey</span><span class="name-desc">Rust (iron) + credential key</span></div>
+        <div class="name-card"><span class="name-title">AirKey</span><span class="name-desc">keys in the cloud</span></div>
+        <div class="name-card"><span class="name-title">CloudHop</span><span class="name-desc">hop between accounts</span></div>
+        <div class="name-card"><span class="name-title">Cumulus</span><span class="name-desc">type of cloud</span></div>
+        <div class="name-card"><span class="name-title">VaultBridge</span><span class="name-desc">bridge to your credentials</span></div>
+        <div class="name-card"><span class="name-title">CloudGate</span><span class="name-desc">gateway to AWS</span></div>
+        <div class="name-card"><span class="name-title">Oxicloud</span><span class="name-desc">oxidize = rust + cloud</span></div>
+        <div class="name-card"><span class="name-title">StackSwitch</span><span class="name-desc">switch your cloud stack</span></div>
+      </div>
+      <a href="#" class="btn-suggest">Suggest a name on GitHub →</a>
+    </div>
+  </section>
+
+  <!-- ══ Download CTA ══════════════════════════════════════════════════════════ -->
+  <section class="download-cta">
+    <div class="container">
+      <h2>Ready to ditch Electron?</h2>
+      <p>Download CloudSwitch for macOS. Free and open source.</p>
+      <div class="hero-ctas">
+        <a href="#" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download for macOS
+        </a>
+        <a href="https://github.com/your-org/aws-switch-tauri" class="btn-secondary" target="_blank">View on GitHub →</a>
+      </div>
+      <p class="platform-note">Linux and Windows builds are planned. Contributions welcome.</p>
+    </div>
+  </section>
+
+  <!-- ══ Footer ════════════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
+          <span>CloudSwitch</span>
+        </div>
+        <p class="footer-legal">MIT License · AWS is a trademark of Amazon Web Services, Inc. · This project is not affiliated with or endorsed by AWS.</p>
+        <div class="footer-links">
+          <a href="https://github.com/your-org/aws-switch-tauri" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/your-org/aws-switch-tauri/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/your-org/aws-switch-tauri/blob/main/LEARN_RUST.md" target="_blank" rel="noopener">Learn Rust</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
