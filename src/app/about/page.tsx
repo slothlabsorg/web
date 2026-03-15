@@ -5,9 +5,20 @@ import Footer from '@/components/Footer'
 import CustomCursor from '@/components/CustomCursor'
 import PricingSupportCTA from '@/components/PricingSupportCTA'
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
+
 export const metadata: Metadata = {
-  title: 'About — SlothLabs',
-  description: 'We build dev tools that improve performance and save time. Our mission is to help developers focus on what matters and ship without the headaches.',
+  title: 'About SlothLabs — AWS client UI, CloudOrbit, dev tools',
+  description: 'SlothLabs builds AWS client UI and Kubernetes context UI tools like CloudOrbit. We build dev tools that give you your time back — by devs, for devs.',
+  keywords: ['SlothLabs', 'CloudOrbit', 'AWS client UI', 'dev tools', 'about'],
+  openGraph: {
+    title: 'About SlothLabs | AWS client UI, CloudOrbit',
+    description: 'SlothLabs: dev tools that give you your time back. CloudOrbit, AWS client UI, k8s context.',
+    url: `${SITE_URL}/about`,
+    siteName: 'SlothLabs',
+    type: 'website',
+  },
+  alternates: { canonical: `${SITE_URL}/about` },
 }
 
 export default function AboutPage() {

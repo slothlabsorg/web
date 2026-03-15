@@ -4,9 +4,20 @@ import Footer from '@/components/Footer'
 import CustomCursor from '@/components/CustomCursor'
 import PricingSupportCTA from '@/components/PricingSupportCTA'
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
+
 export const metadata: Metadata = {
-  title: 'Pricing — SlothLabs',
-  description: 'Our tools are free and open source. We keep features that don’t incur ongoing cost free forever. Future Pro tiers may cover AI and infrastructure — always with a developer-first approach.',
+  title: 'Pricing — SlothLabs (CloudOrbit free & open source)',
+  description: 'SlothLabs tools like CloudOrbit are free and open source. Session management, EKS, kubeconfig — free forever. Pro tiers only for AI or infrastructure costs.',
+  keywords: ['SlothLabs pricing', 'CloudOrbit free', 'open source', 'SlothLabs'],
+  openGraph: {
+    title: 'Pricing | SlothLabs',
+    description: 'CloudOrbit and SlothLabs tools: free and open source. Developer-first pricing.',
+    url: `${SITE_URL}/pricing`,
+    siteName: 'SlothLabs',
+    type: 'website',
+  },
+  alternates: { canonical: `${SITE_URL}/pricing` },
 }
 
 export default function PricingPage() {

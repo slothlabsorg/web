@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -6,6 +7,15 @@ import CustomCursor from '@/components/CustomCursor'
 import { LaunchBanner } from '@/components/LaunchBanner'
 import HeroParallaxBg from '@/components/HeroParallaxBg'
 import { slothLabsContent } from '@/config/content'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
+
+export const metadata: Metadata = {
+  title: 'SlothLabs — AWS client UI, k8s context UI, CloudOrbit',
+  description: 'SlothLabs: AWS client UI and Kubernetes context UI. CloudOrbit — visual AWS session manager, EKS, kubeconfig. Dev tools that give you your time back.',
+  openGraph: { url: SITE_URL },
+  alternates: { canonical: SITE_URL },
+}
 
 const { hero, products, featureHighlight } = slothLabsContent
 
@@ -195,9 +205,9 @@ function Products() {
                   </div>
                 </div>
               ) : (
-                <div className="relative rounded-card p-6 bg-[#0d1b3e] border border-[#1a3060] opacity-60 h-full flex flex-col overflow-hidden">
+                <div className="relative rounded-card p-6 bg-[#0d1b3e] border border-[#1a3060] h-full flex flex-col overflow-hidden opacity-90 hover:opacity-100 transition-opacity">
                   <div className="absolute top-4 right-4">
-                    <span className="badge-shimmer px-2.5 py-1 rounded-full text-xs font-medium border border-[#4DA6FF]/30 text-[#4A6080]">
+                    <span className="badge-shimmer px-2.5 py-1 rounded-full text-xs font-medium border border-[#4DA6FF]/40 text-[#4DA6FF] bg-[#4DA6FF]/10">
                       Coming soon
                       {'comingSoonDate' in product && product.comingSoonDate ? ` · ${product.comingSoonDate}` : ''}
                     </span>
@@ -205,11 +215,20 @@ function Products() {
                   <div className="mb-6 mt-2">
                     {product.name === 'DevPanel' ? <ServerIcon /> : <DatabaseIcon />}
                   </div>
-                  <h3 className="text-xl font-bold text-[#8BA3C7]" style={{ fontFamily: 'Syne, sans-serif', fontStyle: 'normal' }}>
+                  <h3 className="text-xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif', fontStyle: 'normal' }}>
                     {product.name}
                   </h3>
                   <p className="text-xs text-[#4A6080] mb-3">{product.by}</p>
-                  <p className="text-[#4A6080] text-sm leading-relaxed">{product.desc}</p>
+                  <p className="text-[#8BA3C7] text-sm leading-relaxed flex-1">{product.desc}</p>
+                  {'tags' in product && product.tags && product.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {product.tags.map((tag: string) => (
+                        <span key={tag} className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#112244] text-[#8BA3C7] border border-[#1a3060]">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </ScrollReveal>
