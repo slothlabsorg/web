@@ -138,7 +138,7 @@ export default function DownloadModal({ buttonLabel, className = '', launchingSo
     <>
       {/* Trigger button */}
       {launchingSoon ? (
-        <span className="inline-flex flex-col items-center gap-1.5 sm:flex-row sm:gap-2">
+        <span className="relative inline-flex">
           <button
             type="button"
             disabled
@@ -147,7 +147,7 @@ export default function DownloadModal({ buttonLabel, className = '', launchingSo
           >
             {triggerLabel}
           </button>
-          <span className="text-xs px-2.5 py-1 rounded-full border border-[#4DA6FF]/40 text-[#4DA6FF] bg-[#4DA6FF]/10 font-medium">
+          <span className="md:hidden absolute -top-0.5 -right-0.5 text-[10px] leading-tight px-1.5 py-0.5 rounded-md border border-[#4DA6FF]/50 text-[#4DA6FF] bg-[#050d1f] font-medium whitespace-nowrap">
             Coming soon
           </span>
         </span>
