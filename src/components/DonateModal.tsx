@@ -53,14 +53,14 @@ export default function DonateModal({ open, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4 overflow-y-auto"
       onClick={close}
     >
       {/* Strong blur so only the modal is clear */}
       <div className="absolute inset-0 bg-[#050d1f]/95 backdrop-blur-xl" />
 
       <div
-        className="relative z-10 w-full max-w-lg rounded-2xl bg-[#0d1b3e] border border-[#1a3060] overflow-hidden shadow-2xl"
+        className="relative z-10 w-full max-w-lg max-h-[calc(100vh-2rem)] rounded-2xl bg-[#0d1b3e] border border-[#1a3060] overflow-hidden shadow-2xl flex flex-col"
         onClick={e => e.stopPropagation()}
         style={{ boxShadow: '0 0 80px rgba(0,212,255,0.12), 0 32px 64px rgba(0,0,0,0.6)' }}
       >
@@ -88,7 +88,7 @@ export default function DonateModal({ open, onClose }: Props) {
           <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-[#0d1b3e] to-transparent" />
         </div>
 
-        <div className="px-7 py-6">
+        <div className="px-7 py-6 overflow-y-auto min-h-0 flex-1">
           <h2
             className="text-2xl font-black text-white mb-2 leading-tight"
             style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.02em' }}

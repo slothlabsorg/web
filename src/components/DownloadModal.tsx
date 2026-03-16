@@ -138,14 +138,19 @@ export default function DownloadModal({ buttonLabel, className = '', launchingSo
     <>
       {/* Trigger button */}
       {launchingSoon ? (
-        <button
-          type="button"
-          disabled
-          title={LAUNCHING_SOON_TOOLTIP}
-          className={`${className} opacity-70 cursor-not-allowed hover:brightness-100 hover:translate-y-0`}
-        >
-          {triggerLabel}
-        </button>
+        <span className="inline-flex flex-col items-center gap-1.5 sm:flex-row sm:gap-2">
+          <button
+            type="button"
+            disabled
+            title={LAUNCHING_SOON_TOOLTIP}
+            className={`${className} opacity-70 cursor-not-allowed hover:brightness-100 hover:translate-y-0`}
+          >
+            {triggerLabel}
+          </button>
+          <span className="text-xs px-2.5 py-1 rounded-full border border-[#4DA6FF]/40 text-[#4DA6FF] bg-[#4DA6FF]/10 font-medium">
+            Coming soon
+          </span>
+        </span>
       ) : (
         <button
           onClick={() => { setOpen(true); setStep('donate') }}
@@ -158,7 +163,7 @@ export default function DownloadModal({ buttonLabel, className = '', launchingSo
       {/* Overlay */}
       {open && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto"
           onClick={close}
         >
           {/* Backdrop */}
@@ -166,7 +171,7 @@ export default function DownloadModal({ buttonLabel, className = '', launchingSo
 
           {/* Modal card */}
           <div
-            className="relative z-10 w-full max-w-lg rounded-2xl bg-[#0d1b3e] border border-[#1a3060] overflow-hidden shadow-2xl"
+            className="relative z-10 w-full max-w-lg max-h-[calc(100vh-2rem)] rounded-2xl bg-[#0d1b3e] border border-[#1a3060] overflow-hidden shadow-2xl flex flex-col"
             onClick={e => e.stopPropagation()}
             style={{ boxShadow: '0 0 80px rgba(0,212,255,0.12), 0 32px 64px rgba(0,0,0,0.6)' }}
           >
@@ -180,6 +185,7 @@ export default function DownloadModal({ buttonLabel, className = '', launchingSo
               </svg>
             </button>
 
+            <div className="overflow-y-auto min-h-0 flex-1">
             {step === 'donate' ? (
               // ── Step 1: Donation ask ────────────────────────────────────────
               <div>
@@ -288,7 +294,7 @@ export default function DownloadModal({ buttonLabel, className = '', launchingSo
               </div>
             ) : (
               // ── Step 2: Two options — direct download + package manager ───────
-              <div className="px-7 py-8">
+              <div className="px-7 py-8 pb-10">
                 <div className="flex items-center gap-3 mb-6">
                   <div
                     className="w-10 h-10 rounded-xl bg-no-repeat bg-center bg-contain flex-shrink-0"
@@ -387,6 +393,7 @@ export default function DownloadModal({ buttonLabel, className = '', launchingSo
                 </p>
               </div>
             )}
+            </div>
           </div>
         </div>
       )}
