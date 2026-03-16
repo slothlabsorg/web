@@ -8,12 +8,12 @@ import PricingSupportCTA from '@/components/PricingSupportCTA'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
 
 export const metadata: Metadata = {
-  title: 'About SlothLabs — AWS client UI, CloudOrbit, dev tools',
-  description: 'SlothLabs builds AWS client UI and Kubernetes context UI tools like CloudOrbit. We build dev tools that give you your time back — by devs, for devs.',
-  keywords: ['SlothLabs', 'CloudOrbit', 'AWS client UI', 'dev tools', 'about'],
+  title: 'About — SlothLabs',
+  description: 'We are SlothLabs. We build dev tools that give you your time back — CloudOrbit, DataOrbit and more. By devs, for devs.',
+  keywords: ['SlothLabs', 'about', 'dev tools', 'CloudOrbit', 'DataOrbit'],
   openGraph: {
-    title: 'About SlothLabs | AWS client UI, CloudOrbit',
-    description: 'SlothLabs: dev tools that give you your time back. CloudOrbit, AWS client UI, k8s context.',
+    title: 'About SlothLabs',
+    description: 'We build dev tools that give you your time back. By devs, for devs.',
     url: `${SITE_URL}/about`,
     siteName: 'SlothLabs',
     type: 'website',

@@ -11,9 +11,15 @@ import { slothLabsContent } from '@/config/content'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
 
 export const metadata: Metadata = {
-  title: 'SlothLabs — AWS client UI, k8s context UI, CloudOrbit',
-  description: 'SlothLabs: AWS client UI and Kubernetes context UI. CloudOrbit — visual AWS session manager, EKS, kubeconfig. Dev tools that give you your time back.',
-  openGraph: { url: SITE_URL },
+  title: 'SlothLabs — Dev tools that give you your time back',
+  description: 'SlothLabs builds dev tools for developers and DevOps. CloudOrbit (cloud session manager), DataOrbit and more. Less friction, more shipping.',
+  keywords: ['SlothLabs', 'dev tools', 'developer tools', 'CloudOrbit', 'DataOrbit'],
+  openGraph: {
+    url: SITE_URL,
+    title: 'SlothLabs — Dev tools that give you your time back',
+    description: 'We build dev tools: CloudOrbit, DataOrbit. By devs, for devs.',
+    siteName: 'SlothLabs',
+  },
   alternates: { canonical: SITE_URL },
 }
 

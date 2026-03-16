@@ -5,18 +5,21 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
 export const metadata: Metadata = {
   title: 'CloudOrbit Docs — Install, AWS setup, troubleshooting | SlothLabs',
   description:
-    'CloudOrbit documentation: installation (macOS, Homebrew), AWS SSO setup, quick start, troubleshooting Cloudflare. AWS client UI and k8s context UI by SlothLabs.',
+    'CloudOrbit documentation: installation (macOS, Homebrew), AWS SSO setup, quick start, Cloudflare troubleshooting. Cloud session manager — AWS now, GCP and Azure coming.',
   keywords: [
     'CloudOrbit docs',
     'CloudOrbit installation',
-    'AWS client UI',
+    'cloud session manager',
+    'AWS setup',
+    'AWS SSO',
     'k8s context',
     'EKS kubeconfig',
+    'Cloudflare',
     'SlothLabs',
   ],
   openGraph: {
-    title: 'CloudOrbit Docs | SlothLabs',
-    description: 'Install CloudOrbit, AWS setup, quick start, Cloudflare troubleshooting. AWS client UI by SlothLabs.',
+    title: 'CloudOrbit Docs — Install & setup | SlothLabs',
+    description: 'CloudOrbit docs: installation, AWS setup, quick start, Cloudflare troubleshooting. Cloud session manager.',
     url: `${SITE_URL}/cloudorbit/docs`,
     siteName: 'SlothLabs',
     type: 'article',
