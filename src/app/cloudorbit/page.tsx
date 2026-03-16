@@ -18,21 +18,24 @@ const { hero, features, comparison } = cloudOrbitContent
 const { problem, whyRust, plugins, screenshots, downloadCta } = slothLabsContent
 
 export const metadata: Metadata = {
-  title: 'CloudOrbit — AWS client UI, Kubernetes context UI | SlothLabs',
+  title: 'CloudOrbit — Cloud session manager (AWS, GCP, Azure) | SlothLabs',
   description:
-    'CloudOrbit: AWS client UI and UI for k8s context. Visual AWS session manager — switch accounts, EKS kubeconfig auto-update, no terminal. Works behind Cloudflare. By SlothLabs.',
+    'CloudOrbit: visual cloud session manager. AWS today — switch accounts, EKS, kubeconfig auto-update. GCP and Azure coming. No terminal. Works behind Cloudflare. By SlothLabs.',
   keywords: [
     'CloudOrbit',
+    'cloud session manager',
+    'AWS session manager',
     'AWS client UI',
     'AWS client',
     'UI k8s context',
     'Kubernetes context UI',
     'k8s context UI',
-    'AWS session manager',
     'EKS UI',
     'AWS GUI',
     'EKS',
     'kubeconfig',
+    'GCP',
+    'Azure',
     'Cloudflare',
     'Leapp alternative',
     'AWS SSO',
@@ -40,17 +43,17 @@ export const metadata: Metadata = {
     'SlothLabs',
   ],
   openGraph: {
-    title: 'CloudOrbit — AWS client UI & k8s context UI | SlothLabs',
-    description: 'AWS client UI and Kubernetes context UI. Visual AWS session manager, EKS, kubeconfig auto-update. No terminal. Cloudflare compatible. SlothLabs.',
+    title: 'CloudOrbit — Cloud session manager (AWS, GCP, Azure) | SlothLabs',
+    description: 'Visual cloud session manager. AWS now, GCP and Azure coming. EKS, kubeconfig, no terminal. Cloudflare compatible.',
     url: `${SITE_URL}/cloudorbit`,
     siteName: 'SlothLabs',
     type: 'website',
-    images: [{ url: '/images/cloudorbit-hero.png', width: 1200, height: 630, alt: 'CloudOrbit — AWS client UI by SlothLabs' }],
+    images: [{ url: '/images/cloudorbit-hero.png', width: 1200, height: 630, alt: 'CloudOrbit — Cloud session manager by SlothLabs' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'CloudOrbit — AWS client UI, k8s context UI | SlothLabs',
-    description: 'Visual AWS session manager, EKS, kubeconfig. No terminal. SlothLabs.',
+    title: 'CloudOrbit — Cloud session manager (AWS, GCP, Azure) | SlothLabs',
+    description: 'Visual cloud session manager. AWS now, GCP and Azure coming. EKS, kubeconfig. SlothLabs.',
   },
   alternates: { canonical: `${SITE_URL}/cloudorbit` },
 }
@@ -439,11 +442,11 @@ const cloudOrbitJsonLd = {
   name: 'CloudOrbit',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'macOS, Windows, Linux',
-  description: 'AWS client UI and Kubernetes context UI. Visual AWS session manager — switch accounts, EKS kubeconfig auto-update. Works behind Cloudflare. By SlothLabs.',
+  description: 'Visual cloud session manager. AWS today, GCP and Azure coming. Switch accounts, EKS, kubeconfig auto-update. Works behind Cloudflare. By SlothLabs.',
   url: `${SITE_URL}/cloudorbit`,
   author: { '@type': 'Organization', name: 'SlothLabs', url: SITE_URL },
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-  featureList: ['AWS account switching', 'Session management', 'EKS cluster detection', 'kubeconfig auto-update', 'Cloudflare compatible'],
+  featureList: ['AWS account switching', 'Session management', 'EKS cluster detection', 'kubeconfig auto-update', 'Cloudflare compatible', 'GCP and Azure coming'],
 }
 
 // ── Page ─────────────────────────────────────────────────────────────────────

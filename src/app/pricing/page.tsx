@@ -7,12 +7,12 @@ import PricingSupportCTA from '@/components/PricingSupportCTA'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
 
 export const metadata: Metadata = {
-  title: 'Pricing — SlothLabs (CloudOrbit free & open source)',
-  description: 'SlothLabs tools like CloudOrbit are free and open source. Session management, EKS, kubeconfig — free forever. Pro tiers only for AI or infrastructure costs.',
-  keywords: ['SlothLabs pricing', 'CloudOrbit free', 'open source', 'SlothLabs'],
+  title: 'Pricing — SlothLabs',
+  description: 'SlothLabs tools are free and open source. Developer-first pricing. Future Pro tiers only where we have ongoing costs.',
+  keywords: ['SlothLabs', 'pricing', 'free', 'open source', 'CloudOrbit', 'DataOrbit'],
   openGraph: {
     title: 'Pricing | SlothLabs',
-    description: 'CloudOrbit and SlothLabs tools: free and open source. Developer-first pricing.',
+    description: 'Our dev tools are free and open source. Developer-first pricing.',
     url: `${SITE_URL}/pricing`,
     siteName: 'SlothLabs',
     type: 'website',
