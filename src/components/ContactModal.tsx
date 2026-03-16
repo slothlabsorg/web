@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 
-const EMAIL = 'friends@slothlabs.com'
+const EMAIL = 'friends@slothlabs.org'
 
 interface Props {
   open: boolean
