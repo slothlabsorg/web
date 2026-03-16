@@ -84,7 +84,7 @@ function Hero() {
               <div className="w-80 h-80 lg:w-96 lg:h-96 rounded-full bg-[#4DA6FF]/12 blur-3xl" />
             </div>
             <div
-              className="hero-mascot-entrance relative z-10 flex flex-wrap w-[400px] h-[400px] max-w-[400px] bg-no-repeat bg-center select-none drop-shadow-2xl"
+              className="hero-mascot-entrance relative z-10 flex flex-wrap w-[400px] h-[400px] max-w-[min(400px,100vw)] bg-no-repeat bg-center select-none drop-shadow-2xl"
               style={{
                 backgroundImage: 'url(/images/sloth-mascot.png)',
                 backgroundSize: '100%',
@@ -315,18 +315,72 @@ function FeatureHighlight() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal delay={150}>
+          <ScrollReveal delay={150} className="min-w-0">
             <div
-              className="relative w-full min-h-[420px] md:min-h-[560px] flex justify-center items-end md:items-center bg-center bg-no-repeat opacity-100"
-              style={{
-                backgroundImage: 'url(/images/cloudorbit-feature-bg.png)',
-                backgroundSize: '110%',
-                opacity: 1,
-              }}
+              className="relative w-full overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory flex gap-6 pb-2 -mx-1 px-1"
+              style={{ WebkitOverflowScrolling: 'touch' }}
             >
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-80 h-80 md:w-[420px] md:h-[420px] rounded-full bg-[#00D4FF]/10 blur-3xl" />
-              </div>
+              {products.items.map((product, i) => (
+                <div
+                  key={product.name}
+                  className="relative flex-shrink-0 snap-start snap-always w-[85vw] min-[500px]:w-[380px] md:w-[340px] rounded-2xl p-6 md:p-8 bg-[#0d1b3e] border border-[#1a3060] flex flex-col min-h-[320px] md:min-h-[400px]"
+                >
+                  {!product.live && (
+                    <div className="absolute top-4 right-4 sm:top-5 sm:right-5 z-10">
+                      <span className="badge-shimmer px-2.5 py-1 rounded-full text-xs font-medium border border-[#4DA6FF]/40 text-[#4DA6FF] bg-[#4DA6FF]/10">
+                        Coming soon
+                        {'comingSoonDate' in product && product.comingSoonDate ? ` · ${product.comingSoonDate}` : ''}
+                      </span>
+                    </div>
+                  )}
+                  <div className="mb-4 mt-1 flex justify-center">
+                    {product.name === 'CloudOrbit' && product.logo ? (
+                      <div
+                        className="w-full h-[120px] md:h-[140px] bg-no-repeat bg-center bg-contain"
+                        style={{ backgroundImage: `url(${product.logo})`, backgroundSize: 'contain' }}
+                        role="img"
+                        aria-label={product.name}
+                      />
+                    ) : product.name === 'DataOrbit' ? (
+                      <div className="flex items-center justify-center h-[120px]">
+                        <DatabaseIcon />
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center h-[120px]">
+                        <ServerIcon />
+                      </div>
+                    )}
+                  </div>
+                  <h3
+                    className="text-xl md:text-2xl font-bold text-white mb-0.5"
+                    style={{ fontFamily: 'Syne, sans-serif' }}
+                  >
+                    {product.name}
+                  </h3>
+                  <p className="text-xs text-[#4A6080] mb-3">{product.by}</p>
+                  <p className="text-[#8BA3C7] text-sm leading-relaxed flex-1">{product.desc}</p>
+                  {product.tags && product.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {product.tags.map((tag: string) => (
+                        <span
+                          key={tag}
+                          className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#112244] text-[#8BA3C7] border border-[#1a3060]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {product.live && product.slug && product.cta && (
+                    <Link
+                      href={product.slug}
+                      className="inline-flex items-center text-sm font-semibold mt-4 text-[#00D4FF] hover:underline"
+                    >
+                      {product.cta}
+                    </Link>
+                  )}
+                </div>
+              ))}
             </div>
           </ScrollReveal>
         </div>

@@ -272,11 +272,11 @@ function ProblemSection() {
 // ── Why Rust ──────────────────────────────────────────────────────────────────
 function WhyRustSection() {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="py-24 relative overflow-x-hidden overflow-y-visible">
       <div className="absolute inset-0 bg-gradient-to-b from-[#050d1f] via-[#0d1b3e]/30 to-[#050d1f]" />
       <div className="relative z-10 site-container">
-        <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <ScrollReveal className="space-y-6">
+        <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center min-w-0">
+          <ScrollReveal className="space-y-6 min-w-0">
             <span className="text-xs font-semibold tracking-widest uppercase text-[#00D4FF]">{whyRust.eyebrow}</span>
             <h2 className="text-3xl md:text-4xl font-bold leading-tight text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
               {whyRust.headline.split('\n').map((line, i) => (
@@ -301,8 +301,8 @@ function WhyRustSection() {
               ))}
             </div>
           </ScrollReveal>
-          <ScrollReveal delay={100}>
-            <div className="rounded-xl border border-[#1a3060] overflow-hidden bg-[#0a1628]">
+          <ScrollReveal delay={100} className="min-w-0 max-w-full">
+            <div className="rounded-xl border border-[#1a3060] overflow-hidden bg-[#0a1628] min-w-0 max-w-full">
               <div className="flex items-center gap-2 px-4 py-2.5 bg-[#071020] border-b border-[#1a3060]">
                 <span className="w-3 h-3 rounded-full bg-red-500/80" />
                 <span className="w-3 h-3 rounded-full bg-yellow-500/80" />

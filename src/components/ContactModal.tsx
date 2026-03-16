@@ -30,12 +30,12 @@ export default function ContactModal({ open, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto"
       onClick={close}
     >
       <div className="absolute inset-0 bg-[#050d1f]/90 backdrop-blur-md" />
       <div
-        className="relative z-10 w-full max-w-md rounded-2xl bg-[#0d1b3e] border border-[#1a3060] overflow-hidden shadow-2xl"
+        className="relative z-10 w-full max-w-md max-h-[90vh] rounded-2xl bg-[#0d1b3e] border border-[#1a3060] overflow-hidden shadow-2xl flex flex-col"
         onClick={e => e.stopPropagation()}
         style={{ boxShadow: '0 0 80px rgba(0,212,255,0.12), 0 32px 64px rgba(0,0,0,0.6)' }}
       >
@@ -61,7 +61,7 @@ export default function ContactModal({ open, onClose }: Props) {
           <div className="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-[#0d1b3e] to-transparent" />
         </div>
 
-        <div className="px-7 py-6 text-center">
+        <div className="px-7 py-6 text-center overflow-y-auto min-h-0 flex-1">
           <h2
             className="text-xl font-bold text-white mb-2"
             style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.02em' }}
