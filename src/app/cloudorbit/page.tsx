@@ -12,7 +12,7 @@ import { cloudOrbitContent, slothLabsContent } from '@/config/content'
 
 const WAITLIST_FORM_URL = 'https://form.jotform.com/260731775592061'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
 const { hero, features, comparison } = cloudOrbitContent
 const { problem, whyRust, plugins, screenshots, downloadCta } = slothLabsContent

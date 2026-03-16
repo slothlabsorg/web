@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 
-const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

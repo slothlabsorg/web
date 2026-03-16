@@ -8,7 +8,7 @@ import { LaunchBanner } from '@/components/LaunchBanner'
 import HeroParallaxBg from '@/components/HeroParallaxBg'
 import { slothLabsContent } from '@/config/content'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
 export const metadata: Metadata = {
   title: 'SlothLabs — Dev tools that give you your time back',

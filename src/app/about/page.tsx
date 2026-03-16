@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 import CustomCursor from '@/components/CustomCursor'
 import PricingSupportCTA from '@/components/PricingSupportCTA'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
 export const metadata: Metadata = {
   title: 'About — SlothLabs',
@@ -104,10 +104,10 @@ export default function AboutPage() {
             We’re always happy to hear from fellow devs — whether it’s feedback, a bug, or just to chat about building better tools.
           </p>
           <Link
-            href="mailto:friends@slothlabs.com"
+            href="mailto:friends@slothlabs.org"
             className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#4DA6FF] text-[#050d1f] font-semibold text-sm hover:brightness-110 transition-all"
           >
-            friends@slothlabs.com
+            friends@slothlabs.org
           </Link>
         </div>
       </section>

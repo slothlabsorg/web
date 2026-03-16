@@ -4,7 +4,7 @@ import Footer from '@/components/Footer'
 import CustomCursor from '@/components/CustomCursor'
 import PricingSupportCTA from '@/components/PricingSupportCTA'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.com'
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
 export const metadata: Metadata = {
   title: 'Pricing — SlothLabs',
