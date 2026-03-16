@@ -255,135 +255,146 @@ function FeatureHighlight() {
         <div className="absolute bottom-1/4 -left-32 w-96 h-96 rounded-full bg-[#4DA6FF]/10 blur-3xl" />
       </div>
 
-      <div className="relative z-10 site-container">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
-          <ScrollReveal>
-            <div className="space-y-6">
-              <div className="mb-2">
-                <LaunchBanner variant="banner" />
-              </div>
-              <div className="flex items-center gap-3">
-                <div
-                  className="h-[50px] w-[50px] flex-shrink-0 rounded-lg bg-no-repeat bg-center bg-contain opacity-90"
-                  style={{
-                    backgroundImage: 'url(/images/cloudorbit-icon.png)',
-                    backgroundSize: 'contain',
-                    backgroundPosition: 'center',
-                  }}
-                  role="img"
-                  aria-label="CloudOrbit"
-                  title="CloudOrbit app icon"
-                />
-                <span
-                  className="text-xs font-semibold tracking-widest uppercase"
-                  style={{ color: '#00D4FF', fontFamily: 'Syne, sans-serif', fontStyle: 'normal' }}
-                >
-                  {fh.eyebrow}
-                </span>
-              </div>
-
-              <h2
-                className="text-3xl md:text-4xl lg:text-[2.5rem] font-bold leading-tight tracking-tight text-white"
-                style={{ fontFamily: 'Syne, sans-serif', fontStyle: 'normal' }}
-              >
-                {fh.headline.split('\n').map((line, i) => (
-                  <span key={i} className={i === 1 ? 'gradient-text block' : 'block'}>{line}</span>
-                ))}
-              </h2>
-
-              <p className="text-[#8BA3C7] leading-relaxed text-base lg:text-lg">{fh.body}</p>
-
-              <ul className="space-y-3 mt-6">
-                {fh.features.map(f => (
-                  <li key={f} className="flex items-center gap-3 text-sm text-white">
-                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#00D4FF]/15 flex items-center justify-center text-[#00D4FF] text-xs font-bold">
-                      ✓
-                    </span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mt-8">
-                <Link
-                  href="/#products"
-                  className="px-6 py-3 rounded-full border border-[#4DA6FF] text-[#4DA6FF] text-sm font-medium hover:bg-[#4DA6FF]/10 transition-all"
-                >
-                  {fh.cta}
-                </Link>
-              </div>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal delay={150} className="min-w-0">
-            <div
-              className="relative w-full overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory flex gap-6 pb-2 -mx-1 px-1"
-              style={{ WebkitOverflowScrolling: 'touch' }}
-            >
-              {products.items.map((product, i) => (
-                <div
-                  key={product.name}
-                  className="relative flex-shrink-0 snap-start snap-always w-[85vw] min-[500px]:w-[380px] md:w-[340px] rounded-2xl p-6 md:p-8 bg-[#0d1b3e] border border-[#1a3060] flex flex-col min-h-[320px] md:min-h-[400px]"
-                >
-                  {!product.live && (
-                    <div className="absolute top-4 right-4 sm:top-5 sm:right-5 z-10">
-                      <span className="badge-shimmer px-2.5 py-1 rounded-full text-xs font-medium border border-[#4DA6FF]/40 text-[#4DA6FF] bg-[#4DA6FF]/10">
-                        Coming soon
-                        {'comingSoonDate' in product && product.comingSoonDate ? ` · ${product.comingSoonDate}` : ''}
-                      </span>
-                    </div>
-                  )}
-                  <div className="mb-4 mt-1 flex justify-center">
-                    {product.name === 'CloudOrbit' && product.logo ? (
-                      <div
-                        className="w-full h-[120px] md:h-[140px] bg-no-repeat bg-center bg-contain"
-                        style={{ backgroundImage: `url(${product.logo})`, backgroundSize: 'contain' }}
-                        role="img"
-                        aria-label={product.name}
-                      />
-                    ) : product.name === 'DataOrbit' ? (
-                      <div className="flex items-center justify-center h-[120px]">
-                        <DatabaseIcon />
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center h-[120px]">
-                        <ServerIcon />
-                      </div>
-                    )}
-                  </div>
-                  <h3
-                    className="text-xl md:text-2xl font-bold text-white mb-0.5"
-                    style={{ fontFamily: 'Syne, sans-serif' }}
-                  >
-                    {product.name}
-                  </h3>
-                  <p className="text-xs text-[#4A6080] mb-3">{product.by}</p>
-                  <p className="text-[#8BA3C7] text-sm leading-relaxed flex-1">{product.desc}</p>
-                  {product.tags && product.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-4">
-                      {product.tags.map((tag: string) => (
+      <div className="relative z-10 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth pb-2" style={{ WebkitOverflowScrolling: 'touch' }}>
+        {products.items.map((product, slideIndex) => (
+          <div
+            key={product.name}
+            className="flex-shrink-0 w-full snap-start snap-always px-4 sm:px-6"
+          >
+            <div className="site-container">
+              <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[420px] md:min-h-[480px]">
+                {/* Left column: text */}
+                <div className="space-y-6 min-w-0 order-2 md:order-1">
+                  {product.live ? (
+                    <>
+                      {slideIndex === 0 && (
+                        <div className="mb-2">
+                          <LaunchBanner variant="banner" />
+                        </div>
+                      )}
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="h-[50px] w-[50px] flex-shrink-0 rounded-lg bg-no-repeat bg-center bg-contain opacity-90"
+                          style={{
+                            backgroundImage: 'url(/images/cloudorbit-icon.png)',
+                            backgroundSize: 'contain',
+                            backgroundPosition: 'center',
+                          }}
+                          role="img"
+                          aria-label={product.name}
+                        />
                         <span
-                          key={tag}
-                          className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#112244] text-[#8BA3C7] border border-[#1a3060]"
+                          className="text-xs font-semibold tracking-widest uppercase"
+                          style={{ color: product.accent ?? '#00D4FF', fontFamily: 'Syne, sans-serif', fontStyle: 'normal' }}
                         >
-                          {tag}
+                          {product.name.toUpperCase()}
                         </span>
-                      ))}
-                    </div>
-                  )}
-                  {product.live && product.slug && product.cta && (
-                    <Link
-                      href={product.slug}
-                      className="inline-flex items-center text-sm font-semibold mt-4 text-[#00D4FF] hover:underline"
-                    >
-                      {product.cta}
-                    </Link>
+                      </div>
+                      <h2
+                        className="text-3xl md:text-4xl lg:text-[2.5rem] font-bold leading-tight tracking-tight text-white"
+                        style={{ fontFamily: 'Syne, sans-serif', fontStyle: 'normal' }}
+                      >
+                        {fh.headline.split('\n').map((line, i) => (
+                          <span key={i} className={i === 1 ? 'gradient-text block' : 'block'}>{line}</span>
+                        ))}
+                      </h2>
+                      <p className="text-[#8BA3C7] leading-relaxed text-base lg:text-lg">{fh.body}</p>
+                      <ul className="space-y-3 mt-6">
+                        {fh.features.map(f => (
+                          <li key={f} className="flex items-center gap-3 text-sm text-white">
+                            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#00D4FF]/15 flex items-center justify-center text-[#00D4FF] text-xs font-bold">
+                              ✓
+                            </span>
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mt-8">
+                        <Link
+                          href="/#products"
+                          className="px-6 py-3 rounded-full border border-[#4DA6FF] text-[#4DA6FF] text-sm font-medium hover:bg-[#4DA6FF]/10 transition-all"
+                        >
+                          {fh.cta}
+                        </Link>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="text-xs font-semibold tracking-widest uppercase"
+                          style={{ color: product.accent ?? '#4DA6FF', fontFamily: 'Syne, sans-serif', fontStyle: 'normal' }}
+                        >
+                          {product.name.toUpperCase()}
+                        </span>
+                      </div>
+                      <h2
+                        className="text-3xl md:text-4xl lg:text-[2.5rem] font-bold leading-tight tracking-tight text-white"
+                        style={{ fontFamily: 'Syne, sans-serif', fontStyle: 'normal' }}
+                      >
+                        {product.name}
+                        <span className="gradient-text block mt-1">Coming soon</span>
+                      </h2>
+                      <p className="text-[#8BA3C7] leading-relaxed text-base lg:text-lg">{product.desc}</p>
+                      {'comingSoonDate' in product && product.comingSoonDate && (
+                        <p className="text-sm text-[#4A6080]">
+                          Expected: {product.comingSoonDate}
+                        </p>
+                      )}
+                      {product.tags && product.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {product.tags.map((tag: string) => (
+                            <span
+                              key={tag}
+                              className="px-3 py-1.5 rounded-full text-xs font-medium bg-[#112244] text-[#8BA3C7] border border-[#1a3060]"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
-              ))}
+
+                {/* Right column: image or blurred "secret" */}
+                <div className="relative flex justify-center items-center min-h-[280px] md:min-h-[360px] order-1 md:order-2 min-w-0">
+                  {product.live ? (
+                    <div
+                      className="relative w-full max-w-md aspect-square bg-no-repeat bg-center bg-contain rounded-2xl"
+                      style={{
+                        backgroundImage: 'url(/images/cloudorbit-feature-bg.png)',
+                        backgroundSize: 'contain',
+                      }}
+                    >
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div className="w-64 h-64 md:w-80 md:h-80 rounded-full bg-[#00D4FF]/10 blur-3xl" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="relative w-full max-w-sm md:max-w-md aspect-square flex items-center justify-center rounded-2xl overflow-hidden">
+                      <div
+                        className="absolute inset-0 rounded-2xl bg-[#0d1b3e]/80 backdrop-blur-xl border border-[#1a3060]"
+                        style={{ filter: 'blur(20px)' }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-[#050d1f]/40 rounded-2xl" />
+                      <div className="relative z-10 flex flex-col items-center justify-center gap-4 p-8 text-center">
+                        <div
+                          className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-[#112244]/60 border border-[#1a3060] blur-md"
+                          aria-hidden
+                        />
+                        <span className="badge-shimmer px-4 py-2 rounded-full text-sm font-medium border border-[#4DA6FF]/40 text-[#4DA6FF] bg-[#4DA6FF]/10">
+                          Coming soon
+                          {'comingSoonDate' in product && product.comingSoonDate ? ` · ${product.comingSoonDate}` : ''}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </ScrollReveal>
-        </div>
+          </div>
+        ))}
       </div>
     </section>
   )

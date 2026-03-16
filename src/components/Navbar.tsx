@@ -51,20 +51,15 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:flex items-center gap-3">
-          <span className="inline-flex items-center gap-2">
-            <button
-              type="button"
-              disabled
-              title="Coming soon"
-              className="text-base px-5 py-2 rounded-full border border-[#8BA3C7]/40 text-[#8BA3C7] opacity-70 cursor-not-allowed hover:text-[#8BA3C7] hover:border-[#8BA3C7]/40 transition-all duration-200"
-            >
-              Sign up
-            </button>
-            <span className="text-xs px-2.5 py-1 rounded-full border border-[#4DA6FF]/40 text-[#4DA6FF] bg-[#4DA6FF]/10 font-medium whitespace-nowrap">
-              Coming soon
-            </span>
-          </span>
+        <div className="hidden md:flex items-center gap-4">
+          <button
+            type="button"
+            disabled
+            title="Coming soon"
+            className="text-base px-5 py-2 rounded-full border border-[#8BA3C7]/40 text-[#8BA3C7] opacity-70 cursor-not-allowed hover:text-[#8BA3C7] hover:border-[#8BA3C7]/40 transition-all duration-200"
+          >
+            Sign up
+          </button>
         </div>
 
         <button
@@ -93,7 +88,7 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
-          <span className="mt-2 flex flex-col gap-1.5">
+          <span className="mt-2 relative inline-block w-full">
             <button
               type="button"
               disabled
@@ -102,7 +97,7 @@ export default function Navbar() {
             >
               Sign up
             </button>
-            <span className="text-xs px-2.5 py-1 rounded-full border border-[#4DA6FF]/40 text-[#4DA6FF] bg-[#4DA6FF]/10 font-medium text-center w-fit mx-auto">
+            <span className="absolute top-0 right-2 text-[10px] leading-tight px-1.5 py-0.5 rounded-md border border-[#4DA6FF]/50 text-[#4DA6FF] bg-[#050d1f] font-medium whitespace-nowrap">
               Coming soon
             </span>
           </span>
