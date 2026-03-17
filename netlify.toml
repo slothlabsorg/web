@@ -1,3 +1,18 @@
 [build]
   command = "npm run build"
   publish = "out"
+[functions]
+  directory = "netlify/functions"
+
+# Tauri updater — must be before the /* catch-all
+[[redirects]]
+  from   = "/cloudorbit/*"
+  to     = "/.netlify/functions/updater"
+  status = 200
+  force  = true
+
+# SPA fallback (keep existing)
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200

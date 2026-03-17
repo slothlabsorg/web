@@ -255,11 +255,14 @@ function FeatureHighlight() {
         <div className="absolute bottom-1/4 -left-32 w-96 h-96 rounded-full bg-[#4DA6FF]/10 blur-3xl" />
       </div>
 
-      <div className="relative z-10 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth pb-2" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div
+        className="relative z-10 flex flex-row overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth pb-2"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
         {products.items.map((product, slideIndex) => (
           <div
             key={product.name}
-            className="flex-shrink-0 w-full snap-start snap-always px-4 sm:px-6"
+            className="flex-shrink-0 w-full min-w-full snap-start snap-always px-4 sm:px-6 box-border"
           >
             <div className="site-container">
               <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[420px] md:min-h-[480px]">
