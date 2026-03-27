@@ -4,9 +4,40 @@
 [functions]
   directory = "netlify/functions"
 
-# Tauri updater — must be before the /* catch-all
+# Tauri updater — only platform/version paths (not /cloudorbit, /cloudorbit/docs, etc.)
+# Pattern: /cloudorbit/<target>/<current_version>
 [[redirects]]
-  from   = "/cloudorbit/*"
+  from   = "/cloudorbit/darwin-aarch64/*"
+  to     = "/.netlify/functions/updater"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/cloudorbit/darwin-x86_64/*"
+  to     = "/.netlify/functions/updater"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/cloudorbit/x86_64-pc-windows-msvc/*"
+  to     = "/.netlify/functions/updater"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/cloudorbit/aarch64-pc-windows-msvc/*"
+  to     = "/.netlify/functions/updater"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/cloudorbit/x86_64-unknown-linux-gnu/*"
+  to     = "/.netlify/functions/updater"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "/cloudorbit/aarch64-unknown-linux-gnu/*"
   to     = "/.netlify/functions/updater"
   status = 200
   force  = true
