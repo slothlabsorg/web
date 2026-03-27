@@ -14,7 +14,7 @@
  * the CDN respecting public max-age).
  */
 
-const GITHUB_REPO = 'slothlabs/cloudorbit'
+const GITHUB_REPO = 'slothlabsorg/cloudorbit'
 
 exports.handler = async (event) => {
   // event.path is the original path before the redirect, e.g.:
