@@ -30,16 +30,17 @@ Copy the two files into the website repo:
 cp distribute/netlify/functions/updater.js  ../slothlabs-site/netlify/functions/updater.js
 ```
 
-Add this to `netlify.toml` in the website repo — the `/cloudorbit/*` redirect
-**must come before** the SPA catch-all `/*`:
+Add this to `netlify.toml` in the website repo — updater redirects **must** only target
+`/cloudorbit/<platform>/<version>` (not `/cloudorbit` or `/cloudorbit/docs`), and **must come before**
+the SPA catch-all `/*`. See the repo’s `netlify.toml` for the full list of platform paths.
 
 ```toml
 [functions]
   directory = "netlify/functions"
 
-# Tauri updater — must be before the /* catch-all
+# Example — repeat for each Tauri target (darwin-aarch64, windows-msvc, linux-gnu, …)
 [[redirects]]
-  from   = "/cloudorbit/*"
+  from   = "/cloudorbit/darwin-aarch64/*"
   to     = "/.netlify/functions/updater"
   status = 200
   force  = true
