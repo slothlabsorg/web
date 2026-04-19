@@ -61,16 +61,17 @@ export default function Footer({ accent = '#4DA6FF', showSuiteLink = false }: Pr
           <div>
             <h4 className="text-xs font-semibold text-[#4A6080] uppercase tracking-widest mb-4">Products</h4>
             <ul className="space-y-2">
-              {footer.products.map(p => (
-                <li key={p}>
-                  <Link
-                    href={p === 'CloudOrbit' ? '/cloudorbit' : '#'}
-                    className="text-sm text-[#8BA3C7] hover:text-white transition-colors"
-                  >
-                    {p}
-                  </Link>
-                </li>
-              ))}
+              {footer.products.map((p: { label: string; href: string } | string) => {
+                const label = typeof p === 'string' ? p : p.label
+                const href  = typeof p === 'string' ? '#' : p.href
+                return (
+                  <li key={label}>
+                    <Link href={href} className="text-sm text-[#8BA3C7] hover:text-white transition-colors">
+                      {label}
+                    </Link>
+                  </li>
+                )
+              })}
             </ul>
           </div>
 
