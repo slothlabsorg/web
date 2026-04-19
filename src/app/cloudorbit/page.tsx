@@ -387,7 +387,14 @@ function PluginsSection() {
   )
 }
 
-// ── Screenshots placeholder ───────────────────────────────────────────────────
+// ── Screenshots ───────────────────────────────────────────────────────────────
+const CLOUDORBIT_SCREENSHOTS = [
+  { src: '/images/cloudorbit-screen-orbit.png',    label: 'Main orbit view — all accounts at a glance' },
+  { src: '/images/cloudorbit-screen-sessions.png', label: 'Session manager — active & expired sessions' },
+  { src: '/images/cloudorbit-screen-clusters.png', label: 'EKS cluster detection' },
+  { src: '/images/cloudorbit-screen-activity.png', label: 'Activity timeline' },
+]
+
 function ScreenshotsSection() {
   return (
     <section className="py-24 relative overflow-hidden">
@@ -398,11 +405,15 @@ function ScreenshotsSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>{screenshots.headline}</h2>
           <p className="text-[#8BA3C7] max-w-xl mx-auto">{screenshots.sub}</p>
         </ScrollReveal>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {screenshots.placeholders.map((label, i) => (
-            <ScrollReveal key={label} delay={i * 60}>
-              <div className="aspect-video rounded-xl border border-[#1a3060] bg-[#0d1b3e] flex items-center justify-center p-4">
-                <span className="text-sm text-[#4A6080] text-center">{label}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {CLOUDORBIT_SCREENSHOTS.map((shot, i) => (
+            <ScrollReveal key={shot.src} delay={i * 60}>
+              <div className="rounded-xl border border-[#1a3060] bg-[#0d1b3e] overflow-hidden group hover:border-[#00D4FF]/40 transition-colors">
+                <div
+                  className="aspect-video bg-cover bg-top group-hover:scale-105 transition-transform duration-300"
+                  style={{ backgroundImage: `url(${shot.src})` }}
+                />
+                <p className="text-xs text-[#4A6080] p-3 text-center">{shot.label}</p>
               </div>
             </ScrollReveal>
           ))}
