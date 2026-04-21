@@ -452,6 +452,9 @@ export const wattsOrbitContent = {
     { icon: '🔔', title: 'Alerts that save your battery', desc: 'Two smart OS notifications: (1) your charger is delivering less than your Mac consumes — net drain alert. (2) Battery below 30 min with USB devices still connected — unplug them now.', badge: null },
     { icon: '🔬', title: 'Expose bad cables before they waste your time', desc: 'Plug in a USB-C cable claiming 100W. WattsOrbit shows 18W. That\'s a bad cable. Test every adapter and hub you own until you know exactly what delivers what.', badge: 'Unique' },
     { icon: '🏠', title: 'Menu bar app — always there, never in the way', desc: 'A 380px popup, no Dock icon, no full-screen window. Click the icon, see your power status, close it. Or open the full dashboard for history, charts, and per-session breakdowns.', badge: null },
+    { icon: '🔋', title: 'Battery health at a glance', desc: 'Cycle count, health percentage, max vs design capacity — all pulled from your Mac\'s SMC with no extra tools. Watch your battery age in real time and know when it\'s time to book a Genius Bar appointment.', badge: 'New' },
+    { icon: '🌡️', title: 'Temperature display with colour-coded alerts', desc: 'Normal, warm, or dangerously hot — the battery temperature is colour-coded in both the popup and the health panel. A hot battery degrades faster; WattsOrbit tells you before the damage is done.', badge: 'New' },
+    { icon: '🟢', title: 'Charge-limit notifications (80% sweet spot)', desc: 'Get notified when your battery hits 80% so you can unplug and stay in the healthy zone. A sustained alert fires after 30+ minutes above 80% while plugged in. Keeps cycles low, lifespan long.', badge: 'New' },
   ],
   comparison: {
     headline: 'No other Mac tool does this.',
@@ -459,7 +462,9 @@ export const wattsOrbitContent = {
     rows: [
       { feature: 'Real-time watts in/out', wattsorbit: '✅', activity: '❌', istat: '⚠️ Basic', batfi: '❌' },
       { feature: 'Per-device USB wattage', wattsorbit: '✅', activity: '❌', istat: '❌', batfi: '❌' },
+      { feature: 'Battery health (cycles, temp, capacity)', wattsorbit: '✅', activity: '❌', istat: '⚠️ Paid', batfi: '✅' },
       { feature: 'Smart notifications (weak charger / low battery)', wattsorbit: '✅', activity: '❌', istat: '❌', batfi: '❌' },
+      { feature: 'Charge-limit notification (80% alert)', wattsorbit: '✅', activity: '❌', istat: '❌', batfi: '⚠️ Paid' },
       { feature: 'Cable quality testing', wattsorbit: '✅', activity: '❌', istat: '❌', batfi: '❌' },
       { feature: 'Solar / off-grid awareness', wattsorbit: '✅', activity: '❌', istat: '❌', batfi: '❌' },
       { feature: 'Free', wattsorbit: '✅', activity: '✅', istat: '❌ $12/yr', batfi: '✅' },

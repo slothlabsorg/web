@@ -228,6 +228,113 @@ function Comparison() {
   )
 }
 
+// ── Roadmap ───────────────────────────────────────────────────────────────────
+
+const FREE_ITEMS = [
+  'Real-time watts in / out',
+  'Per-device USB wattage',
+  'Charger & cable detection',
+  'Battery health panel (cycles, health %, capacity)',
+  'Temperature display & alerts',
+  'Healthy-range indicator (20–80%)',
+  'Charge-limit notification at 80%',
+  'Power flow chart (today)',
+  'Login-item autostart',
+]
+
+const PRO_ITEMS = [
+  { icon: '🎯', label: 'Custom Charge Limit', desc: 'Stop charging at any % you choose — keeps long-term lifespan high.' },
+  { icon: '⛵', label: 'Sailing Mode', desc: 'Discharge to a target level before plugging in — recalibrate your battery.' },
+  { icon: '🔥', label: 'Heat Protection', desc: 'Auto-pause charging when battery temperature exceeds a threshold.' },
+  { icon: '⬇️', label: 'Discharge Mode', desc: 'Force battery-only operation even while plugged in.' },
+  { icon: '🔝', label: 'Top Up', desc: 'Temporarily override the charge limit and go to 100% for travel days.' },
+  { icon: '📈', label: 'Export & Reporting', desc: 'CSV/JSON export, weekly summaries, and cycle-trend graphs.' },
+]
+
+function Roadmap() {
+  return (
+    <section id="roadmap" className="py-28" style={{ background: BG_CARD }}>
+      <div className="site-container">
+        <ScrollReveal className="text-center mb-16 space-y-4">
+          <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: ACCENT }}>Roadmap</span>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            Free now. Pro
+            <span className="block" style={{ color: ACCENT }}>coming soon.</span>
+          </h2>
+          <p className="text-lg max-w-2xl mx-auto" style={{ color: '#8B7A55' }}>
+            WattsOrbit&apos;s v1 is completely free. Pro features require writing to your Mac&apos;s SMC chip to directly control charging hardware — the same approach used by AlDente and coconutBattery Pro. That needs a signed privileged helper, ongoing Apple notarisation, and significant engineering to maintain safely. The Pro tier funds exactly that.
+          </p>
+        </ScrollReveal>
+
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6">
+          {/* Free column */}
+          <ScrollReveal>
+            <div className="rounded-2xl border h-full" style={{ background: BG_BASE, borderColor: '#1c4a1c' }}>
+              <div className="px-6 pt-6 pb-4 border-b" style={{ borderColor: '#1c4a1c' }}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>v1.0 Free</span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: '#14532d40', border: '1px solid #166534', color: '#4ade80' }}>
+                    Available now
+                  </span>
+                </div>
+                <p className="text-sm" style={{ color: '#8B7A55' }}>Everything you need to understand your Mac&apos;s power — zero cost, forever.</p>
+              </div>
+              <ul className="px-6 py-5 space-y-3">
+                {FREE_ITEMS.map(item => (
+                  <li key={item} className="flex items-start gap-3 text-sm" style={{ color: '#a3a3a3' }}>
+                    <span style={{ color: '#4ade80', marginTop: '2px' }}>✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </ScrollReveal>
+
+          {/* Pro column */}
+          <ScrollReveal delay={80}>
+            <div className="rounded-2xl border h-full" style={{ background: BG_BASE, borderColor: ACCENT_MID }}>
+              <div className="px-6 pt-6 pb-4 border-b" style={{ borderColor: ACCENT_MID }}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xl font-bold" style={{ color: ACCENT, fontFamily: 'Syne, sans-serif' }}>v2.0 Pro</span>
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ background: ACCENT_DIM, border: `1px solid ${ACCENT_MID}`, color: ACCENT }}>
+                    In development
+                  </span>
+                </div>
+                <p className="text-sm" style={{ color: '#8B7A55' }}>Direct SMC control for battery longevity. Requires signed privileged helper — safety and notarisation cost us real engineering effort, which is why this tier exists.</p>
+              </div>
+              <ul className="px-6 py-5 space-y-4">
+                {PRO_ITEMS.map(item => (
+                  <li key={item.label} className="flex items-start gap-3">
+                    <span className="text-xl shrink-0 mt-0.5">{item.icon}</span>
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-sm font-medium text-white">{item.label}</span>
+                        <span className="text-xs px-1 py-0.5 rounded font-mono leading-none" style={{ background: ACCENT_DIM, color: ACCENT }}>Pro</span>
+                      </div>
+                      <p className="text-xs leading-relaxed" style={{ color: '#8B7A55' }}>{item.desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <div className="px-6 pb-5">
+                <a
+                  href="https://form.jotform.com/260731775592061"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center px-5 py-3 rounded-xl font-semibold text-sm hover:brightness-110 transition-all"
+                  style={{ background: ACCENT, color: BG_BASE }}
+                >
+                  Get notified when Pro launches →
+                </a>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ── CTA ───────────────────────────────────────────────────────────────────────
 
 function CTA() {
@@ -284,6 +391,7 @@ export default function WattsOrbitPage() {
       <Features />
       <Problem />
       <Comparison />
+      <Roadmap />
       <CTA />
       <Footer showSuiteLink accent={ACCENT} />
     </main>
