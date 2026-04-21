@@ -35,6 +35,7 @@ export const slothLabsContent = {
         accent: '#F59E0B',
         comingSoonDate: 'April 25, 2026',
         previewImage: '/images/wattsorbit-landing.png',
+        iconSrc: '/images/wattsorbit-icon.png',
       },
       {
         name: 'ProxyOrbit',
@@ -48,6 +49,7 @@ export const slothLabsContent = {
         accent: '#94A3B8',
         comingSoonDate: 'May 5, 2026',
         previewImage: '/images/proxyorbit-landing.png',
+        iconSrc: '/images/proxyorbit-icon.png',
       },
       {
         name: 'DataOrbit',
@@ -61,6 +63,7 @@ export const slothLabsContent = {
         accent: '#8B5CF6',
         comingSoonDate: 'May 15, 2026',
         previewImage: '/images/dataorbit-landing.png',
+        iconSrc: '/images/dataorbit-icon.png',
       },
       {
         name: 'BastionOrbit',
@@ -74,6 +77,7 @@ export const slothLabsContent = {
         accent: '#10B981',
         comingSoonDate: 'May 27, 2026',
         previewImage: '/images/bastionorbit-landing.png',
+        iconSrc: '/images/bastionorbit-icon.png',
       },
       {
         name: 'CloudOrbit',
@@ -87,6 +91,7 @@ export const slothLabsContent = {
         accent: '#00D4FF',
         comingSoonDate: 'Mid-June 2026',
         previewImage: '/images/cloudorbit-badge.png',
+        iconSrc: '/images/cloudorbit-icon.png',
       },
     ],
   },

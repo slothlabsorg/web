@@ -1,17 +1,20 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface Props {
-  icon: string       // emoji
-  name: string       // e.g. "WattsOrbit"
-  accent: string     // e.g. "#F59E0B"
+  icon: string        // emoji fallback
+  iconSrc?: string    // real app icon path e.g. "/images/wattsorbit-icon.png"
+  name: string
+  accent: string
   ctaLabel?: string
   ctaHref?: string
 }
 
 export default function ProductNavbar({
   icon,
+  iconSrc,
   name,
   accent,
   ctaLabel = 'Join waitlist',
@@ -35,11 +38,12 @@ export default function ProductNavbar({
       <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Icon + name + by SlothLabs */}
         <div className="flex items-center gap-3">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-            style={{ background: `${accent}22`, border: `1px solid ${accent}40` }}
-          >
-            {icon}
+          <div className="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0" style={{ background: `${accent}18` }}>
+            {iconSrc ? (
+              <Image src={iconSrc} alt={name} width={40} height={40} className="w-full h-full object-contain" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-xl" style={{ border: `1px solid ${accent}40` }}>{icon}</div>
+            )}
           </div>
           <span className="text-sm font-semibold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             {name}

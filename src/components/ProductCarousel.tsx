@@ -14,6 +14,7 @@ type Product = {
   accent: string
   comingSoonDate?: string
   previewImage: string | null
+  iconSrc?: string | null
 }
 
 export default function ProductCarousel({ products }: { products: Product[] }) {
@@ -107,11 +108,13 @@ export default function ProductCarousel({ products }: { products: Product[] }) {
                   </div>
                 </div>
               ) : (
-                <div className="mb-4 h-[120px] rounded-xl mt-1 flex items-center justify-center"
+                <div className="mb-4 h-[120px] rounded-xl mt-1 flex items-center justify-center overflow-hidden"
                   style={{ background: `${product.accent}10`, border: `1px solid ${product.accent}20` }}>
-                  <span className="text-4xl opacity-60">
-                    {product.name === 'DataOrbit' ? '🗄️' : product.name === 'CloudOrbit' ? '☁️' : '🔧'}
-                  </span>
+                  {product.iconSrc ? (
+                    <img src={product.iconSrc} alt={product.name} className="w-16 h-16 object-contain" />
+                  ) : (
+                    <span className="text-4xl opacity-60">🔧</span>
+                  )}
                 </div>
               )}
 

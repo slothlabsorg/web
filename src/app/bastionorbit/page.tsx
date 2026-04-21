@@ -312,7 +312,7 @@ export default function BastionOrbitPage() {
     <main style={{ background: BG_BASE }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <CustomCursor />
-      <ProductNavbar icon="🔐" name="BastionOrbit" accent={ACCENT} />
+      <ProductNavbar icon="🔐" iconSrc="/images/bastionorbit-icon.png" name="BastionOrbit" accent={ACCENT} />
       <Hero />
       <Features />
       <Problem />

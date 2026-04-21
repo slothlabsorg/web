@@ -349,7 +349,7 @@ export default function ProxyOrbitPage() {
     <main style={{ background: BG_BASE }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <CustomCursor />
-      <ProductNavbar icon="🔍" name="ProxyOrbit" accent={ACCENT} />
+      <ProductNavbar icon="🔍" iconSrc="/images/proxyorbit-icon.png" name="ProxyOrbit" accent={ACCENT} />
       <Hero />
       <Features />
       <Problem />

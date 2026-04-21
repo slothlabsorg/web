@@ -304,7 +304,7 @@ export default function DataOrbitPage() {
     <main style={{ background: BG_BASE }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <CustomCursor />
-      <ProductNavbar icon="🗄️" name="DataOrbit" accent={ACCENT} />
+      <ProductNavbar icon="🗄️" iconSrc="/images/dataorbit-icon.png" name="DataOrbit" accent={ACCENT} />
       <Hero />
       <Features />
       <Problem />
