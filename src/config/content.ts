@@ -21,7 +21,7 @@ export const slothLabsContent = {
   products: {
     headline: 'Tools that save time so you can focus on what matters',
     sub: 'Each product solves a real pain. Less friction, more shipping.',
-    launchBanner: 'Launches every Friday starting April 17 — 5 tools in 5 weeks',
+    launchBanner: 'Many tools shipping soon — free, native Rust, built for developers',
     items: [
       {
         name: 'WattsOrbit',
@@ -33,7 +33,7 @@ export const slothLabsContent = {
         cta: 'Learn more →',
         live: false,
         accent: '#F59E0B',
-        comingSoonDate: 'April 17, 2026',
+        comingSoonDate: 'April 25, 2026',
         previewImage: '/images/wattsorbit-landing.png',
       },
       {
@@ -46,7 +46,7 @@ export const slothLabsContent = {
         cta: 'Learn more →',
         live: false,
         accent: '#94A3B8',
-        comingSoonDate: 'April 24, 2026',
+        comingSoonDate: 'May 5, 2026',
         previewImage: '/images/proxyorbit-landing.png',
       },
       {
@@ -59,8 +59,8 @@ export const slothLabsContent = {
         cta: 'Learn more →',
         live: false,
         accent: '#8B5CF6',
-        comingSoonDate: 'May 1, 2026',
-        previewImage: null,
+        comingSoonDate: 'May 15, 2026',
+        previewImage: '/images/dataorbit-landing.png',
       },
       {
         name: 'BastionOrbit',
@@ -72,7 +72,7 @@ export const slothLabsContent = {
         cta: 'Learn more →',
         live: false,
         accent: '#10B981',
-        comingSoonDate: 'May 8, 2026',
+        comingSoonDate: 'May 27, 2026',
         previewImage: '/images/bastionorbit-landing.png',
       },
       {
@@ -398,7 +398,7 @@ export const dataOrbitContent = {
     subtitle: 'Stop fighting the AWS console. DataOrbit gives DynamoDB, CouchDB, and time-series databases the native query client they always needed — with live streaming, cross-joins, and full history.',
     ctaPrimary: 'Join waitlist',
     ctaSecondary: 'Learn more ↓',
-    launchDate: 'Launching May 1, 2026',
+    launchDate: 'Launching May 15, 2026',
   },
   features: [
     { icon: '🗄️', title: 'DynamoDB without the console pain', desc: 'Auto-complete filters, schema inference, PK/SK selector, paginated grid — built specifically for DynamoDB access patterns. Not a generic SQL tool bolted onto a NoSQL engine.', badge: null },
@@ -438,7 +438,7 @@ export const wattsOrbitContent = {
     subtitle: 'Real-time watts in, watts out, and per-device USB draw — straight from your menu bar. Catch weak chargers, track solar budgets, and get notified before your battery hits 0.',
     ctaPrimary: 'Join waitlist',
     ctaSecondary: 'Learn more ↓',
-    launchDate: 'Launching April 17, 2026',
+    launchDate: 'Launching April 25, 2026',
   },
   features: [
     { icon: '⚡', title: 'Real watts in, real watts out', desc: 'Not a percentage. Not an estimate. Actual wattage from your charger and actual system draw — updated every 10 seconds straight from macOS power APIs. Numbers you can trust, not guess.', badge: null },
@@ -472,7 +472,7 @@ export const proxyOrbitContent = {
     subtitle: 'A native HTTP/HTTPS proxy inspector that runs on your Mac. Capture traffic from any app, filter by method and status, inspect requests in real time — and stop paying Charles Proxy every year.',
     ctaPrimary: 'Join waitlist',
     ctaSecondary: 'Learn more ↓',
-    launchDate: 'Launching April 24, 2026',
+    launchDate: 'Launching May 5, 2026',
   },
   features: [
     { icon: '🔍', title: 'Every request, captured the instant it happens', desc: 'Method, URL, host, status code, duration, request size, response size — all in a live-updating table. No configuration required beyond setting up the proxy.', badge: null },
@@ -505,7 +505,7 @@ export const bastionOrbitContent = {
     subtitle: 'Stop memorizing SSH flags. BastionOrbit manages your bastion hosts, opens tunnels with auto-expiry TTL, and probes connectivity — so you can connect your tools and get back to work.',
     ctaPrimary: 'Join waitlist',
     ctaSecondary: 'See features ↓',
-    launchDate: 'Launching May 8, 2026',
+    launchDate: 'Launching May 27, 2026',
   },
   features: [
     { icon: '🔐', title: 'One-click tunnels — no SSH flags', desc: 'Click 30m or 1h next to any target and the tunnel opens instantly. No terminal, no flags, no copy-pasting ports. BastionOrbit runs a real ssh -N -L process under the hood — not a reimplemented protocol.', badge: null },

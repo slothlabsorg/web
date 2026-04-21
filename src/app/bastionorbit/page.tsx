@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
+import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
 import StarField from '@/components/StarField'
@@ -86,14 +86,15 @@ function Hero() {
           </div>
 
           {/* Right — hero image */}
-          <div className="relative flex justify-center md:justify-end">
-            <div className="absolute inset-0 rounded-full blur-3xl opacity-20 pointer-events-none" style={{ background: ACCENT }} />
-            <div
-              className="relative z-10 w-full max-w-md aspect-square rounded-3xl overflow-hidden border"
-              style={{ borderColor: ACCENT_MID }}
-            >
-              <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: 'url(/images/bastionorbit-landing.png)' }} />
+          <div className="relative flex justify-center md:justify-end min-h-[280px] sm:min-h-[360px]">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-72 h-72 rounded-full blur-3xl opacity-20" style={{ background: ACCENT }} />
             </div>
+            <div
+              className="relative z-10 w-full max-w-md aspect-square bg-contain bg-center bg-no-repeat"
+              style={{ backgroundImage: 'url(/images/bastionorbit-landing.png)' }}
+              role="img" aria-label="BastionOrbit"
+            />
           </div>
         </div>
       </div>
@@ -311,7 +312,7 @@ export default function BastionOrbitPage() {
     <main style={{ background: BG_BASE }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <CustomCursor />
-      <Navbar />
+      <ProductNavbar icon="🔐" name="BastionOrbit" accent={ACCENT} />
       <Hero />
       <Features />
       <Problem />

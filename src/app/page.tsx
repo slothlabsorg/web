@@ -6,6 +6,8 @@ import ScrollReveal from '@/components/ScrollReveal'
 import CustomCursor from '@/components/CustomCursor'
 import HeroParallaxBg from '@/components/HeroParallaxBg'
 import ProductCarousel from '@/components/ProductCarousel'
+import SupportBanner from '@/components/SupportBanner'
+import { LaunchBanner } from '@/components/LaunchBanner'
 import { slothLabsContent } from '@/config/content'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
@@ -118,6 +120,9 @@ function Products() {
             {products.headline}
           </h2>
           <p className="text-[#8BA3C7] text-base lg:text-lg max-w-xl mx-auto">{products.sub}</p>
+          <div className="flex justify-center pt-1">
+            <LaunchBanner variant="banner" />
+          </div>
         </ScrollReveal>
 
         <ProductCarousel products={products.items as Parameters<typeof ProductCarousel>[0]['products']} />
@@ -129,10 +134,10 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const ROADMAP = [
-  { name: 'WattsOrbit',   date: 'April 17', desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
-  { name: 'ProxyOrbit',   date: 'April 24', desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
-  { name: 'DataOrbit',    date: 'May 1',    desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
-  { name: 'BastionOrbit', date: 'May 8',    desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
+  { name: 'WattsOrbit',   date: 'April 25', desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
+  { name: 'ProxyOrbit',   date: 'May 5',    desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
+  { name: 'DataOrbit',    date: 'May 15',   desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
+  { name: 'BastionOrbit', date: 'May 27',   desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
   { name: 'CloudOrbit',   date: 'Mid-June', desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
 ]
 
@@ -148,10 +153,10 @@ function LaunchRoadmap() {
             className="text-3xl md:text-4xl font-bold text-white"
             style={{ fontFamily: 'Syne, sans-serif' }}
           >
-            Five tools. Five weeks.
+            The first five of many more.
           </h2>
           <p className="text-[#8BA3C7] max-w-lg mx-auto">
-            Every Friday starting April 17, a new tool launches. All free. All native Rust. All built to replace something you're currently paying for.
+            New tools shipping soon — all free, all native Rust, built to replace the apps that charge you for the privilege of doing your job.
           </p>
         </ScrollReveal>
 
@@ -219,6 +224,7 @@ export default function HomePage() {
       <Hero />
       <Products />
       <LaunchRoadmap />
+      <SupportBanner />
       <Footer />
     </main>
   )
