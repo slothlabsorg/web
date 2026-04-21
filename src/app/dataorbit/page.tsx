@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
+import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
 import StarField from '@/components/StarField'
@@ -85,22 +85,16 @@ function Hero() {
             <p className="fade-up text-xs" style={{ color: '#6B5B9A', animationDelay: '0.35s' }}>{hero.launchDate}</p>
           </div>
 
-          {/* Right — screenshot grid preview */}
-          <div className="relative hidden md:grid grid-cols-2 gap-3">
-            {screenshots.slice(0, 4).map((shot, i) => (
-              <div
-                key={shot.src}
-                className="rounded-xl overflow-hidden border"
-                style={{
-                  borderColor: BORDER,
-                  opacity: 0.75 + i * 0.05,
-                  transform: i % 2 === 1 ? 'translateY(12px)' : 'none',
-                }}
-              >
-                <div className="aspect-video bg-cover bg-top" style={{ backgroundImage: `url(${shot.src})` }} />
-              </div>
-            ))}
-            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, #060614 100%)' }} />
+          {/* Right — hero image */}
+          <div className="relative flex justify-center md:justify-end min-h-[280px] sm:min-h-[360px]">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-72 h-72 rounded-full blur-3xl opacity-20" style={{ background: ACCENT }} />
+            </div>
+            <div
+              className="relative z-10 w-full max-w-md aspect-square bg-contain bg-center bg-no-repeat"
+              style={{ backgroundImage: 'url(/images/dataorbit-landing.png)' }}
+              role="img" aria-label="DataOrbit"
+            />
           </div>
         </div>
       </div>
@@ -310,7 +304,7 @@ export default function DataOrbitPage() {
     <main style={{ background: BG_BASE }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <CustomCursor />
-      <Navbar />
+      <ProductNavbar icon="🗄️" name="DataOrbit" accent={ACCENT} />
       <Hero />
       <Features />
       <Problem />

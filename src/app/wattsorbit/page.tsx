@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
+import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
 import StarField from '@/components/StarField'
@@ -86,14 +86,15 @@ function Hero() {
           </div>
 
           {/* Right — hero image */}
-          <div className="relative flex justify-center md:justify-end">
-            <div className="absolute inset-0 rounded-full blur-3xl opacity-20 pointer-events-none" style={{ background: ACCENT }} />
-            <div
-              className="relative z-10 w-full max-w-md aspect-square rounded-3xl overflow-hidden border"
-              style={{ borderColor: ACCENT_MID }}
-            >
-              <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: 'url(/images/wattsorbit-landing.png)' }} />
+          <div className="relative flex justify-center md:justify-end min-h-[280px] sm:min-h-[360px]">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-72 h-72 rounded-full blur-3xl opacity-25" style={{ background: ACCENT }} />
             </div>
+            <div
+              className="relative z-10 w-full max-w-md aspect-square bg-contain bg-center bg-no-repeat"
+              style={{ backgroundImage: 'url(/images/wattsorbit-landing.png)' }}
+              role="img" aria-label="WattsOrbit"
+            />
           </div>
         </div>
       </div>
@@ -237,7 +238,7 @@ function CTA() {
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Know where every watt is going
           </h2>
-          <p className="text-lg mt-2" style={{ color: '#8B7A55' }}>WattsOrbit launches April 17. macOS only — Windows &amp; Linux coming soon.</p>
+          <p className="text-lg mt-2" style={{ color: '#8B7A55' }}>WattsOrbit launches April 25. macOS only — Windows &amp; Linux coming soon.</p>
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
@@ -278,7 +279,7 @@ export default function WattsOrbitPage() {
     <main style={{ background: BG_BASE }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <CustomCursor />
-      <Navbar />
+      <ProductNavbar icon="⚡" name="WattsOrbit" accent={ACCENT} />
       <Hero />
       <Features />
       <Problem />
