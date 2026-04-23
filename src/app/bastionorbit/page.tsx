@@ -6,6 +6,7 @@ import ScrollReveal from '@/components/ScrollReveal'
 import StarField from '@/components/StarField'
 import CustomCursor from '@/components/CustomCursor'
 import { bastionOrbitContent } from '@/config/content'
+import MacInstallNote from '@/components/MacInstallNote'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison } = bastionOrbitContent
@@ -289,6 +290,7 @@ function CTA() {
             </Link>
           </div>
           <p className="text-xs mt-4" style={{ color: '#0a3a1a' }}>Free forever. macOS, Linux, Windows. Native Rust binary.</p>
+          <MacInstallNote accent={ACCENT} />
         </ScrollReveal>
       </div>
     </section>
