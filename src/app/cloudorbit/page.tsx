@@ -9,6 +9,7 @@ import CustomCursor from '@/components/CustomCursor'
 import DownloadModal from '@/components/DownloadModal'
 import { LaunchBanner } from '@/components/LaunchBanner'
 import { cloudOrbitContent, slothLabsContent } from '@/config/content'
+import MacInstallNote from '@/components/MacInstallNote'
 
 const WAITLIST_FORM_URL = 'https://form.jotform.com/260731775592061'
 
@@ -440,6 +441,7 @@ function DownloadCtaSection() {
             </Link>
           </div>
           <p className="text-xs text-[#4A6080] mt-4">{downloadCta.note}</p>
+          <MacInstallNote accent="#00D4FF" />
         </ScrollReveal>
       </div>
     </section>

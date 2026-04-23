@@ -6,6 +6,7 @@ import ScrollReveal from '@/components/ScrollReveal'
 import StarField from '@/components/StarField'
 import CustomCursor from '@/components/CustomCursor'
 import { dataOrbitContent } from '@/config/content'
+import MacInstallNote from '@/components/MacInstallNote'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison, screenshots } = dataOrbitContent
@@ -281,6 +282,7 @@ function CTA() {
             </Link>
           </div>
           <p className="text-xs text-[#4A6080] mt-4">Free forever. Native Rust binary. No account required.</p>
+          <MacInstallNote accent={ACCENT} />
         </ScrollReveal>
       </div>
     </section>
