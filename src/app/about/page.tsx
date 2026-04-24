@@ -35,40 +35,22 @@ export default function AboutPage() {
         <div className="relative z-10 site-container">
           <div className="flex flex-col md:flex-row items-start gap-10 md:gap-16">
             {/* Slothy intro card */}
-            <div className="flex-shrink-0 flex flex-col items-center gap-3 text-center w-44 md:w-52 mt-2">
-              <div className="relative w-44 h-44 md:w-52 md:h-52">
-                <div className="absolute inset-0 rounded-full bg-[#4DA6FF]/10 blur-2xl" />
+            <div className="flex-shrink-0 flex flex-col items-center gap-3 text-center w-44 md:w-52 mx-auto md:mx-0 mt-2">
+              <div className="relative w-44 h-44 md:w-52 md:h-52 bg-white/90 rounded-2xl p-1">
                 <Image
                   src="/images/imslothy.png"
                   alt="Hi, I'm Slothy — the SlothLabs mascot"
                   width={208}
                   height={208}
-                  className="relative z-10 drop-shadow-2xl select-none"
+                  className="relative z-10 select-none"
                 />
               </div>
-              <p className="text-sm font-semibold text-white">Hi, I&apos;m Slothy.</p>
               <p className="text-xs text-[#4A6080] leading-relaxed">
                 The spirit of SlothLabs — slow, deliberate, and completely unbothered by deadlines.
               </p>
-              <div className="mt-1 relative w-20 h-20">
-                <Image
-                  src="/images/crabslothy.png"
-                  alt="Slothy as a crab — in a pinch but still shipping"
-                  width={80}
-                  height={80}
-                  className="relative z-10 drop-shadow-xl select-none opacity-80"
-                />
-                <p className="text-[10px] text-[#4A6080] mt-1">shipping anyway 🦀</p>
-              </div>
             </div>
 
             <div className="max-w-3xl">
-            <div
-              className="h-[50px] w-32 bg-no-repeat bg-left bg-contain opacity-95 mb-8"
-              style={{ backgroundImage: 'url(/images/slothlabs-logo-nav.png)' }}
-              role="img"
-              aria-label="SlothLabs"
-            />
             <h1
               className="text-4xl md:text-5xl lg:text-[3rem] font-bold leading-[1.1] text-white mb-6"
               style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.02em' }}
