@@ -7,6 +7,7 @@ import StarField from '@/components/StarField'
 import CustomCursor from '@/components/CustomCursor'
 import { bastionOrbitContent } from '@/config/content'
 import MacInstallNote from '@/components/MacInstallNote'
+import FundingSection from '@/components/FundingSection'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison } = bastionOrbitContent
@@ -262,6 +263,19 @@ function Comparison() {
   )
 }
 
+// ── Funding ───────────────────────────────────────────────────────────────────
+
+function Funding() {
+  return (
+    <FundingSection
+      accent={ACCENT}
+      appName="BastionOrbit"
+      iconSrc="/images/bastionorbit-icon.png"
+      repoSlug="bastionorbit"
+    />
+  )
+}
+
 // ── CTA ───────────────────────────────────────────────────────────────────────
 
 function CTA() {
@@ -320,6 +334,7 @@ export default function BastionOrbitPage() {
       <Problem />
       <Screenshots />
       <Comparison />
+      <Funding />
       <CTA />
       <Footer showSuiteLink accent={ACCENT} />
     </main>
