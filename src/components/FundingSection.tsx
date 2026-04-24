@@ -57,9 +57,9 @@ export default function FundingSection({
           <div className="flex flex-col lg:flex-row items-center gap-14 lg:gap-20">
 
             {/* ── Images ─────────────────────────────────────────────────── */}
-            <div className="flex-shrink-0 flex items-end gap-4 relative">
+            <div className="flex-shrink-0 flex items-end gap-4 relative w-full justify-center lg:w-auto">
               {/* Main sad slothy */}
-              <div className="relative w-52 h-52 md:w-64 md:h-64">
+              <div className="relative w-44 h-44 sm:w-52 sm:h-52 md:w-64 md:h-64">
                 <div
                   className="absolute inset-0 rounded-full blur-3xl opacity-25 pointer-events-none"
                   style={{ background: accent }}
@@ -73,7 +73,7 @@ export default function FundingSection({
                 />
               </div>
               {/* Small penguin / open-source badge */}
-              <div className="relative w-24 h-24 md:w-28 md:h-28 mb-4">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 mb-4">
                 <Image
                   src="/images/slothypenguin.png"
                   alt="Slothy as the Linux penguin — open source forever"

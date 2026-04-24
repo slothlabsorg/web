@@ -21,8 +21,8 @@ const BORDER     = '#2a2000'
 
 export const metadata: Metadata = {
   title: 'WattsOrbit — Real-time Mac power monitor | SlothLabs',
-  description: 'WattsOrbit: menu bar app that shows real-time watts in/out, per-device USB power draw, cable quality testing, and smart battery alerts. Free, native macOS.',
-  keywords: ['WattsOrbit', 'Mac power monitor', 'USB power', 'battery monitor', 'macOS menu bar', 'DynamoDB GUI', 'SlothLabs'],
+  description: 'WattsOrbit: free macOS menu bar app. Real-time watts in/out, per-device USB power draw, battery health, cycle count, temperature, cable quality testing, and smart alerts. Native Swift/Rust, no Electron.',
+  keywords: ['WattsOrbit', 'mac power monitor', 'mac battery health', 'mac watts monitor', 'mac USB power', 'mac battery monitor menu bar', 'mac charger quality test', 'mac power usage', 'macOS menu bar', 'battery cycles mac', 'SlothLabs'],
   openGraph: {
     title: 'WattsOrbit — Real-time Mac power monitor | SlothLabs',
     description: 'Know exactly where your power is going. Per-device USB wattage, charger quality, solar-aware alerts. Free macOS menu bar app.',
@@ -71,7 +71,7 @@ function Hero() {
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
               <a
-                href="https://form.jotform.com/260731775592061"
+                href="https://github.com/slothlabsorg/wattsorbit/releases/latest"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
@@ -360,24 +360,24 @@ function CTA() {
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Know where every watt is going
           </h2>
-          <p className="text-lg mt-2" style={{ color: '#8B7A55' }}>WattsOrbit launches April 25. macOS only — Windows &amp; Linux coming soon.</p>
+          <p className="text-lg mt-2" style={{ color: '#8B7A55' }}>Free. macOS only. Native Rust binary.</p>
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <a
-              href="https://form.jotform.com/260731775592061"
+              href="https://github.com/slothlabsorg/wattsorbit/releases/latest"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT, color: BG_BASE }}
             >
-              Join the waitlist
+              Download for macOS — Free
             </a>
-            <Link href="/" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
-              ← All SlothLabs tools
+            <Link href="/wattsorbit/releases" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
+              Release notes →
             </Link>
           </div>
-          <p className="text-xs mt-4" style={{ color: '#4a3800' }}>Free forever. macOS only for now — Windows &amp; Linux coming soon. Native Rust binary.</p>
+          <p className="text-xs mt-4" style={{ color: '#4a3800' }}>v0.1.0 · Free forever · macOS 10.15+ · Apple Silicon &amp; Intel</p>
           <MacInstallNote accent={ACCENT} />
         </ScrollReveal>
       </div>
@@ -395,6 +395,11 @@ const jsonLd = {
   url: `${SITE_URL}/wattsorbit`,
   author: { '@type': 'Organization', name: 'SlothLabs', url: SITE_URL },
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  softwareVersion: '0.1.0',
+  downloadUrl: 'https://github.com/slothlabsorg/wattsorbit/releases/latest',
+  screenshot: '/images/wattsorbit-landing.png',
+  releaseNotes: 'https://slothlabs.org/wattsorbit/releases',
+  license: 'https://opensource.org/licenses/MIT',
 }
 
 export default function WattsOrbitPage() {

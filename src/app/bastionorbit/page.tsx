@@ -321,6 +321,11 @@ const jsonLd = {
   url: `${SITE_URL}/bastionorbit`,
   author: { '@type': 'Organization', name: 'SlothLabs', url: SITE_URL },
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  softwareVersion: '0.1.0',
+  downloadUrl: 'https://github.com/slothlabsorg/bastionorbit/releases/latest',
+  screenshot: '/images/bastionorbit-landing.png',
+  releaseNotes: 'https://slothlabs.org/bastionorbit/releases',
+  license: 'https://opensource.org/licenses/MIT',
 }
 
 export default function BastionOrbitPage() {
