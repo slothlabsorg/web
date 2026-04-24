@@ -86,8 +86,9 @@ export default function AboutPage() {
               like a teammate, not another thing to maintain. So we’re building them: for us, and for every dev out there 
               who's ever stared at a red terminal at 2am and thought there has to be a better way. That’s the mission.
             </p>
-          </div>
-        </div>
+            </div>{/* /max-w-3xl */}
+          </div>{/* /flex row */}
+        </div>{/* /site-container */}
       </section>
 
       <section className="py-16 md:py-24 border-t border-[#1a3060]">

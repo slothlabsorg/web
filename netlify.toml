@@ -4,40 +4,14 @@
 [functions]
   directory = "netlify/functions"
 
-# Tauri updater — only platform/version paths (not /cloudorbit, /cloudorbit/docs, etc.)
-# Pattern: /cloudorbit/<target>/<current_version>
+# ── Tauri in-app updater endpoints ────────────────────────────────────────────
+# All apps route through /api/updater/:app/:target/:version → Netlify function.
+# NOTE: CloudOrbit's tauri.conf.json must point to:
+#   https://slothlabs.org/api/updater/cloudorbit/{{target}}/{{current_version}}
+# The other 4 apps (WattsOrbit, DataOrbit, BastionOrbit, ProxyOrbit) use
+# raw.githubusercontent.com/slothlabsorg/{app}/main/latest.json — no Netlify needed.
 [[redirects]]
-  from   = "/cloudorbit/darwin-aarch64/*"
-  to     = "/.netlify/functions/updater"
-  status = 200
-  force  = true
-
-[[redirects]]
-  from   = "/cloudorbit/darwin-x86_64/*"
-  to     = "/.netlify/functions/updater"
-  status = 200
-  force  = true
-
-[[redirects]]
-  from   = "/cloudorbit/x86_64-pc-windows-msvc/*"
-  to     = "/.netlify/functions/updater"
-  status = 200
-  force  = true
-
-[[redirects]]
-  from   = "/cloudorbit/aarch64-pc-windows-msvc/*"
-  to     = "/.netlify/functions/updater"
-  status = 200
-  force  = true
-
-[[redirects]]
-  from   = "/cloudorbit/x86_64-unknown-linux-gnu/*"
-  to     = "/.netlify/functions/updater"
-  status = 200
-  force  = true
-
-[[redirects]]
-  from   = "/cloudorbit/aarch64-unknown-linux-gnu/*"
+  from   = "/api/updater/cloudorbit/:target/*"
   to     = "/.netlify/functions/updater"
   status = 200
   force  = true

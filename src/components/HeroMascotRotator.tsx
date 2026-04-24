@@ -27,7 +27,7 @@ export default function HeroMascotRotator() {
         <div className="w-80 h-80 lg:w-96 lg:h-96 rounded-full bg-[#4DA6FF]/12 blur-3xl" />
       </div>
       <div
-        className="hero-mascot-entrance relative z-10 flex flex-wrap w-[400px] h-[400px] max-w-[min(400px,100vw)] bg-no-repeat bg-center select-none drop-shadow-2xl"
+        className="hero-mascot-entrance relative z-10 flex flex-wrap w-[400px] h-[400px] max-w-[min(400px,calc(100vw-2rem))] bg-no-repeat bg-center select-none drop-shadow-2xl"
         style={{
           backgroundImage: `url(${IMAGES[idx].src})`,
           backgroundSize: '100%',

@@ -358,6 +358,11 @@ const jsonLd = {
   url: `${SITE_URL}/proxyorbit`,
   author: { '@type': 'Organization', name: 'SlothLabs', url: SITE_URL },
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  softwareVersion: '0.1.0',
+  downloadUrl: 'https://github.com/slothlabsorg/proxyorbit/releases/latest',
+  screenshot: '/images/proxyorbit-landing.png',
+  releaseNotes: 'https://slothlabs.org/proxyorbit/releases',
+  license: 'https://opensource.org/licenses/MIT',
 }
 
 export default function ProxyOrbitPage() {
