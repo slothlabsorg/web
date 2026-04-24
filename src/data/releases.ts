@@ -26,7 +26,7 @@ export const allReleases: Record<string, AppReleases> = {
     releases: [
       {
         version: '0.1.0',
-        date: '2026-04-25',
+        date: '2026-04-26',
         notes: 'Initial release.',
         downloadUrl: 'https://github.com/slothlabsorg/wattsorbit/releases/tag/v0.1.0',
         highlights: [
