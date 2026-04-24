@@ -31,6 +31,12 @@ export const metadata: Metadata = {
     siteName: 'SlothLabs',
   },
   alternates: { canonical: `${SITE_URL}/bastionorbit` },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BastionOrbit — SSH tunnel manager | SlothLabs',
+    description: 'One-click SSH tunnels that close themselves. Auto-expiry TTL, multi-bastion management. Free macOS app.',
+    images: [`${SITE_URL}/images/bastionorbit-landing.png`],
+  },
 }
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
@@ -323,7 +329,7 @@ const jsonLd = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   softwareVersion: '0.1.0',
   downloadUrl: 'https://github.com/slothlabsorg/bastionorbit/releases/latest',
-  screenshot: '/images/bastionorbit-landing.png',
+  screenshot: `${SITE_URL}/images/bastionorbit-landing.png`,
   releaseNotes: 'https://slothlabs.org/bastionorbit/releases',
   license: 'https://opensource.org/licenses/MIT',
 }
