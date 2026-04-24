@@ -8,6 +8,8 @@ import HeroParallaxBg from '@/components/HeroParallaxBg'
 import ProductCarousel from '@/components/ProductCarousel'
 import SupportBanner from '@/components/SupportBanner'
 import { LaunchBanner } from '@/components/LaunchBanner'
+import HeroMascotRotator from '@/components/HeroMascotRotator'
+import FundingSection from '@/components/FundingSection'
 import { slothLabsContent } from '@/config/content'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
@@ -57,17 +59,7 @@ function Hero() {
 
       <div className="relative z-10 site-container flex items-center" style={{ minHeight: 'min(100vh, 720px)', paddingTop: '72px' }}>
         <div className="w-full grid grid-rows-1 md:grid-cols-2 items-start gap-10 lg:gap-14 py-[52px]">
-          <div className="relative flex justify-center md:justify-end order-2 md:order-1 w-fit max-w-full md:justify-self-end">
-            <div className="absolute inset-0 flex items-center justify-center md:justify-end">
-              <div className="w-80 h-80 lg:w-96 lg:h-96 rounded-full bg-[#4DA6FF]/12 blur-3xl" />
-            </div>
-            <div
-              className="hero-mascot-entrance relative z-10 flex flex-wrap w-[400px] h-[400px] max-w-[min(400px,100vw)] bg-no-repeat bg-center select-none drop-shadow-2xl"
-              style={{ backgroundImage: 'url(/images/sloth-mascot.png)', backgroundSize: '100%', backgroundPosition: '50% 50%' }}
-              role="img"
-              aria-label="SlothLabs mascot"
-            />
-          </div>
+          <HeroMascotRotator />
 
           <div className="min-w-0 overflow-visible space-y-6 order-1 md:order-2 text-center md:text-left">
             <h1
@@ -224,6 +216,7 @@ export default function HomePage() {
       <Hero />
       <Products />
       <LaunchRoadmap />
+      <FundingSection />
       <SupportBanner />
       <Footer />
     </main>

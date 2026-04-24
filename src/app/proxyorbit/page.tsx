@@ -7,6 +7,7 @@ import StarField from '@/components/StarField'
 import CustomCursor from '@/components/CustomCursor'
 import { proxyOrbitContent } from '@/config/content'
 import MacInstallNote from '@/components/MacInstallNote'
+import FundingSection from '@/components/FundingSection'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison } = proxyOrbitContent
@@ -299,6 +300,19 @@ function RustSection() {
   )
 }
 
+// ── Funding ───────────────────────────────────────────────────────────────────
+
+function Funding() {
+  return (
+    <FundingSection
+      accent={ACCENT}
+      appName="ProxyOrbit"
+      iconSrc="/images/proxyorbit-icon.png"
+      repoSlug="proxyorbit"
+    />
+  )
+}
+
 // ── CTA ───────────────────────────────────────────────────────────────────────
 
 function CTA() {
@@ -357,6 +371,7 @@ export default function ProxyOrbitPage() {
       <Problem />
       <Comparison />
       <RustSection />
+      <Funding />
       <CTA />
       <Footer showSuiteLink accent={ACCENT} />
     </main>

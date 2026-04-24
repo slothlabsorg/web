@@ -7,6 +7,7 @@ import StarField from '@/components/StarField'
 import CustomCursor from '@/components/CustomCursor'
 import { wattsOrbitContent } from '@/config/content'
 import MacInstallNote from '@/components/MacInstallNote'
+import FundingSection from '@/components/FundingSection'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison } = wattsOrbitContent
@@ -336,6 +337,19 @@ function Roadmap() {
   )
 }
 
+// ── Funding ───────────────────────────────────────────────────────────────────
+
+function Funding() {
+  return (
+    <FundingSection
+      accent={ACCENT}
+      appName="WattsOrbit"
+      iconSrc="/images/wattsorbit-icon.png"
+      repoSlug="wattsorbit"
+    />
+  )
+}
+
 // ── CTA ───────────────────────────────────────────────────────────────────────
 
 function CTA() {
@@ -394,6 +408,7 @@ export default function WattsOrbitPage() {
       <Problem />
       <Comparison />
       <Roadmap />
+      <Funding />
       <CTA />
       <Footer showSuiteLink accent={ACCENT} />
     </main>

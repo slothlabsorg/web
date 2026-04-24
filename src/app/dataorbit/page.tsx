@@ -7,6 +7,7 @@ import StarField from '@/components/StarField'
 import CustomCursor from '@/components/CustomCursor'
 import { dataOrbitContent } from '@/config/content'
 import MacInstallNote from '@/components/MacInstallNote'
+import FundingSection from '@/components/FundingSection'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison, screenshots } = dataOrbitContent
@@ -254,6 +255,19 @@ function Screenshots() {
   )
 }
 
+// ── Funding ───────────────────────────────────────────────────────────────────
+
+function Funding() {
+  return (
+    <FundingSection
+      accent={ACCENT}
+      appName="DataOrbit"
+      iconSrc="/images/dataorbit-icon.png"
+      repoSlug="dataorbit"
+    />
+  )
+}
+
 // ── CTA ───────────────────────────────────────────────────────────────────────
 
 function CTA() {
@@ -312,6 +326,7 @@ export default function DataOrbitPage() {
       <Problem />
       <Comparison />
       <Screenshots />
+      <Funding />
       <CTA />
       <Footer showSuiteLink accent={ACCENT} />
     </main>
