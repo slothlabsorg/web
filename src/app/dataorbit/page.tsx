@@ -31,6 +31,12 @@ export const metadata: Metadata = {
     siteName: 'SlothLabs',
   },
   alternates: { canonical: `${SITE_URL}/dataorbit` },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'DataOrbit — DynamoDB & CouchDB client | SlothLabs',
+    description: 'Native DynamoDB and CouchDB client. Real-time streaming, cross-join queries, full query history, no Electron. Free.',
+    images: [`${SITE_URL}/images/dataorbit-landing.png`],
+  },
 }
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
@@ -316,7 +322,7 @@ const jsonLd = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   softwareVersion: '0.1.0',
   downloadUrl: 'https://github.com/slothlabsorg/dataorbit/releases/latest',
-  screenshot: '/images/dataorbit-landing.png',
+  screenshot: `${SITE_URL}/images/dataorbit-landing.png`,
   releaseNotes: 'https://slothlabs.org/dataorbit/releases',
   license: 'https://opensource.org/licenses/MIT',
 }

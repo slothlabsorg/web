@@ -31,6 +31,12 @@ export const metadata: Metadata = {
     siteName: 'SlothLabs',
   },
   alternates: { canonical: `${SITE_URL}/wattsorbit` },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'WattsOrbit — Real-time Mac power monitor | SlothLabs',
+    description: 'Know exactly where your power is going. Per-device USB wattage, charger quality, solar-aware alerts. Free macOS menu bar app.',
+    images: [`${SITE_URL}/images/wattsorbit-landing.png`],
+  },
 }
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
@@ -397,7 +403,7 @@ const jsonLd = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   softwareVersion: '0.1.0',
   downloadUrl: 'https://github.com/slothlabsorg/wattsorbit/releases/latest',
-  screenshot: '/images/wattsorbit-landing.png',
+  screenshot: `${SITE_URL}/images/wattsorbit-landing.png`,
   releaseNotes: 'https://slothlabs.org/wattsorbit/releases',
   license: 'https://opensource.org/licenses/MIT',
 }

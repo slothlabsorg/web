@@ -32,6 +32,12 @@ export const metadata: Metadata = {
     siteName: 'SlothLabs',
   },
   alternates: { canonical: `${SITE_URL}/proxyorbit` },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ProxyOrbit — HTTP/HTTPS proxy inspector | SlothLabs',
+    description: 'Capture traffic from any app, filter requests, inspect in real time. Free Charles Proxy alternative. Native Rust.',
+    images: [`${SITE_URL}/images/proxyorbit-landing.png`],
+  },
 }
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
@@ -360,7 +366,7 @@ const jsonLd = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   softwareVersion: '0.1.0',
   downloadUrl: 'https://github.com/slothlabsorg/proxyorbit/releases/latest',
-  screenshot: '/images/proxyorbit-landing.png',
+  screenshot: `${SITE_URL}/images/proxyorbit-landing.png`,
   releaseNotes: 'https://slothlabs.org/proxyorbit/releases',
   license: 'https://opensource.org/licenses/MIT',
 }
