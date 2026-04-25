@@ -15,7 +15,7 @@ const FUNDING = [
     name: 'GitHub Sponsors',
     icon: '💜',
     desc: 'Monthly support — matched by GitHub',
-    href: 'https://github.com/sponsors/slothlabs',
+    href: 'https://github.com/sponsors/slothlabsorg',
     color: '#8957e5',
     badge: '0% from GitHub',
   },

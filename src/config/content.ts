@@ -173,7 +173,7 @@ export const slothLabsContent = {
     ],
     organization: [{ label: 'About', href: '/about' }, { label: 'Contact', href: '#contact' }],
     social: [
-      { label: 'GitHub', href: 'https://github.com/slothlabs', external: true },
+      { label: 'GitHub', href: 'https://github.com/slothlabsorg', external: true },
       { label: 'Twitter', href: '#', comingSoon: true },
       { label: 'Discord', href: '#' },
     ],

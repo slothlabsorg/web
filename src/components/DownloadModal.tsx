@@ -72,7 +72,7 @@ const FUNDING: Array<{
     name: 'GitHub Sponsors',
     icon: '💜',
     desc: 'One-time or recurring — GitHub matches. Recurring? Get exclusive Slothy swag at 3rd, 6th & 12th month.',
-    href: 'https://github.com/sponsors/slothlabs',
+    href: 'https://github.com/sponsors/slothlabsorg',
     color: '#8957e5',
     badge: '0% from GitHub',
   },

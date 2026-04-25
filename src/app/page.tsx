@@ -11,6 +11,7 @@ import { LaunchBanner } from '@/components/LaunchBanner'
 import HeroMascotRotator from '@/components/HeroMascotRotator'
 import FundingSection from '@/components/FundingSection'
 import { slothLabsContent } from '@/config/content'
+import { allReleases } from '@/data/releases'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
@@ -117,7 +118,15 @@ function Products() {
           </div>
         </ScrollReveal>
 
-        <ProductCarousel products={products.items as Parameters<typeof ProductCarousel>[0]['products']} />
+        <ProductCarousel products={products.items.map(p => {
+          const key = p.slug.replace('/', '')
+          const released = (allReleases[key]?.releases.length ?? 0) > 0
+          return {
+            ...p,
+            comingSoonDate: released ? '' : (p.comingSoonDate || 'Coming soon'),
+            cta: released ? 'Download →' : p.cta,
+          }
+        }) as Parameters<typeof ProductCarousel>[0]['products']} />
       </div>
     </section>
   )
@@ -126,7 +135,7 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const ROADMAP = [
-  { name: 'WattsOrbit',   date: 'April 26', desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
+  { name: 'WattsOrbit',   date: 'April 25', desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
   { name: 'ProxyOrbit',   date: 'May 5',    desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
   { name: 'DataOrbit',    date: 'May 15',   desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
   { name: 'BastionOrbit', date: 'May 27',   desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },

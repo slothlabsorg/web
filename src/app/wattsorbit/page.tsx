@@ -103,7 +103,9 @@ function Hero() {
               </a>
             </div>
 
-            <p className="fade-up text-xs" style={{ color: '#6b5300', animationDelay: '0.35s' }}>{hero.launchDate}</p>
+            <p className="fade-up text-xs" style={{ color: '#6b5300', animationDelay: '0.35s' }}>
+              {hasRelease ? 'Available now — macOS only' : 'Launching April 25, 2026'}
+            </p>
           </div>
 
           {/* Right — hero image */}
