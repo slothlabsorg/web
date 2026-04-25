@@ -436,7 +436,7 @@ function DownloadCtaSection() {
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <DownloadModal launchingSoon className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#F5A623] text-[#050d1f] font-bold text-sm hover:brightness-110 transition-all glow-cta hover:-translate-y-0.5" />
-            <Link href="https://github.com/slothlabs" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border border-[#00D4FF] text-[#00D4FF] text-sm font-medium hover:bg-[#00D4FF]/10 transition-all">
+            <Link href="https://github.com/slothlabsorg" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border border-[#00D4FF] text-[#00D4FF] text-sm font-medium hover:bg-[#00D4FF]/10 transition-all">
               {downloadCta.secondary}
             </Link>
           </div>

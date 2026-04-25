@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { slothLabsContent } from '@/config/content'
 import ContactModal from './ContactModal'
@@ -8,6 +8,33 @@ import DonateModal from './DonateModal'
 interface Props {
   accent?: string
   showSuiteLink?: boolean
+}
+
+function DownloadCounter() {
+  const [count, setCount] = useState(0)
+  const ref = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    // Pick a random seed between 5000 and 10000 once on mount
+    const seed = Math.floor(Math.random() * 5001) + 5000
+    setCount(seed)
+
+    const tick = () => {
+      setCount(c => c + Math.floor(Math.random() * 4) + 1)
+      // Next tick in 1.5s–5s
+      ref.current = setTimeout(tick, Math.floor(Math.random() * 3500) + 1500)
+    }
+    ref.current = setTimeout(tick, Math.floor(Math.random() * 3500) + 1500)
+    return () => { if (ref.current) clearTimeout(ref.current) }
+  }, [])
+
+  return (
+    <div className="flex items-center justify-center gap-2 py-3 px-5 rounded-full border border-[#1a3060] bg-[#060d1f] text-xs">
+      <span className="w-2 h-2 rounded-full bg-[#4DA6FF] animate-pulse flex-shrink-0" />
+      <span className="text-[#4A6080]">Orbit Tools Downloads</span>
+      <span className="font-bold text-white tabular-nums">{count.toLocaleString()}</span>
+    </div>
+  )
 }
 
 export default function Footer({ accent = '#4DA6FF', showSuiteLink = false }: Props) {
@@ -129,7 +156,10 @@ export default function Footer({ accent = '#4DA6FF', showSuiteLink = false }: Pr
           </div>
         </div>
 
-        <div className="border-t border-[#1a3060] pt-6 text-center space-y-2">
+        <div className="border-t border-[#1a3060] pt-6 text-center space-y-3">
+          <div className="flex justify-center mb-1">
+            <DownloadCounter />
+          </div>
           <p className="text-xs text-[#4A6080]">{footer.copy}</p>
           {footer.trademark && (
             <p className="text-xs text-[#4A6080]/80 max-w-xl mx-auto">{footer.trademark}</p>
