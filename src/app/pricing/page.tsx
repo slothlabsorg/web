@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import CustomCursor from '@/components/CustomCursor'
@@ -32,11 +33,12 @@ export default function PricingPage() {
         </div>
         <div className="relative z-10 site-container">
           <div className="max-w-3xl">
-            <div
-              className="h-[50px] w-32 bg-no-repeat bg-left bg-contain opacity-95 mb-8"
-              style={{ backgroundImage: 'url(/images/slothlabs-logo-nav.png)' }}
-              role="img"
-              aria-label="SlothLabs"
+            <Image
+              src="/images/opensourceslothy.png"
+              alt="SlothLabs open source mascot"
+              width={80}
+              height={80}
+              className="mb-8 drop-shadow-lg"
             />
             <h1
               className="text-4xl md:text-5xl lg:text-[3rem] font-bold leading-[1.1] text-white mb-6"
