@@ -323,7 +323,7 @@ function Roadmap() {
                     In development
                   </span>
                 </div>
-                <p className="text-sm" style={{ color: '#8B7A55' }}>Direct SMC control for battery longevity. Requires signed privileged helper — safety and notarisation cost us real engineering effort, which is why this tier exists.</p>
+                <p className="text-sm" style={{ color: '#8B7A55' }}>Direct SMC control for battery longevity. Requires a signed privileged helper — safety, notarisation, and the $99/year Apple Developer certificate are real ongoing costs. On top of that, privileged helpers must be re-signed and re-tested on every major macOS release. This tier exists to fund exactly that.</p>
               </div>
               <ul className="px-6 py-5 space-y-4">
                 {PRO_ITEMS.map(item => (
