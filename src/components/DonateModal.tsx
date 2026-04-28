@@ -101,6 +101,15 @@ export default function DonateModal({ open, onClose }: Props) {
             Totally optional — no pressure.
           </p>
 
+          <div className="flex justify-center mb-5 overflow-hidden rounded-xl">
+            <iframe
+              src="https://github.com/sponsors/slothlabsorg/card"
+              title="Sponsor slothlabsorg"
+              height="225"
+              style={{ border: 0, width: '100%', minWidth: 0 }}
+            />
+          </div>
+
           <div className="space-y-3">
             {FUNDING.map(f => (
               <a

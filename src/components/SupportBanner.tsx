@@ -47,13 +47,20 @@ export default function SupportBanner() {
               <p className="text-[#4A6080] text-sm">
                 You&apos;ve already saved more time than it costs. Help keep it going.
               </p>
-              <div className="pt-2">
+              <div className="pt-2 flex flex-col sm:flex-row items-center sm:items-start gap-4">
                 <button
                   onClick={() => setOpen(true)}
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-sm bg-[#F5A623] text-[#050d1f] hover:brightness-110 transition-all hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-bold text-sm bg-[#F5A623] text-[#050d1f] hover:brightness-110 transition-all hover:-translate-y-0.5 flex-shrink-0"
                 >
                   ☕ Support the project
                 </button>
+                <iframe
+                  src="https://github.com/sponsors/slothlabsorg/button"
+                  title="Sponsor slothlabsorg"
+                  height="32"
+                  width="114"
+                  style={{ border: 0, borderRadius: '6px', marginTop: '6px' }}
+                />
               </div>
             </div>
 

@@ -164,17 +164,15 @@ export default function Footer({ accent = '#4DA6FF', showSuiteLink = false }: Pr
           {footer.trademark && (
             <p className="text-xs text-[#4A6080]/80 max-w-xl mx-auto">{footer.trademark}</p>
           )}
-          {footer.donateLink && (
-            <p className="text-xs">
-              <button
-                type="button"
-                onClick={() => setDonateOpen(true)}
-                className="text-[#00D4FF]/90 hover:text-[#00D4FF] transition-colors underline underline-offset-2"
-              >
-                {footer.donateLink}
-              </button>
-            </p>
-          )}
+          <div className="flex justify-center">
+            <iframe
+              src="https://github.com/sponsors/slothlabsorg/button"
+              title="Sponsor slothlabsorg"
+              height="32"
+              width="114"
+              style={{ border: 0, borderRadius: '6px' }}
+            />
+          </div>
         </div>
       </div>
 
