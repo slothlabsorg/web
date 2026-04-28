@@ -30,7 +30,7 @@ export const slothLabsContent = {
         by: '· SlothLabs ·',
         desc: 'Real-time Mac power monitor. Watts in, watts out, per-device USB draw, cable quality alerts, and smart battery notifications — all from the menu bar.',
         tags: ['macOS', 'Battery', 'USB power'],
-        cta: 'Download',
+        cta: 'Learn more →',
         live: false,
         accent: '#F59E0B',
         comingSoonDate: 'April 28, 2026',

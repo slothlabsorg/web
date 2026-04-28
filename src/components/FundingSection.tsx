@@ -52,7 +52,7 @@ export default function FundingSection({
           {/* Speech bubble text — sits inside the empty bubble (upper-right of image) */}
           <div
             className="absolute z-20 pointer-events-none"
-            style={{ top: '7%', right: '1%', width: '42%', height: '30%',
+            style={{ top: '17%', right: '1%', width: '42%', height: '30%',
                      display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <p
