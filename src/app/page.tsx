@@ -7,7 +7,6 @@ import CustomCursor from '@/components/CustomCursor'
 import HeroParallaxBg from '@/components/HeroParallaxBg'
 import ProductCarousel from '@/components/ProductCarousel'
 import SupportBanner from '@/components/SupportBanner'
-import { LaunchBanner } from '@/components/LaunchBanner'
 import HeroMascotRotator from '@/components/HeroMascotRotator'
 import { slothLabsContent } from '@/config/content'
 import { allReleases } from '@/data/releases'
@@ -112,9 +111,6 @@ function Products() {
             {products.headline}
           </h2>
           <p className="text-[#8BA3C7] text-base lg:text-lg max-w-xl mx-auto">{products.sub}</p>
-          <div className="flex justify-center pt-1">
-            <LaunchBanner variant="banner" />
-          </div>
         </ScrollReveal>
 
         <ProductCarousel products={products.items.map(p => {
