@@ -32,25 +32,29 @@ export default function PricingPage() {
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#00D4FF]/8 blur-3xl rounded-full translate-y-1/2 -translate-x-1/4" />
         </div>
         <div className="relative z-10 site-container">
-          <div className="max-w-3xl">
-            <Image
-              src="/images/opensourceslothy.png"
-              alt="SlothLabs open source mascot"
-              width={80}
-              height={80}
-              className="mb-8 drop-shadow-lg"
-            />
-            <h1
-              className="text-4xl md:text-5xl lg:text-[3rem] font-bold leading-[1.1] text-white mb-6"
-              style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.02em' }}
-            >
-              Free first.
-              <br />
-              <span className="gradient-text">Sustainable later.</span>
-            </h1>
-            <p className="text-lg text-[#8BA3C7] leading-relaxed">
-              We believe the best dev tools should be available to everyone. Our core products are free and open source — and we intend to keep it that way for everything that doesn’t create a direct, ongoing cost for us. No AI token metering, no usage-based fees that would force us to pass costs on to you. Just solid tools that respect your time and your stack.
-            </p>
+          <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
+            <div className="flex-1 max-w-2xl">
+              <h1
+                className="text-4xl md:text-5xl lg:text-[3rem] font-bold leading-[1.1] text-white mb-6"
+                style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.02em' }}
+              >
+                Free first.
+                <br />
+                <span className="gradient-text">Sustainable later.</span>
+              </h1>
+              <p className="text-lg text-[#8BA3C7] leading-relaxed">
+                We believe the best dev tools should be available to everyone. Our core products are free and open source — and we intend to keep it that way for everything that doesn&apos;t create a direct, ongoing cost for us. No AI token metering, no usage-based fees that would force us to pass costs on to you. Just solid tools that respect your time and your stack.
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <Image
+                src="/images/opensourceslothy.png"
+                alt="SlothLabs open source mascot"
+                width={280}
+                height={280}
+                className="drop-shadow-2xl"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -66,10 +70,10 @@ export default function PricingPage() {
                 What stays free
               </h2>
               <p className="text-[#8BA3C7] leading-relaxed mb-4">
-                Session management, account switching, EKS discovery, kubeconfig updates — the kind of features that don’t rely on external APIs or per-request costs — will remain free and open source. We maintain them because we use them ourselves, and we want the community to have the same power without a paywall.
+                Session management, account switching, EKS discovery, kubeconfig updates — the kind of features that don't rely on external APIs or per-request costs — will remain free and open source. We maintain them because we use them ourselves, and we want the community to have the same power without a paywall.
               </p>
               <p className="text-[#8BA3C7] leading-relaxed">
-                We’re open-source advocates. Our code is there for you to read, fork, and contribute to. We build in the open and we listen to developers. That won’t change.
+                We're open-source advocates. Our code is there for you to read, fork, and contribute to. We build in the open and we listen to developers. That won't change.
               </p>
             </div>
             <div className="rounded-2xl p-8 bg-[#0d1b3e] border border-[#1a3060]">
@@ -77,7 +81,7 @@ export default function PricingPage() {
                 Future Pro tiers
               </h3>
               <p className="text-[#8BA3C7] leading-relaxed">
-                If we add features that depend on AI, dedicated cloud infrastructure, or other recurring costs, we may introduce optional Pro plans with a moderate price — enough to cover those costs and keep the lights on, not to lock you into a platform. We’d rather stay small and useful than scale into something that forgets who it’s built for.
+                If we add features that depend on AI, dedicated cloud infrastructure, or other recurring costs, we may introduce optional Pro plans with a moderate price — enough to cover those costs and keep the lights on, not to lock you into a platform. We'd rather stay small and useful than scale into something that forgets who it's built for.
               </p>
             </div>
           </div>
@@ -94,10 +98,10 @@ export default function PricingPage() {
               Built from the heart, in our free time
             </h2>
             <p className="text-[#8BA3C7] leading-relaxed mb-4">
-              SlothLabs is not backed by any company or fund. We’re developers who got tired of the same friction and decided to fix it — nights and weekends, because we care about the craft and the community. No formal support, no big team; just people who want to give other devs better tools.
+              SlothLabs is not backed by any company or fund. We're developers who got tired of the same friction and decided to fix it — nights and weekends, because we care about the craft and the community. No formal support, no big team; just people who want to give other devs better tools.
             </p>
             <p className="text-[#8BA3C7] leading-relaxed">
-              If that resonates with you, we’d love to hear from you. And if you find our work useful, supporting us helps us keep improving and shipping for everyone.
+              If that resonates with you, we'd love to hear from you. And if you find our work useful, supporting us helps us keep improving and shipping for everyone.
             </p>
           </div>
         </div>
