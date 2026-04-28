@@ -15,7 +15,7 @@ export default function SupportBanner() {
           style={{ background: 'radial-gradient(circle, #F5A623 0%, transparent 70%)' }} />
 
         <div className="relative z-10 site-container py-20">
-          <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
+          <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16 max-w-3xl mx-auto">
 
             {/* Sloth image */}
             <div className="flex-shrink-0 w-44 h-44 md:w-56 md:h-56 relative">
