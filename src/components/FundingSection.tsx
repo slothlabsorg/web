@@ -167,6 +167,15 @@ export default function FundingSection({
           </a>
         </div>
 
+        <div className="overflow-hidden rounded-2xl w-full max-w-[600px] mx-auto lg:mx-0">
+          <iframe
+            src="https://github.com/sponsors/slothlabsorg/card"
+            title="Sponsor slothlabsorg"
+            height="225"
+            style={{ border: 0, width: '100%', minWidth: 0, display: 'block' }}
+          />
+        </div>
+
         {iconSrc ? (
           <p className="text-xs text-[#4A6080] flex items-center gap-2 justify-center lg:justify-start">
             <Image src={iconSrc} alt="" width={14} height={14} className="opacity-60" />
