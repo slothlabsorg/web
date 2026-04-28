@@ -200,6 +200,43 @@ function Problem() {
   )
 }
 
+// ── Screenshots ───────────────────────────────────────────────────────────────
+
+const SCREENSHOTS = [
+  { src: '/images/wattsorbit-screen-popup.png',    label: 'Menu bar popup — watts in/out, USB devices' },
+  { src: '/images/wattsorbit-screen-devices.png',  label: 'Per-device USB power draw' },
+  { src: '/images/wattsorbit-screen-dashboard.png',label: 'Full dashboard — use cases & features' },
+  { src: '/images/wattsorbit-screen-health.png',   label: 'Battery health — cycles, capacity, temperature' },
+]
+
+function Screenshots() {
+  return (
+    <section className="py-28" style={{ background: BG_CARD }}>
+      <div className="site-container">
+        <ScrollReveal className="text-center mb-14 space-y-4">
+          <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: ACCENT }}>Screenshots</span>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            See it in action
+          </h2>
+        </ScrollReveal>
+
+        <div className="grid md:grid-cols-2 gap-5">
+          {SCREENSHOTS.map((s, i) => (
+            <ScrollReveal key={s.label} delay={i * 80}>
+              <div className="rounded-2xl overflow-hidden border" style={{ borderColor: BORDER }}>
+                <div className="aspect-video bg-cover bg-top" style={{ backgroundImage: `url(${s.src})` }} />
+                <div className="px-4 py-3" style={{ background: BG_BASE }}>
+                  <p className="text-sm font-medium" style={{ color: ACCENT }}>{s.label}</p>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 // ── Comparison ────────────────────────────────────────────────────────────────
 
 function Comparison() {
@@ -440,6 +477,7 @@ export default function WattsOrbitPage() {
       <Hero />
       <Features />
       <Problem />
+      <Screenshots />
       <Comparison />
       <Roadmap />
       <Funding />
