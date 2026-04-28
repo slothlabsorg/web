@@ -24,12 +24,12 @@ const BG_CARD    = '#130f00'
 const BORDER     = '#2a2000'
 
 export const metadata: Metadata = {
-  title: 'WattsOrbit — Real-time Mac power monitor | SlothLabs',
-  description: 'WattsOrbit: free macOS menu bar app. Real-time watts in/out, per-device USB power draw, battery health, cycle count, temperature, cable quality testing, and smart alerts. Native Swift/Rust, no Electron.',
-  keywords: ['WattsOrbit', 'mac power monitor', 'mac battery health', 'mac watts monitor', 'mac USB power', 'mac battery monitor menu bar', 'mac charger quality test', 'mac power usage', 'macOS menu bar', 'battery cycles mac', 'SlothLabs'],
+  title: 'WattsOrbit — Mac energy & watts monitor: input watts, output watts, USB draw | SlothLabs',
+  description: 'WattsOrbit: free macOS menu bar app. See real-time input watts, output watts, and energy consumption on your Mac. Per-device USB power draw, battery health, cycle count, temperature, cable quality testing, and smart alerts. Native Rust, no Electron.',
+  keywords: ['WattsOrbit', 'mac energy monitor', 'mac input watts', 'mac output watts', 'mac watts usage', 'mac power monitor', 'mac battery health', 'mac watts monitor', 'mac USB power', 'mac battery monitor menu bar', 'mac charger quality test', 'mac power usage', 'macOS menu bar', 'battery cycles mac', 'apple silicon power draw', 'macos power consumption', 'macos energy usage', 'how many watts mac', 'mac energy usage', 'mac power consumption', 'SlothLabs'],
   openGraph: {
-    title: 'WattsOrbit — Real-time Mac power monitor | SlothLabs',
-    description: 'Know exactly where your power is going. Per-device USB wattage, charger quality, solar-aware alerts. Free macOS menu bar app.',
+    title: 'WattsOrbit — See input watts, output watts & energy on your Mac | SlothLabs',
+    description: 'Real-time input watts, output watts, and per-device USB energy draw on macOS. Catch weak chargers, test cables, track solar budgets. Free menu bar app.',
     url: `${SITE_URL}/wattsorbit`,
     images: [{ url: '/images/wattsorbit-landing.png', width: 1200, height: 630, alt: 'WattsOrbit' }],
     siteName: 'SlothLabs',
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/wattsorbit` },
   twitter: {
     card: 'summary_large_image',
-    title: 'WattsOrbit — Real-time Mac power monitor | SlothLabs',
-    description: 'Know exactly where your power is going. Per-device USB wattage, charger quality, solar-aware alerts. Free macOS menu bar app.',
+    title: 'WattsOrbit — Mac input watts, output watts & energy monitor | SlothLabs',
+    description: 'Real-time input watts, output watts, and per-device USB energy draw on macOS. Catch weak chargers, test cables, track solar. Free menu bar app.',
     images: [`${SITE_URL}/images/wattsorbit-landing.png`],
   },
 }
@@ -104,7 +104,7 @@ function Hero() {
             </div>
 
             <p className="fade-up text-xs" style={{ color: '#6b5300', animationDelay: '0.35s' }}>
-              {hasRelease ? 'Available now — macOS only' : 'Launching April 25, 2026'}
+              {hasRelease ? 'Available now — macOS only' : 'Launching April 28, 2026'}
             </p>
           </div>
 
@@ -420,7 +420,7 @@ const jsonLd = {
   name: 'WattsOrbit',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'macOS',
-  description: 'Real-time Mac power monitor. Watts in/out, per-device USB draw, cable quality testing, smart battery alerts. Menu bar app.',
+  description: 'See real-time input watts, output watts, and energy consumption on your Mac. Per-device USB draw, cable quality testing, battery health, and smart alerts. Free menu bar app.',
   url: `${SITE_URL}/wattsorbit`,
   author: { '@type': 'Organization', name: 'SlothLabs', url: SITE_URL },
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
