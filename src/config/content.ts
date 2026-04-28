@@ -33,7 +33,7 @@ export const slothLabsContent = {
         cta: 'Download',
         live: false,
         accent: '#F59E0B',
-        comingSoonDate: '',
+        comingSoonDate: 'April 28, 2026',
         previewImage: '/images/wattsorbit-landing.png',
         iconSrc: '/images/wattsorbit-icon.png',
       },

@@ -9,7 +9,6 @@ import ProductCarousel from '@/components/ProductCarousel'
 import SupportBanner from '@/components/SupportBanner'
 import { LaunchBanner } from '@/components/LaunchBanner'
 import HeroMascotRotator from '@/components/HeroMascotRotator'
-import FundingSection from '@/components/FundingSection'
 import { slothLabsContent } from '@/config/content'
 import { allReleases } from '@/data/releases'
 
@@ -135,7 +134,7 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const ROADMAP = [
-  { name: 'WattsOrbit',   date: 'April 25', desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
+  { name: 'WattsOrbit',   date: 'April 28', desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
   { name: 'ProxyOrbit',   date: 'May 5',    desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
   { name: 'DataOrbit',    date: 'May 15',   desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
   { name: 'BastionOrbit', date: 'May 27',   desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
@@ -217,6 +216,105 @@ function LaunchRoadmap() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+// ── Why Rust ──────────────────────────────────────────────────────────────────
+
+const RUST_POINTS = [
+  {
+    icon: '⚡',
+    title: 'Native binary. Zero runtime.',
+    body: 'No Node.js. No V8. No JVM. Rust compiles directly to machine code — the binary runs the same way the OS itself does. Nothing between your CPU and our logic.',
+    code: '$ du -sh WattsOrbit.app\n3.4M    WattsOrbit.app',
+  },
+  {
+    icon: '🔬',
+    title: 'Direct kernel APIs.',
+    body: 'We call IOKit, SMC, libproc, and the macOS power subsystem directly — the same interfaces Apple uses internally. No wrappers, no polling hacks, no /proc file scraping.',
+    code: 'IOServiceGetMatchingService(\n  kIOMasterPortDefault,\n  IOServiceMatching(\n    "AppleSmartBattery"\n  )\n)',
+  },
+  {
+    icon: '🧠',
+    title: 'Memory safe. GC free.',
+    body: "Rust's ownership model eliminates data races and memory leaks at compile time — without a garbage collector. No GC pauses. No heap fragmentation. No undefined behavior.",
+    code: '// 8 MB at rest.\n// Electron charges 200 MB\n// for hello world.',
+  },
+  {
+    icon: '📦',
+    title: 'Tauri v2, not Electron.',
+    body: "Tauri uses the OS's native WebView — WKWebView on macOS. One renderer, no bundled Chromium. The result: a 3–5 MB installer and a UI that feels native because it is.",
+    code: '// Electron: ~160 MB\n// Tauri:    ~4 MB\n// Same React UI, 40× smaller.',
+  },
+  {
+    icon: '🔒',
+    title: 'Auditable by design.',
+    body: 'Every repo is MIT-licensed and fully open source. Read the Rust backend, the TypeScript UI, the CI pipeline. If something looks wrong, open an issue or a PR.',
+    code: 'github.com/slothlabsorg\n# All source. All the time.',
+  },
+  {
+    icon: '🌐',
+    title: 'One codebase. Every OS.',
+    body: "Tauri's Rust core runs on macOS, Linux, and Windows from the same source tree. macOS ships first because that's where we work. The rest follow without rewrites.",
+    code: 'cargo build --target\n  aarch64-apple-darwin\n  x86_64-pc-windows-msvc\n  x86_64-unknown-linux-gnu',
+  },
+]
+
+function WhyRust() {
+  return (
+    <section className="relative py-24 overflow-hidden border-t border-[#0e1f3a]">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050d1f] via-[#060c18] to-[#050d1f]" />
+      {/* Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[120px] opacity-[0.06] pointer-events-none bg-[#4DA6FF]" />
+
+      <div className="relative z-10 site-container">
+        <ScrollReveal className="text-center mb-14 space-y-3">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase border border-[#1a3060] text-[#4A6080]">
+            Under the hood
+          </span>
+          <h2
+            className="text-3xl md:text-4xl font-bold text-white"
+            style={{ fontFamily: 'Syne, sans-serif' }}
+          >
+            Built the way software{' '}
+            <span className="gradient-text">should</span> be built.
+          </h2>
+          <p className="text-[#8BA3C7] max-w-lg mx-auto">
+            Every Orbit app is a native Rust binary with a Tauri UI. Here&apos;s what that means for you as a developer.
+          </p>
+        </ScrollReveal>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {RUST_POINTS.map((pt, i) => (
+            <ScrollReveal key={pt.title} delay={i * 60}>
+              <div className="rounded-2xl border border-[#1a3060] bg-[#060d1e] p-6 flex flex-col gap-4 h-full hover:border-[#4DA6FF]/30 transition-colors duration-300">
+                <div className="text-3xl">{pt.icon}</div>
+                <div>
+                  <h3 className="font-bold text-white text-base mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>
+                    {pt.title}
+                  </h3>
+                  <p className="text-[#8BA3C7] text-sm leading-relaxed">{pt.body}</p>
+                </div>
+                <pre
+                  className="mt-auto rounded-lg px-4 py-3 text-[11px] leading-relaxed overflow-x-auto"
+                  style={{ background: '#020810', color: '#4DA6FF', fontFamily: 'monospace' }}
+                >
+                  {pt.code}
+                </pre>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+
+        <ScrollReveal delay={200}>
+          <p className="text-center text-xs text-[#4A6080] mt-12 max-w-md mx-auto">
+            Rust + Tauri v2 · MIT license · No analytics · No telemetry · No subscription
+          </p>
+        </ScrollReveal>
+      </div>
+    </section>
+  )
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+
 export default function HomePage() {
   return (
     <main className="bg-[#050d1f]">
@@ -225,7 +323,7 @@ export default function HomePage() {
       <Hero />
       <Products />
       <LaunchRoadmap />
-      <FundingSection />
+      <WhyRust />
       <SupportBanner />
       <Footer />
     </main>
