@@ -13,8 +13,10 @@ import FundingSection from '@/components/FundingSection'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison } = wattsOrbitContent
 
+const WATTSORBIT_LAUNCH = new Date('2026-05-08T00:00:00Z')
 const hasRelease = allReleases.wattsorbit.releases.length > 0
 const latestRelease = allReleases.wattsorbit.releases[0]
+const showDownload = hasRelease && new Date() >= WATTSORBIT_LAUNCH
 
 const ACCENT     = '#F59E0B'
 const ACCENT_DIM = '#F59E0B18'
@@ -80,7 +82,7 @@ function Hero() {
             </p>
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
-              {hasRelease ? (
+              {showDownload ? (
                 <a
                   href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/wattsorbit/releases/latest'}
                   target="_blank"
@@ -104,7 +106,7 @@ function Hero() {
             </div>
 
             <p className="fade-up text-xs" style={{ color: '#6b5300', animationDelay: '0.35s' }}>
-              {hasRelease ? 'Available now — macOS only' : 'Launching April 28, 2026'}
+              {hero.launchDate}
             </p>
           </div>
 
@@ -422,7 +424,7 @@ function CTA() {
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            {hasRelease ? (
+            {showDownload ? (
               <a
                 href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/wattsorbit/releases/latest'}
                 target="_blank"
@@ -441,7 +443,7 @@ function CTA() {
               Release notes →
             </Link>
           </div>
-          {hasRelease && (
+          {showDownload && (
             <p className="text-xs mt-4" style={{ color: '#4a3800' }}>v{latestRelease.version} · Free forever · macOS 10.15+ · Apple Silicon &amp; Intel</p>
           )}
           <MacInstallNote accent={ACCENT} />

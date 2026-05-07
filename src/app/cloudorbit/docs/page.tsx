@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import CloudOrbitNavbar from '@/components/CloudOrbitNavbar'
@@ -155,6 +155,10 @@ function SectionIntroduction() {
 
 function SectionInstallation({ tab, setTab }: { tab: string; setTab: (t: string) => void }) {
   const tabs = installation.tabs
+  const [launchingSoon, setLaunchingSoon] = useState(true)
+  useEffect(() => {
+    setLaunchingSoon(new Date() < new Date('2026-05-08T00:00:00Z'))
+  }, [])
 
   return (
     <div>
@@ -186,6 +190,7 @@ function SectionInstallation({ tab, setTab }: { tab: string; setTab: (t: string)
             <p className="text-sm text-[#8BA3C7] mb-4">{installation.macos.method1.body}</p>
             <DownloadModal
               buttonLabel={installation.macos.method1.cta}
+              launchingSoon={launchingSoon}
               className="px-6 py-3 rounded-btn bg-[#F5A623] text-[#050d1f] font-bold text-sm hover:brightness-110 transition-all"
             />
           </div>
