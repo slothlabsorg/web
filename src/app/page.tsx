@@ -130,11 +130,11 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const ROADMAP = [
-  { name: 'WattsOrbit',   date: 'April 28', desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
-  { name: 'ProxyOrbit',   date: 'May 5',    desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
-  { name: 'DataOrbit',    date: 'May 15',   desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
-  { name: 'BastionOrbit', date: 'May 27',   desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
-  { name: 'CloudOrbit',   date: 'Mid-June', desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
+  { name: 'CloudOrbit',   date: 'May 8',    desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
+  { name: 'WattsOrbit',   date: 'May 8',    desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
+  { name: 'ProxyOrbit',   date: 'May 22',   desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
+  { name: 'DataOrbit',    date: 'June 5',   desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
+  { name: 'BastionOrbit', date: 'June 19',  desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
 ]
 
 function LaunchRoadmap() {

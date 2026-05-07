@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react'
 
-const LAUNCH_DATE = new Date('2026-04-25T12:00:00Z')
+const LAUNCH_DATE = new Date('2026-05-08T12:00:00Z')
 
 function getTimeLeft() {
   const now = new Date()
   const diff = LAUNCH_DATE.getTime() - now.getTime()
-  if (diff <= 0) return { days: 0, hours: 0, text: '🚀 First launch is live!' }
+  if (diff <= 0) return { days: 0, hours: 0, text: '🚀 CloudOrbit & WattsOrbit are live!' }
   const days = Math.floor(diff / (1000 * 60 * 60 * 24))
   const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
   if (days > 0) return { days, hours, text: `${days} day${days !== 1 ? 's' : ''}, ${hours} hr${hours !== 1 ? 's' : ''} to go` }
@@ -32,7 +32,7 @@ export function LaunchBanner({ variant = 'banner' }: { variant?: 'banner' | 'bad
   if (!mounted) {
     return (
       <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border border-[#00D4FF]/50 text-[#00D4FF] bg-[#00D4FF]/10">
-        Coming next week
+        Launching May 8
       </span>
     )
   }
@@ -53,14 +53,14 @@ export function LaunchBanner({ variant = 'banner' }: { variant?: 'banner' | 'bad
   if (variant === 'subtle') {
     return (
       <p className="text-xs text-[#4A6080] tabular-nums">
-        Coming next week · <span className="text-[#00D4FF]/80">{timeLeft.text}</span>
+        Launching May 8 · <span className="text-[#00D4FF]/80">{timeLeft.text}</span>
       </p>
     )
   }
 
   return (
     <div className="inline-flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 px-4 py-2.5 rounded-xl border border-[#00D4FF]/40 bg-[#00D4FF]/10 text-[#00D4FF]">
-      <span className="text-sm font-semibold">Coming next week · Launching {formatLaunchDate(LAUNCH_DATE)}</span>
+      <span className="text-sm font-semibold">Launching {formatLaunchDate(LAUNCH_DATE)}</span>
       <span className="text-xs font-medium tabular-nums opacity-90">{timeLeft.text}</span>
     </div>
   )

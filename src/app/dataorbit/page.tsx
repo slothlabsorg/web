@@ -285,7 +285,7 @@ function CTA() {
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Ready to stop fighting the AWS console?
           </h2>
-          <p className="text-[#8BA3C7] text-lg mt-2">DataOrbit launches May 1. Join the waitlist and be first.</p>
+          <p className="text-[#8BA3C7] text-lg mt-2">DataOrbit launches June 5. Join the waitlist and be first.</p>
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">

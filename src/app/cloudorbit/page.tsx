@@ -15,6 +15,9 @@ const WAITLIST_FORM_URL = 'https://form.jotform.com/260731775592061'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
+const CLOUDORBIT_LAUNCH = new Date('2026-05-08T00:00:00Z')
+const launchingSoon = new Date() < CLOUDORBIT_LAUNCH
+
 const { hero, features, comparison } = cloudOrbitContent
 const { problem, whyRust, plugins, screenshots, downloadCta } = slothLabsContent
 
@@ -101,7 +104,7 @@ function Hero() {
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
               <DownloadModal
-                launchingSoon
+                launchingSoon={launchingSoon}
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-btn bg-[#F5A623] text-[#050d1f] font-bold text-sm hover:brightness-110 transition-all glow-cta hover:-translate-y-0.5"
               />
               <a
@@ -435,7 +438,7 @@ function DownloadCtaSection() {
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <DownloadModal launchingSoon className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#F5A623] text-[#050d1f] font-bold text-sm hover:brightness-110 transition-all glow-cta hover:-translate-y-0.5" />
+            <DownloadModal launchingSoon={launchingSoon} className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#F5A623] text-[#050d1f] font-bold text-sm hover:brightness-110 transition-all glow-cta hover:-translate-y-0.5" />
             <Link href="https://github.com/slothlabsorg" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border border-[#00D4FF] text-[#00D4FF] text-sm font-medium hover:bg-[#00D4FF]/10 transition-all">
               {downloadCta.secondary}
             </Link>
