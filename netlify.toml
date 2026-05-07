@@ -16,8 +16,8 @@
   status = 200
   force  = true
 
-# SPA fallback (keep existing)
+# Static export fallback — serve each route's own index.html, not the root
 [[redirects]]
   from   = "/*"
-  to     = "/index.html"
+  to     = "/:splat/index.html"
   status = 200
