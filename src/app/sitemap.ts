@@ -17,7 +17,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/dataorbit/releases`,     lastModified: new Date('2026-04-24'), changeFrequency: 'weekly',  priority: 0.8 },
     { url: `${BASE}/bastionorbit`,           lastModified: new Date('2026-04-24'), changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${BASE}/bastionorbit/releases`,  lastModified: new Date('2026-04-24'), changeFrequency: 'weekly',  priority: 0.8 },
-    { url: `${BASE}/proxyorbit`,             lastModified: new Date('2026-04-24'), changeFrequency: 'weekly',  priority: 0.9 },
-    { url: `${BASE}/proxyorbit/releases`,    lastModified: new Date('2026-04-24'), changeFrequency: 'weekly',  priority: 0.8 },
+    { url: `${BASE}/proxyorbit`,               lastModified: new Date('2026-04-24'), changeFrequency: 'weekly',  priority: 0.9 },
+    { url: `${BASE}/proxyorbit/releases`,      lastModified: new Date('2026-04-24'), changeFrequency: 'weekly',  priority: 0.8 },
+    { url: `${BASE}/mermaid-preview`,          lastModified: new Date('2026-05-07'), changeFrequency: 'weekly',  priority: 0.9 },
+    { url: `${BASE}/mermaid-preview/releases`, lastModified: new Date('2026-05-07'), changeFrequency: 'weekly',  priority: 0.8 },
   ]
 }
