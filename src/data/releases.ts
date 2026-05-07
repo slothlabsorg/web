@@ -46,4 +46,26 @@ export const allReleases: Record<string, AppReleases> = {
     icon: '/images/proxyorbit-icon.png',
     releases: [],
   },
+  'mermaid-preview': {
+    appName: 'Mermaid Preview',
+    slug: 'mermaid-preview',
+    accent: '#FF3670',
+    icon: '/images/mermaid-preview-icon.png',
+    releases: [
+      {
+        version: '0.1.0',
+        date: '2026-05-07',
+        notes: 'Initial release. Live side-panel preview of all mermaid blocks in Markdown files with per-block toggle and 250ms live-refresh.',
+        downloadUrl: 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/download/v0.1.0/mermaid-preview-0.1.0.zip',
+        highlights: [
+          'Auto-detects all ```mermaid fenced blocks in .md / .markdown / .mdx',
+          'Per-block Diagram ↔ Code segmented toggle',
+          '250ms live-refresh as you type — no save required',
+          'Theme-aware dark/light rendering via JCEF',
+          'Mermaid 10.9.3 bundled — fully offline, air-gapped compatible',
+          '12+ diagram types: flowchart, sequence, state, class, ER, Gantt, pie, git graph, mindmap, quadrant, timeline, user journey',
+        ],
+      },
+    ],
+  },
 }

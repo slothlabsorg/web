@@ -24,6 +24,20 @@ export const slothLabsContent = {
     launchBanner: 'Many tools shipping soon — free, native Rust, built for developers',
     items: [
       {
+        name: 'Mermaid Preview',
+        slug: '/mermaid-preview',
+        logo: null,
+        by: '· SlothLabs ·',
+        desc: 'JetBrains IDE plugin that renders every Mermaid diagram in your Markdown files live — side panel, per-block toggle, fully offline. No browser tab, no copy-paste.',
+        tags: ['JetBrains', 'Mermaid', 'Markdown'],
+        cta: 'Learn more →',
+        live: false,
+        accent: '#FF3670',
+        comingSoonDate: '',
+        previewImage: '/images/mermaid-preview-screen-01.png',
+        iconSrc: null,
+      },
+      {
         name: 'CloudOrbit',
         slug: '/cloudorbit',
         logo: '/images/cloudorbit-logo.png',
@@ -165,6 +179,7 @@ export const slothLabsContent = {
     logo: '/images/slothlabs-logo-light.png',
     tagline: 'Dev tools designed to give you time back.',
     products: [
+      { label: 'Mermaid Preview', href: '/mermaid-preview' },
       { label: 'WattsOrbit', href: '/wattsorbit' },
       { label: 'ProxyOrbit', href: '/proxyorbit' },
       { label: 'DataOrbit', href: '/dataorbit' },
@@ -538,4 +553,53 @@ export const bastionOrbitContent = {
       { feature: 'Native binary (not Electron)', bastionorbit: '✅ Rust', manual: '✅', teleport: '❌ Electron', vscode: '❌ Electron' },
     ],
   },
+}
+
+// ─── MERMAID PREVIEW ─────────────────────────────────────────────────────────
+
+export const mermaidPreviewContent = {
+  hero: {
+    badge: '🧜 JetBrains · Markdown · Mermaid',
+    eyebrow: 'MERMAID PREVIEW',
+    headline: 'Render Mermaid diagrams\nlive in your IDE',
+    subtitle: 'Open a Markdown file, see every mermaid block in a side panel — toggle between diagram and source, live-refresh as you type. No browser tab. No network. No copy-paste.',
+    ctaPrimary: 'Download v0.1.0',
+    ctaPrimaryHref: 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/download/v0.1.0/mermaid-preview-0.1.0.zip',
+    ctaSecondary: 'View on GitHub →',
+    ctaSecondaryHref: 'https://github.com/slothlabsorg/mermaid-preview-plugin',
+    note: 'JetBrains IDEs 2023.3+ · IntelliJ IDEA, PyCharm, WebStorm & more · JCEF required',
+    launchDate: 'Available now — v0.1.0',
+  },
+  features: [
+    { icon: '🔍', title: 'Auto-detect every block', desc: 'Scans all fenced \`\`\`mermaid\`\`\` blocks in your Markdown file and renders each as its own card in the side panel. Open a 500-line doc with 8 diagrams and see them all at once — no scrolling required.', badge: null },
+    { icon: '🔄', title: 'Per-block toggle', desc: 'Each card has a segmented Diagram ↔ Code button. Flip between the rendered output and the raw Mermaid source in one click without losing your place in the editor.', badge: 'Unique' },
+    { icon: '⚡', title: 'Live refresh as you type', desc: 'Diagrams re-render with a 250ms debounce as you edit. No save required, no manual refresh button, no context switch. Watch your sequence diagram or flowchart evolve in real time.', badge: null },
+    { icon: '🌙', title: 'Theme-aware rendering', desc: 'Follows your IDE\'s dark or light theme automatically via JCEF. No jarring white boxes in a dark-theme IDE. Switch themes and the webview adapts instantly.', badge: null },
+    { icon: '📦', title: 'Fully offline — Mermaid bundled', desc: 'Mermaid 10.9.3 is packed inside the plugin zip. No CDN calls, no internet connection, no corporate firewall issues. Works on planes, trains, and air-gapped enterprise environments.', badge: null },
+    { icon: '🎨', title: '12+ diagram types', desc: 'Flowchart, sequence, state machine, class, entity-relationship, Gantt, pie, git graph, user journey, mindmap, quadrant chart, timeline — the full Mermaid surface area supported out of the box.', badge: null },
+  ],
+  comparison: {
+    headline: 'Stop alt-tabbing to mermaid.live',
+    sub: 'The preview you need is already in your IDE — you just had to install one plugin.',
+    rows: [
+      { feature: 'Lives inside your IDE',         mermaid: '✅',         live: '❌ Tab switch', builtin: '✅',           ext: '❌' },
+      { feature: 'Per-block toggle',              mermaid: '✅',         live: '❌',            builtin: '❌',           ext: '❌' },
+      { feature: 'Live-refresh as you type',      mermaid: '✅',         live: '❌ Manual',     builtin: '⚠️ Text only', ext: '⚠️' },
+      { feature: 'Works fully offline',           mermaid: '✅',         live: '❌',            builtin: '✅',           ext: '❌' },
+      { feature: 'All 12+ diagram types',         mermaid: '✅',         live: '✅',            builtin: '❌',           ext: '⚠️' },
+      { feature: 'No copy-paste required',        mermaid: '✅',         live: '❌',            builtin: 'N/A',          ext: '❌' },
+    ],
+  },
+  screenshots: [
+    { src: '/images/mermaid-preview-screen-01.png', label: 'Flowchart, sequence, and state machine — side by side' },
+    { src: '/images/mermaid-preview-screen-02.png', label: 'Gantt, pie chart, and git graph' },
+    { src: '/images/mermaid-preview-screen-03.png', label: 'Mindmap, quadrant chart, and graceful error handling' },
+    { src: '/images/mermaid-preview-screen-04.png', label: 'Error overlay — invalid syntax shown inline' },
+  ],
+  install: [
+    { n: 1, title: 'Download the zip', body: 'Click the Download button below to get mermaid-preview-0.1.0.zip from GitHub Releases.' },
+    { n: 2, title: 'Open plugin settings', body: 'In your JetBrains IDE: Settings → Plugins → ⚙ gear icon → Install Plugin from Disk…' },
+    { n: 3, title: 'Select the zip and restart', body: 'Pick the downloaded zip, click OK, then restart the IDE when prompted.' },
+    { n: 4, title: 'Open any Markdown file', body: 'Open a .md file with ```mermaid fenced blocks — the Mermaid panel appears automatically on the right sidebar.' },
+  ],
 }
