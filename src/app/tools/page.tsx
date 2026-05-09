@@ -67,8 +67,8 @@ export default function ToolsPage() {
           </ScrollReveal>
           <ScrollReveal delay={120}>
             <p className="text-[#8BA3C7] text-lg leading-relaxed">
-              IDE plugins, browser extensions, and utilities that don&apos;t fit in the Orbit suite — but are just as useful.
-              All free, all open source.
+              IDE plugins, CLI scripts, browser extensions, and one-trick tools for the gaps in your workflow —
+              the moments the Orbit suite doesn&apos;t cover. Still free. Still open source.
             </p>
           </ScrollReveal>
         </div>

@@ -324,7 +324,7 @@ function OtherTools() {
               Other tools
             </h2>
             <p className="text-[#8BA3C7] text-sm mt-1 max-w-md">
-              IDE plugins and utilities that don&apos;t fit in the Orbit suite — but are just as free.
+              IDE plugins, scripts, and one-trick tools for the gaps the Orbit suite doesn&apos;t cover.
             </p>
           </div>
           <Link
