@@ -14,6 +14,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison, screenshots, install } = mermaidPreviewContent
 
 const latestRelease = allReleases['mermaid-preview'].releases[0]
+const dlLabel = `Download v${latestRelease.version}`
+const dlHref  = latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/latest'
 
 const ACCENT     = '#FF3670'
 const ACCENT_DIM = '#FF367015'
@@ -81,13 +83,13 @@ function Hero() {
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
               <a
-                href={hero.ctaPrimaryHref}
+                href={dlHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
                 style={{ background: ACCENT, color: '#fff' }}
               >
-                {hero.ctaPrimary}
+                {dlLabel}
               </a>
               <a
                 href={hero.ctaSecondaryHref}
@@ -101,7 +103,9 @@ function Hero() {
             </div>
 
             <p className="fade-up text-xs" style={{ color: '#4a1028', animationDelay: '0.35s' }}>{hero.note}</p>
-            <p className="fade-up text-xs" style={{ color: ACCENT_MID, animationDelay: '0.4s' }}>{hero.launchDate}</p>
+            <p className="fade-up text-xs" style={{ color: ACCENT_MID, animationDelay: '0.4s' }}>
+              Available now — v{latestRelease.version}
+            </p>
           </div>
 
           {/* Right — screenshot */}
@@ -359,18 +363,34 @@ function HowItWorks() {
 
 // ── Install ───────────────────────────────────────────────────────────────────
 
+const SUPPORTED_IDES = [
+  { name: 'IntelliJ IDEA',  icon: '🧠' },
+  { name: 'PyCharm',        icon: '🐍' },
+  { name: 'WebStorm',       icon: '🌐' },
+  { name: 'GoLand',         icon: '🐹' },
+  { name: 'CLion',          icon: '⚙️' },
+  { name: 'Rider',          icon: '🎮' },
+  { name: 'PhpStorm',       icon: '🐘' },
+  { name: 'DataGrip',       icon: '🗄️' },
+  { name: 'Android Studio', icon: '🤖' },
+]
+
 function Install() {
   return (
     <section className="py-24" style={{ background: BG_CARD }}>
       <div className="site-container">
-        <ScrollReveal className="text-center mb-16 space-y-4">
+        <ScrollReveal className="text-center mb-14 space-y-4">
           <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: ACCENT }}>Installation</span>
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Up and running in 4 steps
           </h2>
+          <p className="text-base" style={{ color: '#7a4060' }}>
+            Works in any JetBrains IDE — same steps everywhere.
+          </p>
         </ScrollReveal>
 
-        <div className="max-w-2xl mx-auto space-y-4">
+        {/* Steps */}
+        <div className="max-w-2xl mx-auto space-y-4 mb-14">
           {install.map((step, i) => (
             <ScrollReveal key={step.n} delay={i * 80}>
               <div className="flex gap-5 items-start p-5 rounded-2xl border" style={{ background: BG_BASE, borderColor: BORDER }}>
@@ -383,26 +403,138 @@ function Install() {
                 <div>
                   <h4 className="font-semibold text-white mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>{step.title}</h4>
                   <p className="text-sm leading-relaxed" style={{ color: '#7a4060' }}>{step.body}</p>
+                  {/* Inline code hint for step 2 */}
+                  {step.n === 2 && (
+                    <p className="mt-2 text-xs font-mono px-3 py-1.5 rounded-lg inline-block" style={{ background: ACCENT_DIM, color: ACCENT_HI }}>
+                      Settings → Plugins → ⚙ → Install Plugin from Disk…
+                    </p>
+                  )}
                 </div>
               </div>
             </ScrollReveal>
           ))}
         </div>
 
+        {/* Supported IDEs grid */}
+        <ScrollReveal delay={200}>
+          <div className="max-w-2xl mx-auto rounded-2xl border p-6" style={{ background: BG_BASE, borderColor: BORDER }}>
+            <p className="text-xs font-semibold tracking-widest uppercase mb-4 text-center" style={{ color: ACCENT }}>
+              Supported IDEs
+            </p>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+              {SUPPORTED_IDES.map(ide => (
+                <div
+                  key={ide.name}
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center"
+                  style={{ background: BG_CARD, borderColor: BORDER }}
+                >
+                  <span className="text-xl">{ide.icon}</span>
+                  <span className="text-[10px] leading-tight" style={{ color: '#7a4060' }}>{ide.name}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-center mt-4" style={{ color: '#4a1028' }}>
+              Any IDE built on the IntelliJ Platform 2023.3+ with JCEF enabled
+            </p>
+          </div>
+        </ScrollReveal>
+
+        {/* Download CTA */}
         <ScrollReveal delay={300}>
           <div className="text-center mt-10">
             <a
-              href={hero.ctaPrimaryHref}
+              href={dlHref}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT, color: '#fff' }}
             >
-              {hero.ctaPrimary}
+              {dlLabel}
             </a>
-            <p className="text-xs mt-3" style={{ color: '#4a1028' }}>
-              v{latestRelease.version} · {latestRelease.date} · MIT license · JetBrains IDEs 2023.3+
-            </p>
+            <div className="flex items-center justify-center gap-4 mt-3 flex-wrap">
+              <p className="text-xs" style={{ color: '#4a1028' }}>
+                v{latestRelease.version} · {latestRelease.date} · MIT license · JetBrains IDEs 2023.3+
+              </p>
+              <a
+                href="https://github.com/slothlabsorg/mermaid-preview-plugin/releases"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs hover:opacity-80 transition-opacity"
+                style={{ color: ACCENT_MID }}
+              >
+                Past releases →
+              </a>
+            </div>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  )
+}
+
+// ── Marketplace ───────────────────────────────────────────────────────────────
+
+function Marketplace() {
+  return (
+    <section className="py-20" style={{ background: BG_BASE }}>
+      <div className="site-container">
+        <ScrollReveal>
+          <div
+            className="rounded-2xl border p-8 md:p-10 flex flex-col md:flex-row gap-8 items-start"
+            style={{ background: BG_CARD, borderColor: BORDER }}
+          >
+            {/* Icon */}
+            <div
+              className="flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
+              style={{ background: ACCENT_DIM, border: `1px solid ${ACCENT_MID}` }}
+            >
+              🛍️
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 space-y-3">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h3 className="text-xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  Coming to JetBrains Marketplace
+                </h3>
+                <span
+                  className="text-[11px] px-2.5 py-1 rounded-full border font-semibold"
+                  style={{ color: ACCENT_HI, borderColor: ACCENT_MID, background: ACCENT_DIM }}
+                >
+                  Roadmap v0.5
+                </span>
+              </div>
+              <p style={{ color: '#7a4060' }} className="text-sm leading-relaxed">
+                Right now you install from a zip file. That works fine, but the JetBrains Marketplace means
+                one-click install directly from your IDE — no zip download, no manual steps, and automatic
+                updates whenever a new version ships.
+              </p>
+              <ul className="space-y-1.5">
+                {[
+                  '✅ Install directly from Settings → Plugins → Marketplace',
+                  '✅ Automatic updates — always on the latest version',
+                  '✅ Listed in the official JetBrains plugin directory',
+                ].map(item => (
+                  <li key={item} className="text-sm" style={{ color: '#7a4060' }}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* CTA */}
+            <div className="flex-shrink-0 flex flex-col gap-2">
+              <a
+                href="https://github.com/slothlabsorg/mermaid-preview-plugin"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all whitespace-nowrap"
+                style={{ borderColor: ACCENT_MID, color: ACCENT }}
+              >
+                Watch on GitHub →
+              </a>
+              <p className="text-[10px] text-center" style={{ color: '#4a1028' }}>
+                Get notified on release
+              </p>
+            </div>
           </div>
         </ScrollReveal>
       </div>
@@ -439,19 +571,30 @@ function CTA() {
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <a
-              href={hero.ctaPrimaryHref}
+              href={dlHref}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT, color: '#fff' }}
             >
-              {hero.ctaPrimary}
+              {dlLabel}
             </a>
             <Link href="/" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
               ← All SlothLabs tools
             </Link>
           </div>
-          <p className="text-xs mt-4" style={{ color: '#4a1028' }}>Free forever · JetBrains IDEs 2023.3+ · MIT license</p>
+          <div className="flex items-center justify-center gap-4 mt-4 flex-wrap">
+            <p className="text-xs" style={{ color: '#4a1028' }}>Free forever · JetBrains IDEs 2023.3+ · MIT license</p>
+            <a
+              href="https://github.com/slothlabsorg/mermaid-preview-plugin/releases"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs hover:opacity-80 transition-opacity"
+              style={{ color: ACCENT_MID }}
+            >
+              Past releases →
+            </a>
+          </div>
           <MacInstallNote accent={ACCENT} />
         </ScrollReveal>
       </div>
@@ -469,7 +612,7 @@ const jsonLd = {
   url: `${SITE_URL}/mermaid-preview`,
   author: { '@type': 'Organization', name: 'SlothLabs', url: SITE_URL },
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-  softwareVersion: '0.1.0',
+  softwareVersion: latestRelease.version,
   downloadUrl: 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/latest',
   screenshot: `${SITE_URL}/images/mermaid-preview-screen-01.png`,
   releaseNotes: `${SITE_URL}/mermaid-preview/releases`,
@@ -489,6 +632,7 @@ export default function MermaidPreviewPage() {
       <Comparison />
       <HowItWorks />
       <Install />
+      <Marketplace />
       <Funding />
       <CTA />
       <Footer showSuiteLink accent={ACCENT} />

@@ -563,12 +563,9 @@ export const mermaidPreviewContent = {
     eyebrow: 'MERMAID PREVIEW',
     headline: 'Render Mermaid diagrams\nlive in your IDE',
     subtitle: 'Open a Markdown file, see every mermaid block in a side panel — toggle between diagram and source, live-refresh as you type. No browser tab. No network. No copy-paste.',
-    ctaPrimary: 'Download v0.1.0',
-    ctaPrimaryHref: 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/download/v0.1.0/mermaid-preview-0.1.0.zip',
     ctaSecondary: 'View on GitHub →',
     ctaSecondaryHref: 'https://github.com/slothlabsorg/mermaid-preview-plugin',
     note: 'JetBrains IDEs 2023.3+ · IntelliJ IDEA, PyCharm, WebStorm & more · JCEF required',
-    launchDate: 'Available now — v0.1.0',
   },
   features: [
     { icon: '🔍', title: 'Auto-detect every block', desc: 'Scans all fenced \`\`\`mermaid\`\`\` blocks in your Markdown file and renders each as its own card in the side panel. Open a 500-line doc with 8 diagrams and see them all at once — no scrolling required.', badge: null },
@@ -597,7 +594,7 @@ export const mermaidPreviewContent = {
     { src: '/images/mermaid-preview-screen-04.png', label: 'Error overlay — invalid syntax shown inline' },
   ],
   install: [
-    { n: 1, title: 'Download the zip', body: 'Click the Download button below to get mermaid-preview-0.1.0.zip from GitHub Releases.' },
+    { n: 1, title: 'Download the zip', body: 'Click the Download button below to get the latest zip from GitHub Releases.' },
     { n: 2, title: 'Open plugin settings', body: 'In your JetBrains IDE: Settings → Plugins → ⚙ gear icon → Install Plugin from Disk…' },
     { n: 3, title: 'Select the zip and restart', body: 'Pick the downloaded zip, click OK, then restart the IDE when prompted.' },
     { n: 4, title: 'Open any Markdown file', body: 'Open a .md file with ```mermaid fenced blocks — the Mermaid panel appears automatically on the right sidebar.' },
