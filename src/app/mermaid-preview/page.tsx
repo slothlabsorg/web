@@ -5,7 +5,6 @@ import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
 import StarField from '@/components/StarField'
 import CustomCursor from '@/components/CustomCursor'
-import MacInstallNote from '@/components/MacInstallNote'
 import FundingSection from '@/components/FundingSection'
 import { mermaidPreviewContent } from '@/config/content'
 import { allReleases } from '@/data/releases'
@@ -33,7 +32,7 @@ export const metadata: Metadata = {
     title: 'Mermaid Preview — Live diagram preview for JetBrains IDEs | SlothLabs',
     description: 'Render every Mermaid diagram in your Markdown files live — side panel, per-block toggle, fully offline. Free JetBrains plugin.',
     url: `${SITE_URL}/mermaid-preview`,
-    images: [{ url: '/images/mermaid-preview-screen-01.png', width: 1200, height: 630, alt: 'Mermaid Preview' }],
+    images: [{ url: '/images/mermaid-preview-landing.png', width: 1200, height: 630, alt: 'Mermaid Preview' }],
     siteName: 'SlothLabs',
   },
   alternates: { canonical: `${SITE_URL}/mermaid-preview` },
@@ -41,7 +40,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Mermaid Preview — Live Mermaid diagrams in your JetBrains IDE | SlothLabs',
     description: 'Side-panel preview of every mermaid block in your Markdown files. Per-block toggle, live refresh, offline. Free plugin.',
-    images: [`${SITE_URL}/images/mermaid-preview-screen-01.png`],
+    images: [`${SITE_URL}/images/mermaid-preview-landing.png`],
   },
 }
 
@@ -108,19 +107,17 @@ function Hero() {
             </p>
           </div>
 
-          {/* Right — screenshot */}
-          <div className="relative flex justify-center md:justify-end min-h-[280px] sm:min-h-[360px]">
+          {/* Right — hero image */}
+          <div className="relative flex items-center justify-center md:justify-end min-h-[320px] sm:min-h-[480px]">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-72 h-72 rounded-full blur-3xl opacity-15" style={{ background: ACCENT }} />
+              <div className="w-96 h-96 rounded-full blur-3xl opacity-20" style={{ background: ACCENT }} />
             </div>
-            <div
-              className="relative z-10 w-full max-w-lg rounded-xl overflow-hidden border"
-              style={{ borderColor: BORDER }}
-            >
+            <div className="relative z-10 w-full">
               <img
-                src="/images/mermaid-preview-screen-01.png"
-                alt="Mermaid Preview — flowchart, sequence, and state machine side by side"
-                className="w-full h-auto object-cover"
+                src="/images/mermaid-preview-landing.png"
+                alt="Mermaid Preview — write diagrams in Markdown, render everywhere in your JetBrains IDE"
+                className="w-full h-auto object-contain drop-shadow-2xl"
+                style={{ maxHeight: '520px' }}
               />
             </div>
           </div>
@@ -595,7 +592,6 @@ function CTA() {
               Past releases →
             </a>
           </div>
-          <MacInstallNote accent={ACCENT} />
         </ScrollReveal>
       </div>
     </section>
@@ -614,7 +610,7 @@ const jsonLd = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   softwareVersion: latestRelease.version,
   downloadUrl: 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/latest',
-  screenshot: `${SITE_URL}/images/mermaid-preview-screen-01.png`,
+  screenshot: `${SITE_URL}/images/mermaid-preview-landing.png`,
   releaseNotes: `${SITE_URL}/mermaid-preview/releases`,
   license: 'https://opensource.org/licenses/MIT',
 }

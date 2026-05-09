@@ -11,8 +11,6 @@ import { LaunchBanner } from '@/components/LaunchBanner'
 import { cloudOrbitContent, slothLabsContent } from '@/config/content'
 import MacInstallNote from '@/components/MacInstallNote'
 
-const WAITLIST_FORM_URL = 'https://form.jotform.com/260731775592061'
-
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
 const CLOUDORBIT_LAUNCH = new Date('2026-05-08T00:00:00Z')
@@ -108,12 +106,12 @@ function Hero() {
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-btn bg-[#F5A623] text-[#050d1f] font-bold text-sm hover:brightness-110 transition-all glow-cta hover:-translate-y-0.5"
               />
               <a
-                href={WAITLIST_FORM_URL}
+                href="https://github.com/slothlabsorg/cloudorbit"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center px-6 py-3.5 rounded-btn border border-[#00D4FF] text-[#00D4FF] text-sm font-medium hover:bg-[#00D4FF]/10 transition-all"
               >
-                {hero.ctaSecondary}
+                View on GitHub →
               </a>
             </div>
 

@@ -380,13 +380,13 @@ function Roadmap() {
               </ul>
               <div className="px-6 pb-5">
                 <a
-                  href="https://form.jotform.com/260731775592061"
+                  href="https://github.com/slothlabsorg/wattsorbit"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full text-center px-5 py-3 rounded-xl font-semibold text-sm hover:brightness-110 transition-all"
                   style={{ background: ACCENT, color: BG_BASE }}
                 >
-                  Get notified when Pro launches →
+                  Watch on GitHub →
                 </a>
               </div>
             </div>
