@@ -110,9 +110,12 @@ export default function Navbar() {
                     </Link>
                   ))}
                 </div>
-                <div className="border-t border-[#1a3060] px-3 py-2">
+                <div className="border-t border-[#1a3060] px-3 py-2 flex items-center justify-between">
                   <Link href="/#products" className="text-xs text-[#4A6080] hover:text-[#8BA3C7] transition-colors">
-                    View all products →
+                    View all →
+                  </Link>
+                  <Link href="/tools" className="text-xs text-[#4DA6FF]/60 hover:text-[#4DA6FF] transition-colors">
+                    Other tools →
                   </Link>
                 </div>
               </div>
@@ -198,6 +201,14 @@ export default function Navbar() {
                   </span>
                 </Link>
               ))}
+              <Link
+                href="/tools"
+                className="flex items-center gap-3 py-2 text-xs text-[#4DA6FF]/60 hover:text-[#4DA6FF] transition-colors"
+                onClick={() => setMobile(false)}
+              >
+                <span className="text-base">🔧</span>
+                <span>Other tools →</span>
+              </Link>
             </div>
           )}
 

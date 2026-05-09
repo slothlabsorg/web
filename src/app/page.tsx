@@ -311,6 +311,77 @@ function WhyRust() {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+// ── Other Tools teaser ────────────────────────────────────────────────────────
+
+function OtherTools() {
+  return (
+    <section className="py-16 border-t border-[#0e1f3a]">
+      <div className="site-container">
+        <ScrollReveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+          <div>
+            <span className="text-xs font-semibold tracking-widest uppercase text-[#4A6080]">Beyond the Orbit suite</span>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mt-1" style={{ fontFamily: 'Syne, sans-serif' }}>
+              Other tools
+            </h2>
+            <p className="text-[#8BA3C7] text-sm mt-1 max-w-md">
+              IDE plugins and utilities that don&apos;t fit in the Orbit suite — but are just as free.
+            </p>
+          </div>
+          <Link
+            href="/tools"
+            className="flex-shrink-0 text-sm font-medium text-[#4DA6FF] hover:text-white transition-colors"
+          >
+            Browse all tools →
+          </Link>
+        </ScrollReveal>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <ScrollReveal>
+            <Link
+              href="/mermaid-preview"
+              className="group block rounded-2xl p-5 border border-[#1a3060] bg-[#060d1e] hover:border-[#FF3670]/40 hover:-translate-y-1 transition-all duration-200"
+            >
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: '#FF367012', border: '1px solid #FF367030' }}>
+                  🧜
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-bold text-white text-sm" style={{ fontFamily: 'Syne, sans-serif' }}>Mermaid Preview</h3>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full border font-semibold" style={{ color: '#FF3670', borderColor: '#FF367040', background: '#FF367012' }}>
+                      Released
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-[#4A6080] mt-0.5">JetBrains Plugin · v0.1.0</p>
+                </div>
+              </div>
+              <p className="text-[#8BA3C7] text-xs leading-relaxed">
+                Live Mermaid diagram preview in a side panel. Per-block toggle, 250ms refresh, offline. All JetBrains IDEs 2023.3+.
+              </p>
+              <div className="flex gap-1.5 mt-3 flex-wrap">
+                {['JetBrains', 'Mermaid', 'Markdown'].map(tag => (
+                  <span key={tag} className="px-2 py-0.5 rounded-full text-[10px] bg-[#0d1b3e] text-[#4A6080] border border-[#1a3060]">{tag}</span>
+                ))}
+              </div>
+              <span className="inline-flex items-center gap-1 text-xs font-semibold mt-4" style={{ color: '#FF3670' }}>
+                Learn more →
+              </span>
+            </Link>
+          </ScrollReveal>
+
+          {/* Placeholder — more coming */}
+          <ScrollReveal delay={80}>
+            <div className="rounded-2xl p-5 border border-dashed border-[#1a3060] bg-[#040810] flex flex-col items-center justify-center text-center gap-2 min-h-[180px]">
+              <span className="text-2xl opacity-40">🦥</span>
+              <p className="text-xs text-[#2a3a54]">More tools coming soon</p>
+            </div>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function HomePage() {
   return (
     <main className="bg-[#050d1f]">
@@ -319,6 +390,7 @@ export default function HomePage() {
       <Hero />
       <Products />
       <LaunchRoadmap />
+      <OtherTools />
       <WhyRust />
       <SupportBanner />
       <Footer />

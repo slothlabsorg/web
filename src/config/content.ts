@@ -186,7 +186,7 @@ export const slothLabsContent = {
       { label: 'BastionOrbit', href: '/bastionorbit' },
       { label: 'CloudOrbit', href: '/cloudorbit' },
     ],
-    organization: [{ label: 'About', href: '/about' }, { label: 'Contact', href: '#contact' }],
+    organization: [{ label: 'About', href: '/about' }, { label: 'Other Tools', href: '/tools' }, { label: 'Contact', href: '#contact' }],
     social: [
       { label: 'GitHub', href: 'https://github.com/slothlabsorg', external: true },
       { label: 'Twitter', href: '#', comingSoon: true },
