@@ -1,4 +1,4 @@
-# SlothLabs — Marketing Site
+# SlothLabs — Site
 
 Landing website for [SlothLabs](https://slothlabs.org), built with Next.js 14 (App Router) + Tailwind CSS.
 
