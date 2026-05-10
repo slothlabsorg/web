@@ -24,20 +24,6 @@ export const slothLabsContent = {
     launchBanner: 'Many tools shipping soon — free, native Rust, built for developers',
     items: [
       {
-        name: 'Mermaid Preview',
-        slug: '/mermaid-preview',
-        logo: null,
-        by: '· SlothLabs ·',
-        desc: 'JetBrains IDE plugin that renders every Mermaid diagram in your Markdown files live — side panel, per-block toggle, fully offline. No browser tab, no copy-paste.',
-        tags: ['JetBrains', 'Mermaid', 'Markdown'],
-        cta: 'Learn more →',
-        live: false,
-        accent: '#FF3670',
-        comingSoonDate: '',
-        previewImage: '/images/mermaid-preview-screen-01.png',
-        iconSrc: null,
-      },
-      {
         name: 'CloudOrbit',
         slug: '/cloudorbit',
         logo: '/images/cloudorbit-logo.png',
