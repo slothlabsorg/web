@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import Image from 'next/image'
 
 // ── OS detection ─────────────────────────────────────────────────────────────
@@ -160,8 +161,8 @@ export default function DownloadModal({ buttonLabel, className = '', launchingSo
         </button>
       )}
 
-      {/* Overlay */}
-      {open && (
+      {/* Overlay — rendered via Portal at <body> to escape fixed/transformed ancestors */}
+      {open && createPortal(
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto"
           onClick={close}
@@ -395,7 +396,8 @@ export default function DownloadModal({ buttonLabel, className = '', launchingSo
             )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
