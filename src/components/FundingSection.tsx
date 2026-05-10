@@ -8,6 +8,7 @@ interface Props {
   appName?: string
   iconSrc?: string
   repoSlug?: string
+  isPlugin?: boolean
 }
 
 export default function FundingSection({
@@ -15,6 +16,7 @@ export default function FundingSection({
   appName,
   iconSrc,
   repoSlug,
+  isPlugin = false,
 }: Props) {
   const [donateOpen, setDonateOpen] = useState(false)
   const [installOpen, setInstallOpen] = useState(false)
@@ -26,13 +28,17 @@ export default function FundingSection({
     ? `https://github.com/slothlabsorg/${repoSlug}`
     : 'https://github.com/slothlabsorg'
 
-  const headline = appName
-    ? `${appName} is free. The install warning is Apple's toll, not ours.`
-    : `Every app here is free. The install warning is Apple's toll, not ours.`
+  const headline = isPlugin
+    ? (appName ? `${appName} is free. No strings attached.` : `Free. No strings attached.`)
+    : (appName ? `${appName} is free. The install warning is Apple's toll, not ours.` : `Every app here is free. The install warning is Apple's toll, not ours.`)
 
-  const subtext = appName
-    ? `${appName} is open source — every line is on GitHub. Zero tracking. Zero telemetry. The install warning? That's Apple charging $99 for a certificate. Not us.`
-    : `All SlothLabs apps are open source — every line is on GitHub. Zero tracking. Zero telemetry. The install warning? That's Apple charging $99 for a certificate. Not us.`
+  const subtext = isPlugin
+    ? (appName
+        ? `${appName} is open source — every line is on GitHub. Zero tracking. Zero telemetry. No paywalls, no accounts, no subscription. Install the zip and you're done.`
+        : `All SlothLabs tools are open source — every line is on GitHub. Zero tracking. Zero telemetry.`)
+    : (appName
+        ? `${appName} is open source — every line is on GitHub. Zero tracking. Zero telemetry. The install warning? That's Apple charging $99 for a certificate. Not us.`
+        : `All SlothLabs apps are open source — every line is on GitHub. Zero tracking. Zero telemetry. The install warning? That's Apple charging $99 for a certificate. Not us.`)
 
   const ctaLine = appName
     ? `${appName} runs on spare time.`
@@ -96,53 +102,56 @@ export default function FundingSection({
         <p className="text-[#8BA3C7] leading-relaxed">{subtext}</p>
 
         <p className="text-[#4A6080] text-sm italic leading-relaxed">
-          {ctaLine} There&apos;s no VC money. No subscription. Just a $99 Apple invoice and a hope
-          that enough people find this useful. Every coffee on Ko-fi is one step closer to a clean
-          install — no warning, no friction — for everyone who comes after you.
+          {isPlugin
+            ? `${ctaLine} There's no VC money, no subscription, no ads. Just a team building on nights and weekends. If you find it useful, a coffee goes a long way.`
+            : `${ctaLine} There's no VC money. No subscription. Just a $99 Apple invoice and a hope that enough people find this useful. Every coffee on Ko-fi is one step closer to a clean install — no warning, no friction — for everyone who comes after you.`
+          }
         </p>
 
-        {/* How to open anyway */}
-        <div
-          className="rounded-xl border text-left overflow-hidden"
-          style={{ borderColor: accentBorder, background: accentDim }}
-        >
-          <button
-            onClick={() => setInstallOpen(o => !o)}
-            className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium gap-3"
-            style={{ color: accent }}
+        {/* How to open anyway — macOS apps only */}
+        {!isPlugin && (
+          <div
+            className="rounded-xl border text-left overflow-hidden"
+            style={{ borderColor: accentBorder, background: accentDim }}
           >
-            <span className="flex items-center gap-2">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            <button
+              onClick={() => setInstallOpen(o => !o)}
+              className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium gap-3"
+              style={{ color: accent }}
+            >
+              <span className="flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="flex-shrink-0">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                How to open it anyway (30 seconds)
+              </span>
+              <svg
+                width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                className="flex-shrink-0 transition-transform duration-200"
+                style={{ transform: installOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              >
+                <path d="M6 9l6 6 6-6"/>
               </svg>
-              How to open it anyway (30 seconds)
-            </span>
-            <svg
-              width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-              className="flex-shrink-0 transition-transform duration-200"
-              style={{ transform: installOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
-            >
-              <path d="M6 9l6 6 6-6"/>
-            </svg>
-          </button>
-          {installOpen && (
-            <div
-              className="px-4 pb-5 pt-3 space-y-3 text-sm border-t"
-              style={{ borderColor: accentBorder, color: '#8BA3C7' }}
-            >
-              <p className="font-semibold text-white">Right-click → Open</p>
-              <ol className="space-y-1 list-decimal list-inside text-[#8BA3C7]">
-                <li>Right-click the <code className="px-1 py-0.5 rounded text-xs" style={{ background: `${accent}18`, color: accent }}>.app</code> → <strong className="text-white">Open</strong></li>
-                <li>Click <strong className="text-white">Open</strong> again on the warning dialog</li>
-                <li>macOS remembers — you only do this once</li>
-              </ol>
-              <p className="text-xs text-[#4A6080]">
-                Or: System Settings → Privacy &amp; Security → scroll down → Open Anyway
-              </p>
-            </div>
-          )}
-        </div>
+            </button>
+            {installOpen && (
+              <div
+                className="px-4 pb-5 pt-3 space-y-3 text-sm border-t"
+                style={{ borderColor: accentBorder, color: '#8BA3C7' }}
+              >
+                <p className="font-semibold text-white">Right-click → Open</p>
+                <ol className="space-y-1 list-decimal list-inside text-[#8BA3C7]">
+                  <li>Right-click the <code className="px-1 py-0.5 rounded text-xs" style={{ background: `${accent}18`, color: accent }}>.app</code> → <strong className="text-white">Open</strong></li>
+                  <li>Click <strong className="text-white">Open</strong> again on the warning dialog</li>
+                  <li>macOS remembers — you only do this once</li>
+                </ol>
+                <p className="text-xs text-[#4A6080]">
+                  Or: System Settings → Privacy &amp; Security → scroll down → Open Anyway
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* CTA buttons */}
         <div className="flex flex-wrap items-center gap-3 justify-center lg:justify-start pt-1">
@@ -151,7 +160,7 @@ export default function FundingSection({
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all hover:-translate-y-0.5 hover:brightness-110"
             style={{ background: accent, color: '#050d1f' }}
           >
-            ☕ Help us get that certificate
+            {isPlugin ? '☕ Buy Slothy a coffee' : '☕ Help us get that certificate'}
           </button>
           <a
             href={repoUrl}

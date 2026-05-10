@@ -547,6 +547,7 @@ function Funding() {
       accent={ACCENT}
       appName="Mermaid Preview"
       repoSlug="mermaid-preview-plugin"
+      isPlugin
     />
   )
 }
