@@ -3,6 +3,16 @@
   publish = "out"
 [functions]
   directory = "netlify/functions"
+[edge_functions]
+  # Edge functions in netlify/edge-functions/ are auto-discovered.
+  # stats-auth.ts guards /stats with HTTP Basic Auth.
+
+[[edge_functions]]
+  function = "stats-auth"
+  path = "/stats"
+[[edge_functions]]
+  function = "stats-auth"
+  path = "/stats/*"
 
 # ── Tauri in-app updater endpoints ────────────────────────────────────────────
 # All apps route through /api/updater/:app/:target/:version → Netlify function.
