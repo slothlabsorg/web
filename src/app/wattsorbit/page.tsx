@@ -9,6 +9,7 @@ import { wattsOrbitContent } from '@/config/content'
 import { allReleases } from '@/data/releases'
 import MacInstallNote from '@/components/MacInstallNote'
 import FundingSection from '@/components/FundingSection'
+import ScreenshotGrid from '@/components/ScreenshotLightbox'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison } = wattsOrbitContent
@@ -16,7 +17,8 @@ const { hero, features, comparison } = wattsOrbitContent
 const WATTSORBIT_LAUNCH = new Date('2026-05-08T00:00:00Z')
 const hasRelease = allReleases.wattsorbit.releases.length > 0
 const latestRelease = allReleases.wattsorbit.releases[0]
-const showDownload = hasRelease && new Date() >= WATTSORBIT_LAUNCH
+const isLaunched = new Date() >= WATTSORBIT_LAUNCH
+const showDownload = hasRelease && isLaunched
 
 const ACCENT     = '#F59E0B'
 const ACCENT_DIM = '#F59E0B18'
@@ -105,8 +107,18 @@ function Hero() {
               </a>
             </div>
 
-            <p className="fade-up text-xs" style={{ color: '#6b5300', animationDelay: '0.35s' }}>
-              {hero.launchDate}
+            <p className="fade-up text-xs flex items-center gap-2" style={{ color: isLaunched ? '#10F5B0' : '#6b5300', animationDelay: '0.35s' }}>
+              {isLaunched ? (
+                <>
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10F5B0] opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#10F5B0]" />
+                  </span>
+                  <span className="font-bold tracking-wide">LIVE NOW — macOS only</span>
+                </>
+              ) : (
+                hero.launchDate
+              )}
             </p>
           </div>
 
@@ -222,18 +234,13 @@ function Screenshots() {
           </h2>
         </ScrollReveal>
 
-        <div className="grid md:grid-cols-2 gap-5">
-          {SCREENSHOTS.map((s, i) => (
-            <ScrollReveal key={s.label} delay={i * 80}>
-              <div className="rounded-2xl overflow-hidden border" style={{ borderColor: BORDER }}>
-                <div className="aspect-video bg-cover bg-top" style={{ backgroundImage: `url(${s.src})` }} />
-                <div className="px-4 py-3" style={{ background: BG_BASE }}>
-                  <p className="text-sm font-medium" style={{ color: ACCENT }}>{s.label}</p>
-                </div>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
+        <ScreenshotGrid
+          screenshots={SCREENSHOTS}
+          accent={ACCENT}
+          cardBg={BG_BASE}
+          border={BORDER}
+          layout="grid-2"
+        />
       </div>
     </section>
   )

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import SubscribeModal from './SubscribeModal'
 
 interface Props {
   icon: string        // emoji fallback
@@ -10,6 +11,8 @@ interface Props {
   accent: string
   ctaLabel?: string
   ctaHref?: string
+  /** If true, render a GitHub link instead of the subscribe modal (for released products) */
+  ctaKind?: 'subscribe' | 'link'
 }
 
 export default function ProductNavbar({
@@ -17,8 +20,9 @@ export default function ProductNavbar({
   iconSrc,
   name,
   accent,
-  ctaLabel = 'Join waitlist',
-  ctaHref = 'https://form.jotform.com/260731775592061',
+  ctaLabel = 'Subscribe',
+  ctaHref,
+  ctaKind = 'subscribe',
 }: Props) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobile] = useState(false)
@@ -58,15 +62,25 @@ export default function ProductNavbar({
           <Link href="/" className="text-sm text-[#8BA3C7] hover:text-white transition-colors">
             ← All tools
           </Link>
-          <a
-            href={ctaHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm px-4 py-2 rounded-full font-semibold hover:brightness-110 transition-all"
-            style={{ background: accent, color: '#050d1f' }}
-          >
-            {ctaLabel}
-          </a>
+          {ctaKind === 'link' && ctaHref ? (
+            <a
+              href={ctaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm px-4 py-2 rounded-full font-semibold hover:brightness-110 transition-all"
+              style={{ background: accent, color: '#050d1f' }}
+            >
+              {ctaLabel}
+            </a>
+          ) : (
+            <SubscribeModal
+              accent={accent}
+              source={name.toLowerCase().replace(/\s+/g, '-')}
+              buttonLabel={ctaLabel}
+              className="text-sm px-4 py-2 rounded-full font-semibold hover:brightness-110 transition-all"
+              style={{ background: accent, color: '#050d1f' }}
+            />
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -89,15 +103,25 @@ export default function ProductNavbar({
           <Link href="/" className="text-sm text-[#8BA3C7] hover:text-white py-1" onClick={() => setMobile(false)}>
             ← All SlothLabs tools
           </Link>
-          <a
-            href={ctaHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 w-full text-sm px-4 py-3 rounded-full font-semibold text-center"
-            style={{ background: accent, color: '#050d1f' }}
-          >
-            {ctaLabel}
-          </a>
+          {ctaKind === 'link' && ctaHref ? (
+            <a
+              href={ctaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 w-full text-sm px-4 py-3 rounded-full font-semibold text-center"
+              style={{ background: accent, color: '#050d1f' }}
+            >
+              {ctaLabel}
+            </a>
+          ) : (
+            <SubscribeModal
+              accent={accent}
+              source={name.toLowerCase().replace(/\s+/g, '-')}
+              buttonLabel={ctaLabel}
+              className="mt-2 w-full text-sm px-4 py-3 rounded-full font-semibold text-center"
+              style={{ background: accent, color: '#050d1f' }}
+            />
+          )}
         </div>
       )}
     </header>

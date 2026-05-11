@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SlothLabs — form registration (internal)</title>
+  <meta name="robots" content="noindex, nofollow" />
+</head>
+<body>
+  <!--
+    This page exists solely so Netlify's build-time form parser can discover
+    the email-signup form. The real form is submitted from a React modal
+    (SubscribeModal.tsx) via fetch to '/' with application/x-www-form-urlencoded.
+    Netlify matches by form-name.
+
+    Email notifications can be configured in the Netlify dashboard:
+      Site settings → Forms → Notifications → Add notification → Email
+  -->
+  <form name="email-signup" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="email-signup" />
+    <input type="email"  name="email"     />
+    <input type="text"   name="source"    />
+    <input type="text"   name="bot-field" />
+  </form>
+</body>
+</html>

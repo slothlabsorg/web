@@ -113,15 +113,29 @@ function Products() {
           <p className="text-[#8BA3C7] text-base lg:text-lg max-w-xl mx-auto">{products.sub}</p>
         </ScrollReveal>
 
-        <ProductCarousel products={products.items.map(p => {
-          const key = p.slug.replace('/', '')
-          const released = (allReleases[key]?.releases.length ?? 0) > 0
-          return {
-            ...p,
-            comingSoonDate: released ? '' : (p.comingSoonDate || 'Coming soon'),
-            cta: released ? 'Download →' : p.cta,
-          }
-        }) as Parameters<typeof ProductCarousel>[0]['products']} />
+        <ProductCarousel products={(() => {
+          const NOW_TS = new Date().getTime()
+          const decorated = products.items.map(p => {
+            const key = p.slug.replace('/', '')
+            const released = (allReleases[key]?.releases.length ?? 0) > 0
+            const launchTs = p.comingSoonDate ? new Date(p.comingSoonDate).getTime() : NaN
+            const isLive = released || (!isNaN(launchTs) && launchTs <= NOW_TS)
+            return {
+              ...p,
+              live: isLive,
+              comingSoonDate: isLive ? '' : (p.comingSoonDate || 'Coming soon'),
+              cta: isLive ? (released ? 'Download →' : 'Learn more →') : p.cta,
+              _ts: isNaN(launchTs) ? Infinity : launchTs,
+            }
+          })
+          // Sort: live first, then upcoming by earliest launch date
+          decorated.sort((a, b) => {
+            if (a.live && !b.live) return -1
+            if (!a.live && b.live) return 1
+            return a._ts - b._ts
+          })
+          return decorated as Parameters<typeof ProductCarousel>[0]['products']
+        })()} />
       </div>
     </section>
   )
@@ -129,13 +143,29 @@ function Products() {
 
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
-const ROADMAP = [
-  { name: 'CloudOrbit',   date: 'May 8',    desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
-  { name: 'WattsOrbit',   date: 'May 8',    desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
-  { name: 'ProxyOrbit',   date: 'May 22',   desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
-  { name: 'DataOrbit',    date: 'June 5',   desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
-  { name: 'BastionOrbit', date: 'June 19',  desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
+const RAW_ROADMAP = [
+  { name: 'CloudOrbit',   launchDate: '2026-05-08', date: 'May 8',    desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
+  { name: 'WattsOrbit',   launchDate: '2026-05-08', date: 'May 8',    desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
+  { name: 'ProxyOrbit',   launchDate: '2026-05-22', date: 'May 22',   desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
+  { name: 'DataOrbit',    launchDate: '2026-06-05', date: 'June 5',   desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
+  { name: 'BastionOrbit', launchDate: '2026-06-19', date: 'June 19',  desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
 ]
+
+// Compute status at build time — live items first, then upcoming by date.
+// The earliest upcoming item is marked "Next release".
+const NOW = new Date()
+const ROADMAP = RAW_ROADMAP
+  .map(r => ({ ...r, _ts: new Date(r.launchDate).getTime(), isLive: new Date(r.launchDate).getTime() <= NOW.getTime() }))
+  .sort((a, b) => {
+    // Live first (in original order), then upcoming ascending by date
+    if (a.isLive && !b.isLive) return -1
+    if (!a.isLive && b.isLive) return 1
+    return a._ts - b._ts
+  })
+  .map((r, i, arr) => {
+    const firstUpcomingIdx = arr.findIndex(x => !x.isLive)
+    return { ...r, isNext: !r.isLive && i === firstUpcomingIdx }
+  })
 
 function LaunchRoadmap() {
   return (
@@ -168,21 +198,56 @@ function LaunchRoadmap() {
                   <div className="flex flex-col items-center text-center gap-3">
                     {/* Node */}
                     <div
-                      className="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl border-2 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg relative z-10 bg-[#0d1b3e]"
+                      className="relative w-20 h-20 rounded-2xl flex items-center justify-center text-3xl border-2 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg z-10 bg-[#0d1b3e]"
                       style={{
-                        borderColor: `${item.accent}50`,
+                        borderColor: item.isLive ? `${item.accent}` : `${item.accent}50`,
+                        boxShadow: item.isLive ? `0 0 24px ${item.accent}40` : undefined,
                       }}
                     >
                       {item.icon}
+                      {item.isLive && (
+                        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#10F5B0' }} />
+                          <span className="relative inline-flex rounded-full h-3.5 w-3.5 border-2 border-[#0d1b3e]" style={{ background: '#10F5B0' }} />
+                        </span>
+                      )}
                     </div>
 
-                    {/* Date badge */}
-                    <span
-                      className="px-3 py-1 rounded-full text-xs font-semibold border"
-                      style={{ borderColor: `${item.accent}40`, color: item.accent, background: `${item.accent}10` }}
-                    >
-                      {item.date}
-                    </span>
+                    {/* Status badge */}
+                    {item.isLive ? (
+                      <span
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border tracking-wide"
+                        style={{ borderColor: '#10F5B0', color: '#10F5B0', background: '#10F5B015' }}
+                      >
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#10F5B0' }} />
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: '#10F5B0' }} />
+                        </span>
+                        LIVE
+                      </span>
+                    ) : item.isNext ? (
+                      <div className="flex flex-col items-center gap-1">
+                        <span
+                          className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest"
+                          style={{ color: item.accent, background: `${item.accent}18`, border: `1px solid ${item.accent}50` }}
+                        >
+                          Next release
+                        </span>
+                        <span
+                          className="px-3 py-1 rounded-full text-xs font-semibold border"
+                          style={{ borderColor: `${item.accent}40`, color: item.accent, background: `${item.accent}10` }}
+                        >
+                          {item.date}
+                        </span>
+                      </div>
+                    ) : (
+                      <span
+                        className="px-3 py-1 rounded-full text-xs font-semibold border"
+                        style={{ borderColor: `${item.accent}40`, color: item.accent, background: `${item.accent}10` }}
+                      >
+                        {item.date}
+                      </span>
+                    )}
 
                     <div>
                       <p className="font-bold text-white text-base" style={{ fontFamily: 'Syne, sans-serif' }}>{item.name}</p>
@@ -190,7 +255,7 @@ function LaunchRoadmap() {
                     </div>
 
                     <span className="text-xs font-medium transition-colors" style={{ color: item.accent }}>
-                      See details →
+                      {item.isLive ? 'Download →' : 'See details →'}
                     </span>
                   </div>
                 </Link>

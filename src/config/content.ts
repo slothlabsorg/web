@@ -198,7 +198,7 @@ export const cloudOrbitContent = {
     subtitle:
       'A visual AWS session manager that works behind Cloudflare. Switch accounts, manage sessions, detect EKS clusters — so you can focus on what matters.',
     ctaPrimary: 'Download for macOS',
-    ctaSecondary: 'Join waitlist',
+    ctaSecondary: 'Subscribe for updates',
     note: 'Also available for Windows & Linux',
     heroImage: '/images/cloudorbit-hero.png',
   },
@@ -258,7 +258,7 @@ export const cloudOrbitContent = {
     headline: 'Ready to save time?',
     sub: 'Join developers already using CloudOrbit.',
     primary: 'Download for macOS',
-    secondary: 'Join waitlist',
+    secondary: 'Subscribe for updates',
   },
 
   footer: {
@@ -402,7 +402,7 @@ export const dataOrbitContent = {
     eyebrow: 'DATAORBIT',
     headline: 'Query your databases\nthe way they deserve',
     subtitle: 'Stop fighting the AWS console. DataOrbit gives DynamoDB, CouchDB, and time-series databases the native query client they always needed — with live streaming, cross-joins, and full history.',
-    ctaPrimary: 'Join waitlist',
+    ctaPrimary: 'Subscribe for updates',
     ctaSecondary: 'Learn more ↓',
     launchDate: 'Launching June 5, 2026',
   },
@@ -481,7 +481,7 @@ export const proxyOrbitContent = {
     eyebrow: 'PROXYORBIT',
     headline: 'Every API call,\ncaptured and understood',
     subtitle: 'A native HTTP/HTTPS proxy inspector that runs on your Mac. Capture traffic from any app, filter by method and status, inspect requests in real time — and stop paying Charles Proxy every year.',
-    ctaPrimary: 'Join waitlist',
+    ctaPrimary: 'Subscribe for updates',
     ctaSecondary: 'Learn more ↓',
     launchDate: 'Launching May 22, 2026',
   },
@@ -505,6 +505,12 @@ export const proxyOrbitContent = {
       { feature: '< 30 MB RAM idle', proxyorbit: '✅', charles: '❌', proxyman: '❌ 200MB+', mitm: '✅' },
     ],
   },
+  screenshots: [
+    { src: '/images/proxyorbit-screen-capture.png',  label: 'Live capture — every request, filterable and inspectable' },
+    { src: '/images/proxyorbit-screen-detail.png',   label: 'Request detail — headers, body, timing in one view' },
+    { src: '/images/proxyorbit-screen-filter.png',   label: 'Combined filters — method, status, and URL match' },
+    { src: '/images/proxyorbit-screen-settings.png', label: 'Settings — port, system proxy toggle, exclusions' },
+  ],
 }
 
 // ─── BASTIONORBIT ─────────────────────────────────────────────────────────────
@@ -514,7 +520,7 @@ export const bastionOrbitContent = {
     badge: '🔐 SSH · Tunnels · Bastion',
     headline: 'SSH tunnels in one click\nnever left open',
     subtitle: 'Stop memorizing SSH flags. BastionOrbit manages your bastion hosts, opens tunnels with auto-expiry TTL, and probes connectivity — so you can connect your tools and get back to work.',
-    ctaPrimary: 'Join waitlist',
+    ctaPrimary: 'Subscribe for updates',
     ctaSecondary: 'See features ↓',
     launchDate: 'Launching June 19, 2026',
   },

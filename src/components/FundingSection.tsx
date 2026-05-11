@@ -87,11 +87,6 @@ export default function FundingSection({
       {/* ── Copy ─────────────────────────────────────────────────── */}
       <div className="flex-1 space-y-4 text-center lg:text-left max-w-xl">
 
-        {/* Label lives here on desktop — stays in-flow with the copy column */}
-        <p className="text-xs font-semibold tracking-widest uppercase hidden lg:block" style={{ color: accent }}>
-          A note from Slothy
-        </p>
-
         <h2
           className="text-2xl md:text-3xl font-bold text-white leading-tight"
           style={{ fontFamily: 'Syne, sans-serif' }}
@@ -226,6 +221,14 @@ export default function FundingSection({
               <path d="M6 9l6 6 6-6"/>
             </svg>
           </button>
+
+          {/* Desktop eyebrow — centered above, matches other section headers */}
+          <p
+            className="hidden lg:block text-center text-xs font-semibold tracking-widest uppercase mb-10"
+            style={{ color: accent }}
+          >
+            A note from Slothy
+          </p>
 
           {/* Content — accordion on mobile, always shown on desktop */}
           <div className={mobileOpen ? 'block' : 'hidden lg:block'}>

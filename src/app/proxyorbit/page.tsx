@@ -8,9 +8,11 @@ import CustomCursor from '@/components/CustomCursor'
 import { proxyOrbitContent } from '@/config/content'
 import MacInstallNote from '@/components/MacInstallNote'
 import FundingSection from '@/components/FundingSection'
+import SubscribeModal from '@/components/SubscribeModal'
+import ScreenshotGrid from '@/components/ScreenshotLightbox'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
-const { hero, features, comparison } = proxyOrbitContent
+const { hero, features, comparison, screenshots } = proxyOrbitContent
 
 const ACCENT     = '#94A3B8'
 const ACCENT_DIM = '#94A3B815'
@@ -77,15 +79,13 @@ function Hero() {
             </p>
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
-              <a
-                href="https://form.jotform.com/260731775592061"
-                target="_blank"
-                rel="noopener noreferrer"
+              <SubscribeModal
+                accent={ACCENT}
+                source="proxyorbit"
+                buttonLabel={hero.ctaPrimary}
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
                 style={{ background: ACCENT_HI, color: BG_BASE }}
-              >
-                {hero.ctaPrimary}
-              </a>
+              />
               <a href="#features" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
                 {hero.ctaSecondary}
               </a>
@@ -329,19 +329,17 @@ function CTA() {
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Stop paying Charles every year
           </h2>
-          <p className="text-lg mt-2" style={{ color: '#64748B' }}>ProxyOrbit launches April 24. Free, native, forever.</p>
+          <p className="text-lg mt-2" style={{ color: '#64748B' }}>ProxyOrbit launches May 22. Free, native, forever.</p>
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <a
-              href="https://form.jotform.com/260731775592061"
-              target="_blank"
-              rel="noopener noreferrer"
+            <SubscribeModal
+              accent={ACCENT}
+              source="proxyorbit-cta"
+              buttonLabel="Subscribe for updates"
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT_HI, color: BG_BASE }}
-            >
-              Join the waitlist
-            </a>
+            />
             <Link href="/" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
               ← All SlothLabs tools
             </Link>
@@ -371,6 +369,31 @@ const jsonLd = {
   license: 'https://opensource.org/licenses/MIT',
 }
 
+// ── Screenshots ───────────────────────────────────────────────────────────────
+
+function Screenshots() {
+  return (
+    <section className="py-28" style={{ background: BG_BASE }}>
+      <div className="site-container">
+        <ScrollReveal className="text-center mb-16 space-y-4">
+          <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: ACCENT }}>In action</span>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            See it for yourself
+          </h2>
+          <p className="text-lg" style={{ color: '#64748B' }}>Real screenshots from the running app. Click any to zoom.</p>
+        </ScrollReveal>
+
+        <ScreenshotGrid
+          screenshots={screenshots}
+          accent={ACCENT_HI}
+          cardBg={BG_CARD}
+          border={BORDER}
+        />
+      </div>
+    </section>
+  )
+}
+
 export default function ProxyOrbitPage() {
   return (
     <main style={{ background: BG_BASE }}>
@@ -380,6 +403,7 @@ export default function ProxyOrbitPage() {
       <Hero />
       <Features />
       <Problem />
+      <Screenshots />
       <Comparison />
       <RustSection />
       <Funding />

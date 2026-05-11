@@ -83,8 +83,21 @@ export default function ProductCarousel({ products }: { products: Product[] }) {
                 style={{ background: `radial-gradient(circle at 50% 0%, ${product.accent}12 0%, transparent 70%)` }}
               />
 
-              {/* Coming soon badge — only shown when there's a date */}
-              {product.comingSoonDate && (
+              {/* Status badge: LIVE (with pulse) or coming-soon date */}
+              {product.live ? (
+                <div className="absolute top-3.5 right-3.5 z-10">
+                  <span
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border tracking-widest uppercase"
+                    style={{ borderColor: '#10F5B0', color: '#10F5B0', background: '#10F5B018' }}
+                  >
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#10F5B0' }} />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: '#10F5B0' }} />
+                    </span>
+                    Live
+                  </span>
+                </div>
+              ) : product.comingSoonDate && (
                 <div className="absolute top-3.5 right-3.5 z-10">
                   <span
                     className="badge-shimmer px-2.5 py-1 rounded-full text-[10px] font-semibold border"

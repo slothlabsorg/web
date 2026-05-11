@@ -6,6 +6,7 @@ import ScrollReveal from '@/components/ScrollReveal'
 import StarField from '@/components/StarField'
 import CustomCursor from '@/components/CustomCursor'
 import FundingSection from '@/components/FundingSection'
+import ScreenshotGrid from '@/components/ScreenshotLightbox'
 import { mermaidPreviewContent } from '@/config/content'
 import { allReleases } from '@/data/releases'
 
@@ -215,23 +216,12 @@ function Screenshots() {
           <p className="text-lg" style={{ color: '#7a4060' }}>Real screenshots from IntelliJ IDEA with the plugin installed.</p>
         </ScrollReveal>
 
-        <div className="space-y-8">
-          {screenshots.map((s, i) => (
-            <ScrollReveal key={s.src} delay={i * 80}>
-              <div className="rounded-2xl overflow-hidden border" style={{ borderColor: BORDER }}>
-                <img
-                  src={s.src}
-                  alt={s.label}
-                  className="w-full h-auto object-cover"
-                  loading="lazy"
-                />
-                <div className="px-5 py-3 text-sm font-medium" style={{ background: BG_CARD, color: ACCENT_HI }}>
-                  {s.label}
-                </div>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
+        <ScreenshotGrid
+          screenshots={screenshots}
+          accent={ACCENT_HI}
+          cardBg={BG_CARD}
+          border={BORDER}
+        />
       </div>
     </section>
   )

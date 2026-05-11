@@ -8,6 +8,8 @@ import CustomCursor from '@/components/CustomCursor'
 import { dataOrbitContent } from '@/config/content'
 import MacInstallNote from '@/components/MacInstallNote'
 import FundingSection from '@/components/FundingSection'
+import SubscribeModal from '@/components/SubscribeModal'
+import ScreenshotGrid from '@/components/ScreenshotLightbox'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison, screenshots } = dataOrbitContent
@@ -77,15 +79,13 @@ function Hero() {
             </p>
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
-              <a
-                href="https://form.jotform.com/260731775592061"
-                target="_blank"
-                rel="noopener noreferrer"
+              <SubscribeModal
+                accent={ACCENT}
+                source="dataorbit"
+                buttonLabel={hero.ctaPrimary}
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm text-[#060614] hover:brightness-110 transition-all hover:-translate-y-0.5"
                 style={{ background: ACCENT }}
-              >
-                {hero.ctaPrimary}
-              </a>
+              />
               <a href="#features" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
                 {hero.ctaSecondary}
               </a>
@@ -247,16 +247,13 @@ function Screenshots() {
           <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#4A6080' }}>Screenshots</span>
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>See it in action</h2>
         </ScrollReveal>
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {screenshots.map((shot, i) => (
-            <ScrollReveal key={shot.src} delay={i * 60}>
-              <div className="rounded-xl overflow-hidden border group hover:border-[#8B5CF650] transition-colors" style={{ borderColor: BORDER }}>
-                <div className="aspect-video bg-cover bg-top group-hover:scale-105 transition-transform duration-300" style={{ backgroundImage: `url(${shot.src})` }} />
-                <p className="text-xs text-[#4A6080] p-3 text-center">{shot.label}</p>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
+        <ScreenshotGrid
+          screenshots={screenshots}
+          accent={ACCENT}
+          cardBg={BG_BASE}
+          border={BORDER}
+          layout="grid-4"
+        />
       </div>
     </section>
   )
@@ -285,19 +282,17 @@ function CTA() {
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Ready to stop fighting the AWS console?
           </h2>
-          <p className="text-[#8BA3C7] text-lg mt-2">DataOrbit launches June 5. Join the waitlist and be first.</p>
+          <p className="text-[#8BA3C7] text-lg mt-2">DataOrbit launches June 5. Subscribe to hear when it drops.</p>
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <a
-              href="https://form.jotform.com/260731775592061"
-              target="_blank"
-              rel="noopener noreferrer"
+            <SubscribeModal
+              accent={ACCENT}
+              source="dataorbit-cta"
+              buttonLabel="Subscribe for updates"
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm text-[#060614] hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT }}
-            >
-              Join the waitlist
-            </a>
+            />
             <Link href="/" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
               ← All SlothLabs tools
             </Link>
