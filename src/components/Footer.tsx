@@ -165,13 +165,17 @@ export default function Footer({ accent = '#4DA6FF', showSuiteLink = false }: Pr
             <p className="text-xs text-[#4A6080]/80 max-w-xl mx-auto">{footer.trademark}</p>
           )}
           <div className="flex justify-center">
-            <iframe
-              src="https://github.com/sponsors/slothlabsorg/button"
-              title="Sponsor slothlabsorg"
-              height="32"
-              width="114"
-              style={{ border: 0, borderRadius: '6px' }}
-            />
+            <a
+              href="https://github.com/slothlabsorg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold text-[#8BA3C7] bg-[#0d1b3e] border border-[#1a3060] hover:border-[#4DA6FF]/40 hover:text-white transition-all"
+            >
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
+                <path d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+              </svg>
+              Sponsor
+            </a>
           </div>
         </div>
       </div>
