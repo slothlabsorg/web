@@ -13,6 +13,8 @@ interface Props {
   ctaHref?: string
   /** If true, render a GitHub link instead of the subscribe modal (for released products) */
   ctaKind?: 'subscribe' | 'link'
+  /** Optional in-site link (e.g. '/proxyorbit/docs') shown between "All tools" and the CTA. */
+  docsHref?: string
 }
 
 export default function ProductNavbar({
@@ -23,6 +25,7 @@ export default function ProductNavbar({
   ctaLabel = 'Subscribe',
   ctaHref,
   ctaKind = 'subscribe',
+  docsHref,
 }: Props) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobile] = useState(false)
@@ -62,6 +65,11 @@ export default function ProductNavbar({
           <Link href="/" className="text-sm text-[#8BA3C7] hover:text-white transition-colors">
             ← All tools
           </Link>
+          {docsHref && (
+            <Link href={docsHref} className="text-sm text-[#8BA3C7] hover:text-white transition-colors">
+              Docs
+            </Link>
+          )}
           {ctaKind === 'link' && ctaHref ? (
             <a
               href={ctaHref}
@@ -103,6 +111,11 @@ export default function ProductNavbar({
           <Link href="/" className="text-sm text-[#8BA3C7] hover:text-white py-1" onClick={() => setMobile(false)}>
             ← All SlothLabs tools
           </Link>
+          {docsHref && (
+            <Link href={docsHref} className="text-sm text-[#8BA3C7] hover:text-white py-1" onClick={() => setMobile(false)}>
+              Docs
+            </Link>
+          )}
           {ctaKind === 'link' && ctaHref ? (
             <a
               href={ctaHref}

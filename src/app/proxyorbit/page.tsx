@@ -329,7 +329,7 @@ function CTA() {
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Stop paying Charles every year
           </h2>
-          <p className="text-lg mt-2" style={{ color: '#64748B' }}>ProxyOrbit launches May 22. Free, native, forever.</p>
+          <p className="text-lg mt-2" style={{ color: '#64748B' }}>ProxyOrbit launches Friday, May 15. Free, native, forever.</p>
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
@@ -340,6 +340,9 @@ function CTA() {
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT_HI, color: BG_BASE }}
             />
+            <Link href="/proxyorbit/docs" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
+              Read the docs →
+            </Link>
             <Link href="/" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
               ← All SlothLabs tools
             </Link>
@@ -357,12 +360,12 @@ const jsonLd = {
   '@type': 'SoftwareApplication',
   name: 'ProxyOrbit',
   applicationCategory: 'DeveloperApplication',
-  operatingSystem: 'macOS',
+  operatingSystem: 'macOS, Windows, Linux',
   description: 'Native HTTP/HTTPS proxy inspector. Capture traffic, filter requests, inspect in real time. Free Charles Proxy alternative built in Rust.',
   url: `${SITE_URL}/proxyorbit`,
   author: { '@type': 'Organization', name: 'SlothLabs', url: SITE_URL },
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-  softwareVersion: '0.1.0',
+  softwareVersion: '1.0.0',
   downloadUrl: 'https://github.com/slothlabsorg/proxyorbit/releases/latest',
   screenshot: `${SITE_URL}/images/proxyorbit-landing.png`,
   releaseNotes: 'https://slothlabs.org/proxyorbit/releases',
@@ -399,7 +402,7 @@ export default function ProxyOrbitPage() {
     <main style={{ background: BG_BASE }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <CustomCursor />
-      <ProductNavbar icon="🔍" iconSrc="/images/proxyorbit-icon.png" name="ProxyOrbit" accent={ACCENT} />
+      <ProductNavbar icon="🔍" iconSrc="/images/proxyorbit-icon.png" name="ProxyOrbit" accent={ACCENT} docsHref="/proxyorbit/docs" />
       <Hero />
       <Features />
       <Problem />
