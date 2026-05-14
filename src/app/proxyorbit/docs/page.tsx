@@ -420,6 +420,17 @@ export SSL_CERT_FILE=~/.proxyorbit/ca/ca.pem`} />
   troubleshoot: (
     <>
       <H>Troubleshooting</H>
+      <H3>App crashed and now terminals can&apos;t reach the network</H3>
+      <P>If ProxyOrbit was killed by SIGKILL, panic, or OS shutdown before the cleanup hook could run, the launchd <C>HTTP_PROXY</C> / <C>HTTPS_PROXY</C> / <C>ALL_PROXY</C> env vars stay set and every new process tries to route through a dead <C>127.0.0.1:8080</C>.</P>
+      <P><strong className="text-white">Self-heal:</strong> relaunch ProxyOrbit. On startup it detects orphaned env vars and clears them automatically.</P>
+      <P><strong className="text-white">Manual fix from any terminal:</strong></P>
+      <CodeBlock code={`for k in HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy; do
+  launchctl unsetenv "$k"
+done
+# Then relaunch any already-open terminals / IDEs.`} />
+      <Callout type="info">
+        CA-trust env vars (<C>NODE_EXTRA_CA_CERTS</C>, <C>SSL_CERT_FILE</C>, <C>REQUESTS_CA_BUNDLE</C>, <C>CURL_CA_BUNDLE</C>) are deliberately left in place when the app dies. They&apos;re additive, the referenced PEM file still exists on disk, and clearing them could push Node tools off whatever VPN/corporate trust chain was layered on top.
+      </Callout>
       <H3>&quot;Proxy running, 0 requests&quot;</H3>
       <P>System-proxy toggle appears on but traffic isn&apos;t routed. Run <C>networksetup -getwebproxy Wi-Fi</C>. If it prints <C>Enabled: No</C>, your MDM is blocking the state change — jump to <Link href="#zscaler" style={{ color: ACCENT_HI }} className="underline">Zscaler / Jamf</Link>.</P>
       <H3>CLI tools don&apos;t see the proxy</H3>
