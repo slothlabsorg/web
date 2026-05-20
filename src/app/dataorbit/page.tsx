@@ -10,9 +10,17 @@ import MacInstallNote from '@/components/MacInstallNote'
 import FundingSection from '@/components/FundingSection'
 import SubscribeModal from '@/components/SubscribeModal'
 import ScreenshotGrid from '@/components/ScreenshotLightbox'
+import { LaunchBanner } from '@/components/LaunchBanner'
+import { allReleases } from '@/data/releases'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison, screenshots } = dataOrbitContent
+
+const DATAORBIT_LAUNCH = new Date('2026-05-22T12:00:00Z')
+const isLaunched = new Date() >= DATAORBIT_LAUNCH
+const hasRelease = allReleases.dataorbit.releases.length > 0
+const latestRelease = allReleases.dataorbit.releases[0]
+const showDownload = hasRelease && isLaunched
 
 const ACCENT      = '#8B5CF6'
 const ACCENT_DIM  = '#8B5CF620'
@@ -94,19 +102,37 @@ function Hero() {
             </p>
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
+              {showDownload ? (
+                <a
+                  href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/dataorbit/releases/latest'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+                  style={{ background: ACCENT, color: '#060614' }}
+                >
+                  Download v{latestRelease.version}
+                </a>
+              ) : (
+                <span
+                  title="Available May 22, 2026"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm border opacity-70 cursor-not-allowed"
+                  style={{ borderColor: ACCENT_MID, color: ACCENT, background: ACCENT_DIM }}
+                >
+                  Download — May 22
+                </span>
+              )}
               <SubscribeModal
                 accent={ACCENT}
                 source="dataorbit"
-                buttonLabel={hero.ctaPrimary}
-                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm text-[#060614] hover:brightness-110 transition-all hover:-translate-y-0.5"
-                style={{ background: ACCENT }}
+                buttonLabel={showDownload ? 'Get update notifications' : 'Subscribe for updates'}
+                className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all"
+                style={{ borderColor: ACCENT_MID, color: ACCENT }}
               />
-              <a href="#features" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
-                {hero.ctaSecondary}
-              </a>
             </div>
 
-            <p className="fade-up text-xs" style={{ color: '#6B5B9A', animationDelay: '0.35s' }}>{hero.launchDate}</p>
+            <div className="fade-up" style={{ animationDelay: '0.35s' }}>
+              <LaunchBanner variant="subtle" launchDate={DATAORBIT_LAUNCH} accent={ACCENT} />
+            </div>
           </div>
 
           {/* Right — hero image */}
@@ -297,16 +323,42 @@ function CTA() {
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Ready to stop fighting the AWS console?
           </h2>
-          <p className="text-[#8BA3C7] text-lg mt-2">DataOrbit launches June 5. Subscribe to hear when it drops.</p>
+          <p className="text-[#8BA3C7] text-lg mt-2">
+            {showDownload
+              ? 'DataOrbit is live. Free forever. Native Rust binary.'
+              : 'DataOrbit launches Friday, May 22, 2026. Subscribe to hear when it drops.'}
+          </p>
+          <div className="mt-3 flex justify-center">
+            <LaunchBanner variant="subtle" launchDate={DATAORBIT_LAUNCH} accent={ACCENT} />
+          </div>
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            {showDownload ? (
+              <a
+                href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/dataorbit/releases/latest'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+                style={{ background: ACCENT, color: '#060614' }}
+              >
+                Download v{latestRelease.version}
+              </a>
+            ) : (
+              <span
+                title="Available May 22, 2026"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm border opacity-70 cursor-not-allowed"
+                style={{ borderColor: ACCENT_MID, color: ACCENT, background: ACCENT_DIM }}
+              >
+                Download — May 22
+              </span>
+            )}
             <SubscribeModal
               accent={ACCENT}
               source="dataorbit-cta"
-              buttonLabel="Subscribe for updates"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm text-[#060614] hover:brightness-110 transition-all hover:-translate-y-0.5"
-              style={{ background: ACCENT }}
+              buttonLabel={showDownload ? 'Get update notifications' : 'Subscribe for updates'}
+              className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80"
+              style={{ borderColor: ACCENT_MID, color: ACCENT }}
             />
             <Link href="/" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
               ← All SlothLabs tools

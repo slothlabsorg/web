@@ -10,6 +10,8 @@ import MacInstallNote from '@/components/MacInstallNote'
 import FundingSection from '@/components/FundingSection'
 import SubscribeModal from '@/components/SubscribeModal'
 import ScreenshotGrid from '@/components/ScreenshotLightbox'
+import { LaunchBanner } from '@/components/LaunchBanner'
+import { allReleases } from '@/data/releases'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison, screenshots } = proxyOrbitContent
@@ -21,6 +23,12 @@ const ACCENT_HI  = '#CBD5E1'
 const BG_BASE    = '#070a0f'
 const BG_CARD    = '#0c1018'
 const BORDER     = '#1e2535'
+
+const PROXYORBIT_LAUNCH = new Date('2026-06-12T12:00:00Z')
+const isLaunched = new Date() >= PROXYORBIT_LAUNCH
+const hasRelease = allReleases.proxyorbit.releases.length > 0
+const latestRelease = allReleases.proxyorbit.releases[0]
+const showDownload = hasRelease && isLaunched
 
 export const metadata: Metadata = {
   title: 'Free Charles Proxy Alternative for macOS — ProxyOrbit · HTTP/HTTPS Inspector',
@@ -94,19 +102,37 @@ function Hero() {
             </p>
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
+              {showDownload ? (
+                <a
+                  href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/proxyorbit/releases/latest'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+                  style={{ background: ACCENT_HI, color: BG_BASE }}
+                >
+                  Download v{latestRelease.version}
+                </a>
+              ) : (
+                <span
+                  title="Available June 12, 2026"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm border opacity-70 cursor-not-allowed"
+                  style={{ borderColor: ACCENT_MID, color: ACCENT_HI, background: ACCENT_DIM }}
+                >
+                  Download — June 12
+                </span>
+              )}
               <SubscribeModal
                 accent={ACCENT}
                 source="proxyorbit"
-                buttonLabel={hero.ctaPrimary}
-                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
-                style={{ background: ACCENT_HI, color: BG_BASE }}
+                buttonLabel={showDownload ? 'Get update notifications' : 'Subscribe for updates'}
+                className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all"
+                style={{ borderColor: ACCENT_MID, color: ACCENT }}
               />
-              <a href="#features" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
-                {hero.ctaSecondary}
-              </a>
             </div>
 
-            <p className="fade-up text-xs" style={{ color: '#334155', animationDelay: '0.35s' }}>{hero.launchDate}</p>
+            <div className="fade-up" style={{ animationDelay: '0.35s' }}>
+              <LaunchBanner variant="subtle" launchDate={PROXYORBIT_LAUNCH} accent={ACCENT_HI} />
+            </div>
           </div>
 
           {/* Right — hero image */}
@@ -344,16 +370,42 @@ function CTA() {
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Stop paying Charles every year
           </h2>
-          <p className="text-lg mt-2" style={{ color: '#64748B' }}>ProxyOrbit launches Friday, May 15. Free, native, forever.</p>
+          <p className="text-lg mt-2" style={{ color: '#64748B' }}>
+            {showDownload
+              ? 'ProxyOrbit is live. Free, native, forever.'
+              : 'ProxyOrbit launches Friday, June 12, 2026. Subscribe to hear when it drops.'}
+          </p>
+          <div className="mt-3 flex justify-center">
+            <LaunchBanner variant="subtle" launchDate={PROXYORBIT_LAUNCH} accent={ACCENT_HI} />
+          </div>
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            {showDownload ? (
+              <a
+                href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/proxyorbit/releases/latest'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+                style={{ background: ACCENT_HI, color: BG_BASE }}
+              >
+                Download v{latestRelease.version}
+              </a>
+            ) : (
+              <span
+                title="Available June 12, 2026"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm border opacity-70 cursor-not-allowed"
+                style={{ borderColor: ACCENT_MID, color: ACCENT_HI, background: ACCENT_DIM }}
+              >
+                Download — June 12
+              </span>
+            )}
             <SubscribeModal
               accent={ACCENT}
               source="proxyorbit-cta"
-              buttonLabel="Subscribe for updates"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
-              style={{ background: ACCENT_HI, color: BG_BASE }}
+              buttonLabel={showDownload ? 'Get update notifications' : 'Subscribe for updates'}
+              className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80"
+              style={{ borderColor: ACCENT_MID, color: ACCENT }}
             />
             <Link href="/proxyorbit/docs" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
               Read the docs →

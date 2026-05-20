@@ -9,6 +9,8 @@ import { bastionOrbitContent } from '@/config/content'
 import MacInstallNote from '@/components/MacInstallNote'
 import FundingSection from '@/components/FundingSection'
 import SubscribeModal from '@/components/SubscribeModal'
+import { LaunchBanner } from '@/components/LaunchBanner'
+import { allReleases } from '@/data/releases'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison } = bastionOrbitContent
@@ -19,6 +21,12 @@ const ACCENT_MID = '#10B98150'
 const BG_BASE    = '#030d09'
 const BG_CARD    = '#060f0b'
 const BORDER     = '#0d2b1e'
+
+const BASTIONORBIT_LAUNCH = new Date('2026-07-03T12:00:00Z')
+const isLaunched = new Date() >= BASTIONORBIT_LAUNCH
+const hasRelease = allReleases.bastionorbit.releases.length > 0
+const latestRelease = allReleases.bastionorbit.releases[0]
+const showDownload = hasRelease && isLaunched
 
 export const metadata: Metadata = {
   title: 'SSH Tunnel Manager for macOS — BastionOrbit · One-Click Port Forwarding',
@@ -92,19 +100,37 @@ function Hero() {
             </p>
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
+              {showDownload ? (
+                <a
+                  href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/bastionorbit/releases/latest'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+                  style={{ background: ACCENT, color: BG_BASE }}
+                >
+                  Download v{latestRelease.version}
+                </a>
+              ) : (
+                <span
+                  title="Available July 3, 2026"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm border opacity-70 cursor-not-allowed"
+                  style={{ borderColor: ACCENT_MID, color: ACCENT, background: ACCENT_DIM }}
+                >
+                  Download — July 3
+                </span>
+              )}
               <SubscribeModal
                 accent={ACCENT}
                 source="bastionorbit"
-                buttonLabel={hero.ctaPrimary}
-                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
-                style={{ background: ACCENT, color: BG_BASE }}
+                buttonLabel={showDownload ? 'Get update notifications' : 'Subscribe for updates'}
+                className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all"
+                style={{ borderColor: ACCENT_MID, color: ACCENT }}
               />
-              <a href="#features" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
-                {hero.ctaSecondary}
-              </a>
             </div>
 
-            <p className="fade-up text-xs" style={{ color: '#0a4a2a', animationDelay: '0.35s' }}>{hero.launchDate}</p>
+            <div className="fade-up" style={{ animationDelay: '0.35s' }}>
+              <LaunchBanner variant="subtle" launchDate={BASTIONORBIT_LAUNCH} accent={ACCENT} />
+            </div>
           </div>
 
           {/* Right — hero image */}
@@ -306,16 +332,42 @@ function CTA() {
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Never leave a tunnel open again
           </h2>
-          <p className="text-lg mt-2" style={{ color: '#4a8a6a' }}>BastionOrbit launches June 19. Free. Native Rust binary.</p>
+          <p className="text-lg mt-2" style={{ color: '#4a8a6a' }}>
+            {showDownload
+              ? 'BastionOrbit is live. Free. Native Rust binary.'
+              : 'BastionOrbit launches Friday, July 3, 2026. Subscribe to hear when it drops.'}
+          </p>
+          <div className="mt-3 flex justify-center">
+            <LaunchBanner variant="subtle" launchDate={BASTIONORBIT_LAUNCH} accent={ACCENT} />
+          </div>
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            {showDownload ? (
+              <a
+                href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/bastionorbit/releases/latest'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+                style={{ background: ACCENT, color: BG_BASE }}
+              >
+                Download v{latestRelease.version}
+              </a>
+            ) : (
+              <span
+                title="Available July 3, 2026"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm border opacity-70 cursor-not-allowed"
+                style={{ borderColor: ACCENT_MID, color: ACCENT, background: ACCENT_DIM }}
+              >
+                Download — July 3
+              </span>
+            )}
             <SubscribeModal
               accent={ACCENT}
               source="bastionorbit-cta"
-              buttonLabel="Subscribe for updates"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
-              style={{ background: ACCENT, color: BG_BASE }}
+              buttonLabel={showDownload ? 'Get update notifications' : 'Subscribe for updates'}
+              className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80"
+              style={{ borderColor: ACCENT_MID, color: ACCENT }}
             />
             <Link href="/" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
               ← All SlothLabs tools

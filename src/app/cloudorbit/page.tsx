@@ -13,7 +13,7 @@ import MacInstallNote from '@/components/MacInstallNote'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
-const CLOUDORBIT_LAUNCH = new Date('2026-05-08T00:00:00Z')
+const CLOUDORBIT_LAUNCH = new Date('2026-05-22T12:00:00Z')
 const launchingSoon = new Date() < CLOUDORBIT_LAUNCH
 
 const { hero, features, comparison } = cloudOrbitContent
@@ -116,7 +116,7 @@ function Hero() {
               {hero.note}
             </p>
             <div className="fade-up mt-1" style={{ animationDelay: '0.4s' }}>
-              <LaunchBanner variant="subtle" />
+              <LaunchBanner variant="subtle" launchDate={CLOUDORBIT_LAUNCH} accent="#00D4FF" />
             </div>
           </div>
 
