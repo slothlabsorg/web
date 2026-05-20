@@ -23,7 +23,33 @@ export const allReleases: Record<string, AppReleases> = {
     slug: 'wattsorbit',
     accent: '#F59E0B',
     icon: '/images/wattsorbit-icon.png',
-    releases: [],
+    releases: [
+      {
+        version: '1.1.0',
+        date: '2026-05-20',
+        notes: 'See CHANGELOG.md for full details.',
+        downloadUrl: 'https://github.com/slothlabsorg/wattsorbit/releases/tag/v1.1.0',
+        highlights: [
+          'NewsBell in the tray popup — unread dot and release notes dropdown',
+          'News screen in the Dashboard with markdown rendering and pull-to-refresh',
+          'UpdaterModal replaces UpdateBanner — changelog, download progress, in-app install',
+          'Homebrew Cask auto-updates on release publish',
+        ],
+      },
+      {
+        version: '1.0.0',
+        date: '2026-05-10',
+        notes: 'First public release.',
+        downloadUrl: 'https://github.com/slothlabsorg/wattsorbit/releases/tag/v1.0.0',
+        highlights: [
+          'Menu-bar tray with live watt reading (polls every 5 s)',
+          'Battery percentage, time remaining, and charge/discharge rate',
+          'USB-C device wattage breakdown',
+          'Dashboard window with power history chart',
+          'macOS, Windows, and Linux support',
+        ],
+      },
+    ],
   },
   dataorbit: {
     appName: 'DataOrbit',
