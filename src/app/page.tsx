@@ -180,6 +180,7 @@ const RAW_ROADMAP = [
   { name: 'WattsOrbit',   launchDate: '2026-05-08', date: 'May 8',    desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
   { name: 'ProxyOrbit',   launchDate: '2026-06-12', date: 'June 12',  desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
   { name: 'BastionOrbit', launchDate: '2026-07-03', date: 'July 3',   desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
+  { name: 'klight',       launchDate: '2026-09-04', date: 'Sept 4',   desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
 ]
 
 // Compute status at build time — live items first, then upcoming by date.

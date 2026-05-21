@@ -10,6 +10,7 @@ const PRODUCTS = [
   { icon: '🔍', name: 'ProxyOrbit',      href: '/proxyorbit',      badge: 'May 22',   accent: '#94A3B8' },
   { icon: '🗄️', name: 'DataOrbit',       href: '/dataorbit',       badge: 'June 5',   accent: '#8B5CF6' },
   { icon: '🔐', name: 'BastionOrbit',    href: '/bastionorbit',    badge: 'June 19',  accent: '#10B981' },
+  { icon: '🚀', name: 'klight',          href: '/klight',          badge: 'Sept 4',   accent: '#B4FF3C' },
 ]
 
 export default function Navbar() {

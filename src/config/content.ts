@@ -93,6 +93,20 @@ export const slothLabsContent = {
         previewImage: '/images/bastionorbit-landing.png',
         iconSrc: '/images/bastionorbit-icon.png',
       },
+      {
+        name: 'klight',
+        slug: '/klight',
+        logo: null,
+        by: '· SlothLabs ·',
+        desc: 'Full-stack Kubernetes environments for every developer in two commands. No K8s knowledge required. Local, team sync, or remote cluster — each dev gets their own isolated namespace.',
+        tags: ['Kubernetes', 'DevEx', 'Microservices'],
+        cta: 'Learn more →',
+        live: false,
+        accent: '#B4FF3C',
+        comingSoonDate: 'September 4, 2026',
+        previewImage: '/images/character-server.png',
+        iconSrc: null,
+      },
     ],
   },
 
@@ -594,4 +608,20 @@ export const mermaidPreviewContent = {
     { n: 3, title: 'Select the zip and restart', body: 'Pick the downloaded zip, click OK, then restart the IDE when prompted.' },
     { n: 4, title: 'Open any Markdown file', body: 'Open a .md file with ```mermaid fenced blocks — the Mermaid panel appears automatically on the right sidebar.' },
   ],
+}
+
+// ─── KLIGHT ───────────────────────────────────────────────────────────────────
+
+export const klightContent = {
+  hero: {
+    badge: '🚀 Kubernetes · Dev Environments · Zero YAML',
+    eyebrow: 'KLIGHT',
+    headline: 'Every dev gets\ntheir own stack.\nTwo commands.',
+    subtitle:
+      'klight gives every developer an isolated, full-stack Kubernetes environment — without knowing Kubernetes exists. Postgres, Kafka, Redis, and all your services spin up in the right order, every time.',
+    ctaPrimary: 'Get early access',
+    ctaSecondary: 'View on GitHub →',
+    ctaSecondaryHref: 'https://github.com/slothlabsorg/kraken-light',
+    launchDate: 'Launching September 4, 2026',
+  },
 }

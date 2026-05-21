@@ -1,0 +1,812 @@
+import type { Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
+import ProductNavbar from '@/components/ProductNavbar'
+import Footer from '@/components/Footer'
+import ScrollReveal from '@/components/ScrollReveal'
+import StarField from '@/components/StarField'
+import CustomCursor from '@/components/CustomCursor'
+import SubscribeModal from '@/components/SubscribeModal'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
+const ACCENT = '#B4FF3C'
+
+export const metadata: Metadata = {
+  title: 'klight — Kubernetes Dev Environments for Every Developer',
+  description:
+    'klight gives every developer an isolated, full-stack Kubernetes environment in two commands — without knowing K8s exists. Local, team sync, or remote cluster. Free and open source.',
+  keywords: [
+    'kubernetes dev environment',
+    'local kubernetes',
+    'docker compose alternative',
+    'kubernetes for developers',
+    'dev namespace kubernetes',
+    'microservices local development',
+    'kubernetes without yaml',
+    'klight',
+    'SlothLabs',
+    'team kubernetes environments',
+  ],
+  openGraph: {
+    title: 'klight — Kubernetes Dev Environments for Every Developer',
+    description: 'Full-stack Kubernetes environments in two commands. No K8s knowledge required. Local dev, team sync, or remote cluster — all identical commands.',
+    url: `${SITE_URL}/klight`,
+    siteName: 'SlothLabs',
+    type: 'website',
+    images: [{ url: '/images/character-server.png', width: 1200, height: 630, alt: 'klight — Kubernetes dev environments' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'klight — Kubernetes Dev Environments for Every Developer',
+    description: 'Full-stack Kubernetes environments in two commands. No K8s knowledge required.',
+  },
+  alternates: { canonical: `${SITE_URL}/klight` },
+}
+
+// ── Hero ──────────────────────────────────────────────────────────────────────
+function Hero() {
+  return (
+    <section className="relative min-h-screen flex items-center noise overflow-hidden">
+      <div className="absolute inset-0">
+        <Image src="/images/starfield-bg.png" alt="" fill priority className="object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050d1fF2] 55% to-[#051a0d99]" />
+        <div className="absolute inset-0 bg-[#000013]/50" />
+        <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-[#050d1f] to-transparent" />
+        {/* Lime glow top-right */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full -translate-y-1/3 translate-x-1/4 blur-[140px]" style={{ background: `${ACCENT}08` }} />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 rounded-full blur-[120px]" style={{ background: `${ACCENT}05` }} />
+      </div>
+
+      <StarField count={80} />
+
+      <div className="relative z-10 site-container w-full" style={{ paddingTop: '72px', paddingBottom: '4rem' }}>
+        <div className="w-full grid md:grid-cols-2 gap-10 lg:gap-14 items-center py-[52px]">
+          {/* Left */}
+          <div className="space-y-7 max-w-full sm:max-w-xl">
+            <div className="fade-up" style={{ animationDelay: '0s' }}>
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium bg-[#0d1b3e] border text-[#B4FF3C]" style={{ borderColor: `${ACCENT}40` }}>
+                🚀 Kubernetes · Dev Environments · Zero YAML
+              </span>
+            </div>
+
+            <h1
+              className="fade-up break-words text-[2.75rem] sm:text-5xl lg:text-[3.5rem] xl:text-[70px] font-bold leading-[1.1] tracking-tight"
+              style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.02em', animationDelay: '0.1s' }}
+            >
+              <span className="block text-white">Every dev gets</span>
+              <span className="block" style={{ color: ACCENT }}>their own stack.</span>
+              <span className="block text-white">Two commands.</span>
+            </h1>
+
+            <p className="fade-up text-lg xl:text-xl text-[#8BA3C7] leading-relaxed max-w-lg" style={{ animationDelay: '0.2s' }}>
+              klight gives every developer an isolated, full-stack Kubernetes environment — without knowing Kubernetes exists. Postgres, Kafka, Redis, and all your services spin up in the right order, every time.
+            </p>
+
+            {/* Terminal preview inline */}
+            <div className="fade-up rounded-xl border border-[#1a3060] overflow-hidden bg-[#0a1628] max-w-lg" style={{ animationDelay: '0.25s' }}>
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-[#071020] border-b border-[#1a3060]">
+                <span className="w-3 h-3 rounded-full bg-red-500/80" />
+                <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                <span className="w-3 h-3 rounded-full bg-green-500/80" />
+                <span className="text-xs text-[#4A6080] font-mono ml-2">terminal</span>
+              </div>
+              <pre className="p-4 text-sm font-mono leading-relaxed overflow-x-auto">
+                <code>
+                  <span className="text-[#4A6080]"># New team member — zero clones, zero config</span>{'\n'}
+                  <span style={{ color: ACCENT }}>$</span> <span className="text-white">klight sync https://infra.company.com/klight-team.yaml</span>{'\n'}
+                  <span style={{ color: ACCENT }}>$</span> <span className="text-white">klight up store --env alice</span>{'\n\n'}
+                  <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">postgres ready</span>{'\n'}
+                  <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">kafka ready</span>{'\n'}
+                  <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">inventory-api ready</span>{'\n'}
+                  <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">store-api ready</span>{'\n'}
+                  <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">store-web ready</span>{'\n'}
+                  <span style={{ color: ACCENT }} className="font-bold">✦ alice 5/5 ready — 1m 43s</span>
+                </code>
+              </pre>
+            </div>
+
+            <div className="fade-up flex flex-col sm:flex-row gap-3 items-start" style={{ animationDelay: '0.3s' }}>
+              <SubscribeModal
+                accent={ACCENT}
+                source="klight"
+                buttonLabel="Get early access"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+                style={{ background: ACCENT, color: '#050d1f' }}
+              />
+              <a
+                href="https://github.com/slothlabsorg/kraken-light"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all"
+                style={{ borderColor: `${ACCENT}50`, color: ACCENT }}
+              >
+                View on GitHub →
+              </a>
+            </div>
+
+            <p className="fade-up text-xs text-[#4A6080]" style={{ animationDelay: '0.35s' }}>
+              Open source · Works with minikube, EKS, GKE, AKS · Python CLI
+            </p>
+          </div>
+
+          {/* Right — hero image */}
+          <div className="relative flex justify-center md:justify-end min-h-[280px] sm:min-h-[360px] md:min-h-[440px]">
+            <div className="absolute inset-0 rounded-full blur-[100px] opacity-20" style={{ background: ACCENT }} />
+            <div
+              className="relative z-10 w-full max-w-sm md:max-w-md lg:max-w-lg aspect-square max-h-[400px] lg:max-h-[480px] bg-contain bg-center bg-no-repeat"
+              style={{ backgroundImage: 'url(/images/character-server.png)' }}
+              role="img"
+              aria-label="klight"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── Problem ───────────────────────────────────────────────────────────────────
+const PAIN_POINTS = [
+  {
+    icon: '😤',
+    title: 'Docker Compose lies to you',
+    body: 'Shared volumes, no namespaces, port conflicts when Alice and Bob both run the stack. And when you hit prod with real K8s, nothing matches.',
+  },
+  {
+    icon: '⏳',
+    title: 'New teammate takes 3 days',
+    body: 'Clone 8 repos, configure 14 env vars, start services in the right order, debug why kafka isn\'t connecting. Three days. Every hire.',
+  },
+  {
+    icon: '🔥',
+    title: 'Production parity is a myth',
+    body: 'Docker Compose doesn\'t have init containers, pod-level health checks, or namespace isolation. You find out in staging. Or worse — production.',
+  },
+]
+
+function ProblemSection() {
+  return (
+    <section className="py-24 bg-[#050d1f]">
+      <div className="site-container">
+        <ScrollReveal className="text-center mb-16 space-y-4">
+          <span className="text-xs font-semibold tracking-widest uppercase text-[#4A6080]">The problem</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            Local dev environments are{' '}
+            <span style={{ color: ACCENT }}>broken.</span>
+          </h2>
+          <p className="text-[#8BA3C7] max-w-xl mx-auto">
+            Docker Compose was a clever hack for 2014. Modern microservices teams deserve better.
+          </p>
+        </ScrollReveal>
+        <div className="grid md:grid-cols-3 gap-6">
+          {PAIN_POINTS.map((p, i) => (
+            <ScrollReveal key={p.title} delay={i * 80}>
+              <div className="rounded-2xl p-7 bg-[#0d1b3e] border border-[#1a3060] h-full space-y-3">
+                <div className="text-3xl">{p.icon}</div>
+                <h3 className="font-bold text-white text-lg" style={{ fontFamily: 'Syne, sans-serif' }}>{p.title}</h3>
+                <p className="text-[#8BA3C7] text-sm leading-relaxed">{p.body}</p>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── Features ──────────────────────────────────────────────────────────────────
+const FEATURES = [
+  {
+    icon: '🏠',
+    title: 'Local dev — no cloud needed',
+    desc: 'minikube under the hood. Build your service image, load it, deploy it. Edit, rebuild, hot-swap. The full loop runs on your laptop in under 2 minutes.',
+    badge: null,
+  },
+  {
+    icon: '🔄',
+    title: 'Team sync — one URL, full stack',
+    desc: 'DevOps publishes klight-team.yaml once. Every dev runs klight sync <url> and gets every service config, CI image reference, and profile definition. No cloning required.',
+    badge: null,
+  },
+  {
+    icon: '☁️',
+    title: 'Remote cluster — same commands',
+    desc: 'Outgrew local minikube? DevOps runs klight cluster setup-remote once. Devs connect with a token. klight up store --env alice works identically on EKS, GKE, or AKS.',
+    badge: null,
+  },
+  {
+    icon: '⚡',
+    title: 'Zero Kubernetes knowledge required',
+    desc: 'klight generates all the K8s YAML — deployments, services, configmaps, init containers. Developers write one klight.yaml per service. That\'s it.',
+    badge: 'Zero config',
+  },
+  {
+    icon: '🔀',
+    title: 'Dependency ordering, done right',
+    desc: 'Each service gets a sentinel init container that blocks startup until its dependencies are healthy. postgres, kafka, redis — all start in the right order, every time. Same as prod.',
+    badge: null,
+  },
+  {
+    icon: '🔁',
+    title: 'Hot-swap with local build',
+    desc: 'Edit → rebuild → klight replace store-api --with ./store-api --env dev. Your running env picks up the new image in seconds. No full redeploy needed.',
+    badge: null,
+  },
+]
+
+function Features() {
+  return (
+    <section className="py-28 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050d1f] via-[#0d1b3e]/40 to-[#050d1f]" />
+      <div className="relative z-10 site-container">
+        <ScrollReveal className="text-center mb-16 space-y-4">
+          <h2
+            className="text-4xl md:text-5xl font-bold tracking-tight text-white"
+            style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.02em' }}
+          >
+            Everything your team needs.{' '}
+            <span style={{ color: ACCENT }}>Nothing else.</span>
+          </h2>
+          <p className="text-[#8BA3C7] text-lg max-w-lg mx-auto">
+            One tool for every stage of development — from your first local build to a 30-person remote team.
+          </p>
+        </ScrollReveal>
+
+        <div className="grid md:grid-cols-3 gap-5">
+          {FEATURES.map((item, i) => (
+            <ScrollReveal key={item.title} delay={i * 80}>
+              <div
+                className="group rounded-2xl p-6 bg-[#0d1b3e] border border-[#1a3060] hover:border-[#B4FF3C]/40 transition-all duration-200 hover:-translate-y-1 relative overflow-hidden h-full"
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-[#B4FF3C]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
+                <div className="relative z-10">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform duration-200" style={{ background: `${ACCENT}12` }}>
+                    {item.icon}
+                  </div>
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h3 className="font-semibold text-white text-base" style={{ fontFamily: 'Syne, sans-serif' }}>
+                      {item.title}
+                    </h3>
+                    {item.badge && (
+                      <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-medium border" style={{ color: ACCENT, borderColor: `${ACCENT}40`, background: `${ACCENT}12` }}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-[#8BA3C7] leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── Three Worlds ─────────────────────────────────────────────────────────────
+const WORLDS = [
+  {
+    number: '01',
+    title: 'Solo dev, local code',
+    subtitle: 'You have the repos. No CI pipeline. You want a real stack, not hacks.',
+    code: `klight local setup
+klight local build-load inventory-api --path ./inventory-api
+klight local build-load store-api     --path ./store-api
+klight from-repos ./inventory-api ./store-api --env dev
+klight replace store-api --with ./store-api --env dev`,
+    steps: [
+      'Start minikube once',
+      'Build and load your images',
+      'klight reads your klight.yaml files',
+      'Edit → rebuild → hot-swap in seconds',
+    ],
+  },
+  {
+    number: '02',
+    title: 'Team sync, no clones',
+    subtitle: 'New dev joins. They should be running the full stack in minutes, not days.',
+    code: `klight sync https://infra.company.com/klight-team.yaml
+klight up store --env alice
+klight up store --env bob`,
+    steps: [
+      'DevOps publishes one team YAML',
+      'Devs sync it with a single URL',
+      'Each dev gets their own namespace',
+      'CI images pulled automatically',
+    ],
+  },
+  {
+    number: '03',
+    title: 'Remote cluster, one token',
+    subtitle: 'Local minikube ran out of RAM. Move the whole team to EKS without changing a command.',
+    code: `# DevOps (once):
+klight cluster setup-remote   # creates SA + RBAC + prints token
+
+# Dev (once per laptop):
+klight connect --url https://cluster.company.com --token eyJ...
+klight use klight-remote
+klight up store --env alice   # same command, cloud cluster`,
+    steps: [
+      'DevOps runs one command on the cluster',
+      'Gets a token valid for 1 year',
+      'Devs connect with that token',
+      'Same klight up commands work on EKS/GKE/AKS',
+    ],
+  },
+]
+
+function ThreeWorlds() {
+  return (
+    <section className="py-28 bg-[#050d1f]">
+      <div className="site-container">
+        <ScrollReveal className="text-center mb-20 space-y-4">
+          <span className="text-xs font-semibold tracking-widest uppercase text-[#4A6080]">How it works</span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            Three scenarios.{' '}
+            <span style={{ color: ACCENT }}>One tool.</span>
+          </h2>
+          <p className="text-[#8BA3C7] max-w-xl mx-auto text-lg">
+            Whether you&apos;re a solo developer, a growing team, or running on a shared cloud cluster — the commands are identical.
+          </p>
+        </ScrollReveal>
+
+        <div className="space-y-12">
+          {WORLDS.map((w, i) => (
+            <ScrollReveal key={w.number} delay={i * 60}>
+              <div className={`grid md:grid-cols-2 gap-8 lg:gap-12 items-start ${i % 2 === 1 ? 'md:[&>:first-child]:order-2' : ''}`}>
+                {/* Text */}
+                <div className="space-y-5">
+                  <div className="flex items-center gap-4">
+                    <span className="text-5xl font-black opacity-10" style={{ color: ACCENT, fontFamily: 'Syne, sans-serif' }}>{w.number}</span>
+                    <div>
+                      <h3 className="text-xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>{w.title}</h3>
+                      <p className="text-sm text-[#8BA3C7] mt-1">{w.subtitle}</p>
+                    </div>
+                  </div>
+                  <ul className="space-y-2">
+                    {w.steps.map((step, si) => (
+                      <li key={step} className="flex items-center gap-3 text-sm text-[#8BA3C7]">
+                        <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ background: `${ACCENT}15`, color: ACCENT, border: `1px solid ${ACCENT}30` }}>
+                          {si + 1}
+                        </span>
+                        {step}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Code */}
+                <div className="rounded-xl border border-[#1a3060] overflow-hidden bg-[#0a1628]">
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-[#071020] border-b border-[#1a3060]">
+                    <span className="w-3 h-3 rounded-full bg-red-500/80" />
+                    <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                    <span className="w-3 h-3 rounded-full bg-green-500/80" />
+                    <span className="text-xs text-[#4A6080] font-mono ml-2">world {w.number}</span>
+                  </div>
+                  <pre className="p-5 text-sm font-mono leading-relaxed overflow-x-auto" style={{ color: '#c9d1d9' }}>
+                    {w.code.split('\n').map((line, li) => (
+                      <span key={li} className="block">
+                        {line.startsWith('#') ? (
+                          <span className="text-[#4A6080]">{line}</span>
+                        ) : line.startsWith('klight') ? (
+                          <>
+                            <span style={{ color: ACCENT }}>$</span>{' '}
+                            <span className="text-white">{line}</span>
+                          </>
+                        ) : line === '' ? (
+                          <span>&nbsp;</span>
+                        ) : (
+                          <span className="text-[#4A6080]">{line}</span>
+                        )}
+                      </span>
+                    ))}
+                  </pre>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── klight.yaml ───────────────────────────────────────────────────────────────
+function KlightYamlSection() {
+  return (
+    <section className="py-24 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050d1f] via-[#0d1b3e]/30 to-[#050d1f]" />
+      <div className="relative z-10 site-container">
+        <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+          {/* Left — copy */}
+          <ScrollReveal className="space-y-6">
+            <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: ACCENT }}>The contract</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight" style={{ fontFamily: 'Syne, sans-serif' }}>
+              One YAML file.<br />Zero K8s knowledge.
+            </h2>
+            <p className="text-[#8BA3C7] leading-relaxed">
+              Add a <code className="text-sm px-1.5 py-0.5 rounded bg-[#0d1b3e] text-[#c9d1d9]">klight.yaml</code> to each service repo. klight generates all the Kubernetes YAML — deployments, services, configmaps, init containers, migration jobs — without you writing a single line of K8s.
+            </p>
+            <ul className="space-y-3">
+              {[
+                'Declare what your service needs: postgres, kafka, redis',
+                'Specify health check endpoint',
+                'Set env vars your app already reads — unchanged',
+                'Optional migration command runs before the service starts',
+              ].map(item => (
+                <li key={item} className="flex items-start gap-3 text-sm text-[#8BA3C7]">
+                  <span style={{ color: ACCENT }} className="mt-0.5 flex-shrink-0 font-bold">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-[#4A6080]">
+              Zero changes to your application code. No Kubernetes YAML to write or maintain.
+            </p>
+          </ScrollReveal>
+
+          {/* Right — YAML example */}
+          <ScrollReveal delay={100}>
+            <div className="rounded-xl border overflow-hidden bg-[#0a1628]" style={{ borderColor: `${ACCENT}25` }}>
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-[#071020] border-b border-[#1a3060]">
+                <span className="w-3 h-3 rounded-full bg-red-500/80" />
+                <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                <span className="w-3 h-3 rounded-full bg-green-500/80" />
+                <span className="text-xs text-[#4A6080] font-mono ml-2">klight.yaml</span>
+              </div>
+              <pre className="p-5 text-sm font-mono leading-relaxed overflow-x-auto">
+                <code>
+                  <span className="text-[#4A6080]"># yaml-language-server: $schema=https://klight.dev/schema/klight.yaml.json</span>{'\n'}
+                  <span className="text-[#e5c07b]">name</span><span className="text-[#c9d1d9]">: </span><span className="text-[#98c379]">inventory-api</span>{'\n'}
+                  <span className="text-[#e5c07b]">port</span><span className="text-[#c9d1d9]">: </span><span className="text-[#d19a66]">8081</span>{'\n'}
+                  <span className="text-[#e5c07b]">health</span><span className="text-[#c9d1d9]">: </span><span className="text-[#98c379]">/health</span>{'\n'}
+                  {'\n'}
+                  <span className="text-[#e5c07b]">needs</span><span className="text-[#c9d1d9]">: </span><span className="text-[#c9d1d9]">[</span><span className="text-[#98c379]">postgres</span><span className="text-[#c9d1d9]">, </span><span className="text-[#98c379]">kafka</span><span className="text-[#c9d1d9]">]</span>{'\n'}
+                  {'\n'}
+                  <span className="text-[#e5c07b]">migration</span><span className="text-[#c9d1d9]">:</span>{'\n'}
+                  <span className="text-[#c9d1d9]">  </span><span className="text-[#e5c07b]">command</span><span className="text-[#c9d1d9]">: [</span><span className="text-[#98c379]">&quot;python&quot;</span><span className="text-[#c9d1d9]">, </span><span className="text-[#98c379]">&quot;-m&quot;</span><span className="text-[#c9d1d9]">, </span><span className="text-[#98c379]">&quot;app.migrate&quot;</span><span className="text-[#c9d1d9]">]</span>{'\n'}
+                  {'\n'}
+                  <span className="text-[#e5c07b]">env</span><span className="text-[#c9d1d9]">:</span>{'\n'}
+                  <span className="text-[#c9d1d9]">  </span><span className="text-[#e5c07b]">DB_HOST</span><span className="text-[#c9d1d9]">: </span><span className="text-[#98c379]">postgres</span>{'\n'}
+                  <span className="text-[#c9d1d9]">  </span><span className="text-[#e5c07b]">DB_NAME</span><span className="text-[#c9d1d9]">: </span><span className="text-[#98c379]">inventory_db</span>{'\n'}
+                  <span className="text-[#c9d1d9]">  </span><span className="text-[#e5c07b]">KAFKA_BOOTSTRAP_SERVERS</span><span className="text-[#c9d1d9]">: </span><span className="text-[#98c379]">kafka:9092</span>{'\n'}
+                </code>
+              </pre>
+            </div>
+            <p className="text-xs text-[#4A6080] text-center mt-3">
+              That&apos;s the entire klight.yaml. That&apos;s it.
+            </p>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── Comparison ───────────────────────────────────────────────────────────────
+const COMPARISON_ROWS = [
+  { feature: 'Namespace isolation (env-alice, env-bob)', klight: '✅', compose: '❌' },
+  { feature: 'Multiple envs on one machine', klight: '✅', compose: '⚠️ Port conflicts' },
+  { feature: 'Production parity (real K8s)', klight: '✅', compose: '❌ Docker only' },
+  { feature: 'CI/PR environments in 1 command', klight: '✅', compose: '❌ Manual' },
+  { feature: 'Startup ordering (pod-level)', klight: '✅', compose: '⚠️ Process-level only' },
+  { feature: 'Team-synced from central config', klight: '✅', compose: '❌ Each dev maintains theirs' },
+  { feature: 'Remote cluster support', klight: '✅', compose: '❌' },
+  { feature: 'Zero K8s YAML to write', klight: '✅', compose: '✅' },
+]
+
+function Comparison() {
+  const iconClass = (val: string) => {
+    if (val === '✅') return ''
+    if (val === '❌') return 'text-red-400'
+    return 'text-yellow-400 text-xs'
+  }
+
+  return (
+    <section className="py-28 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050d1f] via-[#0d1b3e]/50 to-[#050d1f]" />
+      <div className="relative z-10 site-container">
+        <ScrollReveal className="text-center mb-16 space-y-4">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white" style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.02em' }}>
+            Why not just use Docker Compose?
+          </h2>
+          <p className="text-[#8BA3C7] text-lg max-w-2xl mx-auto">
+            Docker Compose solved the problem in 2014. Microservices teams in 2026 need isolation, real K8s parity, and team-level config management.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={100}>
+          <div className="max-w-3xl mx-auto overflow-hidden rounded-xl border border-[#1a3060]">
+            <div className="grid grid-cols-3 bg-[#0d1b3e]">
+              <div className="px-6 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider">Feature</div>
+              <div className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-center border-x border-[#1a3060]" style={{ color: ACCENT }}>
+                klight
+              </div>
+              <div className="px-6 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider text-center">Docker Compose</div>
+            </div>
+            {COMPARISON_ROWS.map((row, i) => (
+              <div key={row.feature} className={`grid grid-cols-3 border-t border-[#1a3060] ${i % 2 === 0 ? 'bg-[#071020]' : 'bg-[#050d1f]'}`}>
+                <div className="px-6 py-4 text-sm text-[#8BA3C7]">{row.feature}</div>
+                <div className={`px-6 py-4 text-center text-sm font-medium border-x border-[#1a3060] ${iconClass(row.klight)}`} style={row.klight === '✅' ? { color: ACCENT } : {}}>
+                  {row.klight}
+                </div>
+                <div className={`px-6 py-4 text-center text-sm ${iconClass(row.compose)}`}>
+                  {row.compose}
+                </div>
+              </div>
+            ))}
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  )
+}
+
+// ── Catalog ───────────────────────────────────────────────────────────────────
+const CATALOG_ITEMS = [
+  { name: 'postgres',      image: 'postgres:16-alpine',          vars: 'DB_HOST, DB_PORT',               icon: '🐘' },
+  { name: 'kafka',         image: 'apache/kafka:3.7.0',          vars: 'KAFKA_BOOTSTRAP_SERVERS',        icon: '📨' },
+  { name: 'redis',         image: 'redis:7-alpine',              vars: 'REDIS_HOST, REDIS_PORT',         icon: '🔴' },
+  { name: 'mongodb',       image: 'mongo:7',                     vars: 'MONGODB_URI',                    icon: '🍃' },
+  { name: 'rabbitmq',      image: 'rabbitmq:3-management',       vars: 'RABBITMQ_URL',                   icon: '🐇' },
+  { name: 'localstack',    image: 'localstack/localstack:3',     vars: 'AWS_ENDPOINT_URL, AWS_*',        icon: '☁️' },
+  { name: 'elasticsearch', image: 'elasticsearch:8',             vars: 'ELASTICSEARCH_URL',              icon: '🔍' },
+]
+
+function CatalogSection() {
+  return (
+    <section className="py-24 bg-[#050d1f]">
+      <div className="site-container">
+        <ScrollReveal className="text-center mb-14 space-y-4">
+          <span className="text-xs font-semibold tracking-widest uppercase text-[#4A6080]">Built-in infrastructure</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            Add to <code className="font-mono text-2xl px-2 py-0.5 rounded-lg bg-[#0d1b3e]" style={{ color: ACCENT }}>needs:</code> and you&apos;re done.
+          </h2>
+          <p className="text-[#8BA3C7] max-w-xl mx-auto">
+            klight ships with a catalog of common infrastructure. Add any of these to your klight.yaml and klight starts them, waits for them, and wires up the env vars automatically.
+          </p>
+        </ScrollReveal>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {CATALOG_ITEMS.map((item, i) => (
+            <ScrollReveal key={item.name} delay={i * 40}>
+              <div className="rounded-xl p-5 bg-[#0d1b3e] border border-[#1a3060] hover:border-[#B4FF3C]/30 transition-colors group">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-2xl">{item.icon}</span>
+                  <span className="font-bold text-white font-mono" style={{ fontFamily: 'JetBrains Mono, monospace' }}>{item.name}</span>
+                </div>
+                <p className="text-xs text-[#4A6080] mb-2 font-mono">{item.image}</p>
+                <div className="flex flex-wrap gap-1">
+                  {item.vars.split(', ').map(v => (
+                    <span key={v} className="text-[10px] px-2 py-0.5 rounded font-mono" style={{ background: `${ACCENT}10`, color: ACCENT, border: `1px solid ${ACCENT}20` }}>
+                      {v}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
+          <ScrollReveal delay={CATALOG_ITEMS.length * 40}>
+            <div className="rounded-xl p-5 border border-dashed border-[#1a3060] bg-[#040810] flex flex-col items-center justify-center text-center gap-2 min-h-[120px]">
+              <span className="text-2xl opacity-30">+</span>
+              <p className="text-xs text-[#2a3a54]">Add your own in klight-catalog.yaml</p>
+            </div>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── UI Dashboard section ───────────────────────────────────────────────────────
+function UISection() {
+  return (
+    <section className="py-24 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050d1f] via-[#0d1b3e]/20 to-[#050d1f]" />
+      <div className="relative z-10 site-container">
+        <ScrollReveal className="text-center mb-16 space-y-4">
+          <span className="text-xs font-semibold tracking-widest uppercase text-[#4A6080]">Dashboard</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <code className="font-mono text-3xl px-2 py-1 rounded-lg bg-[#0d1b3e]" style={{ color: ACCENT }}>klight ui</code>
+            {' '}— a real-time control plane.
+          </h2>
+          <p className="text-[#8BA3C7] max-w-xl mx-auto">
+            One command opens a live dashboard at localhost:7700. See cluster status, environment health, live logs, and sizing warnings — before you get OOMKilled.
+          </p>
+        </ScrollReveal>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {[
+            { icon: '📊', title: 'Cluster status bar', desc: 'Always shows where you\'re running and how much RAM is available — local or remote.' },
+            { icon: '⚠️', title: 'Smart sizing warnings', desc: 'klight estimates memory needs for your profile before you deploy. No more surprise OOMKilled pods.' },
+            { icon: '📋', title: 'Live logs per service', desc: 'Click any service card to see real-time logs. No kubectl required.' },
+            { icon: '🧙', title: 'Setup Wizard for DevOps', desc: 'Connect your Git platform, scan repos, and generate klight.yaml files without cloning anything.' },
+          ].map((card, i) => (
+            <ScrollReveal key={card.title} delay={i * 60}>
+              <div className="rounded-xl p-6 bg-[#0d1b3e] border border-[#1a3060] h-full hover:border-[#B4FF3C]/30 transition-colors">
+                <div className="text-3xl mb-3">{card.icon}</div>
+                <h3 className="font-semibold text-white text-sm mb-2" style={{ fontFamily: 'Syne, sans-serif' }}>{card.title}</h3>
+                <p className="text-xs text-[#8BA3C7] leading-relaxed">{card.desc}</p>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+
+        {/* Placeholder UI screenshot */}
+        <ScrollReveal delay={150} className="mt-10">
+          <div className="rounded-2xl border overflow-hidden" style={{ borderColor: `${ACCENT}25` }}>
+            <div className="flex items-center gap-2 px-4 py-3 bg-[#071020] border-b border-[#1a3060]">
+              <span className="w-3 h-3 rounded-full bg-red-500/80" />
+              <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
+              <span className="w-3 h-3 rounded-full bg-green-500/80" />
+              <span className="text-xs text-[#4A6080] font-mono ml-2">klight ui — localhost:7700</span>
+            </div>
+            <div className="bg-[#060e1a] p-6 min-h-[200px] flex flex-col gap-4">
+              {/* Mock status bar */}
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-[#0d1b3e] border border-[#1a3060] text-xs font-mono">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-[#8BA3C7]">klight-demo</span>
+                <span className="text-[#4A6080]">·</span>
+                <span className="text-[#8BA3C7]">2 CPUs</span>
+                <span className="text-[#4A6080]">·</span>
+                <span style={{ color: ACCENT }}>3.0 GB</span>
+                <span className="text-[#4A6080]">·</span>
+                <span className="text-green-400">Running</span>
+              </div>
+              {/* Mock service cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                {['postgres', 'kafka', 'inventory-api', 'store-api', 'store-web'].map((svc, idx) => (
+                  <div key={svc} className="rounded-lg p-3 bg-[#0d1b3e] border border-[#1a3060] text-center">
+                    <div className="w-2 h-2 rounded-full bg-green-400 mx-auto mb-2 animate-pulse" style={{ animationDelay: `${idx * 0.2}s` }} />
+                    <p className="text-[10px] font-mono text-[#8BA3C7] truncate">{svc}</p>
+                    <p className="text-[9px] text-green-400 mt-0.5">Running</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-center text-[11px] text-[#2a3a54]">
+                ✦ alice 5/5 ready — real-time dashboard
+              </p>
+            </div>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  )
+}
+
+// ── Remote Setup section ──────────────────────────────────────────────────────
+function RemoteSection() {
+  return (
+    <section className="py-24 bg-[#050d1f]">
+      <div className="site-container">
+        <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <ScrollReveal delay={80}>
+            <div className="rounded-xl border border-[#1a3060] overflow-hidden bg-[#0a1628]">
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-[#071020] border-b border-[#1a3060]">
+                <span className="w-3 h-3 rounded-full bg-red-500/80" />
+                <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                <span className="w-3 h-3 rounded-full bg-green-500/80" />
+                <span className="text-xs text-[#4A6080] font-mono ml-2">remote setup</span>
+              </div>
+              <pre className="p-5 text-sm font-mono leading-relaxed overflow-x-auto" style={{ color: '#c9d1d9' }}>
+                <code>
+                  <span className="text-[#4A6080]"># DevOps — run once on your cluster:</span>{'\n'}
+                  <span style={{ color: ACCENT }}>$</span> <span className="text-white">klight cluster setup-remote</span>{'\n\n'}
+                  <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">ServiceAccount klight-dev created</span>{'\n'}
+                  <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">ClusterRole klight-dev (env-* namespaces)</span>{'\n'}
+                  <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">Token generated (valid 1 year)</span>{'\n\n'}
+                  <span className="text-[#4A6080]"># Share this one command with devs:</span>{'\n'}
+                  <span style={{ color: ACCENT }}>$</span> <span className="text-white">klight connect --url https://k8s.company.com</span>{'\n'}
+                  {'           '}<span className="text-white">--token eyJhbGci...</span>{'\n\n'}
+                  <span className="text-[#4A6080]"># That&apos;s the entire onboarding doc.</span>
+                </code>
+              </pre>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal className="space-y-6">
+            <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: ACCENT }}>DevOps guide</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+              Set up a team in<br />four steps.
+            </h2>
+            <div className="space-y-4">
+              {[
+                { n: '1', title: 'Add klight.yaml to each service', body: 'One file per repo. Use the Setup Wizard to generate them automatically by scanning your GitHub org.' },
+                { n: '2', title: 'Create klight-team.yaml', body: 'Central config in your infra repo. Lists services, CI images, and which profiles group them together.' },
+                { n: '3', title: 'Run klight cluster setup-remote', body: 'On your EKS/GKE cluster. Creates minimal RBAC, generates a 1-year token.' },
+                { n: '4', title: 'Send devs one URL', body: 'klight sync <url> — that\'s the full onboarding document.' },
+              ].map(step => (
+                <div key={step.n} className="flex gap-4">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5" style={{ background: `${ACCENT}15`, color: ACCENT, border: `1px solid ${ACCENT}30` }}>
+                    {step.n}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white text-sm">{step.title}</p>
+                    <p className="text-sm text-[#8BA3C7] mt-0.5">{step.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ── CTA ───────────────────────────────────────────────────────────────────────
+function CtaSection() {
+  return (
+    <section className="py-28 relative overflow-hidden border-t border-[#0e1f3a]">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050d1f] via-[#0a1f0a]/20 to-[#050d1f]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full blur-[120px] opacity-10 pointer-events-none" style={{ background: ACCENT }} />
+
+      <div className="relative z-10 site-container text-center space-y-8">
+        <ScrollReveal>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold border mb-4" style={{ color: ACCENT, borderColor: `${ACCENT}40`, background: `${ACCENT}10` }}>
+            🚀 Coming soon
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            Ready to give your team<br />
+            <span style={{ color: ACCENT }}>their own Kubernetes?</span>
+          </h2>
+          <p className="text-[#8BA3C7] text-lg mt-4 max-w-xl mx-auto">
+            Get early access when klight launches. Free and open source — always.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={80}>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <SubscribeModal
+              accent={ACCENT}
+              source="klight-cta"
+              buttonLabel="Get early access"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+              style={{ background: ACCENT, color: '#050d1f' }}
+            />
+            <a
+              href="https://github.com/slothlabsorg/kraken-light"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all"
+              style={{ borderColor: `${ACCENT}50`, color: ACCENT }}
+            >
+              Star on GitHub →
+            </a>
+          </div>
+          <p className="text-xs text-[#4A6080] mt-4">
+            Works with minikube · EKS · GKE · AKS · Python CLI · MIT license
+          </p>
+        </ScrollReveal>
+      </div>
+    </section>
+  )
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+export default function KlightPage() {
+  return (
+    <main className="bg-[#050d1f]">
+      <CustomCursor />
+      <ProductNavbar
+        icon="🚀"
+        name="klight"
+        accent={ACCENT}
+        ctaKind="subscribe"
+        ctaLabel="Get early access"
+      />
+      <Hero />
+      <ProblemSection />
+      <Features />
+      <ThreeWorlds />
+      <KlightYamlSection />
+      <Comparison />
+      <CatalogSection />
+      <UISection />
+      <RemoteSection />
+      <CtaSection />
+      <Footer showSuiteLink accent={ACCENT} />
+    </main>
+  )
+}
