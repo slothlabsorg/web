@@ -175,7 +175,7 @@ function ProblemSection() {
             <span style={{ color: ACCENT }}>broken.</span>
           </h2>
           <p className="text-[#8BA3C7] max-w-xl mx-auto">
-            Docker Compose was a clever hack for 2014. Modern microservices teams deserve better.
+            Docker Compose was a clever hack for 2014. The enterprise alternatives — Tilt, Signadot, DevSpace — solve it with complex YAML or an enterprise contract. Neither is right for a 5-person startup.
           </p>
         </ScrollReveal>
         <div className="grid md:grid-cols-3 gap-6">
@@ -486,21 +486,21 @@ function KlightYamlSection() {
 
 // ── Comparison ───────────────────────────────────────────────────────────────
 const COMPARISON_ROWS = [
-  { feature: 'Namespace isolation (env-alice, env-bob)', klight: '✅', compose: '❌' },
-  { feature: 'Multiple envs on one machine', klight: '✅', compose: '⚠️ Port conflicts' },
-  { feature: 'Production parity (real K8s)', klight: '✅', compose: '❌ Docker only' },
-  { feature: 'CI/PR environments in 1 command', klight: '✅', compose: '❌ Manual' },
-  { feature: 'Startup ordering (pod-level)', klight: '✅', compose: '⚠️ Process-level only' },
-  { feature: 'Team-synced from central config', klight: '✅', compose: '❌ Each dev maintains theirs' },
-  { feature: 'Remote cluster support', klight: '✅', compose: '❌' },
-  { feature: 'Zero K8s YAML to write', klight: '✅', compose: '✅' },
+  { feature: 'Per-developer namespace isolation',     klight: '✅',            tilt: '❌',              signadot: '✅',              skaffold: '❌' },
+  { feature: 'Zero K8s YAML to write',               klight: '✅',            tilt: '❌ Required',      signadot: '❌ Required',      skaffold: '❌ Required' },
+  { feature: 'Built-in infra catalog (postgres, kafka…)', klight: '✅',        tilt: '❌',              signadot: '❌',              skaffold: '❌' },
+  { feature: 'Team sync from a single URL',           klight: '✅',            tilt: '❌',              signadot: '⚠️ Admin UI',      skaffold: '❌' },
+  { feature: 'New dev onboarded in < 5 min',          klight: '✅',            tilt: '⚠️ YAML first',   signadot: '⚠️ Operator req', skaffold: '⚠️ YAML first' },
+  { feature: 'Local + remote cluster, same commands', klight: '✅',            tilt: '⚠️ Local only',   signadot: '✅',              skaffold: '⚠️ Manual' },
+  { feature: 'Service dependency ordering',           klight: '✅ sentinel',   tilt: '⚠️ Basic',        signadot: '❌',              skaffold: '⚠️ Basic' },
+  { feature: 'Pricing',                              klight: '✅ Free/OSS',   tilt: '⚠️ Paid tiers',   signadot: '❌ Enterprise',    skaffold: '✅ Free/OSS' },
 ]
 
 function Comparison() {
-  const iconClass = (val: string) => {
-    if (val === '✅') return ''
-    if (val === '❌') return 'text-red-400'
-    return 'text-yellow-400 text-xs'
+  const cellClass = (val: string) => {
+    if (val.startsWith('✅')) return ''
+    if (val.startsWith('❌')) return 'text-red-400'
+    return 'text-yellow-400'
   }
 
   return (
@@ -509,33 +509,35 @@ function Comparison() {
       <div className="relative z-10 site-container">
         <ScrollReveal className="text-center mb-16 space-y-4">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white" style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.02em' }}>
-            Why not just use Docker Compose?
+            The alternatives cost you YAML,<br />money, or both.
           </h2>
           <p className="text-[#8BA3C7] text-lg max-w-2xl mx-auto">
-            Docker Compose solved the problem in 2014. Microservices teams in 2026 need isolation, real K8s parity, and team-level config management.
+            Tilt and Skaffold still require K8s expertise. Signadot requires an enterprise contract. klight is the only one that gets a new developer running in under 5 minutes — with zero Kubernetes knowledge.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={100}>
-          <div className="max-w-3xl mx-auto overflow-hidden rounded-xl border border-[#1a3060]">
-            <div className="grid grid-cols-3 bg-[#0d1b3e]">
-              <div className="px-6 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider">Feature</div>
-              <div className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-center border-x border-[#1a3060]" style={{ color: ACCENT }}>
-                klight
+          <div className="overflow-x-auto">
+            <div className="min-w-[640px] overflow-hidden rounded-xl border border-[#1a3060]">
+              <div className="grid grid-cols-5 bg-[#0d1b3e]">
+                <div className="px-5 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider">Feature</div>
+                <div className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-center border-x border-[#1a3060]" style={{ color: ACCENT }}>klight</div>
+                <div className="px-5 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider text-center">Tilt</div>
+                <div className="px-5 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider text-center border-x border-[#1a3060]">Signadot</div>
+                <div className="px-5 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider text-center">Skaffold</div>
               </div>
-              <div className="px-6 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider text-center">Docker Compose</div>
+              {COMPARISON_ROWS.map((row, i) => (
+                <div key={row.feature} className={`grid grid-cols-5 border-t border-[#1a3060] ${i % 2 === 0 ? 'bg-[#071020]' : 'bg-[#050d1f]'}`}>
+                  <div className="px-5 py-4 text-sm text-[#8BA3C7]">{row.feature}</div>
+                  <div className={`px-5 py-4 text-center text-xs font-semibold border-x border-[#1a3060] ${cellClass(row.klight)}`} style={row.klight.startsWith('✅') ? { color: ACCENT } : {}}>
+                    {row.klight}
+                  </div>
+                  <div className={`px-5 py-4 text-center text-xs ${cellClass(row.tilt)}`}>{row.tilt}</div>
+                  <div className={`px-5 py-4 text-center text-xs border-x border-[#1a3060] ${cellClass(row.signadot)}`}>{row.signadot}</div>
+                  <div className={`px-5 py-4 text-center text-xs ${cellClass(row.skaffold)}`}>{row.skaffold}</div>
+                </div>
+              ))}
             </div>
-            {COMPARISON_ROWS.map((row, i) => (
-              <div key={row.feature} className={`grid grid-cols-3 border-t border-[#1a3060] ${i % 2 === 0 ? 'bg-[#071020]' : 'bg-[#050d1f]'}`}>
-                <div className="px-6 py-4 text-sm text-[#8BA3C7]">{row.feature}</div>
-                <div className={`px-6 py-4 text-center text-sm font-medium border-x border-[#1a3060] ${iconClass(row.klight)}`} style={row.klight === '✅' ? { color: ACCENT } : {}}>
-                  {row.klight}
-                </div>
-                <div className={`px-6 py-4 text-center text-sm ${iconClass(row.compose)}`}>
-                  {row.compose}
-                </div>
-              </div>
-            ))}
           </div>
         </ScrollReveal>
       </div>
