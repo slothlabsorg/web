@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/klight`,
     siteName: 'SlothLabs',
     type: 'website',
-    images: [{ url: '/images/character-server.png', width: 1200, height: 630, alt: 'klight — Kubernetes dev environments' }],
+    images: [{ url: '/images/klight-landing.png', width: 1200, height: 630, alt: 'klight — Kubernetes dev environments' }],
   },
   twitter: {
     card: 'summary_large_image',
@@ -132,12 +132,16 @@ function Hero() {
           {/* Right — hero image */}
           <div className="relative flex justify-center md:justify-end min-h-[280px] sm:min-h-[360px] md:min-h-[440px]">
             <div className="absolute inset-0 rounded-full blur-[100px] opacity-20" style={{ background: ACCENT }} />
-            <div
-              className="relative z-10 w-full max-w-sm md:max-w-md lg:max-w-lg aspect-square max-h-[400px] lg:max-h-[480px] bg-contain bg-center bg-no-repeat"
-              style={{ backgroundImage: 'url(/images/character-server.png)' }}
-              role="img"
-              aria-label="klight"
-            />
+            <div className="relative z-10 w-full max-w-md md:max-w-lg lg:max-w-xl rounded-2xl overflow-hidden border shadow-2xl" style={{ borderColor: `${ACCENT}30`, boxShadow: `0 0 60px ${ACCENT}15` }}>
+              <Image
+                src="/images/klight-landing.png"
+                alt="klight — meet your sloth-powered Kubernetes dev environments"
+                width={1200}
+                height={800}
+                priority
+                className="w-full h-auto block"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -169,6 +173,17 @@ function ProblemSection() {
     <section className="py-24 bg-[#050d1f]">
       <div className="site-container">
         <ScrollReveal className="text-center mb-16 space-y-4">
+          <div className="flex justify-center mb-2">
+            <div className="relative w-32 h-32 sm:w-36 sm:h-36 drop-shadow-[0_0_30px_rgba(180,255,60,0.25)]">
+              <Image
+                src="/images/klight-sloth-break-paper.png"
+                alt=""
+                fill
+                sizes="144px"
+                className="object-contain select-none"
+              />
+            </div>
+          </div>
           <span className="text-xs font-semibold tracking-widest uppercase text-[#4A6080]">The problem</span>
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
             Local dev environments are{' '}
@@ -338,8 +353,19 @@ klight up store --env alice   # same command, cloud cluster`,
 
 function ThreeWorlds() {
   return (
-    <section className="py-28 bg-[#050d1f]">
-      <div className="site-container">
+    <section className="py-28 bg-[#050d1f] relative overflow-hidden">
+      {/* Background decorative sloth — working at desk */}
+      <div className="hidden lg:block absolute -right-16 top-20 w-72 xl:w-80 opacity-[0.18] pointer-events-none select-none">
+        <Image
+          src="/images/klight-sloth.png"
+          alt=""
+          width={500}
+          height={500}
+          className="w-full h-auto"
+        />
+      </div>
+
+      <div className="relative z-10 site-container">
         <ScrollReveal className="text-center mb-20 space-y-4">
           <span className="text-xs font-semibold tracking-widest uppercase text-[#4A6080]">How it works</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
@@ -417,11 +443,20 @@ function KlightYamlSection() {
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#050d1f] via-[#0d1b3e]/30 to-[#050d1f]" />
+      {/* Background decorative meditating sloth — "zero K8s knowledge" zen */}
+      <div className="hidden lg:block absolute -left-20 bottom-10 w-72 opacity-[0.15] pointer-events-none select-none">
+        <Image src="/images/klight-sloth3.png" alt="" width={500} height={500} className="w-full h-auto" />
+      </div>
       <div className="relative z-10 site-container">
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left — copy */}
           <ScrollReveal className="space-y-6">
-            <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: ACCENT }}>The contract</span>
+            <div className="flex items-center gap-4">
+              <div className="relative w-16 h-16 flex-shrink-0 drop-shadow-[0_0_20px_rgba(180,255,60,0.3)]">
+                <Image src="/images/klight-sloth3.png" alt="" fill sizes="64px" className="object-contain" />
+              </div>
+              <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: ACCENT }}>The contract</span>
+            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight" style={{ fontFamily: 'Syne, sans-serif' }}>
               One YAML file.<br />Zero K8s knowledge.
             </h2>
@@ -752,6 +787,17 @@ function CtaSection() {
 
       <div className="relative z-10 site-container text-center space-y-8">
         <ScrollReveal>
+          <div className="flex justify-center mb-6">
+            <div className="relative w-36 h-36 sm:w-40 sm:h-40 drop-shadow-[0_0_40px_rgba(180,255,60,0.3)]">
+              <Image
+                src="/images/klight-sloth4.png"
+                alt=""
+                fill
+                sizes="160px"
+                className="object-contain select-none"
+              />
+            </div>
+          </div>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold border mb-4" style={{ color: ACCENT, borderColor: `${ACCENT}40`, background: `${ACCENT}10` }}>
             🚀 Coming soon
           </div>
@@ -799,6 +845,7 @@ export default function KlightPage() {
       <CustomCursor />
       <ProductNavbar
         icon="🚀"
+        iconSrc="/images/klight-logo.png"
         name="klight"
         accent={ACCENT}
         ctaKind="subscribe"

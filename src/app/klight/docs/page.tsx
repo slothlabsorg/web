@@ -126,7 +126,15 @@ const sections: Record<string, React.ReactNode> = {
 
   overview: (
     <>
-      <H>klight documentation</H>
+      <div className="flex items-start gap-5 mb-6">
+        <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 drop-shadow-[0_0_24px_rgba(180,255,60,0.25)]">
+          <Image src="/images/klight-sloth2.png" alt="klight mascot" fill sizes="112px" className="object-contain select-none" />
+        </div>
+        <div className="pt-1">
+          <H>klight documentation</H>
+          <p className="text-sm text-[#4A6080] -mt-2">Welcome — your full-stack K8s sloth is here to help.</p>
+        </div>
+      </div>
       <P>klight is a Kubernetes dev-environment manager. One command brings up databases, message brokers, and all your services in the right order. Another tears everything down. Every developer gets their own isolated namespace — without writing a single line of K8s YAML.</P>
       <P>There are three ways to use klight:</P>
       <ul className="space-y-1 mb-5">
@@ -606,6 +614,7 @@ export default function KlightDocsPage() {
       <CustomCursor />
       <ProductNavbar
         icon="🚀"
+        iconSrc="/images/klight-logo.png"
         name="klight"
         accent={ACCENT}
         ctaKind="subscribe"
