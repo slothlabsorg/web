@@ -146,10 +146,18 @@ function Products() {
 
         <ProductCarousel products={(() => {
           const NOW_TS = new Date().getTime()
+          // Anchor launch cutoff at noon UTC (≈ 5am PT / 8am ET) so apps don't flip
+          // to "live" the moment UTC midnight rolls over while it's still the prior day in the US.
+          const launchTsUtcNoon = (s?: string): number => {
+            if (!s) return NaN
+            const d = new Date(s)
+            if (isNaN(d.getTime())) return NaN
+            return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0)
+          }
           const decorated = products.items.map(p => {
             const key = p.slug.replace('/', '')
             const released = (allReleases[key]?.releases.length ?? 0) > 0
-            const launchTs = p.comingSoonDate ? new Date(p.comingSoonDate).getTime() : NaN
+            const launchTs = launchTsUtcNoon(p.comingSoonDate)
             const isLive = released || (!isNaN(launchTs) && launchTs <= NOW_TS)
             return {
               ...p,
@@ -185,9 +193,14 @@ const RAW_ROADMAP = [
 
 // Compute status at build time — live items first, then upcoming by date.
 // The earliest upcoming item is marked "Next release".
+// Anchor cutoff at noon UTC so we don't flip "live" the moment UTC midnight passes.
 const NOW = new Date()
+const roadmapTs = (iso: string): number => {
+  const [y, m, d] = iso.split('-').map(Number)
+  return Date.UTC(y, m - 1, d, 12, 0, 0)
+}
 const ROADMAP = RAW_ROADMAP
-  .map(r => ({ ...r, _ts: new Date(r.launchDate).getTime(), isLive: new Date(r.launchDate).getTime() <= NOW.getTime() }))
+  .map(r => ({ ...r, _ts: roadmapTs(r.launchDate), isLive: roadmapTs(r.launchDate) <= NOW.getTime() }))
   .sort((a, b) => {
     // Live first (in original order), then upcoming ascending by date
     if (a.isLive && !b.isLive) return -1
