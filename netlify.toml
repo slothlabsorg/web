@@ -16,6 +16,26 @@
   function = "stats-auth"
   path = "/stats/*"
 
+# admin-auth guards the /admin CMS surface with HTTP Basic Auth.
+[[edge_functions]]
+  function = "admin-auth"
+  path = "/admin"
+[[edge_functions]]
+  function = "admin-auth"
+  path = "/admin/"
+[[edge_functions]]
+  function = "admin-auth"
+  path = "/admin/*"
+
+# ── News CMS save endpoint ────────────────────────────────────────────────────
+# /admin/news posts here to commit JSON to GitHub. Function performs its own
+# Basic auth check; the redirect just maps the public path to the function.
+[[redirects]]
+  from   = "/api/news/save"
+  to     = "/.netlify/functions/news-save"
+  status = 200
+  force  = true
+
 # ── Tauri in-app updater endpoints ────────────────────────────────────────────
 # All apps route through /api/updater/:app/:target/:version → Netlify function.
 # NOTE: CloudOrbit's tauri.conf.json must point to:
