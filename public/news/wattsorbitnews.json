@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "wo-v110-release",
+      "type": "changelog",
+      "priority": 9,
+      "publishedAt": "2026-05-20T00:00:00Z",
+      "badge": "UPDATE",
+      "badgeTone": "primary",
+      "title": "WattsOrbit v1.1.0",
+      "body": "## What's new\n\n- **NewsBell in the tray popup** — unread dot and release-notes dropdown\n- **News screen** in the Dashboard with markdown rendering and pull-to-refresh\n- **UpdaterModal** replaces the old banner — changelog, download progress, in-app install\n- **Homebrew Cask** auto-updates on every release publish",
+      "collapsed": false,
+      "action": { "label": "Full changelog", "url": "https://github.com/slothlabsorg/wattsorbit/releases/tag/v1.1.0" },
+      "targetApps": ["wattsorbit"]
+    },
+    {
+      "id": "wo-tip-tray-shortcut",
+      "type": "tip",
+      "priority": 5,
+      "publishedAt": "2026-05-12T00:00:00Z",
+      "badge": "TIP",
+      "badgeTone": "success",
+      "title": "Keep the tray popup open",
+      "body": "By default the tray popup hides when it loses focus. Hold ⌥ (Option) while clicking the menu-bar icon and the popup stays pinned — useful when you want to watch wattage drift while you do something else.",
+      "targetApps": ["wattsorbit"]
+    }
+  ]
+}

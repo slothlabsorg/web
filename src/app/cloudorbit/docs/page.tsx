@@ -157,7 +157,7 @@ function SectionInstallation({ tab, setTab }: { tab: string; setTab: (t: string)
   const tabs = installation.tabs
   const [launchingSoon, setLaunchingSoon] = useState(true)
   useEffect(() => {
-    setLaunchingSoon(new Date() < new Date('2026-05-08T00:00:00Z'))
+    setLaunchingSoon(new Date() < new Date('2026-05-22T12:00:00Z'))
   }, [])
 
   return (

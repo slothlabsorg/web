@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/build-news-feed.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "build-news": "node scripts/build-news-feed.mjs",
     "crop-character-sheet": "node scripts/crop-character-sheet.mjs",
     "extract-favicon": "node scripts/extract-favicon.mjs"
   },

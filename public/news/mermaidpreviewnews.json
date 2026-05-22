@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "mp-v012-release",
+      "type": "changelog",
+      "priority": 9,
+      "publishedAt": "2026-05-09T00:00:00Z",
+      "badge": "UPDATE",
+      "badgeTone": "primary",
+      "title": "Mermaid Preview v0.1.2",
+      "body": "## What's new\n\n- Bug fixes and stability improvements for JCEF panel\n- Better handling of malformed mermaid blocks (no more frozen preview)\n- Mermaid 10.9.3 bundled — works fully offline / air-gapped",
+      "collapsed": false,
+      "action": { "label": "Download v0.1.2", "url": "https://github.com/slothlabsorg/mermaid-preview-plugin/releases/download/v0.1.2/mermaid-preview-0.1.2.zip" },
+      "targetApps": ["mermaid-preview"]
+    }
+  ]
+}

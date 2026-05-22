@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "bo-launch-july-3",
+      "type": "announcement",
+      "priority": 9,
+      "publishedAt": "2026-05-15T00:00:00Z",
+      "badge": "NEW",
+      "badgeTone": "primary",
+      "title": "BastionOrbit launches Friday July 3, 2026",
+      "body": "The SSH tunnel manager for macOS ships **Friday July 3**.\n\n- One-click port forwarding through bastion hosts\n- Auto-expiry TTL — never leave a tunnel open overnight\n- Multi-bastion management with connectivity probing\n- Pairs with DataOrbit for tunneled DB connections\n\nReal `ssh -N -L` processes — no protocol reimplementation. Free forever.",
+      "action": { "label": "Subscribe for updates", "url": "https://slothlabs.org/bastionorbit" },
+      "targetApps": ["bastionorbit"]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "po-launch-june-12",
+      "type": "announcement",
+      "priority": 9,
+      "publishedAt": "2026-05-15T00:00:00Z",
+      "badge": "NEW",
+      "badgeTone": "primary",
+      "title": "ProxyOrbit launches Friday June 12, 2026",
+      "body": "The free Charles Proxy alternative for macOS ships **Friday June 12**.\n\n- Capture HTTP/HTTPS from any Mac app\n- Filter by method, status, host, path\n- Real-time request log with body inspection\n- Native Rust + Hyper + Tokio — under 30 MB at idle\n\nNo subscription, no $50 license. MIT licensed.",
+      "action": { "label": "Subscribe for updates", "url": "https://slothlabs.org/proxyorbit" },
+      "targetApps": ["proxyorbit"]
+    }
+  ]
+}

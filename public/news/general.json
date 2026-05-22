@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "slothlabs-roadmap-may-2026",
+      "type": "news",
+      "priority": 6,
+      "publishedAt": "2026-05-10T00:00:00Z",
+      "badge": "NEW",
+      "badgeTone": "neutral",
+      "title": "SlothLabs spring releases",
+      "body": "Two more native macOS tools just shipped: **WattsOrbit** (power & USB monitor) and **Mermaid Preview** (JetBrains plugin).\n\nNext up: CloudOrbit and DataOrbit launch Friday May 22, then ProxyOrbit on June 12 and BastionOrbit on July 3.\n\nAll free, all native, all open source.",
+      "collapsed": false,
+      "action": { "label": "See the roadmap", "url": "https://slothlabs.org/#roadmap" },
+      "targetApps": ["all"]
+    },
+    {
+      "id": "advertise-with-slothlabs",
+      "type": "ad",
+      "priority": 2,
+      "publishedAt": "2026-05-01T00:00:00Z",
+      "badge": "SPONSOR",
+      "badgeTone": "neutral",
+      "title": "Advertise with SlothLabs",
+      "body": "Reach thousands of macOS developers, infra engineers, and AWS/Kubernetes power users. Sponsored placements appear in every Orbit app's news tab and are clearly labelled.",
+      "sponsored": true,
+      "action": { "label": "Sponsor a slot", "url": "https://slothlabs.org/advertise" },
+      "targetApps": ["all"]
+    }
+  ]
+}

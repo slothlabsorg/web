@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "do-launch-may-22",
+      "type": "announcement",
+      "priority": 9,
+      "publishedAt": "2026-05-15T00:00:00Z",
+      "badge": "NEW",
+      "badgeTone": "primary",
+      "title": "DataOrbit launches Friday May 22, 2026",
+      "body": "The native DynamoDB GUI for macOS ships **Friday May 22**.\n\n- Live DynamoDB Streams\n- Cross-table joins (inner / left / left-anti / right / right-anti)\n- Full query history\n- No Electron, no JVM warm-up — pure Rust + Tauri\n\nFree forever. MIT licensed.",
+      "action": { "label": "Subscribe for updates", "url": "https://slothlabs.org/dataorbit" },
+      "targetApps": ["dataorbit"]
+    },
+    {
+      "id": "do-tip-query-optimization",
+      "type": "tip",
+      "priority": 6,
+      "publishedAt": "2026-05-14T00:00:00Z",
+      "badge": "TIP",
+      "badgeTone": "success",
+      "title": "Speed up DynamoDB queries with GSIs",
+      "body": "Scanning large DynamoDB tables is slow and expensive. Use **Global Secondary Indexes** to turn full-table scans into targeted key lookups.\n\nIn DataOrbit's query builder, open the **Index** dropdown to pick a GSI — the filter fields automatically update to match the index's partition and sort key.\n\nAlways prefer a GSI query over a Scan when you know the access pattern.",
+      "targetApps": ["dataorbit"]
+    }
+  ]
+}
