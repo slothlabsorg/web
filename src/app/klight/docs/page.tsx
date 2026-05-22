@@ -120,7 +120,8 @@ function Li(props: { children: React.ReactNode }) {
 }
 
 // ── Section content ───────────────────────────────────────────────────────────
-const sections: Record<string, React.ReactNode> = {
+function buildSections(setActive: (slug: string) => void): Record<string, React.ReactNode> {
+  return {
 
   // ── GETTING STARTED ──────────────────────────────────────────────────────────
 
@@ -146,7 +147,28 @@ const sections: Record<string, React.ReactNode> = {
         First time? Go to <strong className="text-white">Install</strong> then <strong className="text-white">Quick start</strong> — you&apos;ll have a full stack running in under 5 minutes.
       </Callout>
 
-      <Screenshot src="/images/klight-screen-env-running.png" caption="klight UI — 5-service environment running, all green (World 2 team sync with ghcr.io images)" />
+      <H3>Pick your world</H3>
+      <div className="grid sm:grid-cols-3 gap-3 mb-6 not-prose">
+        {[
+          { id: 'World 1', label: 'Solo dev', desc: 'You have the code locally. No CI. minikube on your laptop.', target: 'local-setup' },
+          { id: 'World 2', label: 'Startup team', desc: 'New dev. No clones. One sync URL → full stack from CI images.', target: 'team-yaml' },
+          { id: 'World 3', label: 'Remote cluster', desc: 'EKS / GKE / AKS. DevOps sets up once. Devs connect with a token.', target: 'setup-remote' },
+        ].map(w => (
+          <button
+            key={w.id}
+            onClick={() => setActive(w.target)}
+            className="text-left rounded-xl border p-4 transition-colors hover:border-opacity-100 group"
+            style={{ background: '#071020', borderColor: BORDER }}
+          >
+            <div className="text-[10px] font-bold tracking-widest uppercase mb-1" style={{ color: ACCENT }}>{w.id}</div>
+            <div className="font-semibold text-white text-sm mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>{w.label}</div>
+            <p className="text-xs text-[#8BA3C7] leading-relaxed">{w.desc}</p>
+            <div className="text-[11px] mt-2 transition-colors" style={{ color: ACCENT }}>Open guide →</div>
+          </button>
+        ))}
+      </div>
+
+      <Screenshot src="/images/klight-screen-w2-03-tienda-running.png" caption="klight UI — 5-service environment running, all green (World 2 team sync with ghcr.io images)" />
     </>
   ),
 
@@ -212,28 +234,31 @@ klight up store --env dev`} />
 
   'local-setup': (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 1 · Solo dev (local code)</div>
       <H>Local cluster setup</H>
-      <P>klight uses minikube under the hood for local K8s. The <C>klight local setup</C> command starts a dedicated profile called <C>klight-demo</C>.</P>
+      <P>You have repos checked out locally and you don&apos;t want to set up a CI pipeline. klight uses minikube under the hood — one command boots an isolated profile <C>klight-demo</C> sized for a typical micro-stack (postgres + kafka + 3 services).</P>
       <CodeBlock code={`# Default: 2 CPUs, 3 GB RAM
 klight local setup
 
 # Larger cluster for heavy profiles
 klight local setup --cpus 4 --memory 6144`} />
-      <P>This creates a minikube profile <C>klight-demo</C>, exports its kubeconfig to <C>/tmp/klight-demo-kubeconfig.yaml</C>, and sets it as the active cluster target.</P>
+      <P>This creates a minikube profile <C>klight-demo</C>, exports its kubeconfig to <C>/tmp/klight-demo-kubeconfig.yaml</C>, and sets it as the active cluster target. From here, every klight command targets that profile.</P>
       <H3>Check status</H3>
       <CodeBlock code={`klight local status`} />
+      <Screenshot src="/images/klight-screen-w1-02-cluster-status-bar.png" caption="World 1 — cluster status bar shows klight-demo · 2 CPUs · 3.0GB · OK" />
       <H3>Resize without destroying data</H3>
       <CodeBlock code={`klight local resize --memory 4096
 klight local resize --cpus 4 --memory 8192`} />
-      <Screenshot src="/images/klight-screen-sizing-banner.png" caption="Sizing banner — klight estimates memory needs before you deploy and warns if the cluster is too small" />
+      <Screenshot src="/images/klight-screen-w1-06-new-env-sizing-banner.png" caption="Sizing banner — klight estimates memory needs before you deploy and warns if the cluster is too small" />
       <Callout type="warn">
-        Run <strong className="text-white">klight local setup</strong> once per machine. If you already have a klight-demo profile, it will start it rather than recreate it.
+        Run <strong className="text-white">klight local setup</strong> once per machine. If a <C>klight-demo</C> profile already exists, klight will start it instead of recreating it — your data persists.
       </Callout>
     </>
   ),
 
   'build-load': (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 1 · Solo dev (local code)</div>
       <H>Build &amp; load images</H>
       <P>For local dev, klight uses <C>imagePullPolicy: Never</C> — K8s loads the image from the local Docker daemon instead of pulling from a registry. The <C>build-load</C> command does both steps:</P>
       <CodeBlock code={`# Build Docker image and load it into minikube
@@ -251,8 +276,9 @@ klight local build-load store-web     --path ./store-web`} />
 
   'from-repos': (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 1 · Solo dev (local code)</div>
       <H>Deploy with from-repos</H>
-      <P><C>klight from-repos</C> is the World 1 deploy command. It reads the <C>klight.yaml</C> in each directory, builds the dependency graph, starts infrastructure (postgres, kafka, etc.), and deploys each service with the local image.</P>
+      <P><C>klight from-repos</C> is the World 1 deploy command. It reads the <C>klight.yaml</C> in each directory, builds the dependency graph, starts infrastructure (postgres, kafka, etc.), and deploys each service with the local <C>:local</C> image you just loaded.</P>
       <CodeBlock code={`klight from-repos ./inventory-api ./store-api ./store-web --env dev`} />
       <P>klight will:</P>
       <ul className="space-y-1 mb-5">
@@ -260,15 +286,19 @@ klight local build-load store-web     --path ./store-web`} />
         <Li>Deploy all required infrastructure (postgres, kafka, redis…) and wait for readiness.</Li>
         <Li>Run any <C>migration.command</C> as a K8s Job before the service starts.</Li>
         <Li>Deploy each service with a <C>sentinel</C> init container that blocks until dependencies are healthy.</Li>
+        <Li>Set <C>imagePullPolicy: Never</C> for <C>:local</C> images — your code never leaves your laptop.</Li>
       </ul>
-      <Screenshot src="/images/klight-screen-local-running.png" caption="World 1 — dev environment running with locally built images (:local tag)" />
+      <Screenshot src="/images/klight-screen-w1-03-env-dev-running-local.png" caption="World 1 — env-dev running with locally built :local images on minikube" />
       <H3>Watch progress</H3>
       <CodeBlock code={`klight ps --env dev`} />
+      <Screenshot src="/images/klight-screen-w1-04-service-detail-inventory-api.png" caption="Click any service card to see the pod, image, and env vars — World 1 inventory-api on local cluster" />
+      <Screenshot src="/images/klight-screen-w1-05-logs-inventory-api.png" caption="Live log streaming — no kubectl required" />
     </>
   ),
 
   'hot-swap': (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 1 · Solo dev (local code)</div>
       <H>Hot-swap a service</H>
       <P>During active development, use <C>klight replace</C> to update one service without redeploying the whole environment. Edit your code, rebuild the image, and replace in-place:</P>
       <CodeBlock code={`# Edit code…
@@ -283,6 +313,7 @@ klight replace store-api --with ./store-api --env dev`} />
 
   sizing: (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 1 · Solo dev (local code)</div>
       <H>Sizing &amp; resize</H>
       <P>Before you hit OOMKilled pods, klight can estimate how much memory a profile needs and warn you in advance — both from the CLI and in the UI.</P>
       <H3>Check sizing estimate</H3>
@@ -303,6 +334,7 @@ klight local resize --cpus 4 --memory 8192`} />
 
   'team-yaml': (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 2 · Startup team (sync) — DevOps</div>
       <H>klight-team.yaml</H>
       <P>The team configuration lives in your central infra or platform repo. It lists every service, its CI-built image, the source repo URL, and how services are grouped into profiles.</P>
       <CodeBlock code={`version: "1"
@@ -330,21 +362,23 @@ profiles:
       <P>Commit this file to your infra repo. Devs sync it with a single URL — they never need to clone the service repos.</P>
       <H3>Using the Setup Wizard</H3>
       <P>The <C>klight ui</C> Setup Wizard tab can generate this file by scanning your GitHub org — without cloning anything. Connect a GitHub token, scan, and generate.</P>
-      <Screenshot src="/images/klight-screen-setup-wizard.png" caption="Setup Wizard — scans your GitHub org and generates klight-team.yaml automatically" />
+      <Screenshot src="/images/klight-screen-w2-08-setup-wizard-tab.png" caption="Setup Wizard — scans your GitHub org and generates klight-team.yaml automatically" />
     </>
   ),
 
   'sync-deploy': (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 2 · Startup team (sync)</div>
       <H>Sync &amp; deploy</H>
-      <P>Once DevOps publishes the team YAML, any developer can get the full stack running in two commands:</P>
+      <P>Once DevOps publishes the team YAML, any developer can get the full stack running in two commands. No git clones of the service repos. No <C>npm install</C>. No fighting Docker Compose.</P>
       <CodeBlock code={`# Run once — caches the team config locally
 klight sync https://raw.githubusercontent.com/my-company/infra/main/klight-team.yaml
 
 # Run any time — spins up a named profile in an isolated namespace
-klight up store --env alice`} />
-      <P>klight pulls CI images from the registry (ghcr.io, ECR, GCR — any registry your machine can reach), creates namespace <C>env-alice</C>, and deploys all services in the <C>store</C> profile with proper dependency ordering.</P>
-      <Screenshot src="/images/klight-screen-env-running.png" caption="World 2 — team sync with ghcr.io images, 5/5 services ready" />
+klight up store --env tienda`} />
+      <P>klight pulls CI images from the registry (ghcr.io, ECR, GCR — any registry your machine can reach), creates namespace <C>env-tienda</C>, and deploys all services in the <C>store</C> profile with proper dependency ordering.</P>
+      <Screenshot src="/images/klight-screen-w2-03-tienda-running.png" caption="World 2 — env-tienda running with ghcr.io CI images, 5/5 services ready" />
+      <Screenshot src="/images/klight-screen-w2-04-service-detail-inventory-api.png" caption="Click any card to inspect the running CI image — same UI you used in World 1" />
       <H3>Re-sync after team config changes</H3>
       <CodeBlock code={`klight sync https://raw.githubusercontent.com/my-company/infra/main/klight-team.yaml`} />
       <Callout type="info">
@@ -355,13 +389,18 @@ klight up store --env alice`} />
 
   'multi-env': (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 2 · Startup team (sync)</div>
       <H>Multiple environments</H>
-      <P>Every developer gets their own namespace. Alice and Bob can both run the <C>store</C> profile simultaneously — no port conflicts, no shared state:</P>
+      <P>Every developer gets their own namespace. Alice and Bob can both run the <C>store</C> profile simultaneously — no port conflicts, no shared state. Same pattern works for CI / PR-preview environments.</P>
       <CodeBlock code={`klight up store --env alice    # creates env-alice namespace
 klight up store --env bob      # creates env-bob namespace
 klight up store --env pr-123   # for CI / PR environments`} />
       <H3>List all running environments</H3>
-      <Screenshot src="/images/klight-screen-cluster-status.png" caption="Environments list — cluster status bar shows available RAM, each env is an isolated K8s namespace" />
+      <Screenshot src="/images/klight-screen-w2-01-environments-tab.png" caption="Environments tab — every running env is an isolated K8s namespace" />
+      <Screenshot src="/images/klight-screen-w2-02-cluster-status-bar.png" caption="Cluster status bar — total RAM and active context, always visible at the top" />
+      <H3>Resize the cluster mid-flight</H3>
+      <P>Need a bigger cluster as more devs join? klight can resize without losing already-running envs.</P>
+      <Screenshot src="/images/klight-screen-w2-07-resize-cluster-dialog.png" caption="Resize dialog — change CPUs/memory without destroying running envs (local) or coordinate with DevOps (remote)" />
       <H3>Destroy when done</H3>
       <CodeBlock code={`klight destroy alice           # deletes namespace env-alice + all resources
 klight destroy bob`} />
@@ -374,6 +413,7 @@ klight destroy bob`} />
 
   'setup-remote': (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 3 · Remote cluster — DevOps</div>
       <H>Setup remote cluster (DevOps)</H>
       <P>Run this once on the remote cluster (EKS, GKE, AKS, or any K8s cluster). You need <C>cluster-admin</C> access.</P>
       <CodeBlock code={`kubectl config use-context your-eks-context
@@ -404,6 +444,7 @@ Share this with your devs:
 
   connect: (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 3 · Remote cluster — Dev</div>
       <H>Connect as dev</H>
       <P>Run the connect command your DevOps sent you once per laptop:</P>
       <CodeBlock code={`klight connect --url https://k8s.company.com --token eyJhbGci...
@@ -411,13 +452,21 @@ klight use klight-remote`} />
       <P>This writes a kubeconfig context named <C>klight-remote</C> and sets it as the active target. Now <C>klight up store --env alice</C> runs on the remote cluster.</P>
       <H3>Import from kubeconfig (alternative)</H3>
       <CodeBlock code={`klight connect --kubeconfig /path/to/kubeconfig.yaml`} />
-      <Screenshot src="/images/klight-screen-remote-running.png" caption="World 3 — env-alice running on remote cluster with CI images from ghcr.io" />
-      <Screenshot src="/images/klight-screen-remote-cluster-bar.png" caption="Remote cluster status bar — shows context name and available resources on the remote cluster" />
+      <H3>Deploy your env on the remote cluster</H3>
+      <P>The exact same <C>klight up</C> / <C>klight ps</C> / <C>klight logs</C> commands you used in World 2 work here — the only difference is the active target.</P>
+      <CodeBlock code={`klight sync https://raw.githubusercontent.com/my-company/infra/main/klight-team.yaml
+klight up store --env alice
+klight ps --env alice`} />
+      <Screenshot src="/images/klight-screen-w3-03-alice-running-remote.png" caption="World 3 — env-alice running on remote EKS cluster with CI images from ghcr.io" />
+      <Screenshot src="/images/klight-screen-w3-02-cluster-bar-remote.png" caption="Remote cluster status bar — shows the remote context, not klight-demo" />
+      <Screenshot src="/images/klight-screen-w3-04-service-detail-store-api.png" caption="Service detail — store-api on the remote cluster" />
+      <Screenshot src="/images/klight-screen-w3-05-logs-store-api-remote.png" caption="Live logs — streamed from a pod running on the remote cluster" />
     </>
   ),
 
   'switch-targets': (
     <>
+      <div className="text-[10px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>World 3 · Remote cluster — Dev</div>
       <H>Switch targets</H>
       <P>klight supports multiple cluster targets. Switch between them with <C>klight use</C>:</P>
       <CodeBlock code={`klight use local           # switch to minikube klight-demo
@@ -427,6 +476,7 @@ klight target              # show current active target`} />
       <Callout type="info">
         You can have multiple remote targets — one per cluster or environment (staging, shared-dev). Register each with a different name using <C>--name</C>: <C>klight connect --url … --token … --name staging-cluster</C>
       </Callout>
+      <Screenshot src="/images/klight-screen-w3-06-env-list-remote-cluster.png" caption="Same Environments tab — but now showing namespaces on the remote cluster" />
     </>
   ),
 
@@ -603,11 +653,13 @@ KUBECONFIG=/tmp/klight-demo-kubeconfig.yaml uvicorn klight_ui.server:app --port 
       <Screenshot src="/images/klight-screen-setup-wizard.png" caption="Setup Wizard — generate klight-team.yaml from a live scan of your GitHub org" />
     </>
   ),
+  }
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function KlightDocsPage() {
   const [active, setActive] = useState('overview')
+  const sections = buildSections(setActive)
 
   return (
     <main style={{ background: BG_BASE, minHeight: '100vh' }}>

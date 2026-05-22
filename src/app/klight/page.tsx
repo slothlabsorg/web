@@ -670,53 +670,137 @@ function UISection() {
           ))}
         </div>
 
-        {/* Primary screenshot */}
-        <ScrollReveal delay={150} className="mt-10">
-          <div className="rounded-2xl border overflow-hidden shadow-2xl" style={{ borderColor: `${ACCENT}25` }}>
-            <div className="flex items-center gap-2 px-4 py-3 bg-[#071020] border-b border-[#1a3060]">
-              <span className="w-3 h-3 rounded-full bg-red-500/80" />
-              <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
-              <span className="w-3 h-3 rounded-full bg-green-500/80" />
-              <span className="text-xs text-[#4A6080] font-mono ml-2">klight ui — localhost:7700</span>
-            </div>
-            <Image
-              src="/images/klight-screen-env-running.png"
-              alt="klight UI — environment running with all services healthy"
-              width={1400}
-              height={900}
-              className="w-full h-auto block"
-            />
-          </div>
-        </ScrollReveal>
+        {/* Three Worlds — screenshots by scenario */}
+        <div className="mt-20 space-y-24">
+          {WORLD_SCREENS.map((world, wi) => (
+            <ScrollReveal key={world.id} delay={wi * 60}>
+              <div className="space-y-8">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 pb-4 border-b" style={{ borderColor: `${ACCENT}1a` }}>
+                  <div>
+                    <span className="inline-flex items-center gap-2 text-[11px] font-bold tracking-widest uppercase mb-2" style={{ color: ACCENT }}>
+                      <span className="px-2 py-0.5 rounded-md border" style={{ borderColor: `${ACCENT}40`, background: `${ACCENT}10` }}>{world.id}</span>
+                      {world.persona}
+                    </span>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+                      {world.title}
+                    </h3>
+                    <p className="text-[#8BA3C7] text-sm mt-2 max-w-2xl">{world.tagline}</p>
+                  </div>
+                  <code className="text-xs font-mono px-3 py-1.5 rounded-lg whitespace-nowrap self-start md:self-end" style={{ background: '#0d1b3e', color: ACCENT, border: `1px solid ${ACCENT}25` }}>
+                    {world.cmd}
+                  </code>
+                </div>
 
-        {/* Screenshot grid */}
-        <ScrollReveal delay={200} className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[
-            { src: '/images/klight-screen-service-detail.png', alt: 'Service detail panel showing pod status and resource usage', label: 'Service detail' },
-            { src: '/images/klight-screen-logs.png', alt: 'Live log streaming per service — no kubectl required', label: 'Live logs' },
-            { src: '/images/klight-screen-sizing-banner.png', alt: 'Sizing banner warns before OOMKilled pods happen', label: 'Sizing warnings' },
-            { src: '/images/klight-screen-resize-dialog.png', alt: 'Cluster resize dialog — scale minikube without losing environments', label: 'Cluster resize' },
-            { src: '/images/klight-screen-setup-wizard.png', alt: 'Setup wizard scans GitHub repos and generates klight-team.yaml', label: 'Setup wizard' },
-            { src: '/images/klight-screen-cluster-status.png', alt: 'Cluster status bar shows CPUs, RAM, and active context', label: 'Cluster status' },
-          ].map(({ src, alt, label }) => (
-            <div key={src} className="rounded-xl overflow-hidden border border-[#1a3060] hover:border-[#B4FF3C]/30 transition-colors group">
-              <Image
-                src={src}
-                alt={alt}
-                width={700}
-                height={450}
-                className="w-full h-auto block group-hover:scale-[1.01] transition-transform duration-300"
-              />
-              <div className="px-3 py-2 bg-[#071020]">
-                <p className="text-[10px] text-[#4A6080] font-mono">{label}</p>
+                {/* Primary screenshot */}
+                <div className="rounded-2xl border overflow-hidden shadow-2xl" style={{ borderColor: `${ACCENT}25` }}>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-[#071020] border-b border-[#1a3060]">
+                    <span className="w-3 h-3 rounded-full bg-red-500/80" />
+                    <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                    <span className="w-3 h-3 rounded-full bg-green-500/80" />
+                    <span className="text-xs text-[#4A6080] font-mono ml-2">{world.windowChrome}</span>
+                  </div>
+                  <Image
+                    src={world.primary.src}
+                    alt={world.primary.alt}
+                    width={1400}
+                    height={900}
+                    className="w-full h-auto block"
+                  />
+                </div>
+
+                {/* Supporting grid */}
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {world.grid.map(({ src, alt, label }) => (
+                    <div key={src} className="rounded-xl overflow-hidden border border-[#1a3060] hover:border-[#B4FF3C]/30 transition-colors group">
+                      <Image
+                        src={src}
+                        alt={alt}
+                        width={700}
+                        height={450}
+                        className="w-full h-auto block group-hover:scale-[1.01] transition-transform duration-300"
+                      />
+                      <div className="px-3 py-2 bg-[#071020]">
+                        <p className="text-[10px] text-[#4A6080] font-mono">{label}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
-        </ScrollReveal>
+        </div>
       </div>
     </section>
   )
 }
+
+// ── Worlds screenshot data ────────────────────────────────────────────────────
+const WORLD_SCREENS: {
+  id: string
+  persona: string
+  title: string
+  tagline: string
+  cmd: string
+  windowChrome: string
+  primary: { src: string; alt: string }
+  grid: { src: string; alt: string; label: string }[]
+}[] = [
+  {
+    id: 'World 1',
+    persona: 'Solo dev · local code',
+    title: 'Local code. No CI. Full stack on your laptop.',
+    tagline: 'You have the repos checked out, you don\'t want to set up a pipeline. klight builds your images, loads them into minikube, and brings up the whole stack — postgres, kafka, three services — in the right order.',
+    cmd: 'klight from-repos ./api ./web --env dev',
+    windowChrome: 'klight ui — World 1 · local',
+    primary: {
+      src: '/images/klight-screen-w1-03-env-dev-running-local.png',
+      alt: 'World 1 — env-dev running with locally built :local images on minikube',
+    },
+    grid: [
+      { src: '/images/klight-screen-w1-01-environments-tab.png', alt: 'Environments tab showing local env-dev', label: 'Environments tab' },
+      { src: '/images/klight-screen-w1-04-service-detail-inventory-api.png', alt: 'Service detail — inventory-api pod status', label: 'Service detail' },
+      { src: '/images/klight-screen-w1-05-logs-inventory-api.png', alt: 'Live logs streaming for inventory-api', label: 'Live logs' },
+      { src: '/images/klight-screen-w1-06-new-env-sizing-banner.png', alt: 'Sizing banner warning before deploy', label: 'Sizing banner' },
+    ],
+  },
+  {
+    id: 'World 2',
+    persona: 'Startup team · sync',
+    title: 'One sync URL. Full stack from CI images.',
+    tagline: 'You just joined. DevOps already published a klight-team.yaml. Two commands and you have the whole stack running from ghcr.io — no clones, no npm install, no fighting docker-compose.',
+    cmd: 'klight sync <url> && klight up store --env tienda',
+    windowChrome: 'klight ui — World 2 · sync',
+    primary: {
+      src: '/images/klight-screen-w2-03-tienda-running.png',
+      alt: 'World 2 — env-tienda running with CI images from ghcr.io',
+    },
+    grid: [
+      { src: '/images/klight-screen-w2-04-service-detail-inventory-api.png', alt: 'Service detail showing CI image', label: 'Service detail' },
+      { src: '/images/klight-screen-w2-06b-new-env-sizing-banner.png', alt: 'Sizing banner — new env form', label: 'New env + sizing' },
+      { src: '/images/klight-screen-w2-07-resize-cluster-dialog.png', alt: 'Resize cluster dialog without losing environments', label: 'Cluster resize' },
+      { src: '/images/klight-screen-w2-08-setup-wizard-tab.png', alt: 'Setup wizard generating klight-team.yaml from a GitHub scan', label: 'Setup wizard' },
+    ],
+  },
+  {
+    id: 'World 3',
+    persona: 'Remote cluster · EKS / GKE / AKS',
+    title: 'Same CLI. Same UI. Cloud cluster.',
+    tagline: 'Your team outgrew local minikube. DevOps runs klight cluster setup-remote once on EKS, sends a one-line connect command. Each developer gets an isolated namespace on the shared cluster — but never sees production.',
+    cmd: 'klight connect --url … --token … && klight up store --env alice',
+    windowChrome: 'klight ui — World 3 · remote',
+    primary: {
+      src: '/images/klight-screen-w3-03-alice-running-remote.png',
+      alt: 'World 3 — env-alice running on remote EKS cluster from ghcr.io images',
+    },
+    grid: [
+      { src: '/images/klight-screen-w3-02-cluster-bar-remote.png', alt: 'Cluster status bar showing remote context', label: 'Remote cluster bar' },
+      { src: '/images/klight-screen-w3-04-service-detail-store-api.png', alt: 'Service detail — store-api on remote cluster', label: 'Service detail' },
+      { src: '/images/klight-screen-w3-05-logs-store-api-remote.png', alt: 'Logs streaming from a pod on the remote cluster', label: 'Live logs' },
+      { src: '/images/klight-screen-w3-06-env-list-remote-cluster.png', alt: 'Environments list on the remote cluster', label: 'Env list (remote)' },
+    ],
+  },
+]
 
 // ── Remote Setup section ──────────────────────────────────────────────────────
 function RemoteSection() {
