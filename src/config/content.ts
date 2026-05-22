@@ -75,7 +75,7 @@ export const slothLabsContent = {
         cta: 'Learn more →',
         live: false,
         accent: '#8B5CF6',
-        comingSoonDate: 'May 22, 2026',
+        comingSoonDate: 'May 29, 2026',
         previewImage: '/images/dataorbit-landing.png',
         iconSrc: '/images/dataorbit-icon.png',
       },
@@ -418,7 +418,7 @@ export const dataOrbitContent = {
     subtitle: 'The native DynamoDB GUI for macOS. DataOrbit is the DynamoDB client with the ergonomics of TablePlus and the intelligence of a real query tool — live streaming, cross-table joins, full query history. Plus CouchDB and time-series. No Electron, no AWS console.',
     ctaPrimary: 'Subscribe for updates',
     ctaSecondary: 'Learn more ↓',
-    launchDate: 'Launching Friday, May 22, 2026',
+    launchDate: 'Launching Friday, May 29, 2026',
   },
   features: [
     { icon: '🗄️', title: 'DynamoDB without the console pain', desc: 'Auto-complete filters, schema inference, PK/SK selector, paginated grid — built specifically for DynamoDB access patterns. Not a generic SQL tool bolted onto a NoSQL engine.', badge: null },

@@ -16,7 +16,7 @@ import { allReleases } from '@/data/releases'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison, screenshots } = dataOrbitContent
 
-const DATAORBIT_LAUNCH = new Date('2026-05-22T12:00:00Z')
+const DATAORBIT_LAUNCH = new Date('2026-05-29T12:00:00Z')
 const isLaunched = new Date() >= DATAORBIT_LAUNCH
 const hasRelease = allReleases.dataorbit.releases.length > 0
 const latestRelease = allReleases.dataorbit.releases[0]
@@ -114,11 +114,11 @@ function Hero() {
                 </a>
               ) : (
                 <span
-                  title="Available May 22, 2026"
+                  title="Available May 29, 2026"
                   className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm border opacity-70 cursor-not-allowed"
                   style={{ borderColor: ACCENT_MID, color: ACCENT, background: ACCENT_DIM }}
                 >
-                  Download — May 22
+                  Download — May 29
                 </span>
               )}
               <SubscribeModal
@@ -326,7 +326,7 @@ function CTA() {
           <p className="text-[#8BA3C7] text-lg mt-2">
             {showDownload
               ? 'DataOrbit is live. Free forever. Native Rust binary.'
-              : 'DataOrbit launches Friday, May 22, 2026. Subscribe to hear when it drops.'}
+              : 'DataOrbit launches Friday, May 29, 2026. Subscribe to hear when it drops.'}
           </p>
           <div className="mt-3 flex justify-center">
             <LaunchBanner variant="subtle" launchDate={DATAORBIT_LAUNCH} accent={ACCENT} />
@@ -346,11 +346,11 @@ function CTA() {
               </a>
             ) : (
               <span
-                title="Available May 22, 2026"
+                title="Available May 29, 2026"
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm border opacity-70 cursor-not-allowed"
                 style={{ borderColor: ACCENT_MID, color: ACCENT, background: ACCENT_DIM }}
               >
-                Download — May 22
+                Download — May 29
               </span>
             )}
             <SubscribeModal
