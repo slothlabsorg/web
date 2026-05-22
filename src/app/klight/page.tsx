@@ -635,42 +635,48 @@ function UISection() {
           ))}
         </div>
 
-        {/* Placeholder UI screenshot */}
+        {/* Primary screenshot */}
         <ScrollReveal delay={150} className="mt-10">
-          <div className="rounded-2xl border overflow-hidden" style={{ borderColor: `${ACCENT}25` }}>
+          <div className="rounded-2xl border overflow-hidden shadow-2xl" style={{ borderColor: `${ACCENT}25` }}>
             <div className="flex items-center gap-2 px-4 py-3 bg-[#071020] border-b border-[#1a3060]">
               <span className="w-3 h-3 rounded-full bg-red-500/80" />
               <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
               <span className="w-3 h-3 rounded-full bg-green-500/80" />
               <span className="text-xs text-[#4A6080] font-mono ml-2">klight ui — localhost:7700</span>
             </div>
-            <div className="bg-[#060e1a] p-6 min-h-[200px] flex flex-col gap-4">
-              {/* Mock status bar */}
-              <div className="flex items-center gap-3 p-3 rounded-lg bg-[#0d1b3e] border border-[#1a3060] text-xs font-mono">
-                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-[#8BA3C7]">klight-demo</span>
-                <span className="text-[#4A6080]">·</span>
-                <span className="text-[#8BA3C7]">2 CPUs</span>
-                <span className="text-[#4A6080]">·</span>
-                <span style={{ color: ACCENT }}>3.0 GB</span>
-                <span className="text-[#4A6080]">·</span>
-                <span className="text-green-400">Running</span>
-              </div>
-              {/* Mock service cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-                {['postgres', 'kafka', 'inventory-api', 'store-api', 'store-web'].map((svc, idx) => (
-                  <div key={svc} className="rounded-lg p-3 bg-[#0d1b3e] border border-[#1a3060] text-center">
-                    <div className="w-2 h-2 rounded-full bg-green-400 mx-auto mb-2 animate-pulse" style={{ animationDelay: `${idx * 0.2}s` }} />
-                    <p className="text-[10px] font-mono text-[#8BA3C7] truncate">{svc}</p>
-                    <p className="text-[9px] text-green-400 mt-0.5">Running</p>
-                  </div>
-                ))}
-              </div>
-              <p className="text-center text-[11px] text-[#2a3a54]">
-                ✦ alice 5/5 ready — real-time dashboard
-              </p>
-            </div>
+            <Image
+              src="/images/klight-screen-env-running.png"
+              alt="klight UI — environment running with all services healthy"
+              width={1400}
+              height={900}
+              className="w-full h-auto block"
+            />
           </div>
+        </ScrollReveal>
+
+        {/* Screenshot grid */}
+        <ScrollReveal delay={200} className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { src: '/images/klight-screen-service-detail.png', alt: 'Service detail panel showing pod status and resource usage', label: 'Service detail' },
+            { src: '/images/klight-screen-logs.png', alt: 'Live log streaming per service — no kubectl required', label: 'Live logs' },
+            { src: '/images/klight-screen-sizing-banner.png', alt: 'Sizing banner warns before OOMKilled pods happen', label: 'Sizing warnings' },
+            { src: '/images/klight-screen-resize-dialog.png', alt: 'Cluster resize dialog — scale minikube without losing environments', label: 'Cluster resize' },
+            { src: '/images/klight-screen-setup-wizard.png', alt: 'Setup wizard scans GitHub repos and generates klight-team.yaml', label: 'Setup wizard' },
+            { src: '/images/klight-screen-cluster-status.png', alt: 'Cluster status bar shows CPUs, RAM, and active context', label: 'Cluster status' },
+          ].map(({ src, alt, label }) => (
+            <div key={src} className="rounded-xl overflow-hidden border border-[#1a3060] hover:border-[#B4FF3C]/30 transition-colors group">
+              <Image
+                src={src}
+                alt={alt}
+                width={700}
+                height={450}
+                className="w-full h-auto block group-hover:scale-[1.01] transition-transform duration-300"
+              />
+              <div className="px-3 py-2 bg-[#071020]">
+                <p className="text-[10px] text-[#4A6080] font-mono">{label}</p>
+              </div>
+            </div>
+          ))}
         </ScrollReveal>
       </div>
     </section>
@@ -797,6 +803,7 @@ export default function KlightPage() {
         accent={ACCENT}
         ctaKind="subscribe"
         ctaLabel="Get early access"
+        docsHref="/klight/docs"
       />
       <Hero />
       <ProblemSection />
