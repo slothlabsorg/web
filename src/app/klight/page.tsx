@@ -806,34 +806,32 @@ const WORLD_SCREENS: {
 const MCP_SCENARIOS = [
   {
     role: 'developer',
-    label: 'Developer — World 1',
+    label: 'Developer — World 1 (local)',
     conversation: [
-      { who: 'user', text: 'deploy ./inventory-api, ./store-api and ./store-web locally as env dev' },
-      { who: 'claude', text: '🔧 Calling deploy_from_repos…\n✓ inventory-api  Running (1/1)  12s\n✓ store-api       Running (1/1)  18s\n✓ store-web       Running (1/1)  9s\nAll 3 services ready in 41 seconds.' },
-      { who: 'user', text: 'store-api keeps restarting, what\'s wrong?' },
-      { who: 'claude', text: '🔍 Calling get_unready…\nstore-api: CrashLoopBackOff\nLogs: "could not connect to postgres:5432"\nFix: postgres is still initialising — sentinel should have blocked this. Try: klight replace store-api --with ./store-api --env dev' },
+      { who: 'user', text: 'I just cloned ./inventory-api and ./store-api, set everything up for me' },
+      { who: 'claude', text: '📋 Reading klight://cluster — no cluster found.\n→ local_setup(cpus=4, memory=4096)\n✓ klight-demo started\n→ preload_infra()\n✓ postgres, kafka loaded\n→ local_build_load("inventory-api", "./inventory-api")\n→ local_build_load("store-api", "./store-api")\n→ deploy_from_repos(["./inventory-api","./store-api"], "dev")\n✓ All services Running. To hot-reload on save:\n  klight watch store-api --env dev --path ./store-api' },
     ],
     cmd: 'claude mcp add klight -- klight mcp',
   },
   {
     role: 'devops',
-    label: 'DevOps — Setup wizard',
+    label: 'DevOps — remote cluster + team setup',
     conversation: [
-      { who: 'user', text: 'scan our GitHub org slothlabsorg and generate klight.yaml for each service repo' },
-      { who: 'claude', text: '🔍 Calling init_service on each repo…\ninventory-api: FastAPI · port 8081 · needs postgres, kafka\nstore-api: FastAPI · port 8082 · needs postgres\nstore-web: Next.js · port 3000\nGenerated 3 klight.yaml files. Want me to also create the klight-team.yaml?' },
-      { who: 'user', text: 'yes, create the team yaml and set up a store profile with all three' },
-      { who: 'claude', text: 'Here\'s your klight-team.yaml:\nprofiles:\n  store: [inventory-api, store-api, store-web]\nDeploy with: klight up store --env <name>' },
+      { who: 'user', text: 'set up our staging EKS cluster for the team and give me a token' },
+      { who: 'claude', text: '📋 Reading klight://cluster — context: staging-eks.\n→ setup_remote_cluster()\n✓ SA klight-dev + RBAC created\nToken (1 year): eyJhbGci...\n\nShare with devs:\n  klight connect --url https://staging.k8s.company.com --token eyJhbGci...' },
+      { who: 'user', text: 'now scan our repos and generate klight.yaml for each one' },
+      { who: 'claude', text: '→ init_service("./inventory-api") — FastAPI · port 8081 · needs postgres\n→ init_service("./store-api")  — FastAPI · port 8082 · needs postgres\n→ init_service("./store-web")  — Next.js · port 3000\n✓ 3 klight.yaml files generated.\nFor the full Setup Wizard (GitHub scan + team yaml): klight ui' },
     ],
-    cmd: 'klight mcp  # stdio — wire to any MCP client',
+    cmd: 'claude mcp add klight -- klight mcp',
   },
   {
     role: 'team lead',
     label: 'Team lead — daily ops',
     conversation: [
-      { who: 'user', text: 'what\'s running across all environments right now?' },
-      { who: 'claude', text: '📊 Reading klight://environments…\nenv-alice  store profile  3/3 Running\nenv-bob    store profile  2/3 Running  ← store-web Pending\nenv-dev    store profile  3/3 Running' },
-      { who: 'user', text: 'bob\'s store-web is pending, can you fix it?' },
-      { who: 'claude', text: '🔍 Calling get_unready for env-bob…\nstore-web: Pending — ImagePullBackOff\nghcr.io/slothlabsorg/store-web:main not found\nSolution: run klight preflight to check images, or push a new build to ghcr.io' },
+      { who: 'user', text: 'what\'s the state of all environments?' },
+      { who: 'claude', text: '📊 Reading klight://environments…\nenv-alice  3/3 Running  ✓\nenv-bob    2/3 Running  ← store-web Pending\nenv-dev    3/3 Running  ✓' },
+      { who: 'user', text: 'what\'s wrong with bob\'s env?' },
+      { who: 'claude', text: '→ get_unready("bob")\nstore-web: ImagePullBackOff\nghcr.io/slothlabsorg/store-web:main not found\nFix: push a build to ghcr.io, or:\n  klight replace store-web --with ./store-web --env bob' },
     ],
     cmd: 'claude mcp add klight -- klight mcp',
   },
@@ -855,8 +853,9 @@ function MCPSection() {
         </ScrollReveal>
         <ScrollReveal delay={60} className="text-center mb-16">
           <p className="text-lg text-[#8BA3C7] max-w-2xl mx-auto">
-            klight ships a built-in MCP server. Add it to Claude once — then every
-            developer, DevOps engineer, and team lead can manage K8s environments in plain English.
+            klight ships a built-in MCP server. Add it to Claude once — then manage
+            any workflow in plain English. When something needs a terminal or the visual
+            UI, Claude gives you the exact command instead of guessing.
           </p>
         </ScrollReveal>
 
@@ -929,12 +928,15 @@ function MCPSection() {
 
         {/* Tools grid */}
         <ScrollReveal delay={120} className="mt-16">
-          <p className="text-center text-xs font-semibold uppercase tracking-widest text-[#4A6080] mb-6">12 tools exposed via MCP</p>
+          <p className="text-center text-xs font-semibold uppercase tracking-widest text-[#4A6080] mb-6">17 tools · 4 resources · every workflow covered</p>
           <div className="flex flex-wrap justify-center gap-2">
             {[
-              'deploy_environment', 'deploy_from_repos', 'service_status', 'get_logs',
-              'destroy_environment', 'replace_service', 'restore_service', 'get_unready',
-              'init_service', 'sync_team', 'switch_target', 'run_preflight',
+              'local_setup', 'preload_infra', 'local_build_load',
+              'deploy_environment', 'deploy_from_repos', 'run_preflight',
+              'service_status', 'get_logs', 'get_unready',
+              'replace_service', 'restore_service', 'destroy_environment',
+              'init_service', 'sync_team', 'switch_target',
+              'connect_remote', 'setup_remote_cluster',
             ].map(tool => (
               <span key={tool} className="px-3 py-1 rounded-full text-xs font-mono border border-[#1a3060] text-[#8BA3C7] bg-[#080f20]">
                 {tool}
