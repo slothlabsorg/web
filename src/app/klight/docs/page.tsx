@@ -57,6 +57,12 @@ const SIDEBAR: { group: string; items: { slug: string; label: string }[] }[] = [
       { slug: 'ui',              label: 'UI dashboard' },
     ],
   },
+  {
+    group: 'AI / MCP',
+    items: [
+      { slug: 'mcp', label: 'Claude & LLM integration' },
+    ],
+  },
 ]
 
 // ── Reusable doc components ───────────────────────────────────────────────────
@@ -308,6 +314,11 @@ klight replace store-api --with ./store-api --env dev`} />
       <Callout type="success">
         Total round-trip: <strong className="text-white">edit → rebuild → replace</strong> typically takes 15–30 seconds for a Go or Python service.
       </Callout>
+
+      <H3>Auto-reload with klight watch</H3>
+      <P>For continuous development, <C>klight watch</C> auto-detects file changes, rebuilds the image, and replaces the service — no manual build-load needed:</P>
+      <CodeBlock code={`klight watch store-api --env dev              # watches current dir
+klight watch store-api --env dev --path ./src # watch specific dir`} />
     </>
   ),
 
@@ -362,7 +373,10 @@ profiles:
       <P>Commit this file to your infra repo. Devs sync it with a single URL — they never need to clone the service repos.</P>
       <H3>Using the Setup Wizard</H3>
       <P>The <C>klight ui</C> Setup Wizard tab can generate this file by scanning your GitHub org — without cloning anything. Connect a GitHub token, scan, and generate.</P>
-      <Screenshot src="/images/klight-screen-w2-08-setup-wizard-tab.png" caption="Setup Wizard — scans your GitHub org and generates klight-team.yaml automatically" />
+      <Screenshot src="/images/klight-screen-wizard-02-repo-list-catalog-warnings.png" caption="Setup Wizard Step 2 — repo list flagging services with custom infra entries not in the built-in catalog" />
+      <Callout type="info">
+        <strong className="text-white">Catalog detection</strong> — when the wizard scans repos, it reads existing <C>klight.yaml</C> files and flags any <C>needs:</C> entry not found in the built-in catalog (e.g. <C>postgres-store</C>). It shows exactly what to add to <C>klight-catalog.yaml</C> so DevOps knows before committing.
+      </Callout>
     </>
   ),
 
@@ -486,7 +500,7 @@ klight target              # show current active target`} />
     <>
       <H>klight.yaml reference</H>
       <P>Add one <C>klight.yaml</C> at the root of each service repo. klight generates all K8s manifests from this file — you never write Kubernetes YAML.</P>
-      <CodeBlock code={`# yaml-language-server: $schema=https://klight.dev/schema/klight.yaml.json
+      <CodeBlock code={`# yaml-language-server: $schema=https://slothlabsorg.github.io/klight/schema/klight.yaml.json
 name: inventory-api       # service name (used as K8s Deployment name)
 port: 8081                # container port your app listens on
 health: /health           # HTTP path for readiness probe
@@ -550,7 +564,8 @@ manifest: ./deploy/overlays/dev   # optional — path to existing K8s manifests
 klight local setup --cpus 4 --memory 6144        # larger cluster
 klight local resize --memory 4096                # resize without destroying data
 klight local build-load <svc> --path <dir>       # docker build + minikube image load
-klight local status                              # cluster status + loaded images`} />
+klight local status                              # cluster status + loaded images
+klight local preload-infra [--only postgres,kafka]  # pre-pull infra images into minikube`} />
 
       <H3>Environments</H3>
       <CodeBlock code={`klight up <profile> --env <name>                 # create namespace + deploy full profile
@@ -567,6 +582,10 @@ klight destroy <name> --yes                      # skip confirmation`} />
       <H3>Team sync</H3>
       <CodeBlock code={`klight sync <url>                                # download + cache klight-team.yaml`} />
 
+      <H3>Hot reload</H3>
+      <CodeBlock code={`klight watch <svc> --env <name>              # auto-rebuild + replace on file change
+klight watch <svc> --env <name> --path <dir> # watch specific directory`} />
+
       <H3>Cluster targets</H3>
       <CodeBlock code={`klight use local                                 # switch to minikube klight-demo
 klight use klight-remote                         # switch to configured remote cluster
@@ -579,6 +598,14 @@ klight connect --kubeconfig <path>               # import kubeconfig`} />
 
       <H3>UI</H3>
       <CodeBlock code={`klight ui                                        # http://localhost:7700`} />
+
+      <H3>AI / MCP</H3>
+      <CodeBlock code={`klight mcp                                   # start stdio MCP server for Claude/LLM integration`} />
+
+      <H3>Diagnostics</H3>
+      <CodeBlock code={`klight preflight [--env <name>]              # check image availability before deploy
+klight unready [--env <name>]                # list pods not yet Ready with fix hints
+klight init [<dir>]                          # scaffold klight.yaml for a service`} />
     </>
   ),
 
@@ -617,13 +644,28 @@ klight connect --kubeconfig <path>               # import kubeconfig`} />
       </div>
 
       <H3>Custom catalog entries</H3>
-      <P>Add your own infra in a <C>klight-catalog.yaml</C> at your project root — no changes to klight needed.</P>
-      <CodeBlock code={`# klight-catalog.yaml
-entries:
-  - name: my-service
-    manifest: ./infra/my-service    # path to K8s manifest directory
-    env:
-      MY_SERVICE_URL: http://my-service:3000`} filename="klight-catalog.yaml" lang="yaml" />
+      <P>Add your own infra in a <C>klight-catalog.yaml</C> at your infra repo root — no changes to klight needed. The top-level key is <C>infra:</C>, and each entry is a named dict. The optional <C>provides:</C> map injects env vars into every service that lists the entry under <C>needs:</C>.</P>
+      <CodeBlock code={`# klight-catalog.yaml — in your infra repo root
+infra:
+  postgres-store:
+    description: "PostgreSQL 15 for store-api"
+    image: postgres:15-alpine
+    port: 5432
+    manifest: infrastructure/postgres-store/base
+    provides:
+      GLOBAL_POSTGRES_STORE_HOST: postgres-store
+      GLOBAL_POSTGRES_STORE_PORT: "5432"
+  postgres-inventory:
+    description: "PostgreSQL 15 for inventory-api"
+    image: postgres:15-alpine
+    port: 5432
+    manifest: infrastructure/postgres-inventory/base
+    provides:
+      GLOBAL_POSTGRES_INVENTORY_HOST: postgres-inventory
+      GLOBAL_POSTGRES_INVENTORY_PORT: "5432"`} filename="klight-catalog.yaml" lang="yaml" />
+      <Callout type="info">
+        <strong className="text-white">Setup Wizard catalog detection</strong> — when the wizard scans repos and finds <C>needs:</C> entries not in the built-in catalog, it flags them with the exact catalog entry format needed. You don&apos;t need to write this by hand.
+      </Callout>
     </>
   ),
 
@@ -650,7 +692,77 @@ KUBECONFIG=/tmp/klight-demo-kubeconfig.yaml uvicorn klight_ui.server:app --port 
 
       <H3>Setup Wizard</H3>
       <P>DevOps-only: the Setup Wizard tab lets you connect your GitHub org, scan repos for existing <C>klight.yaml</C> files, generate missing ones, and publish a <C>klight-team.yaml</C> without cloning any repos.</P>
-      <Screenshot src="/images/klight-screen-setup-wizard.png" caption="Setup Wizard — generate klight-team.yaml from a live scan of your GitHub org" />
+      <Screenshot src="/images/klight-screen-wizard-01-platform-access.png" caption="Setup Wizard Step 1 — connect GitHub org, paste token, set registry prefix" />
+      <Screenshot src="/images/klight-screen-wizard-03-review-catalog-warning.png" caption="Setup Wizard Step 3 — ⚠ custom infra panel flags postgres-store and postgres-inventory, shows exactly what to add to klight-catalog.yaml" />
+    </>
+  ),
+
+  mcp: (
+    <>
+      <H>Claude &amp; LLM integration</H>
+      <P>klight ships a stdio MCP server. Add it to Claude Desktop or Claude Code once — then control your cluster with natural language.</P>
+      <CodeBlock code={`claude mcp add klight -- klight mcp`} filename="Claude Code (one-time)" />
+      <CodeBlock code={`{
+  "mcpServers": {
+    "klight": {
+      "command": "klight",
+      "args": ["mcp"],
+      "env": { "KUBECONFIG": "/tmp/klight-demo-kubeconfig.yaml" }
+    }
+  }
+}`} filename="~/.claude/claude_desktop_config.json" lang="json" />
+
+      <H3>Available tools (17)</H3>
+      <P>The MCP server exposes all three worlds as tools Claude can call:</P>
+      <div className="overflow-x-auto mt-4 mb-6">
+        <table className="w-full text-[13px] border-collapse">
+          <thead>
+            <tr className="border-b" style={{ borderColor: BORDER }}>
+              <th className="px-4 py-3 text-left font-semibold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Tool</th>
+              <th className="px-4 py-3 text-left font-semibold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ['local_setup',         'start minikube klight-demo cluster'],
+              ['preload_infra',        'pre-pull infra images into minikube'],
+              ['local_build_load',     'docker build + load into minikube'],
+              ['deploy_environment',   'klight up <profile> --env <name>'],
+              ['deploy_from_repos',    'klight from-repos (World 1)'],
+              ['service_status',       'klight ps --env <name>'],
+              ['get_logs',             'tail service logs'],
+              ['get_unready',          'list broken pods + fix hints'],
+              ['destroy_environment',  'klight destroy --yes'],
+              ['replace_service',      'hot-swap with local build'],
+              ['restore_service',      'back to original CI image'],
+              ['init_service',         'scan repo → generate klight.yaml'],
+              ['sync_team',            'download klight-team.yaml'],
+              ['run_preflight',        'check image availability'],
+              ['setup_remote_cluster', 'create SA + RBAC on remote'],
+              ['connect_remote',       'register remote cluster'],
+              ['switch_target',        'klight use local/remote'],
+            ].map(([tool, desc]) => (
+              <tr key={tool as string} className="border-b" style={{ borderColor: BORDER }}>
+                <td className="px-4 py-3 font-mono text-[12px]" style={{ color: ACCENT }}>{tool}</td>
+                <td className="px-4 py-3 text-[#8BA3C7]">{desc}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <H3>Resources</H3>
+      <P>Three resources Claude reads automatically before calling tools:</P>
+      <ul className="space-y-1 mb-5">
+        <Li><C>klight://cluster</C> — active target, CPUs, RAM, context</Li>
+        <Li><C>klight://environments</C> — all env-* namespaces + pod status</Li>
+        <Li><C>klight://team-yaml</C> — cached klight-team.yaml (if synced)</Li>
+        <Li><C>klight://capabilities</C> — what the MCP can do vs what needs CLI/UI</Li>
+      </ul>
+
+      <Callout type="info">
+        For streaming logs, <C>klight watch</C>, or the Setup Wizard — Claude will tell you to run <C>klight ui</C> or the CLI command directly. The MCP only exposes what the CLI can do non-interactively.
+      </Callout>
     </>
   ),
   }
