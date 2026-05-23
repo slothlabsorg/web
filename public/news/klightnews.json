@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "kl-launch-may-29",
+      "type": "announcement",
+      "priority": 9,
+      "publishedAt": "2026-05-23T00:00:00Z",
+      "badge": "NEW",
+      "badgeTone": "primary",
+      "title": "klight launches Friday May 29, 2026",
+      "body": "Originally slated for September — pulled forward to **Friday May 29** because the three-world rollout (Solo dev, Startup team, Remote cluster) is on track and shipping early.\n\n- Full-stack Kubernetes envs in two commands\n- Postgres, Kafka, Redis spin up in the right order\n- Each developer gets their own namespace\n- Local minikube, team sync, or remote EKS / GKE / AKS — same CLI\n\nOpen source under MIT. Sign up to get notified the moment it ships.",
+      "action": { "label": "Subscribe for updates", "url": "https://slothlabs.org/klight" },
+      "targetApps": ["klight"]
+    }
+  ]
+}

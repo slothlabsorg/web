@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-const DEFAULT_LAUNCH = new Date('2026-05-22T12:00:00Z')
+const DEFAULT_LAUNCH = new Date('2026-05-25T12:00:00Z')
 const DEFAULT_ACCENT = '#00D4FF'
 
 function getTimeLeft(target: Date) {

@@ -6,11 +6,11 @@ import { usePathname } from 'next/navigation'
 const PRODUCTS = [
   { icon: '🧜', name: 'Mermaid Preview', href: '/mermaid-preview', badge: 'Released', accent: '#FF3670' },
   { icon: '⚡', name: 'WattsOrbit',      href: '/wattsorbit',      badge: 'Released', accent: '#F59E0B' },
-  { icon: '☁️', name: 'CloudOrbit',      href: '/cloudorbit',      badge: 'May 22',   accent: '#00D4FF' },
+  { icon: '☁️', name: 'CloudOrbit',      href: '/cloudorbit',      badge: 'May 25',   accent: '#00D4FF' },
   { icon: '🗄️', name: 'DataOrbit',       href: '/dataorbit',       badge: 'May 29',   accent: '#8B5CF6' },
   { icon: '🔍', name: 'ProxyOrbit',      href: '/proxyorbit',      badge: 'June 12',  accent: '#94A3B8' },
   { icon: '🔐', name: 'BastionOrbit',    href: '/bastionorbit',    badge: 'July 3',   accent: '#10B981' },
-  { icon: '🚀', name: 'klight',          href: '/klight',          badge: 'Sept 4',   accent: '#B4FF3C' },
+  { icon: '🚀', name: 'klight',          href: '/klight',          badge: 'May 29',   accent: '#B4FF3C' },
 ]
 
 export default function Navbar() {

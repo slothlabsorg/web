@@ -183,12 +183,12 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const RAW_ROADMAP = [
-  { name: 'CloudOrbit',   launchDate: '2026-05-22', date: 'May 22',   desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
+  { name: 'CloudOrbit',   launchDate: '2026-05-25', date: 'May 25',   desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
   { name: 'DataOrbit',    launchDate: '2026-05-29', date: 'May 29',   desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
   { name: 'WattsOrbit',   launchDate: '2026-05-08', date: 'May 8',    desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
   { name: 'ProxyOrbit',   launchDate: '2026-06-12', date: 'June 12',  desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
   { name: 'BastionOrbit', launchDate: '2026-07-03', date: 'July 3',   desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
-  { name: 'klight',       launchDate: '2026-09-04', date: 'Sept 4',   desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
+  { name: 'klight',       launchDate: '2026-05-29', date: 'May 29',   desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
 ]
 
 // Compute status at build time — live items first, then upcoming by date.
