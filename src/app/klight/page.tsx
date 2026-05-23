@@ -802,6 +802,151 @@ const WORLD_SCREENS: {
   },
 ]
 
+// ── MCP / AI integration section ─────────────────────────────────────────────
+const MCP_SCENARIOS = [
+  {
+    role: 'developer',
+    label: 'Developer — World 1',
+    conversation: [
+      { who: 'user', text: 'deploy ./inventory-api, ./store-api and ./store-web locally as env dev' },
+      { who: 'claude', text: '🔧 Calling deploy_from_repos…\n✓ inventory-api  Running (1/1)  12s\n✓ store-api       Running (1/1)  18s\n✓ store-web       Running (1/1)  9s\nAll 3 services ready in 41 seconds.' },
+      { who: 'user', text: 'store-api keeps restarting, what\'s wrong?' },
+      { who: 'claude', text: '🔍 Calling get_unready…\nstore-api: CrashLoopBackOff\nLogs: "could not connect to postgres:5432"\nFix: postgres is still initialising — sentinel should have blocked this. Try: klight replace store-api --with ./store-api --env dev' },
+    ],
+    cmd: 'claude mcp add klight -- klight mcp',
+  },
+  {
+    role: 'devops',
+    label: 'DevOps — Setup wizard',
+    conversation: [
+      { who: 'user', text: 'scan our GitHub org slothlabsorg and generate klight.yaml for each service repo' },
+      { who: 'claude', text: '🔍 Calling init_service on each repo…\ninventory-api: FastAPI · port 8081 · needs postgres, kafka\nstore-api: FastAPI · port 8082 · needs postgres\nstore-web: Next.js · port 3000\nGenerated 3 klight.yaml files. Want me to also create the klight-team.yaml?' },
+      { who: 'user', text: 'yes, create the team yaml and set up a store profile with all three' },
+      { who: 'claude', text: 'Here\'s your klight-team.yaml:\nprofiles:\n  store: [inventory-api, store-api, store-web]\nDeploy with: klight up store --env <name>' },
+    ],
+    cmd: 'klight mcp  # stdio — wire to any MCP client',
+  },
+  {
+    role: 'team lead',
+    label: 'Team lead — daily ops',
+    conversation: [
+      { who: 'user', text: 'what\'s running across all environments right now?' },
+      { who: 'claude', text: '📊 Reading klight://environments…\nenv-alice  store profile  3/3 Running\nenv-bob    store profile  2/3 Running  ← store-web Pending\nenv-dev    store profile  3/3 Running' },
+      { who: 'user', text: 'bob\'s store-web is pending, can you fix it?' },
+      { who: 'claude', text: '🔍 Calling get_unready for env-bob…\nstore-web: Pending — ImagePullBackOff\nghcr.io/slothlabsorg/store-web:main not found\nSolution: run klight preflight to check images, or push a new build to ghcr.io' },
+    ],
+    cmd: 'claude mcp add klight -- klight mcp',
+  },
+]
+
+function MCPSection() {
+  return (
+    <section className="py-28 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 right-0 w-[500px] h-[500px] rounded-full blur-[160px]" style={{ background: `${ACCENT}06` }} />
+      </div>
+      <div className="site-container">
+        {/* Header */}
+        <ScrollReveal className="text-center mb-6 space-y-4">
+          <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: ACCENT }}>AI-native</span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+            Talk to your cluster.<br />No kubectl required.
+          </h2>
+        </ScrollReveal>
+        <ScrollReveal delay={60} className="text-center mb-16">
+          <p className="text-lg text-[#8BA3C7] max-w-2xl mx-auto">
+            klight ships a built-in MCP server. Add it to Claude once — then every
+            developer, DevOps engineer, and team lead can manage K8s environments in plain English.
+          </p>
+        </ScrollReveal>
+
+        {/* Setup — one-liner */}
+        <ScrollReveal delay={80} className="mb-16 flex justify-center">
+          <div className="rounded-xl border border-[#1a3060] overflow-hidden bg-[#0a1628] w-full max-w-lg">
+            <div className="flex items-center gap-2 px-4 py-2.5 bg-[#071020] border-b border-[#1a3060]">
+              <span className="w-3 h-3 rounded-full bg-red-500/80" />
+              <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
+              <span className="w-3 h-3 rounded-full bg-green-500/80" />
+              <span className="text-xs text-[#4A6080] font-mono ml-2">setup — 30 seconds</span>
+            </div>
+            <pre className="p-5 text-sm font-mono leading-relaxed">
+              <code>
+                <span className="text-[#4A6080]"># Claude Code — one command, done:</span>{'\n'}
+                <span style={{ color: ACCENT }}>$</span> <span className="text-white">claude mcp add klight -- klight mcp</span>{'\n\n'}
+                <span className="text-[#4A6080]"># Claude Desktop — add to config.json:</span>{'\n'}
+                <span className="text-[#8BA3C7]">{'{'}</span>{'\n'}
+                <span className="text-[#8BA3C7]">{'  '}"mcpServers"</span><span className="text-[#8BA3C7]">: {'{'}</span>{'\n'}
+                <span className="text-[#8BA3C7]">{'    '}"klight"</span><span className="text-[#8BA3C7]">: {'{'}</span>{'\n'}
+                <span className="text-[#8BA3C7]">{'      '}"command"</span><span className="text-[#8BA3C7]">: </span><span style={{ color: ACCENT }}>"klight"</span><span className="text-[#8BA3C7]">,</span>{'\n'}
+                <span className="text-[#8BA3C7]">{'      '}"args"</span><span className="text-[#8BA3C7]">: [</span><span style={{ color: ACCENT }}>"mcp"</span><span className="text-[#8BA3C7]">]</span>{'\n'}
+                <span className="text-[#8BA3C7]">{'    }}'}</span>{'\n'}
+                <span className="text-[#8BA3C7]">{'  }}'}</span>{'\n'}
+                <span className="text-[#8BA3C7]">{'}'}</span>
+              </code>
+            </pre>
+          </div>
+        </ScrollReveal>
+
+        {/* Conversation examples */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          {MCP_SCENARIOS.map((scenario, si) => (
+            <ScrollReveal key={scenario.role} delay={si * 80}>
+              <div className="rounded-xl border border-[#1a3060] overflow-hidden bg-[#080f20] h-full flex flex-col">
+                {/* Title bar */}
+                <div className="flex items-center gap-2 px-4 py-2.5 bg-[#071020] border-b border-[#1a3060]">
+                  <span className="w-2 h-2 rounded-full" style={{ background: ACCENT }} />
+                  <span className="text-xs text-[#8BA3C7] font-medium">{scenario.label}</span>
+                </div>
+                {/* Chat */}
+                <div className="p-4 space-y-3 flex-1">
+                  {scenario.conversation.map((msg, mi) => (
+                    <div key={mi} className={`flex gap-2.5 ${msg.who === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      {msg.who === 'claude' && (
+                        <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5"
+                          style={{ background: `${ACCENT}20`, color: ACCENT, border: `1px solid ${ACCENT}30` }}>C</div>
+                      )}
+                      <div className={`rounded-lg px-3 py-2 text-xs leading-relaxed max-w-[80%] whitespace-pre-wrap ${
+                        msg.who === 'user'
+                          ? 'bg-[#0d1b3e] text-[#c9d1d9] border border-[#1a3060]'
+                          : 'bg-[#0a1628] text-[#8BA3C7] border border-[#1a3060]'
+                      }`}>
+                        {msg.text}
+                      </div>
+                      {msg.who === 'user' && (
+                        <div className="w-6 h-6 rounded-full bg-[#1a3060] flex items-center justify-center text-[10px] text-[#8BA3C7] flex-shrink-0 mt-0.5">U</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {/* Footer command */}
+                <div className="px-4 py-2.5 border-t border-[#1a3060] bg-[#071020]">
+                  <code className="text-[10px] font-mono" style={{ color: ACCENT }}>{scenario.cmd}</code>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+
+        {/* Tools grid */}
+        <ScrollReveal delay={120} className="mt-16">
+          <p className="text-center text-xs font-semibold uppercase tracking-widest text-[#4A6080] mb-6">12 tools exposed via MCP</p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {[
+              'deploy_environment', 'deploy_from_repos', 'service_status', 'get_logs',
+              'destroy_environment', 'replace_service', 'restore_service', 'get_unready',
+              'init_service', 'sync_team', 'switch_target', 'run_preflight',
+            ].map(tool => (
+              <span key={tool} className="px-3 py-1 rounded-full text-xs font-mono border border-[#1a3060] text-[#8BA3C7] bg-[#080f20]">
+                {tool}
+              </span>
+            ))}
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  )
+}
+
 // ── Remote Setup section ──────────────────────────────────────────────────────
 function RemoteSection() {
   return (
@@ -944,6 +1089,7 @@ export default function KlightPage() {
       <Comparison />
       <CatalogSection />
       <UISection />
+      <MCPSection />
       <RemoteSection />
       <CtaSection />
       <Footer showSuiteLink accent={ACCENT} />
