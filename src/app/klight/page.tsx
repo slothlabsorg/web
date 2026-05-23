@@ -986,8 +986,8 @@ function RemoteSection() {
             </h2>
             <div className="space-y-4">
               {[
-                { n: '1', title: 'Add klight.yaml to each service', body: 'One file per repo. Use the Setup Wizard to generate them automatically by scanning your GitHub org.' },
-                { n: '2', title: 'Create klight-team.yaml', body: 'Central config in your infra repo. Lists services, CI images, and which profiles group them together.' },
+                { n: '1', title: 'Add klight.yaml to each service', body: 'One file per repo — name, port, health, needs, env vars. Use the Setup Wizard to generate them by scanning your GitHub org. If a service needs infra not in the built-in catalog (e.g. two separate postgres instances), the wizard flags it and tells you what to add to klight-catalog.yaml.' },
+                { n: '2', title: 'Create klight-team.yaml', body: 'Central config in your infra repo. Lists services, CI images, and which profiles group them together. Add klight-catalog.yaml alongside it for any custom infra entries.' },
                 { n: '3', title: 'Run klight cluster setup-remote', body: 'On your EKS/GKE cluster. Creates minimal RBAC, generates a 1-year token.' },
                 { n: '4', title: 'Send devs one URL', body: 'klight sync <url> — that\'s the full onboarding document.' },
               ].map(step => (
