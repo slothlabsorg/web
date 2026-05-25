@@ -30,15 +30,15 @@ export default function FundingSection({
 
   const headline = isPlugin
     ? (appName ? `${appName} is free. No strings attached.` : `Free. No strings attached.`)
-    : (appName ? `${appName} is free. The install warning is Apple's toll, not ours.` : `Every app here is free. The install warning is Apple's toll, not ours.`)
+    : (appName ? `${appName} is free. Built with heart, on nights and weekends.` : `Every app here is free. Built with heart, on nights and weekends.`)
 
   const subtext = isPlugin
     ? (appName
         ? `${appName} is open source — every line is on GitHub. Zero tracking. Zero telemetry. No paywalls, no accounts, no subscription. Install the zip and you're done.`
         : `All SlothLabs tools are open source — every line is on GitHub. Zero tracking. Zero telemetry.`)
     : (appName
-        ? `${appName} is open source — every line is on GitHub. Zero tracking. Zero telemetry. The install warning? That's Apple charging $99 for a certificate. Not us.`
-        : `All SlothLabs apps are open source — every line is on GitHub. Zero tracking. Zero telemetry. The install warning? That's Apple charging $99 for a certificate. Not us.`)
+        ? `${appName} is open source — every line is on GitHub. Zero tracking. Zero telemetry. The Apple Developer license is covered — signed builds are rolling out. If your download still shows a warning, see below.`
+        : `All SlothLabs apps are open source — every line is on GitHub. Zero tracking. Zero telemetry. The Apple Developer license is covered — signed builds are rolling out. If your download still shows a warning, see below.`)
 
   const ctaLine = appName
     ? `${appName} runs on spare time.`
@@ -99,7 +99,7 @@ export default function FundingSection({
         <p className="text-[#4A6080] text-sm italic leading-relaxed">
           {isPlugin
             ? `${ctaLine} There's no VC money, no subscription, no ads. Just a team building on nights and weekends. If you find it useful, a coffee goes a long way.`
-            : `${ctaLine} There's no VC money. No subscription. Just a $99 Apple invoice and a hope that enough people find this useful. Every coffee on Ko-fi is one step closer to a clean install — no warning, no friction — for everyone who comes after you.`
+            : `${ctaLine} No VC, no investors. Just something built from scratch in spare time because we wanted tools that don't exist. If you find it useful, a coffee keeps the lights on.`
           }
         </p>
 
@@ -119,7 +119,7 @@ export default function FundingSection({
                   <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                   <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
                 </svg>
-                How to open it anyway (30 seconds)
+                Getting a warning? Here's how to open it (30 sec)
               </span>
               <svg
                 width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
@@ -134,6 +134,7 @@ export default function FundingSection({
                 className="px-4 pb-5 pt-3 space-y-3 text-sm border-t"
                 style={{ borderColor: accentBorder, color: '#8BA3C7' }}
               >
+                <p className="text-[#8BA3C7]">The Apple Developer license has been purchased — signed &amp; notarized builds are rolling out. If your current download still shows a warning, it&apos;s a build from before signing was set up. Here&apos;s the one-time bypass:</p>
                 <p className="font-semibold text-white">Right-click → Open</p>
                 <ol className="space-y-1 list-decimal list-inside text-[#8BA3C7]">
                   <li>Right-click the <code className="px-1 py-0.5 rounded text-xs" style={{ background: `${accent}18`, color: accent }}>.app</code> → <strong className="text-white">Open</strong></li>
@@ -155,7 +156,7 @@ export default function FundingSection({
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all hover:-translate-y-0.5 hover:brightness-110"
             style={{ background: accent, color: '#050d1f' }}
           >
-            {isPlugin ? '☕ Buy Slothy a coffee' : '☕ Help us get that certificate'}
+            ☕ Buy Slothy a coffee
           </button>
           <a
             href={repoUrl}

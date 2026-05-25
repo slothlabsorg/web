@@ -131,8 +131,8 @@ const sections: Record<string, React.ReactNode> = {
         <li>Windows — <C>.msi</C> or <C>.exe</C></li>
         <li>Linux — <C>.deb</C>, <C>.rpm</C>, or <C>.AppImage</C></li>
       </ul>
-      <Callout type="warn">
-        v1.0.0 ships unsigned. On macOS right-click the app and choose <strong className="text-white">Open</strong> the first time. On Windows, approve the SmartScreen prompt.
+      <Callout type="info">
+        The Apple Developer license has been purchased — signed &amp; notarized builds are rolling out. If your current download shows an unsigned warning, it&apos;s from before signing was set up. One-time bypass: right-click the app → <strong className="text-white">Open</strong>. On Windows, approve the SmartScreen prompt. macOS remembers the choice — you only do this once.
       </Callout>
     </>
   ),

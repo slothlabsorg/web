@@ -350,7 +350,7 @@ function Roadmap() {
             <span className="block" style={{ color: ACCENT }}>coming soon.</span>
           </h2>
           <p className="text-lg max-w-2xl mx-auto" style={{ color: '#8B7A55' }}>
-            WattsOrbit&apos;s v1 is completely free. Pro features require writing to your Mac&apos;s SMC chip to directly control charging hardware — the same approach used by AlDente and coconutBattery Pro. That needs a signed privileged helper, ongoing Apple notarisation, and significant engineering to maintain safely. The Pro tier funds exactly that.
+            WattsOrbit&apos;s v1 is completely free. Pro features require writing to your Mac&apos;s SMC chip to directly control charging hardware — the same approach used by AlDente and coconutBattery Pro. That needs a signed privileged helper, ongoing Apple notarisation, and significant engineering to maintain safely. Built in spare time, on nights and weekends — the Pro tier funds keeping it alive.
           </p>
         </ScrollReveal>
 
@@ -388,7 +388,7 @@ function Roadmap() {
                     In development
                   </span>
                 </div>
-                <p className="text-sm" style={{ color: '#8B7A55' }}>Direct SMC control for battery longevity. Requires a signed privileged helper — safety, notarisation, and the $99/year Apple Developer certificate are real ongoing costs. On top of that, privileged helpers must be re-signed and re-tested on every major macOS release. This tier exists to fund exactly that.</p>
+                <p className="text-sm" style={{ color: '#8B7A55' }}>Direct SMC control for battery longevity. Requires a signed privileged helper — safety, notarisation, and significant engineering to maintain. Privileged helpers must be re-signed and re-tested on every major macOS release. This tier funds that ongoing work.</p>
               </div>
               <ul className="px-6 py-5 space-y-4">
                 {PRO_ITEMS.map(item => (
