@@ -130,9 +130,9 @@ function Hero() {
           </div>
 
           {/* Right — hero image */}
-          <div className="relative flex justify-center md:justify-end min-h-[280px] sm:min-h-[360px] md:min-h-[440px]">
-            <div className="absolute inset-0 rounded-full blur-[100px] opacity-20" style={{ background: ACCENT }} />
-            <div className="relative z-10 w-full max-w-md md:max-w-lg lg:max-w-xl rounded-2xl overflow-hidden border shadow-2xl" style={{ borderColor: `${ACCENT}30`, boxShadow: `0 0 60px ${ACCENT}15` }}>
+          <div className="relative flex justify-center md:justify-end">
+            <div className="absolute inset-0 rounded-full blur-[100px] opacity-20 pointer-events-none" style={{ background: ACCENT }} />
+            <div className="relative z-10 w-full max-w-md md:max-w-lg lg:max-w-xl rounded-2xl overflow-hidden" style={{ boxShadow: `0 0 60px ${ACCENT}15, 0 0 0 1px ${ACCENT}30` }}>
               <Image
                 src="/images/klight-landing.png"
                 alt="klight — meet your sloth-powered Kubernetes dev environments"

@@ -787,7 +787,7 @@ export default function KlightDocsPage() {
       />
 
       <div className="pt-16 flex min-h-screen">
-        {/* Sidebar */}
+        {/* Sidebar — desktop only */}
         <aside
           className="hidden md:flex flex-col flex-shrink-0 w-56 lg:w-64 sticky top-16 self-start overflow-y-auto py-8 pl-6 pr-4 border-r"
           style={{ borderColor: BORDER, maxHeight: 'calc(100vh - 64px)' }}
@@ -819,21 +819,23 @@ export default function KlightDocsPage() {
           ))}
         </aside>
 
-        {/* Mobile section picker */}
-        <div className="md:hidden w-full px-4 pt-6">
-          <select
-            value={active}
-            onChange={e => setActive(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg text-sm text-white border"
-            style={{ background: BG_CARD, borderColor: BORDER }}
-          >
-            {SIDEBAR.map(group =>
-              group.items.map(item => (
-                <option key={item.slug} value={item.slug}>{group.group} — {item.label}</option>
-              ))
-            )}
-          </select>
-        </div>
+        {/* Right column: mobile picker + content stacked */}
+        <div className="flex-1 min-w-0 flex flex-col">
+          {/* Mobile section picker */}
+          <div className="md:hidden px-4 pt-6 pb-2">
+            <select
+              value={active}
+              onChange={e => setActive(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg text-sm text-white border"
+              style={{ background: BG_CARD, borderColor: BORDER }}
+            >
+              {SIDEBAR.map(group =>
+                group.items.map(item => (
+                  <option key={item.slug} value={item.slug}>{group.group} — {item.label}</option>
+                ))
+              )}
+            </select>
+          </div>
 
         {/* Main content */}
         <article className="flex-1 min-w-0 px-6 md:px-10 lg:px-16 py-10 max-w-3xl">
@@ -869,6 +871,7 @@ export default function KlightDocsPage() {
             })()}
           </div>
         </article>
+        </div>{/* end right column */}
       </div>
 
       <Footer showSuiteLink accent={ACCENT} />
