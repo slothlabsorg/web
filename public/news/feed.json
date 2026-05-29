@@ -1,68 +1,33 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-23T13:34:09.015Z",
+  "generatedAt": "2026-05-29T02:53:30.474Z",
   "items": [
     {
-      "id": "kl-launch-may-29",
+      "id": "wo-public-launch-may-29",
       "type": "announcement",
-      "priority": 9,
-      "publishedAt": "2026-05-23T00:00:00Z",
-      "badge": "NEW",
+      "priority": 10,
+      "publishedAt": "2026-05-27T00:00:00Z",
+      "badge": "LAUNCH",
       "badgeTone": "primary",
-      "title": "klight launches Friday May 29, 2026",
-      "body": "Originally slated for September — pulled forward to **Friday May 29** because the three-world rollout (Solo dev, Startup team, Remote cluster) is on track and shipping early.\n\n- Full-stack Kubernetes envs in two commands\n- Postgres, Kafka, Redis spin up in the right order\n- Each developer gets their own namespace\n- Local minikube, team sync, or remote EKS / GKE / AKS — same CLI\n\nOpen source under MIT. Sign up to get notified the moment it ships.",
+      "title": "WattsOrbit ships publicly Friday May 29, 2026",
+      "body": "WattsOrbit goes public on **Friday May 29** — the v1.x line is cut on GitHub, but we're holding the public launch a few days while a final round of QA wraps on the new battery-health surface and 80% charge-limit alerts.\n\n- Real-time watts in / watts out\n- Per-USB-device wattage breakdown\n- Battery cycles, temperature, and capacity\n- Smart notifications (weak charger, low battery, 80% charge limit)\n\nFree and open source. MIT.",
       "action": {
         "label": "Subscribe for updates",
-        "url": "https://slothlabs.org/klight"
-      },
-      "targetApps": [
-        "klight"
-      ]
-    },
-    {
-      "id": "wo-v110-release",
-      "type": "changelog",
-      "priority": 9,
-      "publishedAt": "2026-05-20T00:00:00Z",
-      "badge": "UPDATE",
-      "badgeTone": "primary",
-      "title": "WattsOrbit v1.1.0",
-      "body": "## What's new\n\n- **NewsBell in the tray popup** — unread dot and release-notes dropdown\n- **News screen** in the Dashboard with markdown rendering and pull-to-refresh\n- **UpdaterModal** replaces the old banner — changelog, download progress, in-app install\n- **Homebrew Cask** auto-updates on every release publish",
-      "collapsed": false,
-      "action": {
-        "label": "Full changelog",
-        "url": "https://github.com/slothlabsorg/wattsorbit/releases/tag/v1.1.0"
+        "url": "https://slothlabs.org/wattsorbit"
       },
       "targetApps": [
         "wattsorbit"
       ]
     },
     {
-      "id": "bo-launch-july-3",
+      "id": "co-launch-may-29",
       "type": "announcement",
       "priority": 9,
-      "publishedAt": "2026-05-15T00:00:00Z",
+      "publishedAt": "2026-05-27T00:00:00Z",
       "badge": "NEW",
       "badgeTone": "primary",
-      "title": "BastionOrbit launches Friday July 3, 2026",
-      "body": "The SSH tunnel manager for macOS ships **Friday July 3**.\n\n- One-click port forwarding through bastion hosts\n- Auto-expiry TTL — never leave a tunnel open overnight\n- Multi-bastion management with connectivity probing\n- Pairs with DataOrbit for tunneled DB connections\n\nReal `ssh -N -L` processes — no protocol reimplementation. Free forever.",
-      "action": {
-        "label": "Subscribe for updates",
-        "url": "https://slothlabs.org/bastionorbit"
-      },
-      "targetApps": [
-        "bastionorbit"
-      ]
-    },
-    {
-      "id": "co-launch-may-25",
-      "type": "announcement",
-      "priority": 9,
-      "publishedAt": "2026-05-15T00:00:00Z",
-      "badge": "NEW",
-      "badgeTone": "primary",
-      "title": "CloudOrbit launches Monday May 25, 2026",
-      "body": "The first stable build of CloudOrbit drops on **Monday May 25** — pushed back two business days from the original Friday slot to finish a final round of QA on SSO + kubeconfig.\n\n- AWS SSO session manager, no terminal needed\n- Auto-updates kubeconfig as you switch profiles\n- Detects EKS clusters from your active session\n- Works behind Cloudflare and corporate proxies\n\nFree, native Rust binary. Sign up to get notified the moment it ships.",
+      "title": "CloudOrbit launches Friday May 29, 2026",
+      "body": "The first stable build of CloudOrbit drops on **Friday May 29** — pushed back four days from the original Monday slot to finish the SSO + kubeconfig QA pass. Same launch window as WattsOrbit.\n\n- AWS SSO session manager, no terminal needed\n- Auto-updates kubeconfig as you switch profiles\n- Detects EKS clusters from your active session\n- Works behind Cloudflare and corporate proxies\n\nFree, native Rust binary. Sign up to get notified the moment it ships.",
       "action": {
         "label": "Subscribe for updates",
         "url": "https://slothlabs.org/cloudorbit"
@@ -72,37 +37,20 @@
       ]
     },
     {
-      "id": "do-launch-may-29",
+      "id": "do-launch-jun-15",
       "type": "announcement",
       "priority": 9,
-      "publishedAt": "2026-05-15T00:00:00Z",
+      "publishedAt": "2026-05-27T00:00:00Z",
       "badge": "NEW",
       "badgeTone": "primary",
-      "title": "DataOrbit launches Friday May 29, 2026",
-      "body": "The native DynamoDB GUI for macOS ships **Friday May 29**.\n\n- Live DynamoDB Streams\n- Cross-table joins (inner / left / left-anti / right / right-anti)\n- Full query history\n- No Electron, no JVM warm-up — pure Rust + Tauri\n\nFree forever. MIT licensed.",
+      "title": "DataOrbit launches Monday June 15, 2026",
+      "body": "The native DynamoDB GUI for macOS now ships **Monday June 15** — moved from May 29 to give the cross-table join engine and live-stream UI a longer soak.\n\n- Live DynamoDB Streams\n- Cross-table joins (inner / left / left-anti / right / right-anti)\n- Full query history\n- No Electron, no JVM warm-up — pure Rust + Tauri\n\nFree forever. MIT licensed.",
       "action": {
         "label": "Subscribe for updates",
         "url": "https://slothlabs.org/dataorbit"
       },
       "targetApps": [
         "dataorbit"
-      ]
-    },
-    {
-      "id": "po-launch-june-12",
-      "type": "announcement",
-      "priority": 9,
-      "publishedAt": "2026-05-15T00:00:00Z",
-      "badge": "NEW",
-      "badgeTone": "primary",
-      "title": "ProxyOrbit launches Friday June 12, 2026",
-      "body": "The free Charles Proxy alternative for macOS ships **Friday June 12**.\n\n- Capture HTTP/HTTPS from any Mac app\n- Filter by method, status, host, path\n- Real-time request log with body inspection\n- Native Rust + Hyper + Tokio — under 30 MB at idle\n\nNo subscription, no $50 license. MIT licensed.",
-      "action": {
-        "label": "Subscribe for updates",
-        "url": "https://slothlabs.org/proxyorbit"
-      },
-      "targetApps": [
-        "proxyorbit"
       ]
     },
     {
@@ -121,6 +69,75 @@
       },
       "targetApps": [
         "mermaid-preview"
+      ]
+    },
+    {
+      "id": "bo-launch-tbd-2026",
+      "type": "announcement",
+      "priority": 8,
+      "publishedAt": "2026-05-27T00:00:00Z",
+      "badge": "TBD",
+      "badgeTone": "neutral",
+      "title": "BastionOrbit — public launch later in 2026",
+      "body": "BastionOrbit has been moved off its July 3 slot. The auto-expiry TTL flow and multi-bastion connectivity probe need more soak time before going public.\n\n- One-click port forwarding through bastion hosts\n- Auto-expiry TTL — never leave a tunnel open overnight\n- Multi-bastion management with connectivity probing\n- Pairs with DataOrbit for tunneled DB connections\n\nReal `ssh -N -L` processes — no protocol reimplementation. Free forever. Sign up for the launch date drop.",
+      "action": {
+        "label": "Subscribe for updates",
+        "url": "https://slothlabs.org/bastionorbit"
+      },
+      "targetApps": [
+        "bastionorbit"
+      ]
+    },
+    {
+      "id": "kl-launch-tbd-2026",
+      "type": "announcement",
+      "priority": 8,
+      "publishedAt": "2026-05-27T00:00:00Z",
+      "badge": "TBD",
+      "badgeTone": "neutral",
+      "title": "klight — public launch later in 2026",
+      "body": "klight has been moved off the May 29 slot. The three-world rollout (Solo dev, Startup team, Remote cluster) needs more soak time before going public — we'd rather ship it right than ship it on a deadline.\n\n- Full-stack Kubernetes envs in two commands\n- Postgres, Kafka, Redis spin up in the right order\n- Each developer gets their own namespace\n- Local minikube, team sync, or remote EKS / GKE / AKS — same CLI\n\nOpen source under MIT. Sign up to get notified the moment a launch date is locked.",
+      "action": {
+        "label": "Subscribe for updates",
+        "url": "https://slothlabs.org/klight"
+      },
+      "targetApps": [
+        "klight"
+      ]
+    },
+    {
+      "id": "po-launch-tbd-2026",
+      "type": "announcement",
+      "priority": 8,
+      "publishedAt": "2026-05-27T00:00:00Z",
+      "badge": "TBD",
+      "badgeTone": "neutral",
+      "title": "ProxyOrbit — public launch later in 2026",
+      "body": "ProxyOrbit has slipped off its June 12 slot. The MITM cert chain and Zscaler workaround flow need another QA pass before going public.\n\n- Capture HTTP/HTTPS from any Mac app\n- Filter by method, status, host, path\n- Real-time request log with body inspection\n- Native Rust + Hyper + Tokio — under 30 MB at idle\n\nNo subscription, no $50 license. MIT. Sign up to get notified the moment a date is locked.",
+      "action": {
+        "label": "Subscribe for updates",
+        "url": "https://slothlabs.org/proxyorbit"
+      },
+      "targetApps": [
+        "proxyorbit"
+      ]
+    },
+    {
+      "id": "wo-v110-release",
+      "type": "changelog",
+      "priority": 7,
+      "publishedAt": "2026-05-20T00:00:00Z",
+      "badge": "UPDATE",
+      "badgeTone": "primary",
+      "title": "WattsOrbit v1.1.0",
+      "body": "## What's new\n\n- **NewsBell in the tray popup** — unread dot and release-notes dropdown\n- **News screen** in the Dashboard with markdown rendering and pull-to-refresh\n- **UpdaterModal** replaces the old banner — changelog, download progress, in-app install\n- **Homebrew Cask** auto-updates on every release publish",
+      "collapsed": false,
+      "action": {
+        "label": "Full changelog",
+        "url": "https://github.com/slothlabsorg/wattsorbit/releases/tag/v1.1.0"
+      },
+      "targetApps": [
+        "wattsorbit"
       ]
     },
     {
@@ -144,7 +161,7 @@
       "badge": "NEW",
       "badgeTone": "neutral",
       "title": "SlothLabs spring releases",
-      "body": "Two more native macOS tools just shipped: **WattsOrbit** (power & USB monitor) and **Mermaid Preview** (JetBrains plugin).\n\nNext up: **CloudOrbit** drops Monday May 25, then **DataOrbit** + **klight** ship together on Friday May 29. ProxyOrbit follows June 12 and BastionOrbit July 3.\n\nAll free, all native, all open source.",
+      "body": "**Mermaid Preview** (JetBrains plugin) is live. Up next: **CloudOrbit** + **WattsOrbit** ship together on **Friday May 29**, then **DataOrbit** lands on **Monday June 15**.\n\nklight, ProxyOrbit, and BastionOrbit have all been moved to **TBD later in 2026** — we'd rather hold them until they're done than ship to a deadline.\n\nAll free, all native, all open source.",
       "collapsed": false,
       "action": {
         "label": "See the roadmap",

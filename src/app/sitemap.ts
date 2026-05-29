@@ -1,10 +1,18 @@
 import type { MetadataRoute } from 'next'
+import { UPCOMING_LAUNCHES } from '@/data/upcomingLaunches'
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
 // Use real dates — Google uses lastModified to decide recrawl priority.
 // Update these when the page content actually changes significantly.
 export default function sitemap(): MetadataRoute.Sitemap {
+  const nextPermalinks: MetadataRoute.Sitemap = UPCOMING_LAUNCHES.map(l => ({
+    url: `${BASE}/next/${l.slug}/`,
+    lastModified: new Date('2026-05-27'),
+    changeFrequency: 'daily' as const,
+    priority: 0.85,
+  }))
+
   return [
     { url: BASE,                             lastModified: new Date('2026-04-24'), changeFrequency: 'weekly',  priority: 1   },
     { url: `${BASE}/about`,                  lastModified: new Date('2026-04-24'), changeFrequency: 'monthly', priority: 0.7 },
@@ -24,5 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/mermaid-preview/releases`, lastModified: new Date('2026-05-07'), changeFrequency: 'weekly',  priority: 0.8 },
     { url: `${BASE}/tools`,                    lastModified: new Date('2026-05-08'), changeFrequency: 'weekly',  priority: 0.8 },
     { url: `${BASE}/news`,                     lastModified: new Date('2026-05-21'), changeFrequency: 'daily',   priority: 0.9 },
+    { url: `${BASE}/next/`,                    lastModified: new Date('2026-05-27'), changeFrequency: 'daily',   priority: 0.95 },
+    ...nextPermalinks,
   ]
 }

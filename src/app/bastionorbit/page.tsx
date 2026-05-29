@@ -22,7 +22,7 @@ const BG_BASE    = '#030d09'
 const BG_CARD    = '#060f0b'
 const BORDER     = '#0d2b1e'
 
-const BASTIONORBIT_LAUNCH = new Date('2026-07-03T12:00:00Z')
+const BASTIONORBIT_LAUNCH = new Date('2026-12-31T12:00:00Z')
 const isLaunched = new Date() >= BASTIONORBIT_LAUNCH
 const hasRelease = allReleases.bastionorbit.releases.length > 0
 const latestRelease = allReleases.bastionorbit.releases[0]

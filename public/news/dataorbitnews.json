@@ -2,14 +2,14 @@
   "version": 1,
   "items": [
     {
-      "id": "do-launch-may-29",
+      "id": "do-launch-jun-15",
       "type": "announcement",
       "priority": 9,
-      "publishedAt": "2026-05-15T00:00:00Z",
+      "publishedAt": "2026-05-27T00:00:00Z",
       "badge": "NEW",
       "badgeTone": "primary",
-      "title": "DataOrbit launches Friday May 29, 2026",
-      "body": "The native DynamoDB GUI for macOS ships **Friday May 29**.\n\n- Live DynamoDB Streams\n- Cross-table joins (inner / left / left-anti / right / right-anti)\n- Full query history\n- No Electron, no JVM warm-up — pure Rust + Tauri\n\nFree forever. MIT licensed.",
+      "title": "DataOrbit launches Monday June 15, 2026",
+      "body": "The native DynamoDB GUI for macOS now ships **Monday June 15** — moved from May 29 to give the cross-table join engine and live-stream UI a longer soak.\n\n- Live DynamoDB Streams\n- Cross-table joins (inner / left / left-anti / right / right-anti)\n- Full query history\n- No Electron, no JVM warm-up — pure Rust + Tauri\n\nFree forever. MIT licensed.",
       "action": { "label": "Subscribe for updates", "url": "https://slothlabs.org/dataorbit" },
       "targetApps": ["dataorbit"]
     },

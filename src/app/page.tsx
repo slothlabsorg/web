@@ -8,8 +8,10 @@ import HeroParallaxBg from '@/components/HeroParallaxBg'
 import ProductCarousel from '@/components/ProductCarousel'
 import SupportBanner from '@/components/SupportBanner'
 import HeroMascotRotator from '@/components/HeroMascotRotator'
+import NextBigReleaseHero from '@/components/NextBigReleaseHero'
 import { slothLabsContent } from '@/config/content'
 import { allReleases } from '@/data/releases'
+import { nextUpcomingLaunch } from '@/data/upcomingLaunches'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
@@ -158,7 +160,11 @@ function Products() {
             const key = p.slug.replace('/', '')
             const released = (allReleases[key]?.releases.length ?? 0) > 0
             const launchTs = launchTsUtcNoon(p.comingSoonDate)
-            const isLive = released || (!isNaN(launchTs) && launchTs <= NOW_TS)
+            // comingSoonDate, when parseable, is the source of truth: if it's still in the
+            // future, the app is gated even if releases exist (e.g., a v1 cut on GitHub but
+            // the public launch was pushed back). When unparseable (e.g., "TBD 2026"), fall
+            // back to the released flag.
+            const isLive = !isNaN(launchTs) ? launchTs <= NOW_TS : released
             return {
               ...p,
               live: isLive,
@@ -183,12 +189,12 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const RAW_ROADMAP = [
-  { name: 'CloudOrbit',   launchDate: '2026-05-25', date: 'May 25',   desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
-  { name: 'DataOrbit',    launchDate: '2026-05-29', date: 'May 29',   desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
-  { name: 'WattsOrbit',   launchDate: '2026-05-08', date: 'May 8',    desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
-  { name: 'ProxyOrbit',   launchDate: '2026-06-12', date: 'June 12',  desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
-  { name: 'BastionOrbit', launchDate: '2026-07-03', date: 'July 3',   desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
-  { name: 'klight',       launchDate: '2026-05-29', date: 'May 29',   desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
+  { name: 'CloudOrbit',   launchDate: '2026-05-29', date: 'May 29',   desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
+  { name: 'WattsOrbit',   launchDate: '2026-05-29', date: 'May 29',   desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
+  { name: 'DataOrbit',    launchDate: '2026-06-15', date: 'June 15',  desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
+  { name: 'klight',       launchDate: '2026-12-31', date: 'TBD 2026', desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
+  { name: 'ProxyOrbit',   launchDate: '2026-12-31', date: 'TBD 2026', desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
+  { name: 'BastionOrbit', launchDate: '2026-12-31', date: 'TBD 2026', desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
 ]
 
 // Compute status at build time — live items first, then upcoming by date.
@@ -493,11 +499,13 @@ function OtherTools() {
 }
 
 export default function HomePage() {
+  const next = nextUpcomingLaunch()
   return (
     <main className="bg-[#050d1f]">
       <CustomCursor />
       <Navbar />
       <Hero />
+      <NextBigReleaseHero launch={next} permalink={`/next/${next.slug}/`} variant="home" />
       <Products />
       <LaunchRoadmap />
       <OtherTools />

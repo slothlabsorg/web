@@ -9,7 +9,7 @@
       "badge": "NEW",
       "badgeTone": "neutral",
       "title": "SlothLabs spring releases",
-      "body": "Two more native macOS tools just shipped: **WattsOrbit** (power & USB monitor) and **Mermaid Preview** (JetBrains plugin).\n\nNext up: **CloudOrbit** drops Monday May 25, then **DataOrbit** + **klight** ship together on Friday May 29. ProxyOrbit follows June 12 and BastionOrbit July 3.\n\nAll free, all native, all open source.",
+      "body": "**Mermaid Preview** (JetBrains plugin) is live. Up next: **CloudOrbit** + **WattsOrbit** ship together on **Friday May 29**, then **DataOrbit** lands on **Monday June 15**.\n\nklight, ProxyOrbit, and BastionOrbit have all been moved to **TBD later in 2026** — we'd rather hold them until they're done than ship to a deadline.\n\nAll free, all native, all open source.",
       "collapsed": false,
       "action": { "label": "See the roadmap", "url": "https://slothlabs.org/#roadmap" },
       "targetApps": ["all"]
