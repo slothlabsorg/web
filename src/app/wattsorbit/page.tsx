@@ -14,7 +14,7 @@ import ScreenshotGrid from '@/components/ScreenshotLightbox'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison } = wattsOrbitContent
 
-const WATTSORBIT_LAUNCH = new Date('2026-05-29T12:00:00Z')
+const WATTSORBIT_LAUNCH = new Date('2026-06-05T12:00:00Z')
 const hasRelease = allReleases.wattsorbit.releases.length > 0
 const latestRelease = allReleases.wattsorbit.releases[0]
 const isLaunched = new Date() >= WATTSORBIT_LAUNCH

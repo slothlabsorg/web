@@ -2,14 +2,14 @@
   "version": 1,
   "items": [
     {
-      "id": "wo-public-launch-may-29",
+      "id": "wo-public-launch-jun-5",
       "type": "announcement",
       "priority": 10,
-      "publishedAt": "2026-05-27T00:00:00Z",
+      "publishedAt": "2026-06-01T00:00:00Z",
       "badge": "LAUNCH",
       "badgeTone": "primary",
-      "title": "WattsOrbit ships publicly Friday May 29, 2026",
-      "body": "WattsOrbit goes public on **Friday May 29** — the v1.x line is cut on GitHub, but we're holding the public launch a few days while a final round of QA wraps on the new battery-health surface and 80% charge-limit alerts.\n\n- Real-time watts in / watts out\n- Per-USB-device wattage breakdown\n- Battery cycles, temperature, and capacity\n- Smart notifications (weak charger, low battery, 80% charge limit)\n\nFree and open source. MIT.",
+      "title": "WattsOrbit ships publicly Friday June 5, 2026",
+      "body": "WattsOrbit goes public on **Friday June 5** — the May 29 slot slipped one more week so we could finish QA on the new battery-health surface and 80% charge-limit alerts. Same drop date as CloudOrbit.\n\n- Real-time watts in / watts out\n- Per-USB-device wattage breakdown\n- Battery cycles, temperature, and capacity\n- Smart notifications (weak charger, low battery, 80% charge limit)\n\nFree and open source. MIT.",
       "action": { "label": "Subscribe for updates", "url": "https://slothlabs.org/wattsorbit" },
       "targetApps": ["wattsorbit"]
     },

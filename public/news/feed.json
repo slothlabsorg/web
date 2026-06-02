@@ -1,16 +1,16 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-29T02:53:30.474Z",
+  "generatedAt": "2026-06-02T00:09:02.123Z",
   "items": [
     {
-      "id": "wo-public-launch-may-29",
+      "id": "wo-public-launch-jun-5",
       "type": "announcement",
       "priority": 10,
-      "publishedAt": "2026-05-27T00:00:00Z",
+      "publishedAt": "2026-06-01T00:00:00Z",
       "badge": "LAUNCH",
       "badgeTone": "primary",
-      "title": "WattsOrbit ships publicly Friday May 29, 2026",
-      "body": "WattsOrbit goes public on **Friday May 29** — the v1.x line is cut on GitHub, but we're holding the public launch a few days while a final round of QA wraps on the new battery-health surface and 80% charge-limit alerts.\n\n- Real-time watts in / watts out\n- Per-USB-device wattage breakdown\n- Battery cycles, temperature, and capacity\n- Smart notifications (weak charger, low battery, 80% charge limit)\n\nFree and open source. MIT.",
+      "title": "WattsOrbit ships publicly Friday June 5, 2026",
+      "body": "WattsOrbit goes public on **Friday June 5** — the May 29 slot slipped one more week so we could finish QA on the new battery-health surface and 80% charge-limit alerts. Same drop date as CloudOrbit.\n\n- Real-time watts in / watts out\n- Per-USB-device wattage breakdown\n- Battery cycles, temperature, and capacity\n- Smart notifications (weak charger, low battery, 80% charge limit)\n\nFree and open source. MIT.",
       "action": {
         "label": "Subscribe for updates",
         "url": "https://slothlabs.org/wattsorbit"
@@ -20,14 +20,14 @@
       ]
     },
     {
-      "id": "co-launch-may-29",
+      "id": "co-launch-jun-5",
       "type": "announcement",
       "priority": 9,
-      "publishedAt": "2026-05-27T00:00:00Z",
+      "publishedAt": "2026-06-01T00:00:00Z",
       "badge": "NEW",
       "badgeTone": "primary",
-      "title": "CloudOrbit launches Friday May 29, 2026",
-      "body": "The first stable build of CloudOrbit drops on **Friday May 29** — pushed back four days from the original Monday slot to finish the SSO + kubeconfig QA pass. Same launch window as WattsOrbit.\n\n- AWS SSO session manager, no terminal needed\n- Auto-updates kubeconfig as you switch profiles\n- Detects EKS clusters from your active session\n- Works behind Cloudflare and corporate proxies\n\nFree, native Rust binary. Sign up to get notified the moment it ships.",
+      "title": "CloudOrbit launches Friday June 5, 2026",
+      "body": "The first stable build of CloudOrbit drops on **Friday June 5** — the May 29 slot slipped one more week to finish the SSO + kubeconfig QA. Same launch window as WattsOrbit.\n\n- AWS SSO session manager, no terminal needed\n- Auto-updates kubeconfig as you switch profiles\n- Detects EKS clusters from your active session\n- Works behind Cloudflare and corporate proxies\n\nFree, native Rust binary. Sign up to get notified the moment it ships.",
       "action": {
         "label": "Subscribe for updates",
         "url": "https://slothlabs.org/cloudorbit"
@@ -160,8 +160,8 @@
       "publishedAt": "2026-05-10T00:00:00Z",
       "badge": "NEW",
       "badgeTone": "neutral",
-      "title": "SlothLabs spring releases",
-      "body": "**Mermaid Preview** (JetBrains plugin) is live. Up next: **CloudOrbit** + **WattsOrbit** ship together on **Friday May 29**, then **DataOrbit** lands on **Monday June 15**.\n\nklight, ProxyOrbit, and BastionOrbit have all been moved to **TBD later in 2026** — we'd rather hold them until they're done than ship to a deadline.\n\nAll free, all native, all open source.",
+      "title": "SlothLabs summer releases",
+      "body": "**Mermaid Preview** (JetBrains plugin) is live. Up next: **CloudOrbit** + **WattsOrbit** ship together on **Friday June 5**, then **DataOrbit** lands on **Monday June 15**.\n\nklight, ProxyOrbit, and BastionOrbit have all been moved to **TBD later in 2026** — we'd rather hold them until they're done than ship to a deadline.\n\nAll free, all native, all open source.",
       "collapsed": false,
       "action": {
         "label": "See the roadmap",
