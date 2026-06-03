@@ -74,7 +74,7 @@ export const UPCOMING_LAUNCHES: UpcomingLaunch[] = [
     pitch: 'DropOrbit is local-first, E2E encrypted file sharing that works across every platform. No cloud relay, no accounts, no size limits. Tap to send from your iPhone to a Windows PC on the same network as fast as AirDrop — without being Apple.',
     productUrl: '/droporbit',
     subscribeUrl: '/droporbit',
-    previewImage: '/images/droporbit-landing.png',
+    previewImage: '/images/cloudorbit-hero.png',
   },
   {
     slug: 'klight',
