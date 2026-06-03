@@ -7,8 +7,8 @@
 //
 // Required Netlify env vars:
 //   GITHUB_TOKEN      — fine-grained PAT with Contents: write on slothlabsorg/web
-//   NEWS_AUTH_USER    — defaults to 'sloth'
-//   NEWS_AUTH_PASS    — defaults to 'slothlabsorg123'
+//   ADMIN_AUTH_USER   — defaults to 'sloth'   (shared with /admin + /stats edge auth)
+//   ADMIN_AUTH_PASS   — defaults to 'slothlabsorg123'
 
 // Netlify functions are bundled with esbuild; no @netlify/functions dep needed.
 // Type the event minimally to avoid pulling another package.
@@ -34,6 +34,7 @@ const ALLOWED_FILES = new Set([
   'bastionorbitnews.json',
   'wattsorbitnews.json',
   'mermaidpreviewnews.json',
+  'klightnews.json',
 ])
 
 interface SavePayload {
@@ -48,8 +49,8 @@ const json = (statusCode: number, body: unknown) => ({
 })
 
 function checkAuth(authHeader: string | undefined): boolean {
-  const expectedUser = process.env.NEWS_AUTH_USER || 'sloth'
-  const expectedPass = process.env.NEWS_AUTH_PASS || 'slothlabsorg123'
+  const expectedUser = process.env.ADMIN_AUTH_USER || 'sloth'
+  const expectedPass = process.env.ADMIN_AUTH_PASS || 'slothlabsorg123'
 
   if (!authHeader?.startsWith('Basic ')) return false
   let decoded: string

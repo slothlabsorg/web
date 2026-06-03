@@ -10,6 +10,7 @@ const FILES: { file: string; label: string; scope: string }[] = [
   { file: 'bastionorbitnews.json',  label: '🔐 BastionOrbit',    scope: 'bastionorbit'     },
   { file: 'wattsorbitnews.json',    label: '⚡ WattsOrbit',      scope: 'wattsorbit'       },
   { file: 'mermaidpreviewnews.json',label: '🧜 Mermaid Preview', scope: 'mermaid-preview'  },
+  { file: 'klightnews.json',        label: '🚀 klight',          scope: 'klight'           },
 ]
 
 const ITEM_TYPES: NewsItemType[]   = ['news', 'announcement', 'tip', 'changelog', 'ad']

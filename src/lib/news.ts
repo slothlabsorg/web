@@ -44,6 +44,7 @@ export const APP_META: Record<string, { label: string; icon: string; accent: str
   bastionorbit:      { label: 'BastionOrbit',    icon: '🔐', accent: '#10B981', href: '/bastionorbit'        },
   wattsorbit:        { label: 'WattsOrbit',      icon: '⚡', accent: '#F59E0B', href: '/wattsorbit'          },
   'mermaid-preview': { label: 'Mermaid Preview', icon: '🧜', accent: '#FF3670', href: '/mermaid-preview'     },
+  klight:            { label: 'klight',          icon: '🚀', accent: '#B4FF3C', href: '/klight'             },
 }
 
 export function appMeta(slug: string) {
