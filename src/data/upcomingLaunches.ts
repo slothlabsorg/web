@@ -35,7 +35,7 @@ export const UPCOMING_LAUNCHES: UpcomingLaunch[] = [
     pitch: 'CloudOrbit is the AWS session manager you wish Leapp was. Switch SSO accounts, auto-update kubeconfig, detect EKS clusters from your active session, and work behind Cloudflare Zero Trust without ever opening a config file. Native Rust, no Electron.',
     productUrl: '/cloudorbit',
     subscribeUrl: '/cloudorbit',
-    previewImage: '/images/cloudorbit-landing.png',
+    previewImage: '/images/droporbit-landing.png',
   },
   {
     slug: 'wattsorbit',
@@ -62,6 +62,19 @@ export const UPCOMING_LAUNCHES: UpcomingLaunch[] = [
     productUrl: '/dataorbit',
     subscribeUrl: '/dataorbit',
     previewImage: '/images/dataorbit-landing.png',
+  },
+  {
+    slug: 'droporbit',
+    appName: 'DropOrbit',
+    icon: '📡',
+    accent: '#06B6D4',
+    launchDate: null,
+    dateLabel: 'Later in 2026',
+    headline: 'AirDrop for every device — iPhone, Android, Mac, Windows',
+    pitch: 'DropOrbit is local-first, E2E encrypted file sharing that works across every platform. No cloud relay, no accounts, no size limits. Tap to send from your iPhone to a Windows PC on the same network as fast as AirDrop — without being Apple.',
+    productUrl: '/droporbit',
+    subscribeUrl: '/droporbit',
+    previewImage: '/images/droporbit-landing.png',
   },
   {
     slug: 'klight',
