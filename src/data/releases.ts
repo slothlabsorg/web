@@ -79,6 +79,13 @@ export const allReleases: Record<string, AppReleases> = {
     icon: '/images/mermaid-preview-icon.png',
     releases: [
       {
+        version: '0.2.1',
+        date: '2026-06-01',
+        notes: 'See GitHub release for full details.',
+        downloadUrl: 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/download/v0.2.1/mermaid-preview-0.2.1.zip',
+        highlights: [],
+      },
+      {
         version: '0.1.2',
         date: '2026-05-09',
         notes: 'Bug fixes and stability improvements.',

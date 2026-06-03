@@ -35,7 +35,7 @@ export const UPCOMING_LAUNCHES: UpcomingLaunch[] = [
     pitch: 'CloudOrbit is the AWS session manager you wish Leapp was. Switch SSO accounts, auto-update kubeconfig, detect EKS clusters from your active session, and work behind Cloudflare Zero Trust without ever opening a config file. Native Rust, no Electron.',
     productUrl: '/cloudorbit',
     subscribeUrl: '/cloudorbit',
-    previewImage: '/images/droporbit-landing.png',
+    previewImage: '/images/cloudorbit-hero.png',
   },
   {
     slug: 'wattsorbit',

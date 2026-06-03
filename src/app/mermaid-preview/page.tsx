@@ -13,9 +13,33 @@ import { allReleases } from '@/data/releases'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison, screenshots, install } = mermaidPreviewContent
 
-const latestRelease = allReleases['mermaid-preview'].releases[0]
-const dlLabel = `Download v${latestRelease.version}`
-const dlHref  = latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/latest'
+// Revalidate every 30 min so new GitHub releases appear without a redeploy
+async function fetchLatestRelease(): Promise<{ version: string; downloadUrl: string; date: string }> {
+  try {
+    const res = await fetch(
+      'https://api.github.com/repos/slothlabsorg/mermaid-preview-plugin/releases/latest',
+      { next: { revalidate: 1800 }, headers: { Accept: 'application/vnd.github+json' } },
+    )
+    if (!res.ok) throw new Error(`GitHub API ${res.status}`)
+    const data = await res.json()
+    const version = (data.tag_name as string).replace(/^v/, '')
+    const zipAsset = (data.assets as { name: string; browser_download_url: string }[])
+      .find(a => a.name.endsWith('.zip'))
+    const downloadUrl = zipAsset?.browser_download_url
+      ?? (data.html_url as string)
+      ?? 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/latest'
+    const date = (data.published_at as string).slice(0, 10)
+    return { version, downloadUrl, date }
+  } catch {
+    // Fall back to static data if API is unavailable
+    const fallback = allReleases['mermaid-preview'].releases[0]
+    return {
+      version: fallback.version,
+      downloadUrl: fallback.downloadUrl ?? 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/latest',
+      date: fallback.date,
+    }
+  }
+}
 
 const ACCENT     = '#FF3670'
 const ACCENT_DIM = '#FF367015'
@@ -60,9 +84,13 @@ export const metadata: Metadata = {
   },
 }
 
+interface ReleaseInfo { version: string; downloadUrl: string; date: string }
+
 // ── Hero ──────────────────────────────────────────────────────────────────────
 
-function Hero() {
+function Hero({ release }: { release: ReleaseInfo }) {
+  const dlLabel = `Download v${release.version}`
+  const dlHref  = release.downloadUrl
   return (
     <section className="relative min-h-screen flex items-center noise overflow-hidden" style={{ background: BG_BASE }}>
       <div className="absolute inset-0">
@@ -119,7 +147,7 @@ function Hero() {
 
             <p className="fade-up text-xs" style={{ color: '#4a1028', animationDelay: '0.35s' }}>{hero.note}</p>
             <p className="fade-up text-xs" style={{ color: ACCENT_MID, animationDelay: '0.4s' }}>
-              Available now — v{latestRelease.version}
+              Available now — v{release.version}
             </p>
           </div>
 
@@ -377,7 +405,9 @@ const SUPPORTED_IDES = [
   { name: 'Android Studio', icon: '🤖' },
 ]
 
-function Install() {
+function Install({ release }: { release: ReleaseInfo }) {
+  const dlLabel = `Download v${release.version}`
+  const dlHref  = release.downloadUrl
   return (
     <section className="py-24" style={{ background: BG_CARD }}>
       <div className="site-container">
@@ -455,7 +485,7 @@ function Install() {
             </a>
             <div className="flex items-center justify-center gap-4 mt-3 flex-wrap">
               <p className="text-xs" style={{ color: '#4a1028' }}>
-                v{latestRelease.version} · {latestRelease.date} · MIT license · JetBrains IDEs 2023.3+
+                v{release.version} · {release.date} · MIT license · JetBrains IDEs 2023.3+
               </p>
               <a
                 href="https://github.com/slothlabsorg/mermaid-preview-plugin/releases"
@@ -559,7 +589,9 @@ function Funding() {
 
 // ── CTA ───────────────────────────────────────────────────────────────────────
 
-function CTA() {
+function CTA({ release }: { release: ReleaseInfo }) {
+  const dlLabel = `Download v${release.version}`
+  const dlHref  = release.downloadUrl
   return (
     <section className="py-24 border-y" style={{ background: BG_BASE, borderColor: BORDER }}>
       <div className="site-container text-center space-y-8">
@@ -604,39 +636,41 @@ function CTA() {
   )
 }
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Mermaid Preview',
-  applicationCategory: 'DeveloperApplication',
-  operatingSystem: 'Windows, macOS, Linux',
-  description: 'JetBrains IDE plugin that renders every Mermaid diagram in your Markdown files live in a side panel. Per-block toggle, live refresh, fully offline.',
-  url: `${SITE_URL}/mermaid-preview`,
-  author: { '@type': 'Organization', name: 'SlothLabs', url: SITE_URL },
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-  softwareVersion: latestRelease.version,
-  downloadUrl: 'https://github.com/slothlabsorg/mermaid-preview-plugin/releases/latest',
-  screenshot: `${SITE_URL}/images/mermaid-preview-landing.png`,
-  releaseNotes: `${SITE_URL}/mermaid-preview/releases`,
-  license: 'https://opensource.org/licenses/MIT',
-}
+export default async function MermaidPreviewPage() {
+  const release = await fetchLatestRelease()
 
-export default function MermaidPreviewPage() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Mermaid Preview',
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Windows, macOS, Linux',
+    description: 'JetBrains IDE plugin that renders every Mermaid diagram in your Markdown files live in a side panel. Per-block toggle, live refresh, fully offline.',
+    url: `${SITE_URL}/mermaid-preview`,
+    author: { '@type': 'Organization', name: 'SlothLabs', url: SITE_URL },
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    softwareVersion: release.version,
+    downloadUrl: release.downloadUrl,
+    screenshot: `${SITE_URL}/images/mermaid-preview-landing.png`,
+    releaseNotes: `${SITE_URL}/mermaid-preview/releases`,
+    license: 'https://opensource.org/licenses/MIT',
+  }
+
   return (
     <main style={{ background: BG_BASE }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <CustomCursor />
       <ProductNavbar icon="🧜" name="Mermaid Preview" accent={ACCENT} />
-      <Hero />
+      <Hero release={release} />
       <Features />
       <Problem />
       <Screenshots />
       <Comparison />
       <HowItWorks />
-      <Install />
+      <Install release={release} />
       <Marketplace />
       <Funding />
-      <CTA />
+      <CTA release={release} />
       <Footer showSuiteLink accent={ACCENT} />
     </main>
   )
