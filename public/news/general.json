@@ -36,20 +36,6 @@
       "targetApps": [
         "all"
       ]
-    },
-    {
-      "id": "cms-roundtrip-probe",
-      "type": "news",
-      "priority": 1,
-      "publishedAt": "2020-01-01T00:00:00.000Z",
-      "expiresAt": "2020-01-02T00:00:00.000Z",
-      "badge": "TEST",
-      "badgeTone": "neutral",
-      "title": "CMS round-trip probe (auto-removed)",
-      "body": "Temporary item written by the CMS save endpoint to prove the GitHub commit path. Safe to ignore.",
-      "targetApps": [
-        "all"
-      ]
     }
   ]
 }
