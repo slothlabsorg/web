@@ -11,8 +11,13 @@
       "title": "SlothLabs summer releases",
       "body": "**Mermaid Preview** (JetBrains plugin) is live. Up next: **CloudOrbit** + **WattsOrbit** ship together on **Friday June 5**, then **DataOrbit** lands on **Monday June 15**.\n\nklight, ProxyOrbit, and BastionOrbit have all been moved to **TBD later in 2026** — we'd rather hold them until they're done than ship to a deadline.\n\nAll free, all native, all open source.",
       "collapsed": false,
-      "action": { "label": "See the roadmap", "url": "https://slothlabs.org/#roadmap" },
-      "targetApps": ["all"]
+      "action": {
+        "label": "See the roadmap",
+        "url": "https://slothlabs.org/#roadmap"
+      },
+      "targetApps": [
+        "all"
+      ]
     },
     {
       "id": "advertise-with-slothlabs",
@@ -24,8 +29,27 @@
       "title": "Advertise with SlothLabs",
       "body": "Reach thousands of macOS developers, infra engineers, and AWS/Kubernetes power users. Sponsored placements appear in every Orbit app's news tab and are clearly labelled.",
       "sponsored": true,
-      "action": { "label": "Sponsor a slot", "url": "https://slothlabs.org/advertise" },
-      "targetApps": ["all"]
+      "action": {
+        "label": "Sponsor a slot",
+        "url": "https://slothlabs.org/advertise"
+      },
+      "targetApps": [
+        "all"
+      ]
+    },
+    {
+      "id": "cms-roundtrip-probe",
+      "type": "news",
+      "priority": 1,
+      "publishedAt": "2020-01-01T00:00:00.000Z",
+      "expiresAt": "2020-01-02T00:00:00.000Z",
+      "badge": "TEST",
+      "badgeTone": "neutral",
+      "title": "CMS round-trip probe (auto-removed)",
+      "body": "Temporary item written by the CMS save endpoint to prove the GitHub commit path. Safe to ignore.",
+      "targetApps": [
+        "all"
+      ]
     }
   ]
 }
