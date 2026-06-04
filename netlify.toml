@@ -36,6 +36,15 @@
   status = 200
   force  = true
 
+# ── Latest-release lookup for product pages ───────────────────────────────────
+# /api/releases/<slug> → Netlify function that returns the latest GitHub release
+# (version, date, per-OS/arch asset URLs), token-authed and CDN-cached ~5 min.
+[[redirects]]
+  from   = "/api/releases/*"
+  to     = "/.netlify/functions/releases"
+  status = 200
+  force  = true
+
 # ── Tauri in-app updater endpoints ────────────────────────────────────────────
 # All apps route through /api/updater/:app/:target/:version → Netlify function.
 # NOTE: CloudOrbit's tauri.conf.json must point to:

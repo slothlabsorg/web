@@ -7,6 +7,7 @@ import ScrollReveal from '@/components/ScrollReveal'
 import StarField from '@/components/StarField'
 import CustomCursor from '@/components/CustomCursor'
 import DownloadModal from '@/components/DownloadModal'
+import { APPS } from '@/data/apps'
 import { LaunchBanner } from '@/components/LaunchBanner'
 import { cloudOrbitContent, slothLabsContent } from '@/config/content'
 import MacInstallNote from '@/components/MacInstallNote'
@@ -99,6 +100,8 @@ function Hero() {
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
               <DownloadModal
+                app={APPS.cloudorbit}
+                subscribeUrl="/cloudorbit"
                 launchingSoon={launchingSoon}
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-btn bg-[#F5A623] text-[#050d1f] font-bold text-sm hover:brightness-110 transition-all glow-cta hover:-translate-y-0.5"
               />
@@ -433,7 +436,7 @@ function DownloadCtaSection() {
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <DownloadModal launchingSoon={launchingSoon} className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#F5A623] text-[#050d1f] font-bold text-sm hover:brightness-110 transition-all glow-cta hover:-translate-y-0.5" />
+            <DownloadModal app={APPS.cloudorbit} subscribeUrl="/cloudorbit" launchingSoon={launchingSoon} className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#F5A623] text-[#050d1f] font-bold text-sm hover:brightness-110 transition-all glow-cta hover:-translate-y-0.5" />
             <Link href="https://github.com/slothlabsorg" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border border-[#00D4FF] text-[#00D4FF] text-sm font-medium hover:bg-[#00D4FF]/10 transition-all">
               {downloadCta.secondary}
             </Link>

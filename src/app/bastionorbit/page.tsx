@@ -11,6 +11,9 @@ import FundingSection from '@/components/FundingSection'
 import SubscribeModal from '@/components/SubscribeModal'
 import { LaunchBanner } from '@/components/LaunchBanner'
 import { allReleases } from '@/data/releases'
+import DownloadModal from '@/components/DownloadModal'
+import { APPS, releasesUrl } from '@/data/apps'
+import { LiveVersion } from '@/lib/useLatestRelease'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison } = bastionOrbitContent
@@ -25,7 +28,6 @@ const BORDER     = '#0d2b1e'
 const BASTIONORBIT_LAUNCH = new Date('2026-12-31T12:00:00Z')
 const isLaunched = new Date() >= BASTIONORBIT_LAUNCH
 const hasRelease = allReleases.bastionorbit.releases.length > 0
-const latestRelease = allReleases.bastionorbit.releases[0]
 const showDownload = hasRelease && isLaunched
 
 export const metadata: Metadata = {
@@ -100,29 +102,17 @@ function Hero() {
             </p>
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
-              {showDownload ? (
-                <a
-                  href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/bastionorbit/releases/latest'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
-                  style={{ background: ACCENT, color: BG_BASE }}
-                >
-                  Download v{latestRelease.version}
-                </a>
-              ) : (
-                <span
-                  title="Available July 3, 2026"
-                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm border opacity-70 cursor-not-allowed"
-                  style={{ borderColor: ACCENT_MID, color: ACCENT, background: ACCENT_DIM }}
-                >
-                  Download — July 3
-                </span>
-              )}
+              <DownloadModal
+                app={APPS.bastionorbit}
+                subscribeUrl="/bastionorbit"
+                buttonLabel="Download BastionOrbit"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+                style={{ background: ACCENT, color: BG_BASE }}
+              />
               <SubscribeModal
                 accent={ACCENT}
                 source="bastionorbit"
-                buttonLabel={showDownload ? 'Get update notifications' : 'Subscribe for updates'}
+                buttonLabel="Subscribe for updates"
                 className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all"
                 style={{ borderColor: ACCENT_MID, color: ACCENT }}
               />
@@ -343,29 +333,20 @@ function CTA() {
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            {showDownload ? (
-              <a
-                href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/bastionorbit/releases/latest'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
-                style={{ background: ACCENT, color: BG_BASE }}
-              >
-                Download v{latestRelease.version}
-              </a>
-            ) : (
-              <span
-                title="Available July 3, 2026"
-                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm border opacity-70 cursor-not-allowed"
-                style={{ borderColor: ACCENT_MID, color: ACCENT, background: ACCENT_DIM }}
-              >
-                Download — July 3
-              </span>
-            )}
+            <DownloadModal
+              app={APPS.bastionorbit}
+              subscribeUrl="/bastionorbit"
+              buttonLabel="Download BastionOrbit"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+              style={{ background: ACCENT, color: BG_BASE }}
+            />
+            <a href={releasesUrl('bastionorbit')} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
+              Past releases →
+            </a>
             <SubscribeModal
               accent={ACCENT}
               source="bastionorbit-cta"
-              buttonLabel={showDownload ? 'Get update notifications' : 'Subscribe for updates'}
+              buttonLabel="Subscribe for updates"
               className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80"
               style={{ borderColor: ACCENT_MID, color: ACCENT }}
             />
@@ -373,7 +354,9 @@ function CTA() {
               ← All SlothLabs tools
             </Link>
           </div>
-          <p className="text-xs mt-4" style={{ color: '#0a3a1a' }}>Free forever. macOS, Linux, Windows. Native Rust binary.</p>
+          <p className="text-xs mt-4" style={{ color: '#5a8a6a' }}>
+            <LiveVersion slug="bastionorbit" /> Free forever. macOS, Linux, Windows. Native Rust binary.
+          </p>
           <MacInstallNote accent={ACCENT} />
         </ScrollReveal>
       </div>

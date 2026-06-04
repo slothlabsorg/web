@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import DownloadModal from './DownloadModal'
+import { APPS } from '@/data/apps'
 
 export default function CloudOrbitNavbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -47,6 +48,8 @@ export default function CloudOrbitNavbar() {
             Docs
           </Link>
           <DownloadModal
+            app={APPS.cloudorbit}
+            subscribeUrl="/cloudorbit"
             launchingSoon
             buttonLabel="Download"
             className="text-sm px-4 py-2 rounded-btn bg-[#00D4FF] text-[#050d1f] font-semibold hover:brightness-110 transition-all"
@@ -73,6 +76,8 @@ export default function CloudOrbitNavbar() {
           <Link href="/"     className="text-sm text-[#8BA3C7] hover:text-white py-1" onClick={() => setMobile(false)}>← SlothLabs</Link>
           <Link href="/cloudorbit/docs" className="text-sm text-[#8BA3C7] hover:text-white py-1" onClick={() => setMobile(false)}>Docs</Link>
           <DownloadModal
+            app={APPS.cloudorbit}
+            subscribeUrl="/cloudorbit"
             launchingSoon
             buttonLabel="Download"
             className="mt-2 w-full text-sm px-4 py-3 rounded-btn bg-[#00D4FF] text-[#050d1f] font-semibold"

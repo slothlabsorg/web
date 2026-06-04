@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
@@ -7,6 +6,9 @@ import StarField from '@/components/StarField'
 import CustomCursor from '@/components/CustomCursor'
 import { wattsOrbitContent } from '@/config/content'
 import { allReleases } from '@/data/releases'
+import DownloadModal from '@/components/DownloadModal'
+import { APPS, releasesUrl } from '@/data/apps'
+import { LiveVersion } from '@/lib/useLatestRelease'
 import MacInstallNote from '@/components/MacInstallNote'
 import FundingSection from '@/components/FundingSection'
 import ScreenshotGrid from '@/components/ScreenshotLightbox'
@@ -15,10 +17,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison } = wattsOrbitContent
 
 const WATTSORBIT_LAUNCH = new Date('2026-06-05T12:00:00Z')
-const hasRelease = allReleases.wattsorbit.releases.length > 0
 const latestRelease = allReleases.wattsorbit.releases[0]
 const isLaunched = new Date() >= WATTSORBIT_LAUNCH
-const showDownload = hasRelease && isLaunched
 
 const ACCENT     = '#F59E0B'
 const ACCENT_DIM = '#F59E0B18'
@@ -103,24 +103,13 @@ function Hero() {
             </p>
 
             <div className="fade-up flex flex-col sm:flex-row gap-3" style={{ animationDelay: '0.3s' }}>
-              {showDownload ? (
-                <a
-                  href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/wattsorbit/releases/latest'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
-                  style={{ background: ACCENT, color: BG_BASE }}
-                >
-                  {hero.ctaPrimary}
-                </a>
-              ) : (
-                <span
-                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full text-sm font-medium border"
-                  style={{ borderColor: ACCENT_MID, color: ACCENT }}
-                >
-                  Coming soon
-                </span>
-              )}
+              <DownloadModal
+                app={APPS.wattsorbit}
+                subscribeUrl="/wattsorbit"
+                buttonLabel={hero.ctaPrimary}
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+                style={{ background: ACCENT, color: BG_BASE }}
+              />
               <a href="#features" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
                 {hero.ctaSecondary}
               </a>
@@ -450,28 +439,20 @@ function CTA() {
         </ScrollReveal>
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            {showDownload ? (
-              <a
-                href={latestRelease.downloadUrl ?? 'https://github.com/slothlabsorg/wattsorbit/releases/latest'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
-                style={{ background: ACCENT, color: BG_BASE }}
-              >
-                Download for macOS — Free
-              </a>
-            ) : (
-              <span className="inline-flex items-center justify-center px-8 py-3.5 rounded-full text-sm font-medium border" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
-                Coming soon
-              </span>
-            )}
-            <Link href="/wattsorbit/releases" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
-              Release notes →
-            </Link>
+            <DownloadModal
+              app={APPS.wattsorbit}
+              subscribeUrl="/wattsorbit"
+              buttonLabel="Download — Free"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+              style={{ background: ACCENT, color: BG_BASE }}
+            />
+            <a href={releasesUrl('wattsorbit')} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium transition-all hover:opacity-80" style={{ borderColor: ACCENT_MID, color: ACCENT }}>
+              Past releases →
+            </a>
           </div>
-          {showDownload && (
-            <p className="text-xs mt-4" style={{ color: '#4a3800' }}>v{latestRelease.version} · Free forever · macOS 10.15+ · Apple Silicon &amp; Intel</p>
-          )}
+          <p className="text-xs mt-4" style={{ color: '#4a3800' }}>
+            <LiveVersion slug="wattsorbit" fallback={latestRelease?.version} /> · Free forever · macOS 10.15+ · Apple Silicon &amp; Intel
+          </p>
           <MacInstallNote accent={ACCENT} />
         </ScrollReveal>
       </div>

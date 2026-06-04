@@ -6,6 +6,7 @@ import CloudOrbitNavbar from '@/components/CloudOrbitNavbar'
 import Footer from '@/components/Footer'
 import CustomCursor from '@/components/CustomCursor'
 import DownloadModal from '@/components/DownloadModal'
+import { APPS } from '@/data/apps'
 import { docsContent } from '@/config/content'
 
 const { sidebar, introduction, installation, quickStart, awsSetup, cloudflare } = docsContent
@@ -189,6 +190,8 @@ function SectionInstallation({ tab, setTab }: { tab: string; setTab: (t: string)
             <h4 className="font-semibold text-white mb-2">{installation.macos.method1.title}</h4>
             <p className="text-sm text-[#8BA3C7] mb-4">{installation.macos.method1.body}</p>
             <DownloadModal
+              app={APPS.cloudorbit}
+              subscribeUrl="/cloudorbit"
               buttonLabel={installation.macos.method1.cta}
               launchingSoon={launchingSoon}
               className="px-6 py-3 rounded-btn bg-[#F5A623] text-[#050d1f] font-bold text-sm hover:brightness-110 transition-all"

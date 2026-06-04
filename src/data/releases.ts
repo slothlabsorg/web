@@ -25,10 +25,10 @@ export const allReleases: Record<string, AppReleases> = {
     icon: '/images/wattsorbit-icon.png',
     releases: [
       {
-        version: '1.1.0',
-        date: '2026-05-20',
-        notes: 'See CHANGELOG.md for full details.',
-        downloadUrl: 'https://github.com/slothlabsorg/wattsorbit/releases/tag/v1.1.0',
+        version: '1.3.0',
+        date: '2026-06-02',
+        notes: 'See the GitHub release for full details. (This is a build-time fallback; the product page shows the live latest release from GitHub.)',
+        downloadUrl: 'https://github.com/slothlabsorg/wattsorbit/releases/latest',
         highlights: [
           'NewsBell in the tray popup — unread dot and release notes dropdown',
           'News screen in the Dashboard with markdown rendering and pull-to-refresh',
