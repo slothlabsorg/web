@@ -457,9 +457,9 @@ export const wattsOrbitContent = {
     headline: 'Know exactly where\nyour power is going',
     subtitle: 'The Mac power monitor that lives in your menu bar — real-time watts in, watts out, per-device USB power draw, and battery health straight from macOS power APIs. Catch weak chargers, test cables, track solar budgets, and get notified before your battery hits 0.',
     ctaPrimary: 'Download for macOS',
-    ctaPrimaryHref: 'https://github.com/slothlabsorg/wattsorbit/releases/tag/v1.1.0',
+    ctaPrimaryHref: 'https://github.com/slothlabsorg/wattsorbit/releases/latest',
     ctaSecondary: 'See features ↓',
-    launchDate: 'v1.1.0 — May 20, 2026',
+    launchDate: 'Latest release',
   },
   features: [
     { icon: '⚡', title: 'Real watts in, real watts out', desc: 'Not a percentage. Not an estimate. Actual wattage from your charger and actual system draw — updated every 10 seconds straight from macOS power APIs. Numbers you can trust, not guess.', badge: null },

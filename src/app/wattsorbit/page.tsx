@@ -125,7 +125,7 @@ function Hero() {
                   <span className="font-bold tracking-wide">LIVE NOW — macOS only</span>
                 </>
               ) : (
-                hero.launchDate
+                <LiveVersion slug="wattsorbit" fallback={latestRelease?.version} showDate />
               )}
             </p>
           </div>
