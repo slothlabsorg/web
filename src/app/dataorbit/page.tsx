@@ -19,7 +19,7 @@ import { LiveVersion } from '@/lib/useLatestRelease'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison, screenshots } = dataOrbitContent
 
-const DATAORBIT_LAUNCH = new Date('2026-06-15T12:00:00Z')
+const DATAORBIT_LAUNCH = new Date('2026-06-22T12:00:00Z')
 const isLaunched = new Date() >= DATAORBIT_LAUNCH
 const hasRelease = allReleases.dataorbit.releases.length > 0
 const showDownload = hasRelease && isLaunched
