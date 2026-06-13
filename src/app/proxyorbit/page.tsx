@@ -121,7 +121,7 @@ function Hero() {
             </div>
 
             <div className="fade-up" style={{ animationDelay: '0.35s' }}>
-              <LaunchBanner variant="subtle" launchDate={PROXYORBIT_LAUNCH} accent={ACCENT_HI} />
+              <LaunchBanner variant="subtle" tbd accent={ACCENT_HI} />
             </div>
           </div>
 
@@ -363,10 +363,10 @@ function CTA() {
           <p className="text-lg mt-2" style={{ color: '#64748B' }}>
             {showDownload
               ? 'ProxyOrbit is live. Free, native, forever.'
-              : 'ProxyOrbit launches Friday, June 12, 2026. Subscribe to hear when it drops.'}
+              : "ProxyOrbit doesn't have a public launch date yet — we'd rather hold it than ship to a deadline. Subscribe to hear when it drops."}
           </p>
           <div className="mt-3 flex justify-center">
-            <LaunchBanner variant="subtle" launchDate={PROXYORBIT_LAUNCH} accent={ACCENT_HI} />
+            <LaunchBanner variant="subtle" tbd accent={ACCENT_HI} />
           </div>
         </ScrollReveal>
         <ScrollReveal delay={80}>

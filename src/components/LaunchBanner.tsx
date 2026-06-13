@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-const DEFAULT_LAUNCH = new Date('2026-06-12T12:00:00Z')
+const DEFAULT_LAUNCH = new Date('2026-06-15T12:00:00Z')
 const DEFAULT_ACCENT = '#00D4FF'
 
 function getTimeLeft(target: Date) {
@@ -25,10 +25,44 @@ interface Props {
   variant?: 'banner' | 'badge' | 'subtle'
   launchDate?: Date | string
   accent?: string
+  /** When true, render "Date TBD" copy with no countdown — for apps without a locked launch date. */
+  tbd?: boolean
 }
 
-export function LaunchBanner({ variant = 'banner', launchDate, accent = DEFAULT_ACCENT }: Props) {
+export function LaunchBanner({ variant = 'banner', launchDate, accent = DEFAULT_ACCENT, tbd = false }: Props) {
   const target = launchDate ? new Date(typeof launchDate === 'string' ? launchDate : launchDate.toISOString()) : DEFAULT_LAUNCH
+
+  if (tbd) {
+    if (variant === 'badge') {
+      return (
+        <div className="absolute top-4 right-4 z-10">
+          <span
+            className="px-2.5 py-1 rounded-full text-xs font-medium border"
+            style={{ borderColor: `${accent}80`, color: accent, background: `${accent}1a` }}
+          >
+            Launch date TBD
+          </span>
+        </div>
+      )
+    }
+    if (variant === 'subtle') {
+      return (
+        <p className="text-xs flex items-center gap-1.5 flex-wrap" style={{ color: '#4A6080' }}>
+          Launch date <span style={{ color: accent }}>TBD</span> — subscribe to hear when it locks
+        </p>
+      )
+    }
+    return (
+      <div
+        className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl border"
+        style={{ borderColor: `${accent}66`, background: `${accent}1a`, color: accent }}
+      >
+        <span className="text-sm font-semibold">Launch date TBD</span>
+        <span className="text-xs font-medium opacity-90">subscribe to hear when it locks</span>
+      </div>
+    )
+  }
+
   const [mounted, setMounted] = useState(false)
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, text: '', isLive: false })
 

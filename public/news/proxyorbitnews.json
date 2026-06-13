@@ -9,7 +9,7 @@
       "badge": "TBD",
       "badgeTone": "neutral",
       "title": "ProxyOrbit — public launch later in 2026",
-      "body": "ProxyOrbit has slipped off its June 12 slot. The MITM cert chain and Zscaler workaround flow need another QA pass before going public.\n\n- Capture HTTP/HTTPS from any Mac app\n- Filter by method, status, host, path\n- Real-time request log with body inspection\n- Native Rust + Hyper + Tokio — under 30 MB at idle\n\nNo subscription, no $50 license. MIT. Sign up to get notified the moment a date is locked.",
+      "body": "ProxyOrbit doesn't have a public launch date yet — the MITM cert chain and Zscaler workaround flow need another QA pass before going public.\n\n- Capture HTTP/HTTPS from any Mac app\n- Filter by method, status, host, path\n- Real-time request log with body inspection\n- Native Rust + Hyper + Tokio — under 30 MB at idle\n\nNo subscription, no $50 license. MIT. Sign up to get notified the moment a date is locked.",
       "action": { "label": "Subscribe for updates", "url": "https://slothlabs.org/proxyorbit" },
       "targetApps": ["proxyorbit"]
     }

@@ -5,11 +5,11 @@
       "id": "slothlabs-roadmap-jun-2026",
       "type": "news",
       "priority": 6,
-      "publishedAt": "2026-06-09T00:00:00Z",
+      "publishedAt": "2026-06-12T00:00:00Z",
       "badge": "NEW",
       "badgeTone": "neutral",
       "title": "SlothLabs summer releases",
-      "body": "**Mermaid Preview** (JetBrains plugin) is live. Up next: **CloudOrbit** + **WattsOrbit** ship together on **Friday June 12**, then **DataOrbit** lands on **Monday June 22**.\n\nklight, ProxyOrbit, and BastionOrbit have all been moved to **TBD later in 2026** — we'd rather hold them until they're done than ship to a deadline.\n\nAll free, all native, all open source.",
+      "body": "**Mermaid Preview** (JetBrains plugin) is live. Up next: **CloudOrbit** + **WattsOrbit** ship together on **Monday June 15**, then **DataOrbit** lands on **Monday June 22**.\n\nklight, ProxyOrbit, and BastionOrbit have all been moved to **TBD later in 2026** — we'd rather hold them until they're done than ship to a deadline.\n\nAll free, all native, all open source.",
       "collapsed": false,
       "action": {
         "label": "See the roadmap",

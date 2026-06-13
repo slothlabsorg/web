@@ -119,7 +119,7 @@ function Hero() {
             </div>
 
             <div className="fade-up" style={{ animationDelay: '0.35s' }}>
-              <LaunchBanner variant="subtle" launchDate={BASTIONORBIT_LAUNCH} accent={ACCENT} />
+              <LaunchBanner variant="subtle" tbd accent={ACCENT} />
             </div>
           </div>
 
@@ -325,10 +325,10 @@ function CTA() {
           <p className="text-lg mt-2" style={{ color: '#4a8a6a' }}>
             {showDownload
               ? 'BastionOrbit is live. Free. Native Rust binary.'
-              : 'BastionOrbit launches Friday, July 3, 2026. Subscribe to hear when it drops.'}
+              : "BastionOrbit doesn't have a public launch date yet — we'd rather hold it than ship to a deadline. Subscribe to hear when it drops."}
           </p>
           <div className="mt-3 flex justify-center">
-            <LaunchBanner variant="subtle" launchDate={BASTIONORBIT_LAUNCH} accent={ACCENT} />
+            <LaunchBanner variant="subtle" tbd accent={ACCENT} />
           </div>
         </ScrollReveal>
         <ScrollReveal delay={80}>

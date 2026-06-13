@@ -152,6 +152,12 @@ function Products() {
           // to "live" the moment UTC midnight rolls over while it's still the prior day in the US.
           const launchTsUtcNoon = (s?: string): number => {
             if (!s) return NaN
+            // Strict parser: only accept "Month DD, YYYY" (e.g. "June 15, 2026"). Strings like
+            // "TBD 2026" would otherwise parse via V8's permissive fallback to Jan 1 of that
+            // year and incorrectly flip the card to "Live" months early.
+            if (!/^(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}$/.test(s)) {
+              return NaN
+            }
             const d = new Date(s)
             if (isNaN(d.getTime())) return NaN
             return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0)
@@ -189,8 +195,8 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const RAW_ROADMAP = [
-  { name: 'CloudOrbit',   launchDate: '2026-06-12', date: 'June 12',  desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
-  { name: 'WattsOrbit',   launchDate: '2026-06-12', date: 'June 12',  desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
+  { name: 'CloudOrbit',   launchDate: '2026-06-15', date: 'June 15',  desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
+  { name: 'WattsOrbit',   launchDate: '2026-06-15', date: 'June 15',  desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
   { name: 'DataOrbit',    launchDate: '2026-06-22', date: 'June 22',  desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
   { name: 'klight',       launchDate: '2026-12-31', date: 'TBD 2026', desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
   { name: 'ProxyOrbit',   launchDate: '2026-12-31', date: 'TBD 2026', desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },

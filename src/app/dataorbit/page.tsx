@@ -316,7 +316,7 @@ function CTA() {
           <p className="text-[#8BA3C7] text-lg mt-2">
             {showDownload
               ? 'DataOrbit is live. Free forever. Native Rust binary.'
-              : 'DataOrbit launches Friday, May 29, 2026. Subscribe to hear when it drops.'}
+              : 'DataOrbit launches Monday, June 22, 2026. Subscribe to hear when it drops.'}
           </p>
           <div className="mt-3 flex justify-center">
             <LaunchBanner variant="subtle" launchDate={DATAORBIT_LAUNCH} accent={ACCENT} />
