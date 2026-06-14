@@ -108,6 +108,7 @@ function Hero() {
                 app={APPS.proxyorbit}
                 subscribeUrl="/proxyorbit"
                 buttonLabel="Download ProxyOrbit"
+                launchingSoon={!showDownload}
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
                 style={{ background: ACCENT_HI, color: BG_BASE }}
               />
@@ -375,6 +376,7 @@ function CTA() {
               app={APPS.proxyorbit}
               subscribeUrl="/proxyorbit"
               buttonLabel="Download ProxyOrbit"
+              launchingSoon={!showDownload}
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT_HI, color: BG_BASE }}
             />

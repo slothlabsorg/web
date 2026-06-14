@@ -106,6 +106,7 @@ function Hero() {
                 app={APPS.bastionorbit}
                 subscribeUrl="/bastionorbit"
                 buttonLabel="Download BastionOrbit"
+                launchingSoon={!showDownload}
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
                 style={{ background: ACCENT, color: BG_BASE }}
               />
@@ -337,6 +338,7 @@ function CTA() {
               app={APPS.bastionorbit}
               subscribeUrl="/bastionorbit"
               buttonLabel="Download BastionOrbit"
+              launchingSoon={!showDownload}
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT, color: BG_BASE }}
             />

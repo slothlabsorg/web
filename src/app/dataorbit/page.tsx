@@ -108,6 +108,7 @@ function Hero() {
                 app={APPS.dataorbit}
                 subscribeUrl="/dataorbit"
                 buttonLabel="Download DataOrbit"
+                launchingSoon={!showDownload}
                 className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
                 style={{ background: ACCENT, color: '#060614' }}
               />
@@ -328,6 +329,7 @@ function CTA() {
               app={APPS.dataorbit}
               subscribeUrl="/dataorbit"
               buttonLabel="Download DataOrbit"
+              launchingSoon={!showDownload}
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT, color: '#060614' }}
             />
