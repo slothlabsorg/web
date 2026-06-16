@@ -195,9 +195,9 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const RAW_ROADMAP = [
-  { name: 'CloudOrbit',   launchDate: '2026-06-15', date: 'June 15',  desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
-  { name: 'WattsOrbit',   launchDate: '2026-06-15', date: 'June 15',  desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
-  { name: 'DataOrbit',    launchDate: '2026-06-22', date: 'June 22',  desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
+  { name: 'CloudOrbit',   launchDate: '2026-06-19', date: 'June 19',  desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
+  { name: 'WattsOrbit',   launchDate: '2026-06-19', date: 'June 19',  desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
+  { name: 'DataOrbit',    launchDate: '2026-06-29', date: 'June 29',  desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
   { name: 'klight',       launchDate: '2026-12-31', date: 'TBD 2026', desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
   { name: 'ProxyOrbit',   launchDate: '2026-12-31', date: 'TBD 2026', desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
   { name: 'BastionOrbit', launchDate: '2026-12-31', date: 'TBD 2026', desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },

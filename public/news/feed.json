@@ -1,16 +1,16 @@
 {
   "version": 1,
-  "generatedAt": "2026-06-14T07:07:46.803Z",
+  "generatedAt": "2026-06-16T21:57:49.188Z",
   "items": [
     {
-      "id": "wo-public-launch-jun-15",
+      "id": "wo-public-launch-jun-19",
       "type": "announcement",
       "priority": 10,
-      "publishedAt": "2026-06-12T00:00:00Z",
+      "publishedAt": "2026-06-16T00:00:00Z",
       "badge": "LAUNCH",
       "badgeTone": "primary",
-      "title": "WattsOrbit ships publicly Monday June 15, 2026",
-      "body": "WattsOrbit goes public on **Monday June 15** — we held the Friday slot one more weekend so the new battery-health surface and 80% charge-limit alerts could finish QA on real hardware. Same drop day as CloudOrbit.\n\n- Real-time watts in / watts out\n- Per-USB-device wattage breakdown\n- Battery cycles, temperature, and capacity\n- Smart notifications (weak charger, low battery, 80% charge limit)\n\nFree and open source. MIT.",
+      "title": "WattsOrbit ships publicly Friday June 19, 2026",
+      "body": "WattsOrbit goes public on **Friday June 19** — slipped from Monday so the new battery-health surface and 80% charge-limit alerts could finish QA on real hardware. Same drop day as CloudOrbit.\n\n- Real-time watts in / watts out\n- Per-USB-device wattage breakdown\n- Battery cycles, temperature, and capacity\n- Smart notifications (weak charger, low battery, 80% charge limit)\n\nFree and open source. MIT.",
       "action": {
         "label": "Subscribe for updates",
         "url": "https://slothlabs.org/wattsorbit"
@@ -20,14 +20,14 @@
       ]
     },
     {
-      "id": "co-launch-jun-15",
+      "id": "co-launch-jun-19",
       "type": "announcement",
       "priority": 9,
-      "publishedAt": "2026-06-12T00:00:00Z",
+      "publishedAt": "2026-06-16T00:00:00Z",
       "badge": "NEW",
       "badgeTone": "primary",
-      "title": "CloudOrbit launches Monday June 15, 2026",
-      "body": "The first stable build of CloudOrbit now drops on **Monday June 15** — we held the Friday slot one more weekend so the SSO + kubeconfig path could get a final pass against real corporate proxies. Same launch day as WattsOrbit.\n\n- AWS SSO session manager, no terminal needed\n- Auto-updates kubeconfig as you switch profiles\n- Detects EKS clusters from your active session\n- Works behind Cloudflare and corporate proxies\n\nFree, native Rust binary. Sign up to get notified the moment it ships.",
+      "title": "CloudOrbit launches Friday June 19, 2026",
+      "body": "The first stable build of CloudOrbit now drops on **Friday June 19** — we slipped from Monday so the SSO + kubeconfig path could get one more pass against real corporate proxies. Same launch day as WattsOrbit.\n\n- AWS SSO session manager, no terminal needed\n- Auto-updates kubeconfig as you switch profiles\n- Detects EKS clusters from your active session\n- Works behind Cloudflare and corporate proxies\n\nFree, native Rust binary. Sign up to get notified the moment it ships.",
       "action": {
         "label": "Subscribe for updates",
         "url": "https://slothlabs.org/cloudorbit"
@@ -37,14 +37,14 @@
       ]
     },
     {
-      "id": "do-launch-jun-22",
+      "id": "do-launch-jun-29",
       "type": "announcement",
       "priority": 9,
-      "publishedAt": "2026-06-09T00:00:00Z",
+      "publishedAt": "2026-06-16T00:00:00Z",
       "badge": "NEW",
       "badgeTone": "primary",
-      "title": "DataOrbit launches Monday June 22, 2026",
-      "body": "The native DynamoDB GUI for macOS now ships **Monday June 22** — pushed back one week to give the cross-table join engine and live-stream UI a longer soak with real customer datasets.\n\n- Live DynamoDB Streams\n- Cross-table joins (inner / left / left-anti / right / right-anti)\n- Full query history\n- No Electron, no JVM warm-up — pure Rust + Tauri\n\nFree forever. MIT licensed.",
+      "title": "DataOrbit launches Monday June 29, 2026",
+      "body": "The native DynamoDB GUI for macOS now ships **Monday June 29** — pushed back one more week to give the cross-table join engine and live-stream UI a longer soak with real customer datasets.\n\n- Live DynamoDB Streams\n- Cross-table joins (inner / left / left-anti / right / right-anti)\n- Full query history\n- No Electron, no JVM warm-up — pure Rust + Tauri\n\nFree forever. MIT licensed.",
       "action": {
         "label": "Subscribe for updates",
         "url": "https://slothlabs.org/dataorbit"
@@ -144,11 +144,11 @@
       "id": "slothlabs-roadmap-jun-2026",
       "type": "news",
       "priority": 6,
-      "publishedAt": "2026-06-12T00:00:00Z",
+      "publishedAt": "2026-06-16T00:00:00Z",
       "badge": "NEW",
       "badgeTone": "neutral",
       "title": "SlothLabs summer releases",
-      "body": "**Mermaid Preview** (JetBrains plugin) is live. Up next: **CloudOrbit** + **WattsOrbit** ship together on **Monday June 15**, then **DataOrbit** lands on **Monday June 22**.\n\nklight, ProxyOrbit, and BastionOrbit have all been moved to **TBD later in 2026** — we'd rather hold them until they're done than ship to a deadline.\n\nAll free, all native, all open source.",
+      "body": "**Mermaid Preview** (JetBrains plugin) is live. Up next: **CloudOrbit** + **WattsOrbit** ship together on **Friday June 19**, then **DataOrbit** lands on **Monday June 29**.\n\nklight, ProxyOrbit, and BastionOrbit have all been moved to **TBD later in 2026** — we'd rather hold them until they're done than ship to a deadline.\n\nAll free, all native, all open source.",
       "collapsed": false,
       "action": {
         "label": "See the roadmap",

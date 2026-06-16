@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation'
 
 const PRODUCTS = [
   { icon: '🧜', name: 'Mermaid Preview', href: '/mermaid-preview', badge: 'Released', accent: '#FF3670' },
-  { icon: '☁️', name: 'CloudOrbit',      href: '/cloudorbit',      badge: 'June 15',  accent: '#00D4FF' },
-  { icon: '⚡', name: 'WattsOrbit',      href: '/wattsorbit',      badge: 'June 15',  accent: '#F59E0B' },
-  { icon: '🗄️', name: 'DataOrbit',       href: '/dataorbit',       badge: 'June 22',  accent: '#8B5CF6' },
+  { icon: '☁️', name: 'CloudOrbit',      href: '/cloudorbit',      badge: 'June 19',  accent: '#00D4FF' },
+  { icon: '⚡', name: 'WattsOrbit',      href: '/wattsorbit',      badge: 'June 19',  accent: '#F59E0B' },
+  { icon: '🗄️', name: 'DataOrbit',       href: '/dataorbit',       badge: 'June 29',  accent: '#8B5CF6' },
   { icon: '🚀', name: 'klight',          href: '/klight',          badge: 'TBD 2026', accent: '#B4FF3C' },
   { icon: '🔍', name: 'ProxyOrbit',      href: '/proxyorbit',      badge: 'TBD 2026', accent: '#94A3B8' },
   { icon: '🔐', name: 'BastionOrbit',    href: '/bastionorbit',    badge: 'TBD 2026', accent: '#10B981' },
