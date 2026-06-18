@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
 import CustomCursor from '@/components/CustomCursor'
 import { allReleases } from '@/data/releases'
+import { LIBRARY_LIST } from '@/data/libraries'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
@@ -184,6 +185,98 @@ export default function ToolsPage() {
               </ScrollReveal>
             )
           })}
+
+          {/* Developer libraries */}
+          <div className="mt-16 mb-8">
+            <ScrollReveal>
+              <div className="flex items-center gap-3 mb-2">
+                <h2 className="text-2xl md:text-3xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  Developer libraries
+                </h2>
+                <span className="text-[11px] px-2.5 py-1 rounded-full border border-[#1a3060] text-[#4A6080] bg-[#060d1e] font-semibold">
+                  Open source
+                </span>
+              </div>
+              <p className="text-[#8BA3C7] text-sm leading-relaxed max-w-2xl">
+                Small, polyglot libraries that solve one problem well — each shipping native implementations in
+                Rust, TypeScript, and Kotlin from a single mono-repo.
+              </p>
+            </ScrollReveal>
+          </div>
+
+          {LIBRARY_LIST.map((lib, i) => (
+            <ScrollReveal key={lib.slug} delay={i * 80}>
+              <div
+                className="group rounded-2xl border p-6 md:p-8 mb-6 hover:border-opacity-60 transition-all duration-200"
+                style={{ background: '#060d1e', borderColor: `${lib.accent}30` }}
+              >
+                <div className="flex flex-col md:flex-row md:items-start gap-6">
+
+                  {/* Icon + meta */}
+                  <div className="flex items-center gap-4 flex-shrink-0">
+                    <div
+                      className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl border"
+                      style={{ background: `${lib.accent}12`, borderColor: `${lib.accent}30` }}
+                    >
+                      {lib.icon}
+                    </div>
+                    <div className="md:hidden">
+                      <h3 className="text-xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>{lib.name}</h3>
+                      <span
+                        className="text-[11px] px-2 py-0.5 rounded-full border font-semibold"
+                        style={{ color: lib.accent, borderColor: `${lib.accent}40`, background: `${lib.accent}12` }}
+                      >
+                        Library · Rust · TS · Kotlin
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0 space-y-3">
+                    <div className="hidden md:flex items-center gap-3">
+                      <h3 className="text-2xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>{lib.name}</h3>
+                      <span
+                        className="text-[11px] px-2.5 py-1 rounded-full border font-semibold"
+                        style={{ color: lib.accent, borderColor: `${lib.accent}40`, background: `${lib.accent}12` }}
+                      >
+                        Library · Rust · TS · Kotlin
+                      </span>
+                    </div>
+
+                    <p className="text-[#8BA3C7] text-sm leading-relaxed">{lib.description}</p>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {lib.tags.map(tag => (
+                        <span key={tag} className="px-2.5 py-1 rounded-full text-xs bg-[#0d1b3e] text-[#4A6080] border border-[#1a3060]">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CTAs */}
+                  <div className="flex flex-col gap-2 flex-shrink-0 min-w-[160px]">
+                    <a
+                      href={`https://github.com/slothlabsorg/${lib.repo}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center px-5 py-2.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5 whitespace-nowrap"
+                      style={{ background: lib.accent, color: '#050d1f' }}
+                    >
+                      View on GitHub
+                    </a>
+                    <Link
+                      href={`/${lib.slug}`}
+                      className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all whitespace-nowrap"
+                      style={{ borderColor: '#1a3060', color: '#8BA3C7' }}
+                    >
+                      Learn more →
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
 
           {/* More coming note */}
           <ScrollReveal delay={200}>
