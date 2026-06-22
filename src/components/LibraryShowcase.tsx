@@ -311,6 +311,7 @@ export default function LibraryShowcase({ library }: { library: LibraryMeta }) {
         ctaKind="link"
         ctaLabel="GitHub"
         ctaHref={repoUrl(library.repo)}
+        docsHref={`/${library.slug}/docs`}
       />
       <Hero lib={library} />
       <WhatItIs lib={library} />

@@ -272,6 +272,13 @@ export default function ToolsPage() {
                     >
                       Learn more →
                     </Link>
+                    <Link
+                      href={`/${lib.slug}/docs`}
+                      className="inline-flex items-center justify-center text-xs hover:opacity-80 transition-colors text-center"
+                      style={{ color: lib.accent }}
+                    >
+                      Docs →
+                    </Link>
                   </div>
                 </div>
               </div>
