@@ -7,7 +7,7 @@ const PRODUCTS = [
   { icon: '🧜', name: 'Mermaid Preview', href: '/mermaid-preview', badge: 'Released', accent: '#FF3670' },
   { icon: '☁️', name: 'CloudOrbit',      href: '/cloudorbit',      badge: 'June 26',  accent: '#00D4FF' },
   { icon: '⚡', name: 'WattsOrbit',      href: '/wattsorbit',      badge: 'June 19',  accent: '#F59E0B' },
-  { icon: '🗄️', name: 'DataOrbit',       href: '/dataorbit',       badge: 'TBD 2026',  accent: '#8B5CF6' },
+  { icon: '🗄️', name: 'DataOrbit',       href: '/dataorbit',       badge: 'TBD 2026', accent: '#8B5CF6' },
   { icon: '🚀', name: 'klight',          href: '/klight',          badge: 'TBD 2026', accent: '#B4FF3C' },
   { icon: '🔍', name: 'ProxyOrbit',      href: '/proxyorbit',      badge: 'TBD 2026', accent: '#94A3B8' },
   { icon: '🔐', name: 'BastionOrbit',    href: '/bastionorbit',    badge: 'TBD 2026', accent: '#10B981' },
@@ -124,6 +124,15 @@ export default function Navbar() {
           </div>
 
           <Link
+            href="/rag-course"
+            className={`text-base font-medium transition-colors ${
+              pathname.startsWith('/rag-course') ? 'text-white' : 'text-[#8BA3C7] hover:text-white'
+            }`}
+          >
+            RAG Course
+          </Link>
+
+          <Link
             href="/pricing"
             className="text-base font-medium text-[#8BA3C7] hover:text-white transition-colors"
           >
@@ -212,6 +221,14 @@ export default function Navbar() {
               </Link>
             </div>
           )}
+
+          <Link
+            href="/rag-course"
+            className="text-base font-medium text-[#8BA3C7] hover:text-white transition-colors py-2"
+            onClick={() => setMobile(false)}
+          >
+            RAG Course
+          </Link>
 
           <Link
             href="/pricing"
