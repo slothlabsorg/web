@@ -1,0 +1,36 @@
+{
+  "expediente_id": "EXP-2024-002",
+  "solicitante": "Ana Rojas",
+  "solicitud": "Solicitud de préstamo hipotecario por $120,000.",
+  "chunks": [
+    {
+      "id": "c002-01",
+      "text": "Carta de intención de empleo: Ana Rojas ha sido seleccionada para el puesto de Coordinadora de Proyectos en Constructora Verde S.A. Fecha de inicio prevista: 01/03/2024. El contrato aún no ha sido firmado.",
+      "source": "carta_intencion_empleo.pdf",
+      "metadata": {
+        "doc_type": "carta_intencion",
+        "period": "2024",
+        "nota": "empleo_pendiente"
+      }
+    },
+    {
+      "id": "c002-02",
+      "text": "Declaración de impuestos 2022 (pendiente de presentar 2023): La declaración fiscal del año 2023 no ha sido presentada al momento de esta solicitud. Se adjunta únicamente la declaración 2022, que muestra ingresos de $31,000 como trabajadora independiente.",
+      "source": "declaracion_fiscal_2022.pdf",
+      "metadata": {
+        "doc_type": "declaracion_fiscal",
+        "period": "2022",
+        "nota": "declaracion_2023_faltante"
+      }
+    },
+    {
+      "id": "c002-03",
+      "text": "El solicitante indica que tiene deudas pendientes pero no adjunta documentación específica sobre montos. Se menciona informalmente una deuda con familiar por cantidad no especificada.",
+      "source": "formulario_solicitud.pdf",
+      "metadata": {
+        "doc_type": "formulario",
+        "nota": "deuda_sin_documentar"
+      }
+    }
+  ]
+}

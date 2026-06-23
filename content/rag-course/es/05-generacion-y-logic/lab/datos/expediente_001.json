@@ -1,0 +1,49 @@
+{
+  "expediente_id": "EXP-2024-001",
+  "solicitante": "Carlos Mendoza",
+  "solicitud": "Solicitud de préstamo personal por $45,000 a 60 meses para consolidación de deudas.",
+  "chunks": [
+    {
+      "id": "c001-01",
+      "text": "Declaración de impuestos 2023: Carlos Mendoza reporta ingresos brutos anuales de $85,000 provenientes de empleo en Tecnologías del Norte S.A. como Ingeniero de Sistemas Senior. Ingresos netos después de impuestos: $68,000.",
+      "source": "declaracion_fiscal_2023.pdf",
+      "metadata": {
+        "doc_type": "declaracion_fiscal",
+        "period": "2023",
+        "ingreso_anual": 85000
+      }
+    },
+    {
+      "id": "c001-02",
+      "text": "Estado de cuenta bancario Q3 2023: Saldo promedio mensual $8,200. Historial de pagos: 97% de pagos realizados puntualmente en los últimos 12 meses. Un pago tardío registrado en mayo 2023 (3 días de retraso). Sin cargos por insuficiencia de fondos.",
+      "source": "estado_cuenta_q3_2023.pdf",
+      "metadata": {
+        "doc_type": "estado_cuenta",
+        "period": "Q3-2023",
+        "pagos_puntuales_pct": 97
+      }
+    },
+    {
+      "id": "c001-03",
+      "text": "Datos financieros del solicitante al 31/12/2023: deuda_total: $12,000 (tarjeta de crédito y préstamo de auto). antigüedad_laboral_años: 6. Empleador actual: Tecnologías del Norte S.A. (contrato indefinido). Relación deuda/ingreso: 14.1%.",
+      "source": "datos_financieros.csv",
+      "metadata": {
+        "doc_type": "datos_financieros",
+        "period": "2023",
+        "deuda_total": 12000,
+        "antiguedad_laboral_anos": 6,
+        "ratio_deuda_ingreso": 0.141
+      }
+    },
+    {
+      "id": "c001-04",
+      "text": "Consulta de buró de crédito: Sin reportes negativos en los últimos 24 meses. Número de cuentas activas: 3. Sin juicios o embargos registrados. Última actualización: 15/01/2024.",
+      "source": "buro_credito_consulta.pdf",
+      "metadata": {
+        "doc_type": "buro_credito",
+        "period": "2024-01",
+        "reportes_negativos": 0
+      }
+    }
+  ]
+}

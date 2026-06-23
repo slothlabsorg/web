@@ -1,0 +1,10 @@
+{
+  "id": "doc_01",
+  "texto": "Los empleados tienen derecho a 15 días hábiles de vacaciones anuales pagadas. Los días de vacaciones se acumulan mensualmente y pueden tomarse en bloques o de forma continua previa solicitud al jefe de área.",
+  "metadata": {
+    "categoria": "vacaciones",
+    "tema": "tiempo libre",
+    "version": "2024",
+    "departamento": "todos"
+  }
+}

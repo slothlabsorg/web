@@ -1,0 +1,36 @@
+{
+  "policies": [
+    {
+      "disruption_cause": "weather",
+      "tier": "standard",
+      "penalty_usd": 0,
+      "compensation_usd": 0,
+      "auto_confirm_single_alt": true,
+      "summary": "Clima: rebook sin penalidad para clientes standard"
+    },
+    {
+      "disruption_cause": "weather",
+      "tier": "premium",
+      "penalty_usd": 0,
+      "compensation_usd": 15,
+      "auto_confirm_single_alt": false,
+      "summary": "Clima premium: compensación $15; opciones al cliente si multi-leg"
+    },
+    {
+      "disruption_cause": "hub_closure",
+      "tier": "standard",
+      "penalty_usd": 0,
+      "compensation_usd": 5,
+      "auto_confirm_single_alt": true,
+      "summary": "Cierre de hub: sin penalidad, compensación menor"
+    },
+    {
+      "disruption_cause": "carrier_failure",
+      "tier": "standard",
+      "penalty_usd": 0,
+      "compensation_usd": 25,
+      "auto_confirm_single_alt": false,
+      "summary": "Fallo transportista: compensación elevada, revisión manual"
+    }
+  ]
+}

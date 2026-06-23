@@ -1,0 +1,77 @@
+{
+  "disruption": {
+    "hub_affected": "MIA",
+    "disruption_cause": "weather",
+    "description": "Cierre del hub MIA por tormenta tropical"
+  },
+  "events": [
+    {
+      "shipment_id": "SHP-20240614-00742",
+      "disruption_cause": "weather",
+      "hub_affected": "MIA",
+      "tier": "standard",
+      "connections_lost": 0,
+      "delivery_flexibility": "flexible",
+      "disruption_severity": "HIGH",
+      "destination": "ORD",
+      "eta_original": "2024-06-15T14:00:00Z"
+    },
+    {
+      "shipment_id": "SHP-20240614-00815",
+      "disruption_cause": "weather",
+      "hub_affected": "MIA",
+      "tier": "standard",
+      "connections_lost": 0,
+      "delivery_flexibility": "fixed",
+      "disruption_severity": "MEDIUM",
+      "destination": "ATL",
+      "eta_original": "2024-06-15T18:30:00Z"
+    },
+    {
+      "shipment_id": "SHP-20240614-00189",
+      "disruption_cause": "weather",
+      "hub_affected": "MIA",
+      "tier": "premium",
+      "connections_lost": 2,
+      "delivery_flexibility": "fixed",
+      "disruption_severity": "HIGH",
+      "destination": "SEA",
+      "eta_original": "2024-06-16T09:00:00Z",
+      "legs": ["MIA-ORD", "ORD-SEA"]
+    },
+    {
+      "shipment_id": "SHP-20240614-00331",
+      "disruption_cause": "weather",
+      "hub_affected": "MIA",
+      "tier": "standard",
+      "connections_lost": 0,
+      "delivery_flexibility": "fixed",
+      "disruption_severity": "CRITICAL",
+      "destination": "DFW",
+      "eta_original": "2024-06-15T22:00:00Z"
+    },
+    {
+      "shipment_id": "SHP-20240614-00556",
+      "disruption_cause": "weather",
+      "hub_affected": "MIA",
+      "tier": "standard",
+      "connections_lost": 0,
+      "delivery_flexibility": "flexible",
+      "disruption_severity": "MEDIUM",
+      "destination": "BOS",
+      "eta_original": "2024-06-16T11:00:00Z"
+    },
+    {
+      "shipment_id": "SHP-20240614-00204",
+      "disruption_cause": "weather",
+      "hub_affected": "MIA",
+      "tier": "premium",
+      "connections_lost": 1,
+      "delivery_flexibility": "fixed",
+      "disruption_severity": "HIGH",
+      "destination": "LAX",
+      "eta_original": "2024-06-16T06:00:00Z",
+      "legs": ["MIA-DFW", "DFW-LAX"]
+    }
+  ]
+}

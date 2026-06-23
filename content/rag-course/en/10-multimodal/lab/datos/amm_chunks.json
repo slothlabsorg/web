@@ -1,0 +1,64 @@
+{
+  "chunks": [
+    {
+      "id": "amm-32-11-00-001",
+      "text": "AMM 32-11-00 — Inspección del Tren de Aterrizaje Principal (MLG). Rev. 45 (2026-01-15). Paso 1: Inspeccionar visualmente el actuador de retracción en busca de fugas de fluido hidráulico (Skydrol). Paso 2: Si hay fuga activa, aplicar procedimiento 32-11-00-200-001 antes de liberar la aeronave.",
+      "metadata": {
+        "aircraft_type": "A320",
+        "ata_chapter": "32",
+        "ata_section": "32-11-00",
+        "revision": "45",
+        "warning_level": "WARNING"
+      },
+      "source": "AMM-A320#32-11-00#rev45"
+    },
+    {
+      "id": "amm-32-11-00-200-001",
+      "text": "AMM 32-11-00-200-001 — Reparación de fuga en actuador MLG. Rev. 45. WARNING: No operar el sistema hidráulico con fuga activa. Aislar circuito hidráulico verde, drenar residual, reemplazar junta del cilindro P/N 32-ACT-447 según torque 28 N·m (tabla 32-11-T01).",
+      "metadata": {
+        "aircraft_type": "A320",
+        "ata_chapter": "32",
+        "ata_section": "32-11-00-200-001",
+        "revision": "45",
+        "warning_level": "WARNING"
+      },
+      "source": "AMM-A320#32-11-00-200-001#rev45"
+    },
+    {
+      "id": "amm-32-21-00-001",
+      "text": "AMM 32-21-00 — Inspección del tren de nariz (NLG) A320. Rev. 44. Verificar amortiguador oleo-neumático y guardapolvos. No aplica a fugas en MLG.",
+      "metadata": {
+        "aircraft_type": "A320",
+        "ata_chapter": "32",
+        "ata_section": "32-21-00",
+        "revision": "44",
+        "warning_level": "CAUTION"
+      },
+      "source": "AMM-A320#32-21-00#rev44"
+    },
+    {
+      "id": "amm-b737-32-11-001",
+      "text": "AMM 32-11-00 — MLG Boeing 737-800. Rev. 38. Procedimiento distinto: inspeccionar strut y drag brace. No intercambiable con A320.",
+      "metadata": {
+        "aircraft_type": "B737-800",
+        "ata_chapter": "32",
+        "ata_section": "32-11-00",
+        "revision": "38",
+        "warning_level": "CAUTION"
+      },
+      "source": "AMM-B737#32-11-00#rev38"
+    },
+    {
+      "id": "amm-29-00-001",
+      "text": "AMM 29-00-00 — Sistema hidráulico verde A320. Rev. 45. Presión nominal 3000 psi. Fluido Skydrol LD-4. No sustituye inspección específica del MLG.",
+      "metadata": {
+        "aircraft_type": "A320",
+        "ata_chapter": "29",
+        "ata_section": "29-00-00",
+        "revision": "45",
+        "warning_level": "NOTE"
+      },
+      "source": "AMM-A320#29-00-00#rev45"
+    }
+  ]
+}

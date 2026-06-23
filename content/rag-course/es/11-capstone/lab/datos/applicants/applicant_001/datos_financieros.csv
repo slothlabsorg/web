@@ -1,0 +1,5 @@
+concepto,valor,periodo,doc_type
+ingreso_anual,85000,2023,financial_data
+deuda_total,12000,2023,financial_data
+pagos_puntuales_pct,97,2023,financial_data
+antiguedad_laboral_anos,6,2023,financial_data

@@ -1,0 +1,83 @@
+[
+  {
+    "id": "pol_001",
+    "texto": "Tarifa Basic: el equipaje de mano está incluido en el precio. Solo se permite una bolsa personal de hasta 10 kg. No se admite maleta de cabina sin cargo adicional. El equipaje facturado tiene un costo extra obligatorio.",
+    "metadata": {
+      "fare_class": "Basic",
+      "route_type": "domestic",
+      "categoria": "equipaje"
+    }
+  },
+  {
+    "id": "pol_002",
+    "texto": "Tarifa Basic: no se permiten cambios de vuelo una vez confirmada la reserva. Cualquier modificación de fecha, hora o ruta implica la cancelación y nueva compra al precio vigente. No hay reembolso posible salvo cancelación por la aerolínea.",
+    "metadata": {
+      "fare_class": "Basic",
+      "route_type": "domestic",
+      "categoria": "cambios"
+    }
+  },
+  {
+    "id": "pol_003",
+    "texto": "Tarifa Basic: los reembolsos no están disponibles. En caso de no presentarse al vuelo, el billete queda sin valor. Si la aerolínea cancela el vuelo, el pasajero puede solicitar reembolso total o aceptar un vuelo alternativo sin cargo adicional.",
+    "metadata": {
+      "fare_class": "Basic",
+      "route_type": "international",
+      "categoria": "reembolsos"
+    }
+  },
+  {
+    "id": "pol_004",
+    "texto": "Tarifa Plus: el equipaje de mano y una maleta de cabina de hasta 10 kg están incluidos. Se permite una maleta facturada de hasta 23 kg sin cargo adicional. Las maletas extra tienen un costo reducido frente a la tarifa Basic.",
+    "metadata": {
+      "fare_class": "Plus",
+      "route_type": "domestic",
+      "categoria": "equipaje"
+    }
+  },
+  {
+    "id": "pol_005",
+    "texto": "Tarifa Plus: se permite un cambio de fecha o hora sin cargo adicional hasta 24 horas antes del vuelo. Cambios posteriores tienen un cargo de gestión reducido. Los cambios de ruta no están incluidos y requieren pago de diferencia de tarifa.",
+    "metadata": {
+      "fare_class": "Plus",
+      "route_type": "domestic",
+      "categoria": "cambios"
+    }
+  },
+  {
+    "id": "pol_006",
+    "texto": "Tarifa Plus: los reembolsos están disponibles con una penalización del 25 por ciento del valor del billete hasta 48 horas antes de la salida. Después de ese plazo, no hay reembolso pero el crédito puede usarse en futuros viajes.",
+    "metadata": {
+      "fare_class": "Plus",
+      "route_type": "international",
+      "categoria": "reembolsos"
+    }
+  },
+  {
+    "id": "pol_007",
+    "texto": "Tarifa Top: el equipaje de mano, la maleta de cabina y dos maletas facturadas de hasta 32 kg cada una están incluidos sin cargo adicional. Adicionalmente, los pasajeros Top tienen acceso prioritario a la cinta de equipaje.",
+    "metadata": {
+      "fare_class": "Top",
+      "route_type": "domestic",
+      "categoria": "equipaje"
+    }
+  },
+  {
+    "id": "pol_008",
+    "texto": "Tarifa Top: se permiten cambios ilimitados de fecha, hora y ruta sin cargo adicional hasta 2 horas antes del vuelo. No hay cargo de gestión ni penalización por cambios. Los cambios de ruta se realizan al precio de tarifa Top vigente sin penalización.",
+    "metadata": {
+      "fare_class": "Top",
+      "route_type": "domestic",
+      "categoria": "cambios"
+    }
+  },
+  {
+    "id": "pol_009",
+    "texto": "Tarifa Top: reembolso total disponible sin penalización hasta 2 horas antes de la salida del vuelo. Después de ese plazo, el importe queda como crédito permanente sin fecha de vencimiento. Los pasajeros Top tienen garantía de asiento en el siguiente vuelo disponible en caso de sobreventa.",
+    "metadata": {
+      "fare_class": "Top",
+      "route_type": "international",
+      "categoria": "reembolsos"
+    }
+  }
+]

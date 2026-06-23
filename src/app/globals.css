@@ -359,6 +359,91 @@ body {
 .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 
+/* ── RAG course markdown rendering ──────────────────────────── */
+.course-md {
+  color: #c3d2ea;
+  font-size: 0.975rem;
+  line-height: 1.75;
+  word-break: break-word;
+}
+.course-md > :first-child { margin-top: 0; }
+.course-md h1, .course-md h2, .course-md h3, .course-md h4 {
+  font-family: 'Syne', sans-serif;
+  color: #ffffff;
+  font-weight: 700;
+  line-height: 1.25;
+  scroll-margin-top: 140px;
+}
+.course-md h1 { font-size: 1.9rem; margin: 1.8rem 0 1rem; }
+.course-md h2 {
+  font-size: 1.45rem;
+  margin: 2rem 0 0.9rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+.course-md h3 { font-size: 1.18rem; margin: 1.5rem 0 0.7rem; color: #e7eefb; }
+.course-md h4 { font-size: 1.02rem; margin: 1.2rem 0 0.6rem; color: #cbd5e1; }
+.course-md p { margin: 0.85rem 0; }
+.course-md a { color: var(--primary); text-decoration: none; border-bottom: 1px solid rgba(77,166,255,0.3); }
+.course-md a:hover { color: #fff; border-bottom-color: #fff; }
+.course-md strong { color: #f0f5ff; font-weight: 600; }
+.course-md em { color: #d7e2f5; }
+.course-md ul, .course-md ol { margin: 0.85rem 0; padding-left: 1.5rem; }
+.course-md ul { list-style: disc; }
+.course-md ol { list-style: decimal; }
+.course-md li { margin: 0.35rem 0; }
+.course-md li::marker { color: var(--text-muted); }
+.course-md hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
+.course-md blockquote {
+  margin: 1.1rem 0;
+  padding: 0.6rem 1.1rem;
+  border-left: 3px solid var(--primary);
+  background: rgba(77,166,255,0.06);
+  border-radius: 0 8px 8px 0;
+  color: #b6c6e0;
+}
+.course-md blockquote p { margin: 0.4rem 0; }
+.course-md :not(pre) > code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  padding: 0.1em 0.4em;
+  border-radius: 5px;
+  background: rgba(148,163,184,0.14);
+  color: #9fd0ff;
+}
+.course-md pre {
+  margin: 1.1rem 0;
+  padding: 1rem 1.1rem;
+  border-radius: 12px;
+  background: #0a1224;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.course-md pre code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  background: none;
+  padding: 0;
+  color: #cbd5e1;
+}
+.course-md table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2rem 0;
+  font-size: 0.88rem;
+  display: block;
+  overflow-x: auto;
+}
+.course-md th, .course-md td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.course-md th { background: #0d1b3e; color: #fff; font-weight: 600; }
+.course-md tr:nth-child(even) td { background: rgba(13,27,62,0.4); }
+.course-md img { max-width: 100%; border-radius: 10px; margin: 1rem 0; }
+
 /* ── News markdown rendering ───────────────────────────────── */
 .news-body { word-break: break-word; }
 .news-body .news-h3 {

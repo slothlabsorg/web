@@ -1,0 +1,122 @@
+CONTRATO DE SERVICIOS PROFESIONALES
+Número de contrato: CSP-2024-0087
+Fecha de suscripción: 15 de enero de 2024
+
+Entre:
+CONTRATANTE: Empresa Tecnológica del Norte S.A. de C.V., con domicilio en Av. Insurgentes Sur 1234,
+Ciudad de México, en adelante "EL CLIENTE".
+
+PRESTADOR: Soluciones Digitales Integrales S.A., con domicilio en Calle Reforma 567, Guadalajara,
+Jalisco, en adelante "EL PRESTADOR".
+
+Las partes acuerdan el presente contrato bajo las siguientes:
+
+CLÁUSULAS
+
+CLÁUSULA 1. OBJETO DEL CONTRATO
+El presente contrato tiene por objeto la prestación de servicios de desarrollo de software a medida,
+incluyendo diseño, implementación, pruebas y despliegue de un sistema de gestión de inventarios
+para EL CLIENTE. Los entregables específicos se detallan en el Anexo A adjunto al presente
+instrumento, el cual forma parte integrante de este contrato.
+
+CLÁUSULA 2. DURACIÓN Y VIGENCIA
+El presente contrato tendrá una vigencia de doce (12) meses contados a partir de la fecha de su
+suscripción, es decir, del 15 de enero de 2024 al 14 de enero de 2025. El contrato podrá
+prorrogarse por períodos iguales mediante acuerdo escrito firmado por ambas partes con al menos
+treinta (30) días de anticipación al vencimiento de cada período.
+
+CLÁUSULA 3. CONTRAPRESTACIÓN Y FORMA DE PAGO
+EL CLIENTE se obliga a pagar a EL PRESTADOR la cantidad de $480,000.00 (cuatrocientos ochenta
+mil pesos 00/100 M.N.) más el Impuesto al Valor Agregado (IVA) correspondiente. El pago se
+realizará en cuatro exhibiciones iguales de $120,000.00 cada una, con vencimiento los días 15 de
+enero, 15 de abril, 15 de julio y 15 de octubre de 2024. En caso de mora en el pago, EL CLIENTE
+deberá cubrir un interés moratorio del 2% mensual sobre el saldo insoluto.
+
+CLÁUSULA 4. OBLIGACIONES DEL PRESTADOR
+EL PRESTADOR se obliga a: (a) Ejecutar los servicios descritos en el Anexo A con personal
+calificado y experimentado en las tecnologías acordadas; (b) Mantener comunicación semanal con
+EL CLIENTE mediante informes de avance en formato escrito; (c) Garantizar la calidad del software
+entregado mediante la ejecución de pruebas unitarias e integrales con cobertura mínima del 80%;
+(d) Entregar el código fuente completo y documentado al término del contrato; (e) Respetar los
+estándares de seguridad y confidencialidad establecidos en la Cláusula 9 del presente instrumento.
+
+CLÁUSULA 5. OBLIGACIONES DEL CLIENTE
+EL CLIENTE se obliga a: (a) Proporcionar acceso a los sistemas, datos e infraestructura necesarios
+para la correcta ejecución de los servicios en un plazo no mayor a cinco (5) días hábiles a partir
+de la firma del contrato; (b) Asignar un representante técnico con facultades suficientes para tomar
+decisiones operativas; (c) Revisar y aprobar o rechazar razonadamente los entregables en un plazo
+máximo de diez (10) días hábiles a partir de su recepción; (d) Realizar los pagos en las fechas
+pactadas conforme a la Cláusula 3.
+
+CLÁUSULA 6. PROPIEDAD INTELECTUAL
+Todos los desarrollos, códigos fuente, documentación técnica, diseños y demás creaciones
+intelectuales producidos específicamente para EL CLIENTE en cumplimiento de este contrato serán
+propiedad exclusiva de EL CLIENTE a partir de su recepción y pago total. EL PRESTADOR cede de
+manera irrevocable todos los derechos patrimoniales sobre dichas creaciones. No obstante, EL
+PRESTADOR conserva la propiedad de las herramientas, frameworks y componentes de software
+preexistentes utilizados en el desarrollo, los cuales se licenciarán a EL CLIENTE bajo términos de
+uso perpetuo, no exclusivo e intransferible.
+
+CLÁUSULA 7. PENALIZACIONES POR INCUMPLIMIENTO
+En caso de que EL PRESTADOR no entregue los hitos establecidos en el Anexo A dentro de los
+plazos acordados, sin causa justificada, se aplicarán las siguientes penalizaciones: (a) Retraso de
+1 a 5 días hábiles: descuento del 1% sobre el valor del hito correspondiente; (b) Retraso de 6 a
+15 días hábiles: descuento del 3% sobre el valor del hito correspondiente; (c) Retraso mayor a 15
+días hábiles: EL CLIENTE podrá optar por la rescisión del contrato sin responsabilidad, con derecho
+a recuperar los pagos realizados por hitos no entregados, más una penalización del 10% sobre el
+valor total del contrato.
+
+CLÁUSULA 8. LIMITACIÓN DE RESPONSABILIDAD
+La responsabilidad total de EL PRESTADOR derivada del presente contrato, ya sea por
+incumplimiento, negligencia, dolo o cualquier otra causa, quedará limitada al monto total del
+contrato establecido en la Cláusula 3. Ninguna de las partes será responsable por daños indirectos,
+consecuentes, especiales o punitivos, incluyendo pero no limitándose a pérdidas de beneficios,
+pérdida de datos o interrupción del negocio, aun cuando dicha parte hubiera sido advertida de la
+posibilidad de dichos daños.
+
+CLÁUSULA 9. CONFIDENCIALIDAD
+Ambas partes acuerdan mantener estricta confidencialidad respecto de toda la información
+intercambiada en el marco del presente contrato, incluyendo datos técnicos, comerciales,
+financieros y de clientes. Esta obligación de confidencialidad tendrá una duración de cinco (5)
+años contados a partir de la terminación del contrato, independientemente de la causa de dicha
+terminación. La parte que incumpla esta obligación deberá indemnizar a la otra por los daños y
+perjuicios causados.
+
+CLÁUSULA 10. RESOLUCIÓN DE DISPUTAS
+Cualquier controversia o reclamación derivada del presente contrato que no pueda resolverse
+amigablemente entre las partes dentro de un plazo de treinta (30) días naturales a partir de la
+notificación escrita del conflicto, será sometida a arbitraje ante la Cámara de Comercio de la
+Ciudad de México, conforme a su reglamento de arbitraje vigente. El laudo arbitral será definitivo
+y vinculante para ambas partes. Los costos del arbitraje serán sufragados por partes iguales, salvo
+que el laudo disponga lo contrario.
+
+CLÁUSULA 11. CAUSAS DE RESCISIÓN
+El presente contrato podrá rescindirse sin responsabilidad para la parte afectada en los siguientes
+supuestos: (a) Incumplimiento grave de las obligaciones de cualquiera de las partes, previa
+notificación escrita con quince (15) días hábiles de anticipación sin que se subsane el
+incumplimiento; (b) Declaración de concurso mercantil o quiebra de cualquiera de las partes;
+(c) Caso fortuito o fuerza mayor que impida la ejecución del contrato por un período mayor a
+sesenta (60) días naturales; (d) Mutuo acuerdo entre las partes formalizado por escrito.
+
+CLÁUSULA 12. PROTECCIÓN DE DATOS PERSONALES
+EL PRESTADOR se obliga a tratar los datos personales a los que tenga acceso en virtud del presente
+contrato conforme a lo dispuesto por la Ley Federal de Protección de Datos Personales en Posesión
+de los Particulares (LFPDPPP) y su Reglamento. En ningún caso EL PRESTADOR podrá transferir,
+ceder o comercializar dichos datos a terceros. Al término del contrato, EL PRESTADOR deberá
+devolver o destruir todos los datos personales de conformidad con las instrucciones de EL CLIENTE.
+
+CLÁUSULA 13. DISPOSICIONES GENERALES
+El presente contrato constituye el acuerdo íntegro entre las partes respecto de su objeto y
+reemplaza cualquier acuerdo previo, ya sea verbal o escrito, sobre la misma materia. Las
+modificaciones al contrato solo serán válidas si constan por escrito y son firmadas por los
+representantes legales de ambas partes. La invalidez de cualquier disposición del presente
+contrato no afectará la validez de las demás disposiciones. Las partes señalan como domicilios
+convencionales los indicados en el encabezado del presente instrumento.
+
+FIRMAS
+
+____________________________          ____________________________
+EL CLIENTE                            EL PRESTADOR
+Ing. Roberto Martínez García          Lic. Ana Sofía Reyes Torres
+Director General                      Directora Comercial
+Empresa Tecnológica del Norte         Soluciones Digitales Integrales

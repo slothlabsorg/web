@@ -1,0 +1,52 @@
+{
+  "SHP-20240614-00742": {
+    "shipment_id": "SHP-20240614-00742",
+    "customer_email": "cliente@example.com",
+    "tier": "standard",
+    "preferred_window_hours": 12,
+    "history_rebooks": 0,
+    "notify_channels": ["email", "push"]
+  },
+  "SHP-20240614-00815": {
+    "shipment_id": "SHP-20240614-00815",
+    "customer_email": "ops@retailco.com",
+    "tier": "standard",
+    "preferred_window_hours": 24,
+    "history_rebooks": 1,
+    "notify_channels": ["email"]
+  },
+  "SHP-20240614-00189": {
+    "shipment_id": "SHP-20240614-00189",
+    "customer_email": "cliente.premium@example.com",
+    "tier": "premium",
+    "preferred_window_hours": 8,
+    "history_rebooks": 0,
+    "notify_channels": ["email", "sms", "push"],
+    "preference": "minimize_connections"
+  },
+  "SHP-20240614-00331": {
+    "shipment_id": "SHP-20240614-00331",
+    "customer_email": "urgent@pharma.com",
+    "tier": "standard",
+    "preferred_window_hours": 6,
+    "history_rebooks": 0,
+    "notify_channels": ["email", "sms"]
+  },
+  "SHP-20240614-00556": {
+    "shipment_id": "SHP-20240614-00556",
+    "customer_email": "flex@startup.io",
+    "tier": "standard",
+    "preferred_window_hours": 48,
+    "history_rebooks": 0,
+    "notify_channels": ["email", "push"]
+  },
+  "SHP-20240614-00204": {
+    "shipment_id": "SHP-20240614-00204",
+    "customer_email": "vip@enterprise.com",
+    "tier": "premium",
+    "preferred_window_hours": 10,
+    "history_rebooks": 2,
+    "notify_channels": ["email", "sms", "push"],
+    "preference": "fastest_route"
+  }
+}

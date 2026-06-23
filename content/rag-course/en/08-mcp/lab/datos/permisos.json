@@ -1,0 +1,15 @@
+{
+  "scopes": {
+    "financial": {
+      "description": "Acciones que cobran dinero al pasajero",
+      "requires_approval": true,
+      "tools": ["apply_flight_change"]
+    },
+    "read_policy": {
+      "description": "Consulta de políticas tarifarias (solo lectura)",
+      "requires_approval": false,
+      "tools": ["policy_rag"]
+    }
+  },
+  "approval_threshold_usd": 0
+}

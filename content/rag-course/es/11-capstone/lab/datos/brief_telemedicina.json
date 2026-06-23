@@ -1,0 +1,39 @@
+{
+  "id": "brief-telemedicina-2025",
+  "cliente": "SaludPlus Seguros",
+  "problema": "Los médicos de telemedicina tardan 8-12 minutos buscando guías clínicas y verificando cobertura del plan del paciente antes de prescribir. Necesitan un copilot que responda en <2s citando la guía correcta y que escale casos de alto riesgo.",
+  "restricciones": [
+    "PHI no puede salir del VPC — embeddings locales obligatorios",
+    "Toda recomendación debe citar guía + sección",
+    "Casos con severidad 'alta' o sin criterio en guía → escalación a revisor clínico",
+    "Auditoría HIPAA: cada consulta y tool call registrado",
+    "Latencia P95 < 2 segundos en panel lateral (no interrumpe la videollamada)"
+  ],
+  "fuentes_datos": [
+    "PDFs de guías clínicas por plan (HMO, PPO, Medicare)",
+    "API PatientHistoryService (EHR interno)",
+    "Transcripciones STT de la llamada (Deepgram mock en desarrollo)"
+  ],
+  "usuarios": [
+    "Médico de telemedicina (usuario principal)",
+    "Revisor clínico (HITL)",
+    "Equipo de compliance (auditoría)"
+  ],
+  "metricas_exito": {
+    "tiempo_busqueda_manual_min": 0,
+    "faithfulness_min": 0.92,
+    "escalaciones_correctas_pct": 0.95,
+    "latencia_p95_ms": 2000
+  },
+  "preguntas_ejemplo": [
+    "¿El plan PPO cubre resonancia lumbar sin autorización previa?",
+    "Paciente 67 años, diabetes tipo 2 — ¿qué guía de control glucémico aplica?",
+    "¿Debo escalar este caso de dolor torácico agudo?"
+  ],
+  "deployment_target_sugerido": "chat-service con io.panel lateral",
+  "templates_referencia": [
+    "../../examples/03-healthcare-prior-auth/",
+    "../../examples/07-telecom-callcenter-copilot/",
+    "../../examples/08-manufacturing-maintenance-rag/"
+  ]
+}

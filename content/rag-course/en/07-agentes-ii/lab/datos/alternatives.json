@@ -1,0 +1,96 @@
+{
+  "SHP-20240614-00742": [
+    {
+      "alternative_id": "ALT-881",
+      "route": "MIA-ORD direct",
+      "eta_delta_hours": 6,
+      "carrier": "FastFreight",
+      "cost_delta_usd": 0
+    }
+  ],
+  "SHP-20240614-00815": [
+    {
+      "alternative_id": "ALT-902",
+      "route": "MIA-ATL via JAX",
+      "eta_delta_hours": 10,
+      "carrier": "RegionalX",
+      "cost_delta_usd": 0
+    }
+  ],
+  "SHP-20240614-00189": [
+    {
+      "alternative_id": "ALT-710",
+      "route": "MIA-DFW-SEA",
+      "eta_delta_hours": 9,
+      "carrier": "PremiumLine",
+      "cost_delta_usd": 0,
+      "connections": 1
+    },
+    {
+      "alternative_id": "ALT-712",
+      "route": "MIA-ORD-SEA",
+      "eta_delta_hours": 11,
+      "carrier": "StandardAir",
+      "cost_delta_usd": 0,
+      "connections": 1
+    },
+    {
+      "alternative_id": "ALT-715",
+      "route": "MIA-SEA direct (charter)",
+      "eta_delta_hours": 7,
+      "carrier": "CharterCo",
+      "cost_delta_usd": 120,
+      "connections": 0
+    }
+  ],
+  "SHP-20240614-00331": [
+    {
+      "alternative_id": "ALT-640",
+      "route": "MIA-DFW express",
+      "eta_delta_hours": 4,
+      "carrier": "ExpressCargo",
+      "cost_delta_usd": 0
+    },
+    {
+      "alternative_id": "ALT-641",
+      "route": "MIA-DFW standard",
+      "eta_delta_hours": 14,
+      "carrier": "SlowHaul",
+      "cost_delta_usd": 0
+    }
+  ],
+  "SHP-20240614-00556": [
+    {
+      "alternative_id": "ALT-903",
+      "route": "MIA-BOS via CLT",
+      "eta_delta_hours": 14,
+      "carrier": "EastRoute",
+      "cost_delta_usd": 0
+    },
+    {
+      "alternative_id": "ALT-904",
+      "route": "MIA-BOS direct",
+      "eta_delta_hours": 8,
+      "carrier": "DirectNorth",
+      "cost_delta_usd": 0
+    }
+  ],
+  "SHP-20240614-00204": [
+    {
+      "alternative_id": "ALT-520",
+      "route": "MIA-DFW-LAX",
+      "eta_delta_hours": 12,
+      "carrier": "WestLink",
+      "cost_delta_usd": 0,
+      "connections": 1
+    },
+    {
+      "alternative_id": "ALT-521",
+      "route": "MIA-LAX direct",
+      "eta_delta_hours": 8,
+      "carrier": "SunCoast",
+      "cost_delta_usd": 85,
+      "connections": 0
+    }
+  ]
+}

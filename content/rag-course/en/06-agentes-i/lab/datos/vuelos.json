@@ -1,0 +1,37 @@
+{
+  "vuelos_disponibles": [
+    {
+      "flight_id": "FL301",
+      "origin": "SCL",
+      "destination": "BOG",
+      "date": "2026-06-17",
+      "departure_time": "08:30",
+      "arrival_time": "14:45",
+      "available_seats": 12,
+      "price": 320.00,
+      "fare_classes_available": ["ECONOMY_FLEX", "ECONOMY_BASIC", "BUSINESS_FLEX"]
+    },
+    {
+      "flight_id": "FL305",
+      "origin": "SCL",
+      "destination": "BOG",
+      "date": "2026-06-17",
+      "departure_time": "14:45",
+      "arrival_time": "21:00",
+      "available_seats": 28,
+      "price": 295.00,
+      "fare_classes_available": ["ECONOMY_FLEX", "ECONOMY_BASIC", "BUSINESS_FLEX"]
+    },
+    {
+      "flight_id": "FL410",
+      "origin": "SCL",
+      "destination": "LIM",
+      "date": "2026-06-22",
+      "departure_time": "06:00",
+      "arrival_time": "09:30",
+      "available_seats": 5,
+      "price": 210.00,
+      "fare_classes_available": ["ECONOMY_FLEX", "BUSINESS_FLEX"]
+    }
+  ]
+}

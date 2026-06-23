@@ -1,0 +1,25 @@
+{
+  "audio_id": "AUDIO-MLG-001",
+  "format": "wav",
+  "duration_sec": 12.4,
+  "language": "es",
+  "mock_note": "En producción, Whisper (io.stt) transcribiría el binario de audio. En el lab el transcript es fijo y determinista.",
+  "transcript": "Técnico en rampa. Detectamos fuga de fluido hidráulico en el actuador del tren de aterrizaje principal del A320. ¿Cuál es el procedimiento de inspección según el AMM sección 32-11-00?",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 4.2,
+      "text": "Técnico en rampa. Detectamos fuga de fluido hidráulico"
+    },
+    {
+      "start": 4.2,
+      "end": 8.1,
+      "text": "en el actuador del tren de aterrizaje principal del A320."
+    },
+    {
+      "start": 8.1,
+      "end": 12.4,
+      "text": "¿Cuál es el procedimiento de inspección según el AMM sección 32-11-00?"
+    }
+  ]
+}

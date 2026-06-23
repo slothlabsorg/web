@@ -1,0 +1,15 @@
+{
+  "SCL-BOG-001": {
+    "pnr": "SCL-BOG-001",
+    "passenger": "Ana García",
+    "flight_id": "LA501",
+    "origin": "SCL",
+    "destination": "BOG",
+    "departure_date": "2026-06-15",
+    "departure_time": "09:00",
+    "fare_class": "ECONOMY_FLEX",
+    "route_type": "internacional",
+    "base_price": 215.00,
+    "status": "confirmada"
+  }
+}

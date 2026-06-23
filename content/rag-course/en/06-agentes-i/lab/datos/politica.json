@@ -1,0 +1,50 @@
+{
+  "penalidades": [
+    {
+      "fare_class": "ECONOMY_BASIC",
+      "route_type": "nacional",
+      "cambio_permitido": false,
+      "penalidad_usd": null,
+      "nota": "Tarifa no reembolsable, cambios no permitidos."
+    },
+    {
+      "fare_class": "ECONOMY_BASIC",
+      "route_type": "internacional",
+      "cambio_permitido": false,
+      "penalidad_usd": null,
+      "nota": "Tarifa no reembolsable, cambios no permitidos."
+    },
+    {
+      "fare_class": "ECONOMY_FLEX",
+      "route_type": "nacional",
+      "cambio_permitido": true,
+      "penalidad_usd": 30,
+      "nota": "Cambio permitido con penalidad. Debe solicitarse con al menos 4 horas de anticipación.",
+      "fuente": "fare-rules-2026#§3.1"
+    },
+    {
+      "fare_class": "ECONOMY_FLEX",
+      "route_type": "internacional",
+      "cambio_permitido": true,
+      "penalidad_usd": 50,
+      "nota": "Cambio permitido con penalidad. Debe solicitarse con al menos 24 horas de anticipación.",
+      "fuente": "fare-rules-2026#§3.2"
+    },
+    {
+      "fare_class": "BUSINESS_FLEX",
+      "route_type": "nacional",
+      "cambio_permitido": true,
+      "penalidad_usd": 0,
+      "nota": "Cambio gratuito. Sin restricciones de anticipación.",
+      "fuente": "fare-rules-2026#§4.1"
+    },
+    {
+      "fare_class": "BUSINESS_FLEX",
+      "route_type": "internacional",
+      "cambio_permitido": true,
+      "penalidad_usd": 0,
+      "nota": "Cambio gratuito. Sin restricciones de anticipación.",
+      "fuente": "fare-rules-2026#§4.2"
+    }
+  ]
+}

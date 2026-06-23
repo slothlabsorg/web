@@ -1,0 +1,41 @@
+{
+  "SCL-BOG-001": {
+    "pnr": "SCL-BOG-001",
+    "passenger": "Ana García",
+    "flight_id": "LA501",
+    "origin": "SCL",
+    "destination": "BOG",
+    "departure_date": "2026-06-15",
+    "departure_time": "09:00",
+    "fare_class": "ECONOMY_FLEX",
+    "route_type": "internacional",
+    "base_price": 215.00,
+    "status": "confirmada"
+  },
+  "SCL-LIM-002": {
+    "pnr": "SCL-LIM-002",
+    "passenger": "Carlos Mendez",
+    "flight_id": "LA210",
+    "origin": "SCL",
+    "destination": "LIM",
+    "departure_date": "2026-06-20",
+    "departure_time": "07:15",
+    "fare_class": "ECONOMY_BASIC",
+    "route_type": "internacional",
+    "base_price": 189.00,
+    "status": "confirmada"
+  },
+  "SCL-MIA-003": {
+    "pnr": "SCL-MIA-003",
+    "passenger": "Valeria Torres",
+    "flight_id": "LA720",
+    "origin": "SCL",
+    "destination": "MIA",
+    "departure_date": "2026-06-18",
+    "departure_time": "22:30",
+    "fare_class": "BUSINESS_FLEX",
+    "route_type": "internacional",
+    "base_price": 1250.00,
+    "status": "confirmada"
+  }
+}

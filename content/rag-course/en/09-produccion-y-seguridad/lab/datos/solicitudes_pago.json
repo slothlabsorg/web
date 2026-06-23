@@ -1,0 +1,18 @@
+{
+  "solicitudes": [
+    {
+      "payment_id": "PAY-2026-001",
+      "idempotency_key": "idem-SCL-BOG-001-130",
+      "pnr": "SCL-BOG-001",
+      "passenger": "Ana García",
+      "amount_usd": 130.0,
+      "currency": "USD",
+      "description": "Cambio de vuelo SCL→BOG del 15 al 17-jun-2026",
+      "fare_class": "ECONOMY_FLEX"
+    }
+  ],
+  "umbrales": {
+    "confirm_gate_usd": 50.0,
+    "hitl_escalate_usd": 500.0
+  }
+}

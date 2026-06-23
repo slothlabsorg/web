@@ -1,0 +1,25 @@
+{
+  "image_id": "IMG-MLG-001",
+  "format": "jpeg",
+  "width_px": 1920,
+  "height_px": 1080,
+  "mock_note": "En producción, model.vision describiría los píxeles reales. En el lab la descripción y metadata son fijas.",
+  "aircraft_type": "A320",
+  "ata_chapter": "32",
+  "ata_section": "32-11-00",
+  "description": "Fotografía del tren de aterrizaje principal izquierdo de un Airbus A320. Se observa mancha verde-amarilla de fluido hidráulico (Skydrol) en el actuador de retracción del MLG. Gota activa en la junta del cilindro. Corrosión superficial leve en el bracete inferior.",
+  "detected_elements": [
+    {
+      "label": "hydraulic_fluid_leak",
+      "confidence": 0.94,
+      "location": "MLG_retraction_actuator"
+    },
+    {
+      "label": "A320_main_landing_gear",
+      "confidence": 0.97,
+      "location": "left_MLG"
+    }
+  ],
+  "severity_hint": "WARNING",
+  "tables_extracted": []
+}
