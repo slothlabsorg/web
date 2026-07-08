@@ -195,7 +195,7 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const RAW_ROADMAP = [
-  { name: 'CloudOrbit',   launchDate: '2026-06-26', date: 'June 26',  desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
+  { name: 'CloudOrbit',   launchDate: '2026-07-13', date: 'July 13',  desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
   { name: 'WattsOrbit',   launchDate: '2026-06-19', date: 'June 19',  desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
   { name: 'DataOrbit',    launchDate: '2026-12-31', date: 'TBD 2026', desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
   { name: 'klight',       launchDate: '2026-12-31', date: 'TBD 2026', desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },

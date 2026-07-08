@@ -33,7 +33,7 @@ export const slothLabsContent = {
         cta: 'Learn more →',
         live: false,
         accent: '#00D4FF',
-        comingSoonDate: 'June 26, 2026',
+        comingSoonDate: 'July 13, 2026',
         previewImage: '/images/cloudorbit-badge.png',
         iconSrc: '/images/cloudorbit-icon.png',
       },

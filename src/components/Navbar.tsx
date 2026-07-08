@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 
 const PRODUCTS = [
   { icon: '🧜', name: 'Mermaid Preview', href: '/mermaid-preview', badge: 'Released', accent: '#FF3670' },
-  { icon: '☁️', name: 'CloudOrbit',      href: '/cloudorbit',      badge: 'June 26',  accent: '#00D4FF' },
+  { icon: '☁️', name: 'CloudOrbit',      href: '/cloudorbit',      badge: 'July 13',  accent: '#00D4FF' },
   { icon: '⚡', name: 'WattsOrbit',      href: '/wattsorbit',      badge: 'June 19',  accent: '#F59E0B' },
   { icon: '🗄️', name: 'DataOrbit',       href: '/dataorbit',       badge: 'TBD 2026', accent: '#8B5CF6' },
   { icon: '🚀', name: 'klight',          href: '/klight',          badge: 'TBD 2026', accent: '#B4FF3C' },
