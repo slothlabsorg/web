@@ -37,6 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/shx/docs`,                  lastModified: new Date('2026-06-22'), changeFrequency: 'weekly',  priority: 0.8  },
     { url: `${BASE}/health-dsl`,                lastModified: new Date('2026-06-17'), changeFrequency: 'weekly',  priority: 0.85 },
     { url: `${BASE}/health-dsl/docs`,           lastModified: new Date('2026-06-22'), changeFrequency: 'weekly',  priority: 0.8  },
+    { url: `${BASE}/container-orbit`,          lastModified: new Date('2026-07-09'), changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${BASE}/news`,                     lastModified: new Date('2026-05-21'), changeFrequency: 'daily',   priority: 0.9 },
     { url: `${BASE}/next/`,                    lastModified: new Date('2026-05-27'), changeFrequency: 'daily',   priority: 0.95 },
     ...nextPermalinks,

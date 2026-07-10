@@ -201,6 +201,7 @@ const RAW_ROADMAP = [
   { name: 'klight',       launchDate: '2026-12-31', date: 'TBD 2026', desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
   { name: 'ProxyOrbit',   launchDate: '2026-12-31', date: 'TBD 2026', desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
   { name: 'BastionOrbit', launchDate: '2026-12-31', date: 'TBD 2026', desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
+  { name: 'container-orbit', launchDate: '2026-12-31', date: 'TBD 2026', desc: 'Remote Docker over your LAN',   accent: '#4F8CFF', icon: '🛰️', slug: '/container-orbit' },
 ]
 
 // Compute status at build time — live items first, then upcoming by date.

@@ -11,6 +11,7 @@ const PRODUCTS = [
   { icon: '🚀', name: 'klight',          href: '/klight',          badge: 'TBD 2026', accent: '#B4FF3C' },
   { icon: '🔍', name: 'ProxyOrbit',      href: '/proxyorbit',      badge: 'TBD 2026', accent: '#94A3B8' },
   { icon: '🔐', name: 'BastionOrbit',    href: '/bastionorbit',    badge: 'TBD 2026', accent: '#10B981' },
+  { icon: '🛰️', name: 'container-orbit', href: '/container-orbit', badge: 'TBD 2026', accent: '#4F8CFF' },
 ]
 
 export default function Navbar() {
