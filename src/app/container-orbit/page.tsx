@@ -99,13 +99,13 @@ function Hero() {
             <TerminalChrome label="terminal" />
             <pre className="p-4 text-sm font-mono leading-relaxed overflow-x-auto">
               <code>
-                <span className="text-[#4A6080]"># on the beefy machine (once):</span>{'\n'}
-                <span style={{ color: ACCENT }}>$</span> <span className="text-white">orbit host init</span>{'\n\n'}
-                <span className="text-[#4A6080]"># on your laptop:</span>{'\n'}
-                <span style={{ color: ACCENT }}>$</span> <span className="text-white">orbit link dany@192.168.1.42</span>{'\n'}
-                <span style={{ color: ACCENT }}>$</span> <span className="text-white">orbit up</span>{'\n\n'}
-                <span style={{ color: ACCENT }}>$</span> <span className="text-white">docker run -d -p 8080:80 nginx</span>{'\n'}
-                <span style={{ color: ACCENT }}>$</span> <span className="text-white">curl localhost:8080</span>  <span className="text-[#4A6080]"># → runs on the other box</span>{'\n'}
+                <span className="text-[#4A6080]"># install (macOS / Linux)</span>{'\n'}
+                <span style={{ color: ACCENT }}>$</span> <span className="text-white">brew install slothlabsorg/tap/container-orbit</span>{'\n\n'}
+                <span className="text-[#4A6080]"># one guided command — ~2 min, done</span>{'\n'}
+                <span style={{ color: ACCENT }}>$</span> <span className="text-white">orbit setup</span>{'\n'}
+                <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">found host on your LAN · key authorized</span>{'\n'}
+                <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">docker → the beefy machine</span>{'\n'}
+                <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">self-test passed — localhost works</span>{'\n'}
                 <span style={{ color: ACCENT2 }} className="font-bold">✦ builds & RAM on the host · ports on your localhost</span>
               </code>
             </pre>
@@ -586,6 +586,7 @@ export default function ContainerOrbitPage() {
         accent={ACCENT}
         ctaKind="subscribe"
         ctaLabel="Get early access"
+        docsHref="/container-orbit/docs"
       />
       <Hero />
       <ProblemSection />
