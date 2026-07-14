@@ -303,10 +303,24 @@ function buildSections(): Record<string, React.ReactNode> {
     status: (
       <>
         <H>status &amp; doctor</H>
+        <H3>orbit status — what you&apos;re offloading</H3>
         <CodeBlock code={'orbit status'} />
         <P>Shows the linked host, docker context state, whether the SSH master and forwarder are running, the forwarded ports, and the remote engine&apos;s version / CPU / RAM / container &amp; image counts.</P>
+        <P>It also reports the part that makes people fall in love — <strong className="text-white">what your laptop isn&apos;t doing</strong>:</P>
+        <ul className="mb-3">
+          <Li><strong className="text-white">Processor</strong> — the host&apos;s core count and current load average.</Li>
+          <Li><strong className="text-white">RAM in use by containers</strong> — how much memory your containers are eating on the host (of its total), instead of on your laptop.</Li>
+          <Li>A one-line summary: <em>&quot;N containers running on the host — none of it on this laptop.&quot;</em></Li>
+        </ul>
+
+        <H3>orbit doctor — Flutter-style health check</H3>
         <CodeBlock code={'orbit doctor'} />
-        <P>Runs through the whole setup and reports actionable problems — docker CLI present, config, SSH reachability, the remote daemon socket, the forwarded socket, and the active context — each with the exact fix.</P>
+        <P>Runs every check with a clear <C>[✓]</C> / <C>[✗]</C> / <C>[!]</C> and the exact fix: Docker CLI, linked config, SSH reachability, the remote daemon socket, the forwarded socket, and the active context. When everything is green you get:</P>
+        <CodeBlock filename="output" code={'[✓] Docker CLI (29.1.3)\n[✓] Linked to bautista@192.168.1.42\n[✓] SSH to the host works\n[✓] Remote Docker daemon (/var/run/docker.sock)\n[✓] Connection up — forwarded Docker socket responds\n[✓] Docker is routed to the host\n\n• No issues found! orbit is ready — Docker runs on bautista@192.168.1.42.'} />
+        <Callout type="success">
+          All green means it works, guaranteed — like <C>flutter doctor</C>. If anything is red or
+          yellow, the line right under it tells you the one command to fix it.
+        </Callout>
       </>
     ),
 
@@ -325,7 +339,12 @@ function buildSections(): Record<string, React.ReactNode> {
 
     logs: (
       <>
-        <H>Logs &amp; verbose</H>
+        <H>Logs, verbose &amp; the live dashboard</H>
+        <H3>Foreground dashboard</H3>
+        <P>Run orbit in the foreground and you get a compact CLI dashboard header — both machines&apos; specs, the routing, image/container counts, and what you&apos;re offloading — with live logs streaming below it (no GUI):</P>
+        <CodeBlock code={'orbit up --foreground'} />
+        <CodeBlock filename="dashboard" code={'────────────────────────────────────────────────────────────────\n  this machine   dany-mbp · macos/aarch64 · 10 cores · 64.0 GiB\n  the host       bautista@192.168.1.42 · docker 29.5.3 · 24 images · 3 running\n  routing        docker → orbit context · socket /var/run/docker.sock\n  offloading     3 containers · 10 cores · load 1.20 · your laptop stays free ♥\n                 2.1 GiB of 13.3 GiB used by containers on the host\n────────────────────────────────────────────────────────────────\nlive logs:\n  + forwarding localhost:8080 → host:8080'} />
+        <H3>Log file</H3>
         <P>The detached forwarder logs to <C>~/.orbit/run/orbit.log</C>. Tail it:</P>
         <CodeBlock code={'orbit logs            # last 200 lines\norbit logs -f         # follow (like tail -f)\norbit logs -n 50      # last 50 lines'} />
         <H3>Verbose tracing</H3>
@@ -365,7 +384,8 @@ function buildSections(): Record<string, React.ReactNode> {
                 ['orbit logs [-f] [-n N]', 'Show / follow the forwarder log.'],
                 ['orbit service <install|uninstall|status>', 'Run orbit at login (launchd / systemd).'],
                 ['orbit mcp', 'Start the stdio MCP server for AI assistants.'],
-                ['orbit doctor', 'Diagnose SSH, daemon, forwarded socket, and context.'],
+                ['orbit doctor', 'Flutter-style health check — every check ✓/✗/! with the fix.'],
+                ['orbit funding', 'Show how to support the project (free & open source).'],
               ] as [string, string][]).map(([cmd, desc], i) => (
                 <tr key={cmd} style={{ background: i % 2 === 0 ? '#071020' : BG_BASE }}>
                   <td className="px-4 py-2.5 font-mono text-[12.5px] align-top whitespace-nowrap" style={{ color: ACCENT }}>{cmd}</td>

@@ -313,7 +313,13 @@ const FEATURES = [
   {
     icon: '🩺',
     title: 'orbit doctor',
-    desc: 'Actionable diagnostics: SSH reachability, remote daemon socket, the forwarded socket, docker context state — each with the exact fix when something is off.',
+    desc: 'A Flutter-style health check — every check with a clear ✓/✗/! and the exact fix. When it\'s all green, Docker on the host is guaranteed to work.',
+    badge: null,
+  },
+  {
+    icon: '📊',
+    title: 'See what you\'re saving',
+    desc: 'orbit status and the live foreground dashboard show the RAM and CPU your containers are burning on the host instead of your laptop — cores, load, memory. The numbers that make you smile.',
     badge: null,
   },
   {
