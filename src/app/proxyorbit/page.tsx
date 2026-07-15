@@ -27,7 +27,7 @@ const BG_BASE    = '#070a0f'
 const BG_CARD    = '#0c1018'
 const BORDER     = '#1e2535'
 
-const PROXYORBIT_LAUNCH = new Date('2026-12-31T12:00:00Z')
+const PROXYORBIT_LAUNCH = new Date('2026-09-21T12:00:00Z')
 const isLaunched = new Date() >= PROXYORBIT_LAUNCH
 const hasRelease = allReleases.proxyorbit.releases.length > 0
 const showDownload = hasRelease && isLaunched
@@ -364,7 +364,7 @@ function CTA() {
           <p className="text-lg mt-2" style={{ color: '#64748B' }}>
             {showDownload
               ? 'ProxyOrbit is live. Free, native, forever.'
-              : "ProxyOrbit doesn't have a public launch date yet — we'd rather hold it than ship to a deadline. Subscribe to hear when it drops."}
+              : 'ProxyOrbit launches Monday, September 21, 2026. Subscribe to hear when it drops.'}
           </p>
           <div className="mt-3 flex justify-center">
             <LaunchBanner variant="subtle" tbd accent={ACCENT_HI} />

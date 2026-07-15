@@ -25,7 +25,7 @@ const BG_BASE    = '#030d09'
 const BG_CARD    = '#060f0b'
 const BORDER     = '#0d2b1e'
 
-const BASTIONORBIT_LAUNCH = new Date('2026-12-31T12:00:00Z')
+const BASTIONORBIT_LAUNCH = new Date('2026-10-12T12:00:00Z')
 const isLaunched = new Date() >= BASTIONORBIT_LAUNCH
 const hasRelease = allReleases.bastionorbit.releases.length > 0
 const showDownload = hasRelease && isLaunched
@@ -326,7 +326,7 @@ function CTA() {
           <p className="text-lg mt-2" style={{ color: '#4a8a6a' }}>
             {showDownload
               ? 'BastionOrbit is live. Free. Native Rust binary.'
-              : "BastionOrbit doesn't have a public launch date yet — we'd rather hold it than ship to a deadline. Subscribe to hear when it drops."}
+              : 'BastionOrbit launches Monday, October 12, 2026. Subscribe to hear when it drops.'}
           </p>
           <div className="mt-3 flex justify-center">
             <LaunchBanner variant="subtle" tbd accent={ACCENT} />
