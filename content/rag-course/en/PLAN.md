@@ -80,8 +80,8 @@ Core **8 weeks (~320 h)**; with extra depth (multi-agent, MCP, generative multim
 ```
 rag-training/
   PLAN.md  README.md
-  00-setup/ … 11-capstone/        (each: guide-*.md · exercises.md · solutions.md · lab/)
-  reference/
+  00-setup/ … 11-capstone/        (each: guia.md · ejercicios.md · soluciones.md · lab/)
+  referencia/
     node-catalog.md               card per node: what it does · when to use · alternatives
     compared-technologies.md      tables (stores, agent frameworks, rerankers, eval, UIs…)
     glossary.md
@@ -173,7 +173,7 @@ Cross-cutting patterns (RAG-as-tool, hard-filter-as-guardrail, deterministic-vs-
 
 - **Code:** tri-modal (design + scratch + real framework in depth). ✅
 - **Language:** English. ✅
-- **Generation order:** `reference/` (catalog, glossary, comparisons, IBM coverage) → M0 → M1 → … → M11, **module by module** to study as I progress.
+- **Generation order:** `referencia/` (catalog, glossary, comparisons, IBM coverage) → M0 → M1 → … → M11, **module by module** to study as I progress.
 
 ---
 
@@ -201,4 +201,4 @@ Cross-cutting patterns (RAG-as-tool, hard-filter-as-guardrail, deterministic-vs-
 - **Rebuild everything from scratch** (not just use frameworks) + **design** new architectures.
 - **GraphRAG/Neo4j**, **multi-index routing**, **hard-filters as guardrail** with more depth.
 
-> ✅ Conclusion: plan v2 **covers the full IBM syllabus** and **exceeds it** in production, design from scratch, and industry cases. Upon approval, I generate `reference/` + M0 + M1 and continue in order.
+> ✅ Conclusion: plan v2 **covers the full IBM syllabus** and **exceeds it** in production, design from scratch, and industry cases. Upon approval, I generate `referencia/` + M0 + M1 and continue in order.

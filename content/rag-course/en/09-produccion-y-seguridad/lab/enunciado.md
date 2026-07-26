@@ -58,7 +58,7 @@ Implement `lab/solution_scratch.py` with **stdlib only**:
 
 ### Part B — Real frameworks (layer ③, guided task)
 
-> **Read first:** [guide.md §12 — Layer ③ explained](guide.md#12-layer-explained-guardrails-observability-and-uis-with-frameworks-from-scratch).
+> **Read first:** [guia.md §12 — Layer ③ explained](guia.md#12-layer-explained-guardrails-observability-and-uis-with-frameworks-from-scratch).
 
 **Goal:** reimplement the same flow with Guardrails AI, Langfuse, OpenTelemetry, Gradio, and FastAPI.
 

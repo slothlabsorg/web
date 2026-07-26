@@ -77,7 +77,7 @@ Run the full pipeline for the test query with target `fare_class` `"Basic"`:
 
 > **Mandatory prerequisite:** layer ② (`solution_scratch.py`) must run with stdlib and produce what `expected.md` shows. Layer ③ is **additional** — you write it when you have `pip` and network.
 >
-> **Do not start here without reading** [guide.md §13](../guide.md#13-layer--explained-langchain-retrievers-from-scratch). That section teaches each API from scratch. If you only open `solution_framework.py`, layer ③ will appear "all at once".
+> **Do not start here without reading** [guide.md §13](../guia.md#13-layer--explained-langchain-retrievers-from-scratch). That section teaches each API from scratch. If you only open `solution_framework.py`, layer ③ will appear "all at once".
 
 ### Objective
 
@@ -97,17 +97,17 @@ pip install langchain langchain-community rank-bm25 sentence-transformers chroma
 
 ### Guided task — staged hints
 
-**Level 1 — Documents:** Load `data/policies.json` and convert each item to `Document(page_content=..., metadata={id, fare_class, ...})`. See [guide §13.4](../guide.md#134-document-with-filter-metadata-brief-reminder) and reminder in [M1 §11.3](../../01-fundamentals/guide.md#113-the-document-object).
+**Level 1 — Documents:** Load `data/policies.json` and convert each item to `Document(page_content=..., metadata={id, fare_class, ...})`. See [guide §13.4](../guia.md#134-document-with-filter-metadata-brief-reminder) and reminder in [M1 §11.3](../../01-fundamentos/guia.md#113-the-document-object).
 
-**Level 2 — BM25Retriever:** Create `BM25Retriever.from_documents(documents)` and set `.k = 9`. What does `.invoke(QUERY)` return for the lab query? See [guide §13.5](../guide.md#135-bm25retriever--your-manual-bm25-packaged).
+**Level 2 — BM25Retriever:** Create `BM25Retriever.from_documents(documents)` and set `.k = 9`. What does `.invoke(QUERY)` return for the lab query? See [guide §13.5](../guia.md#135-bm25retriever--your-manual-bm25-packaged).
 
-**Level 3 — Vector retriever:** Instantiate `HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")`, create `Chroma.from_documents(documents, embeddings)`, and get `as_retriever(search_kwargs={"k": 9})`. Chroma reminder: [M1 §11](../01-fundamentals/guide.md#11-layer--explained-langchain-from-scratch). M4 detail: [guide §13.6](../guide.md#136-vector-retriever--chroma--local-embeddings).
+**Level 3 — Vector retriever:** Instantiate `HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")`, create `Chroma.from_documents(documents, embeddings)`, and get `as_retriever(search_kwargs={"k": 9})`. Chroma reminder: [M1 §11](../01-fundamentos/guia.md#11-layer--explained-langchain-from-scratch). M4 detail: [guide §13.6](../guia.md#136-vector-retriever--chroma--local-embeddings).
 
-**Level 4 — EnsembleRetriever:** Combine both retrievers with `EnsembleRetriever(retrievers=[bm25, vector], weights=[0.4, 0.6])`. How does it relate to your scratch `rrf_fusion()`? See [guide §13.7](../guide.md#137-ensembleretriever--your-manual-rrf-automated) and RRF concept in [guide §4](../guide.md#4-hybrid-search).
+**Level 4 — EnsembleRetriever:** Combine both retrievers with `EnsembleRetriever(retrievers=[bm25, vector], weights=[0.4, 0.6])`. How does it relate to your scratch `rrf_fusion()`? See [guide §13.7](../guia.md#137-ensembleretriever--your-manual-rrf-automated) and RRF concept in [guide §4](../guia.md#4-hybrid-search).
 
-**Level 5 — Reranker:** Wrap the ensemble in `ContextualCompressionRetriever` with `CrossEncoderReranker(model=HuggingFaceCrossEncoder("BAAI/bge-reranker-base"), top_n=3)`. Why `top_n=3` and not `k=3` on the ensemble? See [guide §13.8](../guide.md#138-reranking--crossencoderreranker--contextualcompressionretriever).
+**Level 5 — Reranker:** Wrap the ensemble in `ContextualCompressionRetriever` with `CrossEncoderReranker(model=HuggingFaceCrossEncoder("BAAI/bge-reranker-base"), top_n=3)`. Why `top_n=3` and not `k=3` on the ensemble? See [guide §13.8](../guia.md#138-reranking--crossencoderreranker--contextualcompressionretriever).
 
-**Level 6 — Hard filter:** Implement `create_filtered_retriever(fare_class)` that filters `Document`s **before** rebuilding BM25, Chroma, Ensemble, and Compression. Why is Chroma `filter` alone not enough? See [guide §13.9](../guide.md#139-hard-filter--why-its-not-in-ensembleretriever) and [guide §7](../guide.md#7-hard-filters-as-a-safety-guardrail).
+**Level 6 — Hard filter:** Implement `create_filtered_retriever(fare_class)` that filters `Document`s **before** rebuilding BM25, Chroma, Ensemble, and Compression. Why is Chroma `filter` alone not enough? See [guide §13.9](../guia.md#139-hard-filter--why-its-not-in-ensembleretriever) and [guide §7](../guia.md#7-hard-filters-as-a-safety-guardrail).
 
 **Level 7 — Execution:** Run without filter and with `create_filtered_retriever("Basic")`. Print top-3 with `id`, `fare_class`, `category`. Verify:
 - Without filter: `any(c != "Basic" for c in classes)` → `True`

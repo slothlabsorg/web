@@ -43,7 +43,7 @@ Implement `lab/solution_scratch.py` with:
 
 ### Part B — FastMCP (layer ③, guided task)
 
-> **Read first:** [guide.md §8 — Layer ③ explained: FastMCP from scratch](../guide.md#8-layer--explained-fastmcp-from-scratch).
+> **Read first:** [guide.md §8 — Layer ③ explained: FastMCP from scratch](../guia.md#8-layer--explained-fastmcp-from-scratch).
 
 **Environment requirements** (outside the course machine):
 
@@ -142,4 +142,4 @@ with:
 tool.mcp "PolicyRAG MCP" ──▶ agent.react
 ```
 
-The `tool.mcp` node connects to the MCP server via STDIO or HTTP and exposes discovered tools to the agent. See [`flow.json`](../../../examples/01-airline-flight-change/flow.json) and [`node-catalog.md`](../reference/node-catalog.md#toolmcp).
+The `tool.mcp` node connects to the MCP server via STDIO or HTTP and exposes discovered tools to the agent. See [`flow.json`](../../../examples/01-airline-flight-change/flow.json) and [`catalogo-nodos.md`](../referencia/catalogo-nodos.md#toolmcp).

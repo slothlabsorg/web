@@ -37,7 +37,7 @@ With `fare_class=Basic`, the active corpus shrinks to [pol_001, pol_002, pol_003
 
 ## Layer ③ — Framework solution (LangChain)
 
-> **Before reading this:** you should have tried writing the framework guided by [guide.md §13](../guide.md#13-layer--explained-langchain-retrievers-from-scratch) and the "Layer ③" section of [`enunciado.md`](enunciado.md). This section summarizes decisions; the full teaching is in the guide, not here.
+> **Before reading this:** you should have tried writing the framework guided by [guide.md §13](../guia.md#13-layer--explained-langchain-retrievers-from-scratch) and the "Layer ③" section of [`enunciado.md`](enunciado.md). This section summarizes decisions; the full teaching is in the guide, not here.
 
 ### Key components
 

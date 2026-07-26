@@ -24,26 +24,26 @@
 
 Cycle per module: **GUIDE → EXERCISES (with answers) → WORKSHOP (with *expected results*) → CHECKPOINT**.
 
-> **MANDATORY CONVENTION (layer ③ taught, not assumed).** Layer ③ must NOT appear "all at once" only in `lab/solution_framework.py`. Each `guide.md` includes, before the Checkpoint, a section **`## N. Layer ③ explained: <framework> from scratch`** that: (a) explains what the framework is and why it exists, for someone who only knows Python; (b) provides a **bridge table "what you did by hand (②) → the framework piece (③)"**; (c) teaches each API the lab uses, one by one, with mini-examples; (d) walks through **`solution_framework.py` block by block**; (e) gives "when to use/NOT" and gotchas. LangChain base abstractions (Document, Embeddings, VectorStore, Retriever, chat models, ChatPromptTemplate, LCEL/`|`) are taught in depth in **M1 §11** (`01-fundamentals/guide.md`); other modules add a reminder + cross-link to M1 §11 and teach ONLY what's new. Also, `lab/statement.md` frames layer ③ as a **guided task** (stepped hints → the guide section), not as "just read it".
+> **MANDATORY CONVENTION (layer ③ taught, not assumed).** Layer ③ must NOT appear "all at once" only in `lab/solucion_framework.py`. Each `guia.md` includes, before the Checkpoint, a section **`## N. Layer ③ explained: <framework> from scratch`** that: (a) explains what the framework is and why it exists, for someone who only knows Python; (b) provides a **bridge table "what you did by hand (②) → the framework piece (③)"**; (c) teaches each API the lab uses, one by one, with mini-examples; (d) walks through **`solucion_framework.py` block by block**; (e) gives "when to use/NOT" and gotchas. LangChain base abstractions (Document, Embeddings, VectorStore, Retriever, chat models, ChatPromptTemplate, LCEL/`|`) are taught in depth in **M1 §11** (`01-fundamentos/guia.md`); other modules add a reminder + cross-link to M1 §11 and teach ONLY what's new. Also, `lab/enunciado.md` frames layer ③ as a **guided task** (stepped hints → the guide section), not as "just read it".
 
 ## 4. File conventions (each module `NN-name/`)
 
 ```
 NN-name/
-  guide.md           # comprehensive module guide, multi-section, with ASCII diagrams and "when to use / alternatives".
+  guia.md            # comprehensive module guide, multi-section, with ASCII diagrams and "when to use / alternatives".
                      #   Anchor each topic to its RAGorbit node and the template(s).
-  exercises.md       # 12–20 exercises (reasoned multiple choice, "predict the output", "find the bug", "choose the technology"). NO answers.
-  solutions.md       # reasoned answers for ALL exercises.
+  ejercicios.md      # 12–20 exercises (reasoned multiple choice, "predict the output", "find the bug", "choose the technology"). NO answers.
+  soluciones.md      # reasoned answers for ALL exercises.
   lab/
-    statement.md     # realistic workshop: business context, data, task, stepped hints.
-    data/            # sample data (JSON/txt) if applicable.
+    enunciado.md     # realistic workshop: business context, data, task, stepped hints.
+    datos/           # sample data (JSON/txt) if applicable.
     expected.md      # CONCRETE expected result (what prints/returns/happens).
-    solution_scratch.py     # layer ②: runs ONLY with stdlib (no network, no pip). Deterministic.
-    solution_framework.py   # layer ③: real code with framework (illustrative; header says what `pip install` requires; NOT run here).
-    solution.md      # explanation of both solutions and why.
+    solucion_scratch.py     # layer ②: runs ONLY with stdlib (no network, no pip). Deterministic.
+    solucion_framework.py   # layer ③: real code with framework (illustrative; header says what `pip install` requires; NOT run here).
+    solucion.md      # explanation of both solutions and why.
 ```
 - **Tone:** didactic, direct, with examples. High depth (this is full-time study, not summaries).
-- **Cross-links:** use relative paths to `reference/` and to `examples/`/`docs/` in the repo.
+- **Cross-links:** use relative paths to `referencia/` and to `examples/`/`docs/` in the repo.
 
 ## 5. Environment constraint (CRITICAL for workshops)
 
@@ -54,34 +54,34 @@ NN-name/
   - LLM: deterministic "fake" function (templates) — same as the RAGorbit mock runtime (`ragorbit/runtime/`).
   - Tools/services: in-memory stubs or stdlib `http.server`.
 - Layer ③ (frameworks) is delivered as **commented real code** the student can run when they have network/pip; it is not run in this environment. Mark in the header: `# Requires: pip install langchain langgraph ...`.
-- **Verification:** `solution_scratch.py` files must be runnable with `python3 file.py` and produce what `expected.md` says. If you generate a module, try `python3 -m py_compile` and, if runnable, run it to confirm the expected.
+- **Verification:** `solucion_scratch.py` files must be runnable with `python3 file.py` and produce what `expected.md` says. If you generate a module, try `python3 -m py_compile` and, if runnable, run it to confirm the expected.
 
 ## 6. Generation status
 
 | Module | Folder | Status |
 |--------|---------|--------|
-| reference | `reference/` | ✅ generated (node-catalog, glossary, compared-technologies, mapped-templates, ibm-coursera-coverage) + **Lang\* alternatives**: `rag-without-langchain.md` (LlamaIndex/Haystack/native SDK), `agents-without-langchain.md` (native loop/CrewAI/AutoGen/Pydantic-AI), and criticisms of the LangChain/LangGraph/LangSmith stack section inside `compared-technologies.md`. Goal: full AI engineer, not expert only in `lang*`. If you create new modules with frameworks, keep the multi-framework approach and link these docs. Also, **vendor-neutral market landscapes**: `database-landscape.md` (DBs/storage), `process-landscape.md` (orchestration/serving/data/deploy) and `rag-strategies-landscape.md` (RAG architectures). |
+| referencia | `referencia/` | ✅ generated (catalogo-nodos, glosario, tecnologias-comparadas, plantillas-mapeadas, cobertura-ibm-coursera) + **Lang\* alternatives**: `rag-sin-langchain.md` (LlamaIndex/Haystack/native SDK), `agentes-sin-langchain.md` (native loop/CrewAI/AutoGen/Pydantic-AI), and criticisms of the LangChain/LangGraph/LangSmith stack section inside `tecnologias-comparadas.md`. Goal: full AI engineer, not expert only in `lang*`. If you create new modules with frameworks, keep the multi-framework approach and link these docs. Also, **vendor-neutral market landscapes**: `panorama-bases-de-datos.md` (DBs/storage), `panorama-procesos.md` (orchestration/serving/data/deploy) and `panorama-estrategias-rag.md` (RAG architectures). |
 | M0 | `00-setup/` | ✅ generated |
-| M1 | `01-fundamentals/` | ✅ generated |
-| M2 | `02-ingestion/` | ✅ generated |
-| M3 | `03-embeddings-and-stores/` | ✅ generated |
-| M4 | `04-retrieval-and-query/` | ✅ generated |
-| M5 | `05-generation-and-logic/` | ✅ generated |
-| M6 | `06-agents-i/` | ✅ generated |
-| M7 | `07-agents-ii/` | ✅ generated |
+| M1 | `01-fundamentos/` | ✅ generated |
+| M2 | `02-ingesta/` | ✅ generated |
+| M3 | `03-embeddings-y-stores/` | ✅ generated |
+| M4 | `04-retrieval-y-query/` | ✅ generated |
+| M5 | `05-generacion-y-logic/` | ✅ generated |
+| M6 | `06-agentes-i/` | ✅ generated |
+| M7 | `07-agentes-ii/` | ✅ generated |
 | M8 | `08-mcp/` | ✅ generated |
-| M9 | `09-production-and-security/` | ✅ generated |
+| M9 | `09-produccion-y-seguridad/` | ✅ generated |
 | M10 | `10-multimodal/` | ✅ generated |
 | M11 | `11-capstone/` | ✅ generated |
 
-> **The course is COMPLETE: M0–M11 + `reference/` (5 docs) generated.** All `solution_scratch.py` files compile and run with stdlib, and each `guide.md` has its "Layer ③ explained" section (see convention in §3). If you see a module marked ✅ but its folder is incomplete, regenerate it following §4.
+> **The course is COMPLETE: M0–M11 + `referencia/` (5 docs) generated.** All `solucion_scratch.py` files compile and run with stdlib, and each `guia.md` has its "Layer ③ explained" section (see convention in §3). If you see a module marked ✅ but its folder is incomplete, regenerate it following §4.
 
 ## 7. How to continue (recipe to regenerate a module or create a new one)
 
-1. Read: this HANDOFF (§3–§5), `PLAN.md §6` (the target module entry), `reference/node-catalog.md` and `reference/compared-technologies.md`, and **one completed module as a style template** (e.g. `06-agents-i/`).
+1. Read: this HANDOFF (§3–§5), `PLAN.md §6` (the target module entry), `referencia/catalogo-nodos.md` and `referencia/tecnologias-comparadas.md`, and **one completed module as a style template** (e.g. `06-agentes-i/`).
 2. Read the `examples/*/flow.json` of the template(s) the module covers (see `PLAN.md §8`).
 3. Generate the `NN-name/` folder with the files from §4, respecting the tri-modal method and environment constraint (§5).
-4. Verify: `python3 -m py_compile NN-name/lab/solution_scratch.py` and, if it runs, execute it and confirm `expected.md`.
+4. Verify: `python3 -m py_compile NN-name/lab/solucion_scratch.py` and, if it runs, execute it and confirm `expected.md`.
 5. Update the §6 table (mark the module ✅).
 6. Keep it in English, the depth, and the cross-links.
 
