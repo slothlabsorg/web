@@ -4,6 +4,17 @@
 [functions]
   directory = "netlify/functions"
 
+# ── CORS for news feed ────────────────────────────────────────────────────────
+# The Orbit apps (Tauri) fetch the news feed from tauri://localhost and
+# tauri://[app-name] origins. Netlify doesn't serve CORS headers for static
+# files by default, so we add them explicitly for the /news/* path.
+[[headers]]
+  for = "/news/*"
+  [headers.values]
+    Access-Control-Allow-Origin  = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type"
+
 # ── Edge functions ────────────────────────────────────────────────────────────
 # stats-auth guards /stats and /stats/* with HTTP Basic Auth.
 [[edge_functions]]
