@@ -2,21 +2,28 @@
   "version": 1,
   "items": [
     {
-      "id": "co-launch-jun-19",
+      "id": "co-v1-launch-jul-27",
       "type": "announcement",
-      "priority": 9,
-      "publishedAt": "2026-06-16T00:00:00Z",
-      "badge": "NEW",
+      "priority": 10,
+      "publishedAt": "2026-07-26T00:00:00Z",
+      "badge": "LAUNCH",
       "badgeTone": "primary",
-      "title": "CloudOrbit launches Friday June 19, 2026",
-      "body": "The first stable build of CloudOrbit now drops on **Friday June 19** — we slipped from Monday so the SSO + kubeconfig path could get one more pass against real corporate proxies. Same launch day as WattsOrbit.\n\n- AWS SSO session manager, no terminal needed\n- Auto-updates kubeconfig as you switch profiles\n- Detects EKS clusters from your active session\n- Works behind Cloudflare and corporate proxies\n\nFree, native Rust binary. Sign up to get notified the moment it ships.",
-      "action": {
-        "label": "Subscribe for updates",
-        "url": "https://slothlabs.org/cloudorbit"
-      },
-      "targetApps": [
-        "cloudorbit"
-      ]
+      "title": "CloudOrbit launches Monday July 27, 2026",
+      "body": "CloudOrbit is now available — the AWS session manager you wish Leapp was.\n\n## What's included\n\n- **AWS SSO** — switch accounts without touching a config file\n- **Auto-kubeconfig** — EKS clusters detected and written automatically\n- **Session persistence** — active sessions survive app restarts\n- **Region selector** — pick any AWS region per profile\n- **IAM / Chained / Federated** — all auth methods supported\n- **Cloudflare & corporate proxy** compatible\n\nFree. Native Rust. No Electron.",
+      "collapsed": false,
+      "action": { "label": "Download CloudOrbit", "url": "https://slothlabs.org/cloudorbit" },
+      "targetApps": ["cloudorbit"]
+    },
+    {
+      "id": "co-tip-multi-account",
+      "type": "tip",
+      "priority": 5,
+      "publishedAt": "2026-07-26T00:00:00Z",
+      "badge": "TIP",
+      "badgeTone": "success",
+      "title": "Switch between AWS accounts in seconds",
+      "body": "Running multiple AWS accounts? CloudOrbit cycles through all active sessions in the sidebar every 5 seconds — click any indicator to jump directly to that session.\n\nUse the region selector per profile to avoid switching regions manually in the terminal.",
+      "targetApps": ["cloudorbit"]
     }
   ]
 }

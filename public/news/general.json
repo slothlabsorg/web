@@ -2,40 +2,30 @@
   "version": 1,
   "items": [
     {
-      "id": "slothlabs-roadmap-jun-2026",
-      "type": "news",
-      "priority": 6,
-      "publishedAt": "2026-06-16T00:00:00Z",
-      "badge": "NEW",
-      "badgeTone": "neutral",
-      "title": "SlothLabs summer releases",
-      "body": "**Mermaid Preview** (JetBrains plugin) is live. Up next: **CloudOrbit** + **WattsOrbit** ship together on **Friday June 19**, then **DataOrbit** lands on **Monday June 29**.\n\nklight, ProxyOrbit, and BastionOrbit have all been moved to **TBD later in 2026** — we'd rather hold them until they're done than ship to a deadline.\n\nAll free, all native, all open source.",
+      "id": "slothlabs-dual-launch-jul-27",
+      "type": "announcement",
+      "priority": 8,
+      "publishedAt": "2026-07-26T00:00:00Z",
+      "badge": "LAUNCH",
+      "badgeTone": "primary",
+      "title": "CloudOrbit + DataOrbit launch Monday July 27",
+      "body": "Two apps, one day. **CloudOrbit** (AWS session manager) and **DataOrbit** (DynamoDB GUI) both go live on **Monday July 27, 2026**.\n\n- CloudOrbit: AWS SSO, EKS, kubeconfig auto-update, works behind Cloudflare\n- DataOrbit: live streams, cross-table joins, query builder with GSI support\n\nBoth are free, native Rust, open source.",
       "collapsed": false,
-      "action": {
-        "label": "See the roadmap",
-        "url": "https://slothlabs.org/#roadmap"
-      },
-      "targetApps": [
-        "all"
-      ]
+      "action": { "label": "See all apps", "url": "https://slothlabs.org" },
+      "targetApps": ["all"]
     },
     {
       "id": "advertise-with-slothlabs",
       "type": "ad",
       "priority": 2,
-      "publishedAt": "2026-05-01T00:00:00Z",
+      "publishedAt": "2026-07-26T00:00:00Z",
       "badge": "SPONSOR",
       "badgeTone": "neutral",
       "title": "Advertise with SlothLabs",
-      "body": "Reach thousands of macOS developers, infra engineers, and AWS/Kubernetes power users. Sponsored placements appear in every Orbit app's news tab and are clearly labelled.",
+      "body": "Reach thousands of macOS developers, AWS engineers, and Kubernetes users. Sponsored placements appear in every Orbit app's news tab and are clearly labelled.",
       "sponsored": true,
-      "action": {
-        "label": "Sponsor a slot",
-        "url": "https://slothlabs.org/advertise"
-      },
-      "targetApps": [
-        "all"
-      ]
+      "action": { "label": "See advertising options", "url": "https://slothlabs.org/advertise" },
+      "targetApps": ["all"]
     }
   ]
 }

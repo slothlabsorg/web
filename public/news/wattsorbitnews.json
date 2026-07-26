@@ -2,28 +2,16 @@
   "version": 1,
   "items": [
     {
-      "id": "wo-public-launch-jun-19",
-      "type": "announcement",
-      "priority": 10,
-      "publishedAt": "2026-06-16T00:00:00Z",
-      "badge": "LAUNCH",
-      "badgeTone": "primary",
-      "title": "WattsOrbit ships publicly Friday June 19, 2026",
-      "body": "WattsOrbit goes public on **Friday June 19** — slipped from Monday so the new battery-health surface and 80% charge-limit alerts could finish QA on real hardware. Same drop day as CloudOrbit.\n\n- Real-time watts in / watts out\n- Per-USB-device wattage breakdown\n- Battery cycles, temperature, and capacity\n- Smart notifications (weak charger, low battery, 80% charge limit)\n\nFree and open source. MIT.",
-      "action": { "label": "Subscribe for updates", "url": "https://slothlabs.org/wattsorbit" },
-      "targetApps": ["wattsorbit"]
-    },
-    {
-      "id": "wo-v110-release",
+      "id": "wo-v130-release",
       "type": "changelog",
-      "priority": 7,
-      "publishedAt": "2026-05-20T00:00:00Z",
+      "priority": 8,
+      "publishedAt": "2026-06-02T00:00:00Z",
       "badge": "UPDATE",
       "badgeTone": "primary",
-      "title": "WattsOrbit v1.1.0",
-      "body": "## What's new\n\n- **NewsBell in the tray popup** — unread dot and release-notes dropdown\n- **News screen** in the Dashboard with markdown rendering and pull-to-refresh\n- **UpdaterModal** replaces the old banner — changelog, download progress, in-app install\n- **Homebrew Cask** auto-updates on every release publish",
+      "title": "WattsOrbit v1.3.0",
+      "body": "## What's new\n\n- **NewsBell** in the tray popup — unread dot and release notes dropdown\n- **News screen** in the Dashboard with markdown rendering and pull-to-refresh\n- **UpdaterModal** — changelog, download progress, in-app install\n- **Homebrew Cask** auto-updates on every release",
       "collapsed": false,
-      "action": { "label": "Full changelog", "url": "https://github.com/slothlabsorg/wattsorbit/releases/tag/v1.1.0" },
+      "action": { "label": "Full changelog", "url": "https://github.com/slothlabsorg/wattsorbit/releases" },
       "targetApps": ["wattsorbit"]
     },
     {
@@ -34,7 +22,7 @@
       "badge": "TIP",
       "badgeTone": "success",
       "title": "Keep the tray popup open",
-      "body": "By default the tray popup hides when it loses focus. Hold ⌥ (Option) while clicking the menu-bar icon and the popup stays pinned — useful when you want to watch wattage drift while you do something else.",
+      "body": "Hold ⌥ (Option) while clicking the menu-bar icon and the popup stays pinned — useful when you want to watch wattage drift while doing something else.",
       "targetApps": ["wattsorbit"]
     }
   ]

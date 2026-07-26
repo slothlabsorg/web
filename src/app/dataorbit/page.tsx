@@ -19,7 +19,7 @@ import { LiveVersion } from '@/lib/useLatestRelease'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const { hero, features, comparison, screenshots } = dataOrbitContent
 
-const DATAORBIT_LAUNCH = new Date('2026-08-10T12:00:00Z')
+const DATAORBIT_LAUNCH = new Date('2026-07-27T12:00:00Z')
 const isLaunched = new Date() >= DATAORBIT_LAUNCH
 const hasRelease = allReleases.dataorbit.releases.length > 0
 const showDownload = hasRelease && isLaunched
@@ -317,7 +317,7 @@ function CTA() {
           <p className="text-[#8BA3C7] text-lg mt-2">
             {showDownload
               ? 'DataOrbit is live. Free forever. Native Rust binary.'
-              : 'DataOrbit launches Monday, August 10, 2026. Subscribe to hear when it drops.'}
+              : 'DataOrbit launches Monday, July 27, 2026. Subscribe to hear when it drops.'}
           </p>
           <div className="mt-3 flex justify-center">
             <LaunchBanner variant="subtle" launchDate={DATAORBIT_LAUNCH} accent={ACCENT} />

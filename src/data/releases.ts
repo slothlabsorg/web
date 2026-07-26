@@ -51,12 +51,51 @@ export const allReleases: Record<string, AppReleases> = {
       },
     ],
   },
+  cloudorbit: {
+    appName: 'CloudOrbit',
+    slug: 'cloudorbit',
+    accent: '#00D4FF',
+    icon: '/images/cloudorbit-icon.png',
+    releases: [
+      {
+        version: '1.0.3',
+        date: '2026-06-03',
+        notes: 'Build and test release.',
+        downloadUrl: 'https://github.com/slothlabsorg/cloudorbit/releases/latest',
+        highlights: [
+          'AWS SSO session manager — switch accounts without terminal',
+          'Auto-updates kubeconfig when switching profiles',
+          'EKS cluster detection from active session',
+          'Session persistence across app restarts',
+          'Region selector per profile',
+          'IAM / Chained / Federated auth support',
+          'Works behind Cloudflare and corporate proxies',
+        ],
+      },
+    ],
+  },
   dataorbit: {
     appName: 'DataOrbit',
     slug: 'dataorbit',
     accent: '#8B5CF6',
     icon: '/images/dataorbit-icon.png',
-    releases: [],
+    releases: [
+      {
+        version: '1.0.0',
+        date: '2026-05-12',
+        notes: 'First stable release.',
+        downloadUrl: 'https://github.com/slothlabsorg/dataorbit/releases/latest',
+        highlights: [
+          'Browse DynamoDB tables — grid + JSON views, row detail, schema inspector',
+          'Explore — query builder with GSI support and filter expressions',
+          'Live DynamoDB Streams — real-time event viewer',
+          'Cross-table joins — inner, left, left-anti, right, right-anti',
+          'Full query history with search',
+          'CouchDB support',
+          'Native Rust + Tauri — no Electron, no JVM',
+        ],
+      },
+    ],
   },
   bastionorbit: {
     appName: 'BastionOrbit',
