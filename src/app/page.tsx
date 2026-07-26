@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -195,13 +197,13 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const RAW_ROADMAP = [
-  { name: 'CloudOrbit',   launchDate: '2026-07-20', date: 'July 20',  desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
-  { name: 'WattsOrbit',   launchDate: '2026-06-19', date: 'June 19',  desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
-  { name: 'DataOrbit',    launchDate: '2026-08-10', date: 'Aug 10',   desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
-  { name: 'klight',       launchDate: '2026-08-31', date: 'Aug 31',   desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
-  { name: 'ProxyOrbit',   launchDate: '2026-09-21', date: 'Sep 21',   desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
-  { name: 'BastionOrbit', launchDate: '2026-10-12', date: 'Oct 12',   desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
-  { name: 'container-orbit', launchDate: '2026-11-02', date: 'Nov 2',    desc: 'Remote Docker over your LAN',   accent: '#4F8CFF', icon: '🛰️', slug: '/container-orbit' },
+  { name: 'CloudOrbit',   launchDate: '2026-07-27', date: 'July 27', desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
+  { name: 'WattsOrbit',   launchDate: '2026-06-19', date: 'June 19', desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
+  { name: 'DataOrbit',    launchDate: '2026-07-27', date: 'Jul 27',  desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
+  { name: 'klight',       launchDate: '2026-08-31', date: 'Aug 31',  desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
+  { name: 'ProxyOrbit',   launchDate: '2026-09-21', date: 'Sep 21',  desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
+  { name: 'BastionOrbit', launchDate: '2026-10-12', date: 'Oct 12',  desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
+  { name: 'container-orbit', launchDate: '2026-11-02', date: 'Nov 2', desc: 'Remote Docker over your LAN',    accent: '#4F8CFF', icon: '🛰️', slug: '/container-orbit' },
 ]
 
 // Compute status at build time — live items first, then upcoming by date.
@@ -505,6 +507,97 @@ function OtherTools() {
   )
 }
 
+// ── Latest News ───────────────────────────────────────────────────────────────
+type NewsItem = {
+  id: string
+  type: string
+  priority: number
+  publishedAt: string
+  badge?: string
+  badgeTone?: string
+  title: string
+  body: string
+  action?: { label: string; url: string }
+  targetApps: string[]
+  sponsored?: boolean
+}
+
+function loadLatestNews(limit = 3): NewsItem[] {
+  try {
+    const raw = readFileSync(join(process.cwd(), 'public', 'news', 'feed.json'), 'utf8')
+    const feed: { items: NewsItem[] } = JSON.parse(raw)
+    return (feed.items ?? [])
+      .filter(i => !i.sponsored && i.type !== 'ad')
+      .slice(0, limit)
+  } catch { return [] }
+}
+
+const TONE_STYLE: Record<string, { bg: string; color: string }> = {
+  primary: { bg: '#00D4FF20', color: '#7DD9FF' },
+  success: { bg: '#10B98120', color: '#34D399' },
+  warning: { bg: '#F59E0B20', color: '#FBBF24' },
+  danger: { bg: '#F8717120', color: '#F87171' },
+  neutral: { bg: '#94A3B820', color: '#CBD5E1' },
+}
+
+function LatestNews() {
+  const items = loadLatestNews(3)
+  if (items.length === 0) return null
+  return (
+    <section className="py-16 border-t border-[#0e1f3a]">
+      <div className="site-container">
+        <ScrollReveal className="flex items-end justify-between gap-4 mb-8">
+          <div>
+            <span className="text-xs font-semibold tracking-widest uppercase text-[#4A6080]">Latest from SlothLabs</span>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mt-1" style={{ fontFamily: 'Syne, sans-serif' }}>News & updates</h2>
+          </div>
+          <Link href="/news" className="flex-shrink-0 text-sm font-medium text-[#4DA6FF] hover:text-white transition-colors">
+            All news →
+          </Link>
+        </ScrollReveal>
+        <div className="grid md:grid-cols-3 gap-4">
+          {items.map((item, i) => {
+            const tone = TONE_STYLE[item.badgeTone ?? 'neutral'] ?? TONE_STYLE.neutral
+            const bodyPreview = item.body.replace(/\*\*(.+?)\*\*/g, '$1').replace(/^##.*$/gm, '').replace(/^- /gm, '').trim().slice(0, 120)
+            return (
+              <ScrollReveal key={item.id} delay={i * 80}>
+                <div
+                  className="rounded-2xl p-5 border h-full flex flex-col gap-3 hover:-translate-y-0.5 transition-transform duration-200"
+                  style={{ background: '#0d1124', borderColor: '#1a2040' }}
+                >
+                  {item.badge && (
+                    <span
+                      className="self-start text-[10px] font-bold px-2.5 py-0.5 rounded-full tracking-wider"
+                      style={{ background: tone.bg, color: tone.color }}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                  <h3 className="text-sm font-semibold text-white leading-snug" style={{ fontFamily: 'Syne, sans-serif' }}>
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-[#8BA3C7] leading-relaxed flex-1">
+                    {bodyPreview}{bodyPreview.length >= 120 ? '…' : ''}
+                  </p>
+                  {item.action?.url && (
+                    <Link
+                      href={item.action.url}
+                      className="text-xs font-medium transition-colors hover:opacity-80 mt-auto"
+                      style={{ color: '#00D4FF' }}
+                    >
+                      {item.action.label} →
+                    </Link>
+                  )}
+                </div>
+              </ScrollReveal>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function HomePage() {
   const next = nextUpcomingLaunch()
   return (
@@ -516,6 +609,7 @@ export default function HomePage() {
       <Products />
       <LaunchRoadmap />
       <OtherTools />
+      <LatestNews />
       <WhyRust />
       <SupportBanner />
       <Footer />

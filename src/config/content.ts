@@ -119,7 +119,7 @@ export const slothLabsContent = {
         accent: '#4F8CFF',
         comingSoonDate: 'November 2, 2026',
         previewImage: null,
-        iconSrc: '/images/character-orbit.png',
+        iconSrc: null,
       },
     ],
   },
@@ -202,7 +202,7 @@ export const slothLabsContent = {
       { label: 'klight', href: '/klight' },
       { label: 'container-orbit', href: '/container-orbit' },
     ],
-    organization: [{ label: 'About', href: '/about' }, { label: 'Other Tools', href: '/tools' }, { label: 'Contact', href: '#contact' }],
+    organization: [{ label: 'About', href: '/about' }, { label: 'News', href: '/news' }, { label: 'Other Tools', href: '/tools' }, { label: 'Contact', href: '#contact' }, { label: 'Advertise', href: '/advertise' }],
     social: [
       { label: 'GitHub', href: 'https://github.com/slothlabsorg', external: true },
       { label: 'Twitter', href: '#', comingSoon: true },

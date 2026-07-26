@@ -1,6 +1,7 @@
 'use client'
 import { useRef, useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
+import ContainerOrbitCanvas from './ContainerOrbitCanvas'
 
 type Product = {
   name: string
@@ -122,13 +123,23 @@ export default function ProductCarousel({ products }: { products: Product[] }) {
                     </svg>
                   </div>
                 </div>
+              ) : product.slug === '/container-orbit' ? (
+                <div className="mb-4 h-[120px] relative rounded-xl mt-1 overflow-hidden"
+                  style={{ background: `${product.accent}08`, border: `1px solid ${product.accent}20` }}>
+                  <ContainerOrbitCanvas
+                    accent={product.accent}
+                    accent2="#22D3EE"
+                    className="absolute inset-0 w-full h-full opacity-90"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0d1b3e]/60 to-transparent" />
+                </div>
               ) : (
                 <div className="mb-4 h-[120px] rounded-xl mt-1 flex items-center justify-center overflow-hidden"
                   style={{ background: `${product.accent}10`, border: `1px solid ${product.accent}20` }}>
                   {product.iconSrc ? (
                     <img src={product.iconSrc} alt={product.name} className="w-16 h-16 object-contain" />
                   ) : (
-                    <span className="text-4xl opacity-60">🔧</span>
+                    <span className="text-4xl opacity-60">🛰️</span>
                   )}
                 </div>
               )}
