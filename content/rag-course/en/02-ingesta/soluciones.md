@@ -11,7 +11,7 @@ Reasoning by type:
 | Type | Correct strategy | Why |
 |------|--------------------|----|
 | A (tax returns, continuous text) | `recursive` | No predictable section markers. The recursive splitter cuts by paragraphs, then sentences, respecting natural structure. |
-| B (contracts with CLÁUSULA N.) | `by-clause` | The semantic unit is the clause. Splitting it in half mixes obligations from different clauses in the same chunk. |
+| B (contracts with CLAUSE N.) | `by-clause` | The semantic unit is the clause. Splitting it in half mixes obligations from different clauses in the same chunk. |
 | C (HTML with h1/h2/h3) | `by-section` | HTML heading hierarchy is explicit. The by-section splitter uses those markers as separators. |
 | D (transcripts, continuous text) | `recursive` or `semantic` | No structure. `recursive` is faster; `semantic` could give better thematic coherence but requires embeddings at ingestion time. |
 
@@ -26,14 +26,14 @@ Option **b** has `A → fixed`, which is least suitable (fixed ignores any struc
 The sliding window algorithm with overlap works like this:
 
 ```
-Texto: 3400 chars
+Text: 3400 chars
 chunkSize: 1000, overlap: 200
 stride: chunkSize - overlap = 800
 
-Chunk 0: [0, 1000)      ← inicio: 0
-Chunk 1: [800, 1800)    ← inicio: 800 = 0 + stride
-Chunk 2: [1600, 2600)   ← inicio: 1600 = 800 + stride
-Chunk 3: [2400, 3400)   ← inicio: 2400 = 1600 + stride
+Chunk 0: [0, 1000)      ← start: 0
+Chunk 1: [800, 1800)    ← start: 800 = 0 + stride
+Chunk 2: [1600, 2600)   ← start: 1600 = 800 + stride
+Chunk 3: [2400, 3400)   ← start: 2400 = 1600 + stride
 ```
 
 `overlap` makes the start of the next chunk move back `overlap` positions. In chunk 3, the start is 2400 and the end is 3400, which is exactly the text size → 4 chunks.
@@ -52,7 +52,7 @@ Chunk 3: [2400, 3400)   ← inicio: 2400 = 1600 + stride
 ```sql
 SELECT *, embedding <=> $query_vec AS dist
 FROM chunks
-WHERE aircraft_type = 'A320'    -- filtro duro: se aplica ANTES de la similitud
+WHERE aircraft_type = 'A320'    -- hard filter: applied BEFORE similarity
 ORDER BY dist
 LIMIT 5;
 ```
@@ -67,36 +67,36 @@ B787 chunks are not evaluated at all. They are not penalized, not retrieved for 
 
 **c) Pattern A: 0 matches; Pattern B: 2 matches**
 
-Without `re.MULTILINE`, `^` anchors to the start of the **full text** (position 0 of the string). The text starts with `\nCLÁUSULA 8...` — the first character is `\n`, not `C`. Therefore pattern A matches nowhere.
+Without `re.MULTILINE`, `^` anchors to the start of the **full text** (position 0 of the string). The text starts with `\nCLAUSE 8...` — the first character is `\n`, not `C`. Therefore pattern A matches nowhere.
 
-With `re.MULTILINE`, `^` anchors to the start of **each line**. There are two lines that start with `CLÁUSULA`:
-- Line 1: `CLÁUSULA 8. LIMITACIÓN DE RESPONSABILIDAD`
-- Line 3: `CLÁUSULA 9. CONFIDENCIALIDAD`
+With `re.MULTILINE`, `^` anchors to the start of **each line**. There are two lines that start with `CLAUSE`:
+- Line 1: `CLAUSE 8. LIMITATION OF LIABILITY`
+- Line 3: `CLAUSE 9. CONFIDENTIALITY`
 
-Line 2 (`...conforme a la Cláusula 3 del contrato.`) contains "Cláusula 3" mid-line, **not** at the start → no match with pattern B.
+Line 2 (`...in accordance with Clause 3 of the contract.`) contains "Clause 3" mid-line, **not** at the start → no match with pattern B.
 
-**Answer d** would be incorrect because "Cláusula 3" in `...conforme a la Cláusula 3 del contrato.` is not at the start of a line, so `re.MULTILINE` with `^` correctly excludes it.
+**Answer d** would be incorrect because "Clause 3" in `...in accordance with Clause 3 of the contract.` is not at the start of a line, so `re.MULTILINE` with `^` correctly excludes it.
 
 ---
 
 ## Exercise 18 — Find the bug: chunker with false positives ✅
 
-**Bug:** the pattern `re.compile(r'CL[AÁ]USULA\s+(\d+)', re.IGNORECASE)` does **not** have `re.MULTILINE` with a `^` anchor. The search is "anywhere in the text", not "at the start of a line".
+**Bug:** the pattern `re.compile(r'CL[AÁ]US[UE]LA\s+(\d+)', re.IGNORECASE)` does **not** have `re.MULTILINE` with a `^` anchor. The search is "anywhere in the text", not "at the start of a line".
 
-The fragment `"Ver Cláusula 3 para penalizaciones."` in the body of CLÁUSULA 2 generates a spurious match: `Cláusula 3` mid-sentence. That is why `finditer` returns 4 matches instead of 3 (CLÁUSULA 1, CLÁUSULA 2, `Cláusula 3` [reference], CLÁUSULA 3 [header]).
+The fragment `"See Clause 3 for penalties."` in the body of CLAUSE 2 generates a spurious match: `Clause 3` mid-sentence. That is why `finditer` returns 4 matches instead of 3 (CLAUSE 1, CLAUSE 2, `Clause 3` [reference], CLAUSE 3 [header]).
 
 **Fix:**
 
 ```python
-patron = re.compile(
-    r'^CL[AÁ]USULA\s+(\d+)',
-    re.IGNORECASE | re.MULTILINE  # ← agregar re.MULTILINE
+pattern = re.compile(
+    r'^CL[AÁ]US[UE]LA\s+(\d+)',
+    re.IGNORECASE | re.MULTILINE  # ← add re.MULTILINE
 )
 ```
 
-With `re.MULTILINE`, `^` only matches at the start of a line. "Ver Cláusula 3" is mid-line → no match. Result: 3 correct matches.
+With `re.MULTILINE`, `^` only matches at the start of a line. "See Clause 3" is mid-line → no match. Result: 3 correct matches.
 
-**Production consequence:** without the fix, chunk "CLÁUSULA 2" includes only text up to the "Cláusula 3" reference, and a spurious single-sentence chunk is created mid-contract. The retriever may return that 1-sentence spurious chunk when the user asks about penalties, giving an incomplete answer.
+**Production consequence:** without the fix, chunk "CLAUSE 2" includes only text up to the "Clause 3" reference, and a spurious single-sentence chunk is created mid-contract. The retriever may return that 1-sentence spurious chunk when the user asks about penalties, giving an incomplete answer.
 
 ---
 
@@ -107,8 +107,8 @@ With `re.MULTILINE`, `^` only matches at the start of a line. "Ver Cláusula 3" 
 | 1. Scanned insurance policies in PDF | `loader.pdf` with `ocr: true` | It is an image; OCR is needed to extract text. |
 | 2. Product catalog (PostgreSQL) | `loader.sql` | Data is in the DB; the query converts rows to documents directly. |
 | 3. AMM manual with tables and diagrams | `loader.multimodal` with `extractTables: true, describeImages: true, sectionScheme: ATA` | Torque tables and hydraulic diagrams are critical; structured extraction is needed. |
-| 4. FAQ website | `loader.web` with `urls: ["https://empresa.com/faq"], crawlDepth: 0` | Single URL; `crawlDepth: 0` does not follow external links. |
-| 5. S3 case files | `loader.s3` with `bucket: "expedientes"` | Files are in cloud storage; the S3 loader reads them without downloading locally. |
+| 4. FAQ website | `loader.web` with `urls: ["https://company.com/faq"], crawlDepth: 0` | Single URL; `crawlDepth: 0` does not follow external links. |
+| 5. S3 case files | `loader.s3` with `bucket: "case_files"` | Files are in cloud storage; the S3 loader reads them without downloading locally. |
 
 ---
 
@@ -133,11 +133,11 @@ Option **d** ("only serves traceability") is incorrect because the hard filter d
 
 Calculation:
 ```
-System prompt:  500 tokens
-Query del usuario: 50 tokens
+System prompt:          500 tokens
+User query:              50 tokens
 6 chunks × 1500 tokens = 9000 tokens
 ─────────────────────────────────────
-Total contexto: 9550 tokens  ≈ 9050-9500 tokens
+Total context: 9550 tokens  ≈ 9050-9500 tokens
 ```
 
 With a 128,000-token window, this usage (~7.5%) leaves ample room for the response. In production, you must also add tokens from the generated response (typically 500-2000 tokens).
@@ -154,17 +154,17 @@ The reason: the report has financial tables with complex structure, footnotes th
 
 Option **c** (`loader.multimodal` from RAGorbit) would also be valid for tables + images, but Unstructured.io in `hi_res` mode offers better footnote detection and multi-column handling for complex financial documents.
 
-Option **a** (simple `loader.pdf`) would give poor results for tables: "2022 2023 Ingresos 1.2M 1.8M Costos 0.8M 1.1M" without knowing which column is which.
+Option **a** (simple `loader.pdf`) would give poor results for tables: "2022 2023 Revenue 1.2M 1.8M Costs 0.8M 1.1M" without knowing which column is which.
 
 ---
 
 ## Exercise 23 — By-clause vs. recursive for regulations ✅ Answer: **b**
 
-**b) `by-clause` with separator `Artículo N.`**
+**b) `by-clause` with separator `Article N.`**
 
 Articles are autonomous semantic and legal units. If chunked by fixed size, article 1.2 may appear in the same chunk as the start of article 2, producing a chunk that mixes "scope of application" with "definitions". When the user asks "what is an incident?", the retriever may return that mixed chunk and the LLM will answer with both topics blended.
 
-With `by-clause` using `Artículo N.` as separator, each article is an independent chunk. The retriever can filter by `tipo: "definicion"` if metadata is added.
+With `by-clause` using `Article N.` as separator, each article is an independent chunk. The retriever can filter by `type: "definition"` if metadata is added.
 
 Option **a** (`recursive` with `chunkSize: 500`) might work if articles are short, but does not guarantee sub-articles (1.1, 1.2) stay with their parent article.
 
@@ -203,10 +203,10 @@ Option **c** is incorrect because the loader does not add chunk-specific domain 
 **Bug:** `aircraft_type` is never assigned to chunk metadata.
 
 ```python
-# Código con bug:
+# Buggy code:
 for chunk in chunks:
     chunk.metadata["ata_chapter"] = extract_ata(chunk.text)
-    # FALTA: chunk.metadata["aircraft_type"] = "A320"
+    # MISSING: chunk.metadata["aircraft_type"] = "A320"
 ```
 
 The code extracts `ata_chapter` from chunk text but never assigns `aircraft_type`. In production, the retriever configures `hardFilters: ["aircraft_type", "ata_chapter"]`, but if `aircraft_type` is `None` (or missing) on all chunks, the hard filter fails silently: either no results are returned, or all chunks are returned unfiltered.
@@ -215,7 +215,7 @@ The code extracts `ata_chapter` from chunk text but never assigns `aircraft_type
 ```python
 for chunk in chunks:
     chunk.metadata["ata_chapter"] = extract_ata(chunk.text)
-    chunk.metadata["aircraft_type"] = "A320"  # ← extraído del nombre de archivo o contexto
+    chunk.metadata["aircraft_type"] = "A320"  # ← extracted from filename or context
 ```
 
 In RAGorbit, the `ingest.metadata` node with `fields: [aircraft_type, ata_chapter]` handles this automatically, extracting `aircraft_type` from the source filename or ingestion session context.
@@ -232,10 +232,10 @@ from llama_index.core import SimpleDirectoryReader
 reader = SimpleDirectoryReader(
     "data/docs/",
     recursive=True,
-    # Detecta automáticamente: PDF → PDFReader, .md → MarkdownReader, .json → JSONReader
+    # Automatically detects: PDF → PDFReader, .md → MarkdownReader, .json → JSONReader
 )
 docs = reader.load_data()
-# Todos los docs tienen metadata: {"file_path", "file_name", "file_type", "file_size"}
+# All docs have metadata: {"file_path", "file_name", "file_type", "file_size"}
 ```
 
 The advantage is that **one object** handles all three file types without glue code. Metadata (`file_type`) identifies the origin of each document.
@@ -250,23 +250,23 @@ Option **d** (pure Python with `pathlib.glob`) is viable for a script but does n
 
 ## Exercise 28 — Predict the output: RecursiveCharacterTextSplitter ✅ Answer: **b**
 
-**b) 3 chunks: Chunk 0 = intro only; Chunk 1 = CLÁUSULA 1; Chunk 2 = CLÁUSULA 2**
+**b) 3 chunks: Chunk 0 = intro only; Chunk 1 = CLAUSE 1; Chunk 2 = CLAUSE 2**
 
 Step-by-step reasoning (recursive algorithm from [guide §10.2](../guia.md#102-recursivecharactertextsplitter-the-recursive-algorithm)):
 
-1. The priority separator is `"\n\nCLÁUSULA "`. The text has two occurrences: before CLÁUSULA 1 and before CLÁUSULA 2.
+1. The priority separator is `"\n\nCLAUSE "`. The text has two occurrences: before CLAUSE 1 and before CLAUSE 2.
 2. With `keep_separator=True`, the split produces three blocks:
    - Block 0: intro (80 chars) → fits in `chunk_size=700` → **Chunk 0**
-   - Block 1: `CLÁUSULA 1. OBJETO` + body (≈600 chars) → fits → **Chunk 1**
-   - Block 2: `CLÁUSULA 2. PAGO` + body (≈900 chars) → exceeds 700 → recursion with `"\n\n"`, then `"\n"`, etc., but the body has no strong sub-separators; eventually remains as **Chunk 2** (possibly split if the body is very long; in the problem statement 900 chars in one paragraph might split on `" "`).
+   - Block 1: `CLAUSE 1. PURPOSE` + body (≈600 chars) → fits → **Chunk 1**
+   - Block 2: `CLAUSE 2. PAYMENT` + body (≈900 chars) → exceeds 700 → recursion with `"\n\n"`, then `"\n"`, etc., but the body has no strong sub-separators; eventually remains as **Chunk 2** (possibly split if the body is very long; in the problem statement 900 chars in one paragraph might split on `" "`).
 
 For the text as stated (bodies without substructure and sizes 600 and 900), the dominant result is **3 chunks** with the intro separated from the clauses.
 
-**Why not a:** the intro does not merge with CLÁUSULA 1 because the `"\n\nCLÁUSULA "` separator cuts *before* each clause, not after the intro forward without limit.
+**Why not a:** the intro does not merge with CLAUSE 1 because the `"\n\nCLAUSE "` separator cuts *before* each clause, not after the intro forward without limit.
 
 **Why not c:** 600+900 do not merge; the algorithm does not concatenate clauses — each separator split creates independent blocks.
 
-**Why not d:** CLÁUSULA 2 (900 chars) might split if there are no intermediate separators, but that would give more than 3 chunks, not exactly 4 by `\n`. Option b describes the main behavior of the domain separator.
+**Why not d:** CLAUSE 2 (900 chars) might split if there are no intermediate separators, but that would give more than 3 chunks, not exactly 4 by `\n`. Option b describes the main behavior of the domain separator.
 
 ---
 

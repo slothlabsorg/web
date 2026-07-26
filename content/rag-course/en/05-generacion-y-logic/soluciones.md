@@ -10,7 +10,7 @@
 
 The reason: JSON Schema with `"minItems": 1` is part of the formal contract that the provider (Anthropic, OpenAI) enforces at generation time when using tool-calling. Answer a) (JSON-mode) only guarantees syntactically valid JSON, not semantic schema compliance. Answer c) (instruction in the prompt) can be forgotten by the LLM — it is not a guarantee. Answer d) is incomplete: the combination of tool-calling + `minItems` is the closest guarantee to "never empty", although in an extreme case a model could hallucinate `"citations": [{}]` (empty objects), for which you also add `"required": ["text", "source"]` on each object.
 
-In practice, for the no-evidence case you add explicit logic: if chunks are empty → do not call the LLM → return directly `{"citations": [], "decision": "no_determinable"}` skipping `logic.structured`.
+In practice, for the no-evidence case you add explicit logic: if chunks are empty → do not call the LLM → return directly `{"citations": [], "decision": "undetermined"}` skipping `logic.structured`.
 
 ### Question 2 → **a)**
 
@@ -34,31 +34,31 @@ This is the fundamental architectural difference. `instructor` calls the LLM nor
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["score", "decision", "factores", "justificacion", "citations"],
+  "required": ["score", "decision", "factors", "justification", "citations"],
   "additionalProperties": false,
   "properties": {
     "score": {
       "type": "integer",
       "minimum": 0,
       "maximum": 100,
-      "description": "Puntuación de riesgo crediticio calculada por el LLM"
+      "description": "Credit risk score calculated by the LLM"
     },
     "decision": {
       "type": "string",
-      "enum": ["aprobar", "revisar", "rechazar"],
-      "description": "Decisión tentativa del LLM; será sobreescrita por logic.rules"
+      "enum": ["approve", "review", "reject"],
+      "description": "Tentative LLM decision; will be overwritten by logic.rules"
     },
-    "factores": {
+    "factors": {
       "type": "array",
       "items": {"type": "string", "minLength": 1},
       "minItems": 1,
       "maxItems": 5,
-      "description": "Factores principales que sustentan la puntuación"
+      "description": "Main factors supporting the score"
     },
-    "justificacion": {
+    "justification": {
       "type": "string",
       "minLength": 50,
-      "description": "Razonamiento narrativo del score"
+      "description": "Narrative reasoning for the score"
     },
     "citations": {
       "type": "array",
@@ -72,12 +72,12 @@ This is the fundamental architectural difference. `instructor` calls the LLM nor
         }
       },
       "minItems": 1,
-      "description": "Evidencia documental que respalda los factores"
+      "description": "Documentary evidence supporting the factors"
     },
-    "nivel_riesgo": {
+    "risk_level": {
       "type": "string",
-      "enum": ["bajo", "medio", "alto"],
-      "description": "Clasificación cualitativa del riesgo (opcional)"
+      "enum": ["low", "medium", "high"],
+      "description": "Qualitative risk classification (optional)"
     }
   }
 }
@@ -85,21 +85,21 @@ This is the fundamental architectural difference. `instructor` calls the LLM nor
 
 ### Task B — Why include `decision` if `logic.rules` overwrites it
 
-**Reason 1 — LLM integrity validation:** if the LLM emits `"decision": "QUIZAS"`, the schema rejects it immediately with a clear error before reaching `logic.rules`. Without the schema, `logic.rules` would receive an object with an invalid field, which could cause a silent error or unexpected behavior.
+**Reason 1 — LLM integrity validation:** if the LLM emits `"decision": "MAYBE"`, the schema rejects it immediately with a clear error before reaching `logic.rules`. Without the schema, `logic.rules` would receive an object with an invalid field, which could cause a silent error or unexpected behavior.
 
-**Reason 2 — Comparative audit:** having the LLM's tentative `decision` alongside the final `decision` from `logic.rules` lets you detect systematic discrepancies. If the LLM says "rechazar" and the rule says "aprobar" (score right at the threshold, e.g. 70), that pattern is useful for adjusting prompts or thresholds.
+**Reason 2 — Comparative audit:** having the LLM's tentative `decision` alongside the final `decision` from `logic.rules` lets you detect systematic discrepancies. If the LLM says "reject" and the rule says "approve" (score right at the threshold, e.g. 70), that pattern is useful for adjusting prompts or thresholds.
 
 **Reason 3 — Contract consistency:** the schema defines the complete decision object. `logic.rules` receives it as input and returns it modified — it is cleaner to have the field defined from the start than to add it later.
 
-### Task C — LLM emits `"APROBAR"` instead of `"aprobar"`
+### Task C — LLM emits `"APPROVE"` instead of `"approve"`
 
-Schema validation **fails** because `"APROBAR"` is not in the enum `["aprobar", "revisar", "rechazar"]`. The `logic.structured` node raises an error before propagating the object.
+Schema validation **fails** because `"APPROVE"` is not in the enum `["approve", "review", "reject"]`. The `logic.structured` node raises an error before propagating the object.
 
 **How to handle it:**
 
-1. **With `instructor`:** the validation error is sent to the LLM as feedback. The retry prompt says something like: "The `decision` field must be one of `aprobar`, `revisar`, `rechazar` (lowercase). Your previous response used uppercase. Correct it and return only the JSON."
+1. **With `instructor`:** the validation error is sent to the LLM as feedback. The retry prompt says something like: "The `decision` field must be one of `approve`, `review`, `reject` (lowercase). Your previous response used uppercase. Correct it and return only the JSON."
 
-2. **In the synthesis prompt:** add an explicit instruction: `"The decision field MUST be exactly one of these three lowercase values: aprobar, revisar, rechazar"`.
+2. **In the synthesis prompt:** add an explicit instruction: `"The decision field MUST be exactly one of these three lowercase values: approve, review, reject"`.
 
 3. **Defensive normalization:** in post-processing code, apply `.lower()` to the decision field before schema validation (but this hides the problem instead of fixing it at the source).
 
@@ -111,13 +111,13 @@ The most robust option in production is (1) + (2): clear instruction in the prom
 
 | Item | Who decides | Reasoning |
 |---|---|---|
-| a) debt-to-income ratio > 50%? | **Deterministic rule** | Pure arithmetic: `deuda_total / ingreso_anual > 0.5`. The result is 100% reproducible and requires no interpretation. |
+| a) debt-to-income ratio > 50%? | **Deterministic rule** | Pure arithmetic: `total_debt / annual_income > 0.5`. The result is 100% reproducible and requires no interpretation. |
 | b) Signs of job instability? | **LLM** | Requires interpreting heterogeneous text (termination letters, frequent employer changes, employment gaps) and combining ambiguous signals that have no exact formula. |
 | c) Score 72 ≥ threshold 70? | **Deterministic rule** | Integer comparison. The LLM must never evaluate business thresholds with legal or financial consequences (ECOA, Reg B). |
 | d) What risk factors emerge from 6 months of account statements? | **LLM** | Requires synthesis and interpretation of multiple transactions, behavior patterns, and context. |
-| e) Policy in force on claim date? | **Deterministic rule** | Date comparison: `fecha_inicio_poliza <= fecha_reclamo <= fecha_fin_poliza`. Deterministic and critical for system correctness. |
+| e) Policy in force on claim date? | **Deterministic rule** | Date comparison: `policy_start_date <= claim_date <= policy_end_date`. Deterministic and critical for system correctness. |
 | f) Is the photograph consistent with the description? | **LLM** (with `model.vision`) | Requires visual and semantic reasoning that no deterministic rule can encode. |
-| g) Amount 1700 > deductible 500? | **Deterministic rule** | Subtraction and comparison: `monto_estimado - deducible > 0`. Must be deterministic to guarantee the calculated payment is always the same given the same input. |
+| g) Amount 1700 > deductible 500? | **Deterministic rule** | Subtraction and comparison: `estimated_amount - deductible > 0`. Must be deterministic to guarantee the calculated payment is always the same given the same input. |
 | h) Which clause applies to the type of damage? | **LLM** (with mandatory citations) | Requires semantic understanding of policy text and damage type. Mandatory citation ensures the LLM does not invent the clause. |
 
 **General pattern:** if the operation is arithmetic, date comparison, or lookup of a known value → deterministic rule. If it requires natural language interpretation, synthesis of multiple ambiguous signals, or semantic reasoning → LLM (with citations).
@@ -126,7 +126,7 @@ The most robust option in production is (1) + (2): clear instruction in the prom
 
 ## E17 · Find the bug — Groundedness and evaluation
 
-### Bug 1 — `calcular_score` always returns 75
+### Bug 1 — `calculate_score` always returns 75
 
 **Problem:** the function ignores the `chunks` received and returns a hardcoded value. This makes the system always approve (75 ≥ 70) regardless of file content. It is the equivalent of a credit system that approves everyone.
 
@@ -134,16 +134,16 @@ The most robust option in production is (1) + (2): clear instruction in the prom
 
 ### Bug 2 — Incorrect threshold in the review rule
 
-**Problem:** the condition `elif score > 40` applies to scores 41–69 AND also to score exactly 40 if you used `>=`, but with `>` score 40 would fall through to `else` (reject) when it should be "revisar" (40–69). Template 02 defines the range as `40–69 → revisar`, which implies `score >= 40 AND score < 70`.
+**Problem:** the condition `elif score > 40` applies to scores 41–69 AND also to score exactly 40 if you used `>=`, but with `>` score 40 would fall through to `else` (reject) when it should be "review" (40–69). Template 02 defines the range as `40–69 → review`, which implies `score >= 40 AND score < 70`.
 
 **Fix:**
 ```python
 if score >= 70:
-    decision = "aprobar"
-elif score >= 40:   # cubre 40-69 inclusive
-    decision = "revisar"
+    decision = "approve"
+elif score >= 40:   # covers 40-69 inclusive
+    decision = "review"
 else:
-    decision = "rechazar"
+    decision = "reject"
 ```
 
 ### Bug 3 — `citations: []` (empty array)
@@ -152,9 +152,9 @@ else:
 
 **Impact:** a schema with `"minItems": 1` on `citations` would reject this object. The `logic.citations` node in `enforce` mode would block the response.
 
-### Bug 4 — `verificar_groundedness` only checks that `citations` is not empty
+### Bug 4 — `verify_groundedness` only checks that `citations` is not empty
 
-**Problem:** the function verifies `len(citations) > 0`, but does not check whether citations are backed by real chunks. It could have `"citations": [{"text": "abc", "source": "inventado.pdf"}]` and pass verification.
+**Problem:** the function verifies `len(citations) > 0`, but does not check whether citations are backed by real chunks. It could have `"citations": [{"text": "abc", "source": "invented.pdf"}]` and pass verification.
 
 **Real groundedness:** for each citation, verify that its `text` appears (literally or semantically) in one of the context chunks.
 
@@ -164,7 +164,7 @@ The node rejects the response and raises an actionable error like:
 ```json
 {
   "error": "citations_required",
-  "message": "La decisión no contiene citas verificables. Se requiere al menos una cita respaldada por los chunks recuperados."
+  "message": "The decision does not contain verifiable citations. At least one citation backed by retrieved chunks is required."
 }
 ```
 
@@ -181,29 +181,29 @@ Checking `len(citations) > 0` only verifies that the structure exists, not that 
 ### Answer D — Fix for Bug 3
 
 ```python
-def generar_decision(score, chunks):
+def generate_decision(score, chunks):
     if score >= 70:
-        decision = "aprobar"
+        decision = "approve"
     elif score >= 40:
-        decision = "revisar"
+        decision = "review"
     else:
-        decision = "rechazar"
+        decision = "reject"
     
-    # Construir citas reales desde los chunks
+    # Build real citations from chunks
     citations = []
     for chunk in chunks:
         citations.append({
-            "text": chunk["text"][:100],  # primer fragmento representativo
+            "text": chunk["text"][:100],  # first representative fragment
             "source": chunk["source"]
         })
     
     return {
         "score": score,
         "decision": decision,
-        "factores": [
-            f"Datos verificados en {chunk['source']}" for chunk in chunks
+        "factors": [
+            f"Data verified in {chunk['source']}" for chunk in chunks
         ],
-        "citations": citations  # ahora no vacío y con fuentes reales
+        "citations": citations  # now non-empty with real sources
     }
 ```
 
@@ -235,14 +235,14 @@ For custom metrics that must integrate with pytest, DeepEval is the only one of 
 from deepeval.metrics import BaseMetric
 from deepeval.test_case import LLMTestCase
 
-class ContieneNumeroMetric(BaseMetric):
+class ContainsNumberMetric(BaseMetric):
     def __init__(self, threshold=1.0):
         self.threshold = threshold
     
     def measure(self, test_case: LLMTestCase) -> float:
         import re
-        tiene_numero = bool(re.search(r'\d+', test_case.actual_output))
-        return 1.0 if tiene_numero else 0.0
+        has_number = bool(re.search(r'\d+', test_case.actual_output))
+        return 1.0 if has_number else 0.0
     
     @property
     def is_successful(self) -> bool:
@@ -250,16 +250,16 @@ class ContieneNumeroMetric(BaseMetric):
     
     @property
     def name(self) -> str:
-        return "contiene_numero"
+        return "contains_number"
 ```
 
 ---
 
 ## E14b · Predict the output — `logic.router`
 
-- **Case 1** `{"score": 72, "decision": "aprobar"}`: branch **`notif_aprobacion`** — `score >= 70 and decision == 'aprobar'` is satisfied.
-- **Case 2** `{"score": 55, "decision": "revisar"}`: branch **`cola_revision`** — `decision == 'revisar'` is satisfied.
-- **Case 3** `{"score": 72, "decision": "revisar"}`: branch **`cola_revision`** — even though the score is 72 (which should approve), the condition `decision == 'aprobar'` is not satisfied because `logic.rules` has not run yet and the LLM emitted "revisar". It routes incorrectly to the review queue.
+- **Case 1** `{"score": 72, "decision": "approve"}`: branch **`approval_notification`** — `score >= 70 and decision == 'approve'` is satisfied.
+- **Case 2** `{"score": 55, "decision": "review"}`: branch **`review_queue`** — `decision == 'review'` is satisfied.
+- **Case 3** `{"score": 72, "decision": "review"}`: branch **`review_queue`** — even though the score is 72 (which should approve), the condition `decision == 'approve'` is not satisfied because `logic.rules` has not run yet and the LLM emitted "review". It routes incorrectly to the review queue.
 
 **What Case 3 reveals:** execution order is critical. `logic.rules` MUST run before `logic.router`. The router must read `decision` **after** deterministic rules have corrected it. If the router runs with the LLM's tentative decision, a case that should auto-approve can be routed incorrectly. The correct pipeline is:
 
@@ -285,7 +285,7 @@ If retrieval works well (reasonable precision and recall) and the LLM is faithfu
 
 ### Answer B — Two likely causes of low `answer_relevancy`
 
-**Cause 1 — The synthesis prompt is not instructing the LLM to answer the specific question.** The LLM may be synthesizing chunks faithfully but producing a generic summary instead of answering directly what was asked. Investigation: review the `logic.prompt` template — does it explicitly include `{pregunta}` in the prompt? Does the instruction say "answer question X" or only "synthesize the context"?
+**Cause 1 — The synthesis prompt is not instructing the LLM to answer the specific question.** The LLM may be synthesizing chunks faithfully but producing a generic summary instead of answering directly what was asked. Investigation: review the `logic.prompt` template — does it explicitly include `{question}` in the prompt? Does the instruction say "answer question X" or only "synthesize the context"?
 
 **Cause 2 — The intent/query module is not reformulating the question well.** In template 03, the agent may reformulate the question before passing it to the retriever. If reformulation loses the original intent, the LLM receives a different question and answers that reformulated version. Investigation: log the reformulated query and compare it to the original question to detect intent loss.
 
@@ -306,19 +306,19 @@ If retrieval works well (reasonable precision and recall) and the LLM is faithfu
 
 ### A → **Passes**
 
-All fields comply: `decision` in the enum, `score` in [0, 100], one factor, justification ≥ 50 characters, at least one valid `Cita`.
+All fields comply: `decision` in the enum, `score` in [0, 100], one factor, justification ≥ 50 characters, at least one valid `Citation`.
 
 ### B → **ValidationError** (in `@field_validator("decision")`)
 
-`"APROBAR"` is not in `{"aprobar", "revisar", "rechazar", "no_determinable"}`. The validator raises `ValueError("decision inválida")`, which Pydantic wraps as `ValidationError`. Same case as E15 Task C: in scratch `validar_schema()` would return `(False, "...")`; with `instructor`, it would trigger a retry.
+`"APPROVE"` is not in `{"approve", "review", "reject", "undetermined"}`. The validator raises `ValueError("invalid decision")`, which Pydantic wraps as `ValidationError`. Same case as E15 Task C: in scratch `validate_schema()` would return `(False, "...")`; with `instructor`, it would trigger a retry.
 
 ### C → **ValidationError** (`score=150`)
 
-`score=150` violates `ge=0, le=100`. Even though `citations=[]` is syntactically valid in this model (no `min_length=1`), the out-of-range score is enough to fail. In the real lab, the `no_determinable` case uses `score=None`, not an invalid integer.
+`score=150` violates `ge=0, le=100`. Even though `citations=[]` is syntactically valid in this model (no `min_length=1`), the out-of-range score is enough to fail. In the real lab, the `undetermined` case uses `score=None`, not an invalid integer.
 
-### D → **ValidationError** (`factores` with 6 elements)
+### D → **ValidationError** (`factors` with 6 elements)
 
-`max_length=5` on `factores` limits to 5 elements; there are 6 (`f1`…`f6`). Equivalent to `"maxItems": 5` in JSON Schema from E15.
+`max_length=5` on `factors` limits to 5 elements; there are 6 (`f1`…`f6`). Equivalent to `"maxItems": 5` in JSON Schema from E15.
 
 ---
 
@@ -328,16 +328,16 @@ All fields comply: `decision` in the enum, `score` in [0, 100], one factor, just
 
 ```python
 score: int = Field(..., ge=0, le=100)
-factores: list[str] = Field(..., min_length=1, max_length=5)
-justificacion: str = Field(..., min_length=50)
-citations: list[Cita] = Field(..., min_length=1)
+factors: list[str] = Field(..., min_length=1, max_length=5)
+justification: str = Field(..., min_length=50)
+citations: list[Citation] = Field(..., min_length=1)
 ```
 
-### Question B — `list[Cita]` vs `list[dict]`
+### Question B — `list[Citation]` vs `list[dict]`
 
-`list[Cita]` requires that **each element** of the list be a validated `Cita` object (with non-empty `text` and `source`). With `list[dict]`, Pydantic only checks that it is a list of dictionaries — a `{"text": "", "source": "x"}` could slip through.
+`list[Citation]` requires that **each element** of the list be a validated `Citation` object (with non-empty `text` and `source`). With `list[dict]`, Pydantic only checks that it is a list of dictionaries — a `{"text": "", "source": "x"}` could slip through.
 
-Advantage over scratch `validar_schema()`: nested validation is automatic. In scratch you must manually iterate over `citations` and check each sub-field; with Pydantic, nested `Cita` inside `DecisionCredito` does it on instantiation.
+Advantage over scratch `validate_schema()`: nested validation is automatic. In scratch you must manually iterate over `citations` and check each sub-field; with Pydantic, nested `Citation` inside `CreditDecision` does it on instantiation.
 
 ---
 
@@ -347,10 +347,10 @@ Advantage over scratch `validar_schema()`: nested validation is automatic. In sc
 
 | Scratch function | Framework equivalent | Does it change with the framework? |
 |---|---|---|
-| `validar_schema(obj)` | Instantiate `DecisionCredito(**obj)` or implicit validation in `response_model` | Yes — declarative with Pydantic |
-| `fake_llm(chunks, solicitud)` | `evaluar_credito_con_instructor()` or `evaluar_credito_con_langchain()` | Yes — real LLM + structured output |
-| `verificar_groundedness(obj, chunks)` | RAGAS `faithfulness` (semantic batch evaluation) | Yes — deeper; does not replace structural runtime check |
-| `aplicar_regla_umbral(obj)` | `aplicar_regla_umbral(decision)` — **same Python code** | **No** — remains deterministic logic outside the LLM |
+| `validate_schema(obj)` | Instantiate `CreditDecision(**obj)` or implicit validation in `response_model` | Yes — declarative with Pydantic |
+| `fake_llm(chunks, request)` | `evaluate_credit_with_instructor()` or `evaluate_credit_with_langchain()` | Yes — real LLM + structured output |
+| `verify_groundedness(obj, chunks)` | RAGAS `faithfulness` (semantic batch evaluation) | Yes — deeper; does not replace structural runtime check |
+| `apply_threshold_rule(obj)` | `apply_threshold_rule(decision)` — **same Python code** | **No** — remains deterministic logic outside the LLM |
 
 ### Question B — RAGAS metric
 

@@ -9,9 +9,9 @@ This lab implements the core of `logic.structured + logic.rules + logic.citation
 | Responsibility | Who fulfills it | RAGorbit equivalent |
 |---|---|---|
 | Extract data from chunks and calculate score | `fake_llm()` | `logic.structured` with real LLM |
-| Ensure output meets the JSON contract | `validar_schema()` | JSON Schema in `logic.structured` |
-| Ensure citations are real (not invented) | `verificar_groundedness()` | `logic.citations` in `enforce` mode |
-| Apply the deterministic threshold | `aplicar_regla_umbral()` | `logic.rules` |
+| Ensure output meets the JSON contract | `validate_schema()` | JSON Schema in `logic.structured` |
+| Ensure citations are real (not invented) | `verify_groundedness()` | `logic.citations` in `enforce` mode |
+| Apply the deterministic threshold | `apply_threshold_rule()` | `logic.rules` |
 | Handle the no-evidence case | Condition in `fake_llm()` | Guard logic in `logic.structured` |
 
 The separation between these five functions is not just organizational — it is a correctness guarantee:
@@ -28,18 +28,18 @@ The separation between these five functions is not just organizational — it is
 
 The function simulates what an LLM would do with structured output. In a real system, the LLM would read chunk text and reason about risk factors. In our deterministic implementation:
 
-1. **Extracts data from structured metadata** in chunks (`_extraer_numerico()`). This works because sample chunks have `metadata` with numeric values already parsed. In a real system, the LLM would do this parsing by reading free text.
+1. **Extracts data from structured metadata** in chunks (`_extract_numeric()`). This works because sample chunks have `metadata` with numeric values already parsed. In a real system, the LLM would do this parsing by reading free text.
 
 2. **Applies the score formula.** The formula normalizes four dimensions to ranges [0, 30], [0, 30], [0, 25], and [0, 15] respectively. The weights reflect the relative importance of each factor in real credit evaluation (income and debt-to-income ratio are most important).
 
 3. **Builds factors and citations** by iterating over chunks. Each chunk with numeric data contributes a factor and a citation. This is the crucial part: citations are built from real chunks, not invented.
 
-4. **Handles the no-evidence case** by counting how many key numeric values it could extract. With fewer than 2 values (or without income), it returns the `no_determinable` object.
+4. **Handles the no-evidence case** by counting how many key numeric values it could extract. With fewer than 2 values (or without income), it returns the `undetermined` object.
 
-### `validar_schema()` — validation without jsonschema
+### `validate_schema()` — validation without jsonschema
 
 Implementing JSON Schema validation from scratch with stdlib requires verifying:
-- Presence of required fields (`for campo in SCHEMA["required"]`).
+- Presence of required fields (`for field in SCHEMA["required"]`).
 - Correct types (`isinstance()`).
 - Enum values (`if v not in valid_values`).
 - Numeric constraints (`minimum`, `maximum`).
@@ -47,17 +47,17 @@ Implementing JSON Schema validation from scratch with stdlib requires verifying:
 
 This implementation covers 90% of typical RAG schemas. For more complex schemas (patternProperties, $ref, allOf/anyOf/oneOf), using the third-party `jsonschema` library is more robust.
 
-### `verificar_groundedness()` — the most important check
+### `verify_groundedness()` — the most important check
 
 The check verifies that the `source` of each citation exists in the set of available chunks. This is a **structural** verification, not semantic: it does not check whether citation text is a precise paraphrase of the chunk, only that it points to a real source.
 
 For production with real LLMs, semantic verification (is citation text backed by the chunk?) is what RAGAS computes as `faithfulness`. The structural verification in this lab is the prior step.
 
-### `aplicar_regla_umbral()` — the principle of not delegating to the LLM
+### `apply_threshold_rule()` — the principle of not delegating to the LLM
 
 The function is intentionally simple: three conditions and a default. It has no state, no side effects, does not call the LLM. Given the same score, it always produces the same decision.
 
-The `_decision_llm_original` field records the LLM's tentative decision for audit. In production, this field would feed discrepancy analysis: if the LLM says "revisar" and the rule says "aprobar" (score exactly at the 70 limit), that discrepancy is informative for adjusting prompts or thresholds.
+The `_original_llm_decision` field records the LLM's tentative decision for audit. In production, this field would feed discrepancy analysis: if the LLM says "review" and the rule says "approve" (score exactly at the 70 limit), that discrepancy is informative for adjusting prompts or thresholds.
 
 ---
 
@@ -67,7 +67,7 @@ The `_decision_llm_original` field records the LLM's tentative decision for audi
 
 ### Pydantic + instructor
 
-`solucion_framework.py` shows the production approach in six parts (A–F). The block-by-block walkthrough is in [guide §10.7](../guia.md#107-block-by-block-walkthrough-of-labsolucion_frameworkpy).
+`solution_framework.py` shows the production approach in six parts (A–F). The block-by-block walkthrough is in [guide §10.7](../guia.md#107-block-by-block-walkthrough-of-labsolucion_frameworkpy).
 
 **Pydantic (schema):** defines the contract with explicit validators (`@field_validator`). The advantage over manual JSON Schema is that validation errors include field context and the received value — easier debugging.
 
@@ -78,8 +78,8 @@ The `_decision_llm_original` field records the LLM's tentative decision for audi
 **RAGAS:** evaluates `faithfulness` (are citations in the chunks?) and `answer_relevancy` (does the response answer the question?). In CI/CD, you would include these metrics as assertions:
 
 ```python
-assert metricas["faithfulness"] >= 0.80, "Faithfulness por debajo del umbral"
-assert metricas["answer_relevancy"] >= 0.70, "Answer relevancy por debajo del umbral"
+assert metrics["faithfulness"] >= 0.80, "Faithfulness below threshold"
+assert metrics["answer_relevancy"] >= 0.70, "Answer relevancy below threshold"
 ```
 
 ### When to use each approach
@@ -99,34 +99,34 @@ assert metricas["answer_relevancy"] >= 0.70, "Answer relevancy por debajo del um
 **Why is the score for file 001 84 and not some other number?**
 
 ```
-comp_ingreso    = min(85000/100000, 1.0) * 30  = 0.85 * 30   = 25.50
-comp_deuda      = max(1 - 12000/85000, 0) * 30 = 0.8588 * 30 = 25.76
-comp_pagos      = (97/100) * 25                              = 24.25
-comp_antiguedad = min(6/10, 1.0) * 15          = 0.6 * 15    = 9.00
-                                                       total = 84.51
+income_component    = min(85000/100000, 1.0) * 30  = 0.85 * 30   = 25.50
+debt_component      = max(1 - 12000/85000, 0) * 30 = 0.8588 * 30 = 25.76
+payments_component  = (97/100) * 25                              = 24.25
+tenure_component    = min(6/10, 1.0) * 15          = 0.6 * 15    = 9.00
+                                                          total  = 84.51
 score = int(84.51) = 84
 ```
 
-**Why is file 002 `no_determinable` if it has income of $31,000 in 2022?**
+**Why is file 002 `undetermined` if it has income of $31,000 in 2022?**
 
-Because that income is in the chunk **text**, not in `metadata` with key `ingreso_anual`. The `_extraer_numerico()` function only reads structured metadata. In a system with a real LLM, the model would read the text and extract the value; in our deterministic fake, we depend on structured metadata. This is intentional: it illustrates that pipeline quality depends on ingestion pipeline quality (well-labeled metadata).
+Because that income is in the chunk **text**, not in `metadata` with key `annual_income`. The `_extract_numeric()` function only reads structured metadata. In a system with a real LLM, the model would read the text and extract the value; in our deterministic fake, we depend on structured metadata. This is intentional: it illustrates that pipeline quality depends on ingestion pipeline quality (well-labeled metadata).
 
-**What would happen if the LLM emitted `"decision": "APROBAR"` in uppercase?**
+**What would happen if the LLM emitted `"decision": "APPROVE"` in uppercase?**
 
-Enum validation in `validar_schema()` would fail:
+Enum validation in `validate_schema()` would fail:
 ```
-Error: 'decision' debe ser uno de ['aprobar', 'revisar', 'rechazar', 'no_determinable'], pero es 'APROBAR'
+Error: 'decision' must be one of ['approve', 'review', 'reject', 'undetermined'], but is 'APPROVE'
 ```
-The pipeline would return `{"error": "schema_invalido", "detalle": "..."}` and would not reach the threshold rule. With `instructor`, this would trigger a retry with the error message as feedback to the LLM.
+The pipeline would return `{"error": "invalid_schema", "detail": "..."}` and would not reach the threshold rule. With `instructor`, this would trigger a retry with the error message as feedback to the LLM.
 
 ---
 
 ## Connections to the templates
 
-- **Template 02 (banking):** this lab implements exactly the core of that template. In production, `fake_llm()` → Claude with `logic.structured`, `validar_schema()` → RAGorbit runtime, `aplicar_regla_umbral()` → `logic.rules`.
+- **Template 02 (banking):** this lab implements exactly the core of that template. In production, `fake_llm()` → Claude with `logic.structured`, `validate_schema()` → RAGorbit runtime, `apply_threshold_rule()` → `logic.rules`.
 
-- **Template 04 (insurance):** same pattern but with `logic.rules` before `logic.structured` (deterministic eligibility rules apply first). The schema would be `{cubierto, monto_estimado, deducible_aplicado, clausula_aplicada, razon}`.
+- **Template 04 (insurance):** same pattern but with `logic.rules` before `logic.structured` (deterministic eligibility rules apply first). The schema would be `{covered, estimated_amount, applied_deductible, applicable_clause, reason}`.
 
-- **Template 03 (healthcare):** the `no_determinable` case is analogous to `criterio_no_encontrado == true` → escalation to `hitl.escalate`. The escalation decision is also not made by the LLM: the HITL node condition makes it.
+- **Template 03 (healthcare):** the `undetermined` case is analogous to `criterion_not_found == true` → escalation to `hitl.escalate`. The escalation decision is also not made by the LLM: the HITL node condition makes it.
 
 - **Template 08 (manufacturing):** the groundedness check is `logic.citations` in `enforce` mode. If the AMM does not have the procedure indexed, the response fails with an explicit error instead of hallucinating it.

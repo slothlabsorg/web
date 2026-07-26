@@ -20,7 +20,7 @@
 
 **Exercise 7 (A)** — **b)** The agent orchestrates when to retrieve and combines tools (template 01, 03).
 
-**Exercise 8 (P)** — **b)** `"revisar"`. Score 45 falls in range 40–69. The LLM value `"aprobar"` is ignored/overridden by `logic.rules`.
+**Exercise 8 (P)** — **b)** `"review"`. Score 45 falls in range 40–69. The LLM value `"approve"` is ignored/overridden by `logic.rules`.
 
 **Exercise 9 (A)** — **b)** idempotency → confirm → resilience (see `flow.json` of 01: payment_service → idempotency → confirm → resilience → orchestrator).
 
@@ -83,9 +83,9 @@ policy_store:Retriever → policy_tool:Retriever
 
 ## Block 4 — Rebuilding templates
 
-**Exercise 31 (A)** — **b)** 09 → 02 → 01 (PLAN §6 M11, plantillas-mapeadas).
+**Exercise 31 (A)** — **b)** 09 → 02 → 01 (PLAN §6 M11, mapped-templates).
 
-**Exercise 32 (P)** — **b)** `1, 0, 7, 3` — actual output of `solucion_scratch.py` / `expected.md`.
+**Exercise 32 (P)** — **b)** `1, 0, 7, 3` — actual output of `solution_scratch.py` / `expected.md`.
 
 **Exercise 33 (A)** — **b)** Zero friction, no DB server (README 09 §9).
 
@@ -93,7 +93,7 @@ policy_store:Retriever → policy_tool:Retriever
 
 **Exercise 35 (A)** — **b)** Each factor anchored to fragments from the current file.
 
-**Exercise 36 (P)** — **c)** `"aprobar"` — score 72 ≥ 70.
+**Exercise 36 (P)** — **c)** `"approve"` — score 72 ≥ 70.
 
 **Exercise 37 (A)** — **b)** Fare precision guardrail; semantic similarity can cross fares (README 01 §9).
 
@@ -109,16 +109,16 @@ policy_store:Retriever → policy_tool:Retriever
 
 **Exercise 41 (A)** — **b)** Fast deterministic CI; eval with LLM in nightly/pre-release (guide §6).
 
-**Exercise 42 (P)** — **b)** `logic.rules` — threshold 40–69 → revisar.
+**Exercise 42 (P)** — **b)** `logic.rules` — threshold 40–69 → review.
 
 **Exercise 43 (A)** — **b)** Groundedness of the response in context.
 
 **Exercise 44 (D)** — Example:
 | Case | Assert |
 |------|--------|
-| "¿Vacaciones primer año?" | must_contain "12 días"; must_cite §3 |
-| "¿Precio acciones?" | must_contain "no está disponible"; citations_ok or no invented claim |
-| "¿Vacaciones 3 años?" | must_contain "18 días"; faithfulness ≥ 0.9 |
+| "Vacation first year?" | must_contain "12 days"; must_cite §3 |
+| "Stock price?" | must_contain "not available"; citations_ok or no invented claim |
+| "Vacation 3 years?" | must_contain "18 days"; faithfulness ≥ 0.9 |
 
 **Exercise 45 (E)** — **b)** promptfoo or RAGAS with versioned dataset in git.
 

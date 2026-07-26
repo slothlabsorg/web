@@ -61,14 +61,14 @@ Given this code from lab M10:
 def transcribe_audio(audio_ref: str) -> dict:
     data = _load("audio_notificacion.json")
     if audio_ref and audio_ref != data["audio_id"]:
-        return {"error": f"Audio desconocido: {audio_ref!r}"}
+        return {"error": f"Unknown audio: {audio_ref!r}"}
     return {"transcript": data["transcript"], "language": data["language"]}
 
 print(transcribe_audio("AUDIO-INEXISTENTE").get("error", "OK"))
 print(transcribe_audio("AUDIO-MLG-001")["transcript"][:40])
 ```
 
-Assuming `audio_notificacion.json` contains `"audio_id": "AUDIO-MLG-001"` and a transcript that starts with "Técnico en rampa", what does the script print?
+Assuming `audio_notificacion.json` contains `"audio_id": "AUDIO-MLG-001"` and a transcript that starts with "Ramp technician", what does the script print?
 
 ---
 
@@ -117,14 +117,14 @@ In template 08, `model.vision` connects to `loader.multimodal` with `sectionSche
 **Context:** Template 04 (insurance). The policy has a deductible table:
 
 ```
-| Cobertura   | Deducible USD |
-| Colisión    | 500           |
-| Robo        | 1000          |
+| Coverage    | Deductible USD |
+| Collision   | 500            |
+| Theft       | 1000           |
 ```
 
 `loader.multimodal` with `extractTables: true` converts this to JSON.
 
-**(a)** Why is structured JSON preferable to plain text "Colisión 500 Robo 1000" for `logic.rules`?
+**(a)** Why is structured JSON preferable to plain text "Collision 500 Theft 1000" for `logic.rules`?
 
 **(b)** Name one RAGorbit node that consumes that JSON without delegating thresholds to the LLM.
 
@@ -184,9 +184,9 @@ Justify the order. Which is viable in the course environment (no network)?
 
 ## Exercise 25 · Template 07 — intent gate
 
-In template 07, after `io.stt` comes `model.intent` with label `no_accionable`.
+In template 07, after `io.stt` comes `model.intent` with label `non_actionable`.
 
-**(a)** Which audio fragments does it typically classify as `no_accionable`?
+**(a)** Which audio fragments does it typically classify as `non_actionable`?
 
 **(b)** Why is this gate especially important in an STT streaming pipeline (vs batch)?
 
@@ -209,11 +209,11 @@ In lab M10, `foto_fuga.json` has `"severity_hint": "WARNING"` and the scratch re
 ```python
 def generate_answer(transcript, vision, chunks):
     if not chunks:
-        return {"answer": "No hay procedimiento.", "citations": []}
+        return {"answer": "No procedure found.", "citations": []}
     text = chunks[0]["text"]
     return {
-        "answer": f"Según el manual: {text}",
-        "citations": [],  # pendiente: llenar después
+        "answer": f"According to the manual: {text}",
+        "citations": [],  # pending: fill later
     }
 ```
 

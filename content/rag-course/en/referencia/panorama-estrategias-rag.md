@@ -528,7 +528,7 @@ MMR (Maximal Marginal Relevance):
   [c1, c3, c5] → LLM
 ```
 
-Formula: `MMR = argmax [ λ·Sim(d,Q) − (1−λ)·max Sim(d, d_seleccionado) ]`
+Formula: `MMR = argmax [ λ·Sim(d,Q) − (1−λ)·max Sim(d, d_selected) ]`
 
 **Cost / latency:** very low (~1–5 ms). Only arithmetic on already computed vectors.
 

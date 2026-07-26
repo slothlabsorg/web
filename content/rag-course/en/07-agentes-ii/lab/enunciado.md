@@ -18,7 +18,7 @@ Your system must:
 
 ## Available data
 
-In `lab/datos/`:
+In `lab/data/`:
 
 | File | Content |
 |---------|-----------|
@@ -37,7 +37,7 @@ In `lab/datos/`:
                     │       ├─ ProfileAgent                   │
                     │       ├─ PolicyAgent                    │
                     │       ├─ AlternativesAgent              │
-                    │       ├─ AutoConfirmAgent (simple)        │
+                    │       ├─ AutoConfirmAgent (simple)      │
                     │       └─ FakeLLMAgent (complex)         │
                     └─────────────────────────────────────────┘
 ```
@@ -60,7 +60,7 @@ Run: `python3 solucion_scratch.py` — must match [`expected.md`](expected.md).
 
 ### Part B — CrewAI + LangGraph (layer ③, guided task)
 
-> **Read first:** [guia.md §9 — Layer ③ explained: multi-agent frameworks from scratch](../guia.md#9-layer--explained-multi-agent-frameworks-from-scratch). Also review [M6 §8](../06-agentes-i/guia.md#8-layer--explained-langgraph-from-scratch-from-your-react-loop-to-the-graph).
+> **Read first:** [guide.md §9 — Layer ③ explained: multi-agent frameworks from scratch](../guia.md#9-layer--explained-multi-agent-frameworks-from-scratch). Also review [M6 §8](../06-agentes-i/guia.md#8-layer--explained-langgraph-from-scratch-from-your-react-loop-to-the-graph).
 
 **Goal:** the **same problem** solved in **CrewAI** and **LangGraph multi-agent**; compare trade-offs.
 
@@ -128,12 +128,12 @@ def classify(event):
 ### Hint 2 — Auto-confirm vs LLM
 
 ```python
-# Auto-confirm si:
+# Auto-confirm if:
 #   track == "simple" AND (
 #     len(alternatives) == 1
-#     OR una alternativa es >= 4h más rápida que la segunda
+#     OR one alternative is >= 4h faster than the second
 #   )
-# LLM si:
+# LLM if:
 #   track == "complex" (premium multi-leg, CRITICAL, etc.)
 ```
 

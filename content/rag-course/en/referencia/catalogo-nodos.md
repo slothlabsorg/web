@@ -61,7 +61,7 @@ The **input** node determines `deploymentTarget` (chat-service, event-worker, te
 | Field | Values | Default |
 |-------|---------|---------|
 | `provider` | `transcribe` / `deepgram` | `deepgram` |
-| `language` | ISO code | `es` |
+| `language` | ISO code | `en` |
 
 **Alternatives:** Deepgram Nova-2 (low latency, native streaming), Amazon Transcribe Streaming, Google Speech-to-Text v2, OpenAI Whisper (via API, not true streaming), local Whisper (open model, no per-token cost). Choice depends on target latency vs cost vs supported languages.
 
@@ -570,7 +570,7 @@ The `provider:model-name` format lets you change provider by editing one field, 
 
 **What it does:** Normalizes and expands the user query before sending it to the retriever. Converts internal jargon, abbreviations, or synonyms into canonical terms the index expects. Can expand the query to improve recall (add synonyms or alternative reformulations).
 
-**When to use:** When users use vocabulary different from the documents. Example: in telecom, "baja de plan" must map to "cancelación de servicio" so the retriever finds the correct chunks.
+**When to use:** When users use vocabulary different from the documents. Example: in telecom, "plan downgrade" must map to "service cancellation" so the retriever finds the correct chunks.
 
 **When NOT to use:** For domains where user vocabulary matches the documents (adds no value in basic HR, for example).
 
@@ -612,7 +612,7 @@ The `provider:model-name` format lets you change provider by editing one field, 
 
 ### `logic.structured`
 
-**What it does:** Structured output validated against a JSON Schema. Instead of free text, the LLM produces a JSON object with defined fields (e.g. `{score, decision, factores, justificacion}`). With `requireCitations: true`, requires each referenceable field to cite its source.
+**What it does:** Structured output validated against a JSON Schema. Instead of free text, the LLM produces a JSON object with defined fields (e.g. `{score, decision, factors, justification}`). With `requireCitations: true`, requires each referenceable field to cite its source.
 
 **When to use:** When the response consumer is a system (not a human) or when the response must be reproducible and auditable. Examples: credit evaluation ([02](../../examples/02-banking-credit-scoring/)), claims adjudication ([04](../../examples/04-insurance-claims/)), contract review ([05](../../examples/05-legal-contract-review/)).
 

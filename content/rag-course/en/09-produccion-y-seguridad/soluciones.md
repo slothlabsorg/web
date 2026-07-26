@@ -55,7 +55,7 @@ The second call with `key-A` returns cache. `key-B` is a new charge. The cache's
 **Fix:** evaluate the **user** message directly:
 
 ```python
-CONFIRM_WORDS = ("confirmo", "acepto", "sí")
+CONFIRM_WORDS = ("I confirm", "I accept", "yes")
 if amount >= 50:
     if not any(w in user_message.lower() for w in CONFIRM_WORDS):
         return {"status": "pending"}
@@ -114,7 +114,7 @@ Kafka+Postgres wins on mass throughput of short events (template 10), not on ope
 
 ## Exercise 10
 
-1. **Input:** `PromptGuardrail` / Guardrails AI — detects "olvida tus reglas", "eres admin", "ejecuta PaymentService".
+1. **Input:** `PromptGuardrail` / Guardrails AI — detects "forget your rules", "you are admin", "execute PaymentService".
 2. **Tool:** `guardrail.confirm` + `guardrail.pre-tool` — even if the LLM emits tool call, the graph blocks charges without confirmation and with suspicious amount=0.
 3. **Permissions:** agent scope does not include confirm bypass; in MCP (M8), `roots` and sampling approval prevent unauthorized actions.
 
@@ -152,14 +152,14 @@ The LLM still generates; what improves is **what context it receives** — cheap
 
 **Scenario that fails:**
 
-1. User requests charge → `confirmed=False` → `{"status": "pending"}` **not cached** in the bug shown... 
+1. User requests charge → `confirmed=False` → `{"status": "pending"}` **not cached** in the bug shown...
 
 In the given code, if the first call with `confirmed=False` does **not** enter cache, the second with `confirmed=True` works. But if the first call **does** cache `pending`:
 
 ```python
-# Variante del bug: cachea el pending
-cache[key] = {"status": "pending"}  # al primer intento
-# Usuario confirma → segundo intento devuelve pending cacheado ¡sin cobrar!
+# Bug variant: caches the pending state
+cache[key] = {"status": "pending"}  # on the first attempt
+# User confirms → second attempt returns cached pending without charging!
 ```
 
 The exercise bug: caching **before** confirmation makes reconnections after confirm return stale state. Idempotency must apply only to **executed** charges or keys that include confirmed state.
@@ -213,7 +213,7 @@ def pre_tool_guard(tool_name: str, args: dict) -> dict:
         return {
             "allowed": False,
             "error": "denied",
-            "message": "Montos > USD 1000 requieren aprobación HITL.",
+            "message": "Amounts > USD 1000 require HITL approval.",
         }
     return {"allowed": True}
 ```

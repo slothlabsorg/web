@@ -86,7 +86,7 @@ A 768-dimensional model trained on healthcare data will outperform a 3,072-dimen
 
 The model was trained with these prefixes to distinguish the role of the text.
 
-During training, E5 and BGE received millions of (query, passage) pairs with their corresponding prefixes. The model learned that query vectors should align with passage vectors in an asymmetric space: the query "¿cuántos días de vacaciones?" should be close to the passage "Los empleados tienen 15 días de vacaciones al año", not to another similar query. Without the prefixes, vectors fall in a "neutral" zone of the space and recall drops ~5–15% according to the BEIR benchmark.
+During training, E5 and BGE received millions of (query, passage) pairs with their corresponding prefixes. The model learned that query vectors should align with passage vectors in an asymmetric space: the query "how many vacation days do I get?" should be close to the passage "Employees have 15 vacation days per year", not to another similar query. Without the prefixes, vectors fall in a "neutral" zone of the space and recall drops ~5–15% according to the BEIR benchmark.
 
 ---
 
@@ -120,8 +120,8 @@ Result: the returned top-K will contain documents about "personnel selection" wi
 
 **Fix:**
 ```python
-index.nprobe = 5  # explorar varios clústeres vecinos
-# O mejor: nprobe = max(1, nlist // 10) como heurística inicial
+index.nprobe = 5  # explore several neighboring clusters
+# Or better: nprobe = max(1, nlist // 10) as an initial heuristic
 ```
 
 With `nprobe=5`, C12 and the next 4 nearest clusters are explored, likely including C47. Recall improves from ~60% to ~90% with latency only 2–5× higher.
@@ -132,22 +132,22 @@ With `nprobe=5`, C12 and the next 4 nearest clusters are explored, likely includ
 
 ### 17.a) Find the bug
 
-**Bug 1:** In `metadatas`, the third element contains `"etiquetas": ["flexibilidad", "bienestar"]`. ChromaDB does not support list-type values in metadata. It only accepts `str`, `int`, `float`, `bool`. It will raise an error when calling `add()`.
+**Bug 1:** In `metadatas`, the third element contains `"tags": ["flexibility", "wellness"]`. ChromaDB does not support list-type values in metadata. It only accepts `str`, `int`, `float`, `bool`. It will raise an error when calling `add()`.
 
 **Fix:** convert the list to a string or remove the field.
 ```python
-{"categoria": "horario", "año": 2024}
-# o bien:
-{"categoria": "horario", "año": 2024, "etiquetas": "flexibilidad,bienestar"}
+{"category": "schedule", "year": 2024}
+# or:
+{"category": "schedule", "year": 2024, "tags": "flexibility,wellness"}
 ```
 
-**Bug 2:** The filter `where={"categoria": {"$contains": "horario"}}` is incorrect. `$contains` is a `where_document` operator (text search in the document), not a metadata filter operator for equality. To filter metadata by exact value, use `$eq` or simply the value directly.
+**Bug 2:** The filter `where={"category": {"$contains": "schedule"}}` is incorrect. `$contains` is a `where_document` operator (text search in the document), not a metadata filter operator for equality. To filter metadata by exact value, use `$eq` or simply the value directly.
 
 **Fix:**
 ```python
-where={"categoria": "horario"}
-# o explícitamente:
-where={"categoria": {"$eq": "horario"}}
+where={"category": "schedule"}
+# or explicitly:
+where={"category": {"$eq": "schedule"}}
 ```
 
 ### 17.b) Upsert for re-ingestion
@@ -160,22 +160,22 @@ Use **`upsert`**.
 
 ```python
 collection.upsert(
-    ids=ids_nuevos_o_existentes,
-    documents=textos_actualizados,
-    metadatas=metadatos_actualizados
+    ids=new_or_existing_ids,
+    documents=updated_texts,
+    metadatas=updated_metadata
 )
 ```
 
 ### 17.c) Query with multiple filters
 
 ```python
-resultados = collection.query(
-    query_texts=["cobertura dental beneficios"],
+results = collection.query(
+    query_texts=["dental benefits coverage"],
     n_results=5,
     where={
         "$and": [
-            {"categoria": "beneficios"},
-            {"año": {"$gte": 2024}}
+            {"category": "benefits"},
+            {"year": {"$gte": 2024}}
         ]
     },
     where_document={"$contains": "dental"}
@@ -230,7 +230,7 @@ Data cannot leave their servers → rules out all SaaS (Pinecone, Qdrant Cloud).
 
 **Choice: Weaviate**
 
-Native hybrid search (semantic + BM25) is key for e-commerce: users search "zapatillas Nike Air Max rojas talla 42" — mix of semantics ("red sneakers") and exact text ("Nike Air Max", "talla 42"). Weaviate has hybrid search modules and rich GraphQL filters. Supports multilingual with multilingual models. Deploys with Docker compose.
+Native hybrid search (semantic + BM25) is key for e-commerce: users search "red Nike Air Max sneakers size 42" — mix of semantics ("red sneakers") and exact text ("Nike Air Max", "size 42"). Weaviate has hybrid search modules and rich GraphQL filters. Supports multilingual with multilingual models. Deploys with Docker compose.
 
 **Why not Qdrant:** Qdrant has excellent filters but hybrid search (text + semantic) is not as first-class as in Weaviate. You would have to implement hybrid scoring manually.
 
@@ -257,13 +257,13 @@ The real cause is not FAISS but the design: they chose the wrong tool for a case
 | Aspect | Scratch (`embeder`) | Framework (`encode`) |
 |--------|---------------------|----------------------|
 | Vector dimensions | 20 fixed (size of `VOCAB` vocabulary) | 768 (defined by BGE-base model) |
-| Synonym capture | No — only counts exact words in vocabulary | Yes — the transformer learned that "vacaciones" and "tiempo libre" are semantically close |
-| Who normalizes the vector | You call `normalizar()` explicitly before indexing | Parameter `normalize_embeddings=True` in `.encode()` returns unit vectors |
+| Synonym capture | No — only counts exact words in vocabulary | Yes — the transformer learned that "vacation" and "time off" are semantically close |
+| Who normalizes the vector | You call `normalize()` explicitly before indexing | Parameter `normalize_embeddings=True` in `.encode()` returns unit vectors |
 | Dependencies | stdlib only (`math`, `json`) | `pip install sentence-transformers` + model download (~440 MB) + network the first time |
 
 ### 19.b) Answer: B
 
-`IndexFlatIP` computes dot product. Without normalization, `A·B = ‖A‖ × ‖B‖ × cos(θ)`: longer texts produce vectors with larger norm and dominate the ranking even if they are not more semantically relevant. The fix is `modelo.encode(textos, normalize_embeddings=True)` before `add()`.
+`IndexFlatIP` computes dot product. Without normalization, `A·B = ‖A‖ × ‖B‖ × cos(θ)`: longer texts produce vectors with larger norm and dominate the ranking even if they are not more semantically relevant. The fix is `model.encode(texts, normalize_embeddings=True)` before `add()`.
 
 The other options are incorrect: BGE-base has 768 dimensions (A is false); FAISS works with any float32 vector (C is false); `IndexFlatL2` would measure Euclidean distance, it would not solve the magnitude problem if you do not normalize (D is false).
 
@@ -273,9 +273,9 @@ The other options are incorrect: BGE-base has 768 dimensions (A is false); FAISS
 
 ### 20.a) Prediction of `collection.query(...)`
 
-1. **Number of ids:** 1 (only one document has `categoria=vacaciones`, and `n_results=2` cannot return more than exists after the filter).
+1. **Number of ids:** 1 (only one document has `category=vacation`, and `n_results=2` cannot return more than exists after the filter).
 
-2. **First result id:** `"v1"` — the only one that passes `where={"categoria": "vacaciones"}`.
+2. **First result id:** `"v1"` — the only one that passes `where={"category": "vacation"}`.
 
 3. **Top-1 distance:** `0.0` — the query embedding `[1.0, 0.0, 0.0]` is identical to `v1`'s embedding.
 
@@ -286,12 +286,12 @@ The other options are incorrect: BGE-base has 768 dimensions (A is false); FAISS
 ### 20.b) Complete the `where`
 
 ```python
-resultados = collection.query(
-    query_texts=["cobertura dental"],
+results = collection.query(
+    query_texts=["dental coverage"],
     n_results=5,
     where={
         "$and": [
-            {"categoria": {"$in": ["beneficios", "vacaciones"]}},
+            {"category": {"$in": ["benefits", "vacation"]}},
             {"version": {"$gte": "2024"}}
         ]
     },
@@ -313,24 +313,24 @@ FAISS is a **vector index library**: internally it only stores float arrays (vec
 
 ChromaDB is a **complete vector database**: each collection entry stores `id`, `document`, `embedding`, and `metadata` together. When you call `query()`, it returns ids, texts, and metadata without an external map.
 
-That is why with FAISS you need `id_a_doc = {i: doc}` (or similar) to translate the numeric index returned by `search()` to the original document with its metadata.
+That is why with FAISS you need `id_to_doc = {i: doc}` (or similar) to translate the numeric index returned by `search()` to the original document with its metadata.
 
 ### 21.b) Post-filtering bug
 
-**Bug:** `k=3` is too small. The 3 globally nearest neighbors probably belong to the other 95 categories (95% of the corpus). After filtering by `vacaciones`, the list is empty.
+**Bug:** `k=3` is too small. The 3 globally nearest neighbors probably belong to the other 95 categories (95% of the corpus). After filtering by `vacation`, the list is empty.
 
 **Minimal fix:** request more candidates before filtering:
 
 ```python
-k_extra = 50  # o 100; regla: varias veces el k deseado
+k_extra = 50  # or 100; rule: several times the desired k
 scores, indices = index.search(query_vec, k=k_extra)
 
-filtrados = []
+filtered = []
 for score, idx in zip(scores[0], indices[0]):
-    doc = id_a_doc[idx]
-    if doc["metadata"]["categoria"] == filtro_categoria:
-        filtrados.append((score, doc))
-    if len(filtrados) == 3:
+    doc = id_to_doc[idx]
+    if doc["metadata"]["category"] == filter_category:
+        filtered.append((score, doc))
+    if len(filtered) == 3:
         break
 ```
 
@@ -338,6 +338,6 @@ With 100 docs and only 5 vacation docs, `k=50` almost certainly finds enough can
 
 ### 21.c) Prediction with 12 vs 1M documents
 
-**With 12 documents (workshop):** requesting `k=3` and filtering **can fail** if the 3 most similar globally are not in category `vacaciones` (there are 3 vacation and 9 other docs). That is why `solucion_framework.py` uses `k_extra=12` (all). With 12 docs it always works.
+**With 12 documents (workshop):** requesting `k=3` and filtering **can fail** if the 3 most similar globally are not in category `vacation` (there are 3 vacation and 9 other docs). That is why `solucion_framework.py` uses `k_extra=12` (all). With 12 docs it always works.
 
 **With 1 million and 0.1% vacation (~1000 docs):** requesting `k=3` **almost certainly fails** — the probability that the global top 3 are vacation docs is ~0.01³. You need `k=500–5000` and recall may still degrade. This is the use case where ChromaDB, Qdrant, or pgvector (pre-filtering) are mandatory.

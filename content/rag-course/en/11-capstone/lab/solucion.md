@@ -21,7 +21,7 @@ If 09 does not pass tests, do not advance: it is the **MV-RAG** everything depen
 ```
 09:  embed → retrieve → prompt → cite
       ↓
-02:  + metadata filter + structured JSON + rules (determinista)
+02:  + metadata filter + structured JSON + rules (deterministic)
       ↓
 01:  + agent loop + tools + PolicyRAG + guardrails + audit
 ```
@@ -32,27 +32,27 @@ If 09 does not pass tests, do not advance: it is the **MV-RAG** everything depen
 
 ### 2.1 Script architecture
 
-`solucion_scratch.py` implements the full template 09 pipeline with stdlib:
+`solution_scratch.py` implements the full template 09 pipeline with stdlib:
 
 | Block | Equivalent RAGorbit node |
 |--------|---------------------------|
-| `cargar_chunks()` | `loader.pdf` + `ingest.chunker` |
+| `load_chunks()` | `loader.pdf` + `ingest.chunker` |
 | `embed()` + `VectorStore` | `model.embedding` + `store.chroma` |
 | `store.retrieve()` | `retrieval.vector` (topK=4) |
-| `construir_prompt()` | `logic.prompt` |
-| `fake_llm()` | `model.llm` (stub determinista) |
-| `aplicar_citas()` | `logic.citations` enforce |
+| `build_prompt()` | `logic.prompt` |
+| `fake_llm()` | `model.llm` (deterministic stub) |
+| `apply_citations()` | `logic.citations` enforce |
 
 ### 2.2 Why bag-of-words returns indices 1, 0, 7, 3
 
-Chunk §4 (index 1) repeats "años" and "días" more often than §3 (index 0), even though §3 contains the exact answer ("18 días a los 3 años"). This is **intentionally pedagogical**: it demonstrates the toy embedding limitation and justifies real `model.embedding` in production.
+Chunk §4 (index 1) repeats "years" and "days" more often than §3 (index 0), even though §3 contains the exact answer ("18 days at 3 years"). This is **intentionally pedagogical**: it demonstrates the toy embedding limitation and justifies real `model.embedding` in production.
 
-The `fake_llm` looks for the "3 años" + "18 días" pattern in chunks and produces the correct response with §3 citation.
+The `fake_llm` looks for the "3 years" + "18 days" pattern in chunks and produces the correct response with §3 citation.
 
 ### 2.3 Verification
 
 ```bash
-cd lab && python3 solucion_scratch.py
+cd lab && python3 solution_scratch.py
 ```
 
 Must match [`expected.md`](expected.md).
@@ -61,19 +61,19 @@ Must match [`expected.md`](expected.md).
 
 ## 3. Framework solution — Template 09
 
-See [`solucion_framework.py`](solucion_framework.py) block by block with [guide §12](../guia.md#12-layer--explained-how-to-rebuild-a-template-with-a-framework).
+See [`solution_framework.py`](solution_framework.py) block by block with [guide §12](../guia.md#12-layer--explained-how-to-rebuild-a-template-with-a-framework).
 
 **Scratch → LangChain correspondence summary:**
 
 | Scratch | Framework |
 |---------|-----------|
-| `cargar_chunks()` | `TextLoader` + `CharacterTextSplitter` |
+| `load_chunks()` | `TextLoader` + `CharacterTextSplitter` |
 | `embed()` | `OpenAIEmbeddings` |
 | `VectorStore` | `Chroma.from_documents()` |
 | `store.retrieve()` | `retriever.invoke()` |
-| `construir_prompt()` | `ChatPromptTemplate` |
+| `build_prompt()` | `ChatPromptTemplate` |
 | `fake_llm()` | `ChatOpenAI` / `ChatAnthropic` |
-| `aplicar_citas()` | `enforce_citations()` post-chain |
+| `apply_citations()` | `enforce_citations()` post-chain |
 
 ---
 
@@ -81,7 +81,7 @@ See [`solucion_framework.py`](solucion_framework.py) block by block with [guide 
 
 ### 4.1 Scratch — additional pieces
 
-1. **Multiple loaders:** read `declaracion_2023.txt`, `estado_cuenta_q3.txt`, `datos_financieros.csv` from `datos/applicants/applicant_001/`.
+1. **Multiple loaders:** read `declaration_2023.txt`, `account_statement_q3.txt`, `financial_data.csv` from `data/applicants/applicant_001/`.
 2. **Metadata:** each chunk carries `doc_type` and `period`.
 3. **Hard-filter:** `retrieve(query, filters={"period": "2023"})`.
 4. **Structured stub:**
@@ -90,13 +90,13 @@ See [`solucion_framework.py`](solucion_framework.py) block by block with [guide 
 def fake_structured_llm(chunks) -> dict:
     return {
         "score": 72,
-        "decision": "aprobar",  # será sobrescrito
-        "factores": [
-            "Ingresos $85,000 [declaracion_2023.txt §Ingresos]",
-            "Pagos puntuales 97% [estado_cuenta_q3.txt §Historial]",
-            "Ratio deuda/ingreso 14% [datos_financieros.csv]",
+        "decision": "approve",  # will be overridden
+        "factors": [
+            "Income $85,000 [declaration_2023.txt §Income]",
+            "On-time payments 97% [account_statement_q3.txt §History]",
+            "Debt-to-income ratio 14% [financial_data.csv]",
         ],
-        "justificacion": "Perfil sólido documentado en expediente 001.",
+        "justification": "Solid profile documented in file 001.",
     }
 ```
 
@@ -106,11 +106,11 @@ def fake_structured_llm(chunks) -> dict:
 def apply_rules(result: dict) -> dict:
     s = result["score"]
     if s >= 70:
-        result["decision"] = "aprobar"
+        result["decision"] = "approve"
     elif s >= 40:
-        result["decision"] = "revisar"
+        result["decision"] = "review"
     else:
-        result["decision"] = "rechazar"
+        result["decision"] = "reject"
     return result
 ```
 
@@ -127,12 +127,12 @@ def apply_rules(result: dict) -> dict:
 
 ### 5.1 Scratch — ReAct structure
 
-Reuses patterns from [`06-agentes-i/lab/solucion_scratch.py`](../../06-agentes-i/lab/solucion_scratch.py):
+Reuses patterns from [`06-agents-i/lab/solution_scratch.py`](../../06-agents-i/lab/solution_scratch.py):
 
 ```python
 TOOLS = {
     "ReservationService": get_itinerary,
-    "policy_rag": policy_rag,  # con hard-filters
+    "policy_rag": policy_rag,  # with hard-filters
     "InventoryService": search_flights,
     "PricingService": calculate_delta,
     "PaymentService": wrapped_payment,  # idempotency→confirm→resilience
@@ -156,13 +156,13 @@ TOOLS = {
 
 ## 6. Reference design — Challenge 2 (telemedicine)
 
-Brief: [`datos/brief_telemedicina.json`](datos/brief_telemedicina.json).
+Brief: [`data/brief_telemedicine.json`](data/brief_telemedicine.json).
 
 ### 6.1 Proposed diagram
 
 ```
-[INGESTA]
-  loader.pdf (guías por plan)
+[INGESTION]
+  loader.pdf (guidelines by plan)
     → ingest.chunker (by-section)
     → ingest.metadata (plan, condition, effective_date)
     → store.pgvector (clinical_guidelines)
@@ -178,7 +178,7 @@ Brief: [`datos/brief_telemedicina.json`](datos/brief_telemedicina.json).
                               ▼
                         logic.citations (enforce)
                               ▼
-                        hitl.escalate (severidad alta | sin criterio)
+                        hitl.escalate (high severity | no criteria)
                               ▼
                         io.panel (cite: true)
                               ▼

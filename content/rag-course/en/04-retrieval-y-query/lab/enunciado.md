@@ -10,28 +10,28 @@ The problem: the current system returns policies from any fare regardless of whi
 
 ## The corpus
 
-The `datos/` directory contains **9 policies** in JSON format, 3 per fare, with metadata `fare_class` and `route_type`:
+The `data/` directory contains **9 policies** in JSON format, 3 per fare, with metadata `fare_class` and `route_type`:
 
 ```
-datos/politicas.json   ← list of 9 documents with text and metadata
+data/policies.json   ← list of 9 documents with text and metadata
 ```
 
 Each document has:
 ```json
 {
   "id": "pol_001",
-  "texto": "...",
+  "text": "...",
   "metadata": {
     "fare_class": "Basic",
     "route_type": "domestic",
-    "categoria": "equipaje"
+    "category": "baggage"
   }
 }
 ```
 
 ## Task
 
-Implement in `solucion_scratch.py` (stdlib only, deterministic):
+Implement in `solution_scratch.py` (stdlib only, deterministic):
 
 ### Step 1: BM25 from scratch
 Implement BM25 (k1=1.5, b=0.75) over the full corpus. Given a query, return all 9 documents with their scores.
@@ -48,7 +48,7 @@ Apply a simple deterministic reranker: count how many query tokens appear in the
 ### Step 5: Without filter vs with filter
 Run the full pipeline for the test query with target `fare_class` `"Basic"`:
 
-**Query:** `"¿puedo hacer cambios en mi vuelo sin pagar cargos adicionales?"`
+**Query:** `"can I make changes to my flight without paying additional fees?"`
 
 - **Without filter:** show the fused + reranked top-3.
 - **With filter:** apply `fare_class == "Basic"` before BM25/cosine (exclude non-Basic documents). Show the new top-3.
@@ -57,11 +57,11 @@ Run the full pipeline for the test query with target `fare_class` `"Basic"`:
 
 - Without filter: the top-3 contains at least one document that is NOT `fare_class="Basic"`.
 - With filter: the top-3 contains ONLY `fare_class="Basic"` documents and results are correctly citable.
-- The script runs with `python3 solucion_scratch.py` and produces exactly what `expected.md` describes.
+- The script runs with `python3 solution_scratch.py` and produces exactly what `expected.md` describes.
 
 ## Staged hints
 
-**Level 1:** How to tokenize? Use `texto.lower().split()` and remove common stopwords (`["de", "en", "la", "el", "los", "las", "y", "a", "o", "que", "es", "se", "por", "un", "una", "con", "sin", "para", "del"]`).
+**Level 1:** How to tokenize? Use `text.lower().split()` and remove common stopwords (`["the", "a", "an", "in", "on", "at", "to", "for", "of", "and", "or", "is", "it", "that", "with", "without", "by", "from", "as"]`).
 
 **Level 2:** For IDF: `math.log((N - n_t + 0.5) / (n_t + 0.5) + 1)` where N is total documents and n_t is how many contain term t.
 
@@ -69,25 +69,25 @@ Run the full pipeline for the test query with target `fare_class` `"Basic"`:
 
 **Level 4:** For RRF, iterate rankings by position (rank starts at 1, not 0) and accumulate `1/(60+rank)` for each list.
 
-**Level 5:** The hard filter is applied at the start: before computing any score, filter the document list to only those with `metadata["fare_class"] == fare_class_objetivo`.
+**Level 5:** The hard filter is applied at the start: before computing any score, filter the document list to only those with `metadata["fare_class"] == target_fare_class`.
 
 ---
 
 ## Layer ③ — LangChain pipeline (guided task)
 
-> **Mandatory prerequisite:** layer ② (`solucion_scratch.py`) must run with stdlib and produce what `expected.md` shows. Layer ③ is **additional** — you write it when you have `pip` and network.
+> **Mandatory prerequisite:** layer ② (`solution_scratch.py`) must run with stdlib and produce what `expected.md` shows. Layer ③ is **additional** — you write it when you have `pip` and network.
 >
-> **Do not start here without reading** [guia.md §13](../guia.md#13-layer--explained-langchain-retrievers-from-scratch). That section teaches each API from scratch. If you only open `solucion_framework.py`, layer ③ will appear "all at once".
+> **Do not start here without reading** [guide.md §13](../guide.md#13-layer--explained-langchain-retrievers-from-scratch). That section teaches each API from scratch. If you only open `solution_framework.py`, layer ③ will appear "all at once".
 
 ### Objective
 
-Write (or rewrite) `solucion_framework.py` implementing the **same pipeline** as your scratch, but with LangChain retrievers:
+Write (or rewrite) `solution_framework.py` implementing the **same pipeline** as your scratch, but with LangChain retrievers:
 
 ```
 BM25Retriever + Chroma/vector + EnsembleRetriever + CrossEncoderReranker + hard filter
 ```
 
-When done, compare your code with `solucion_framework.py` and verify the with/without filter pattern matches `expected.md` (noise without filter, Basic only with filter).
+When done, compare your code with `solution_framework.py` and verify the with/without filter pattern matches `expected.md` (noise without filter, Basic only with filter).
 
 ### Installation (networked environment)
 
@@ -97,21 +97,21 @@ pip install langchain langchain-community rank-bm25 sentence-transformers chroma
 
 ### Guided task — staged hints
 
-**Level 1 — Documents:** Load `datos/politicas.json` and convert each item to `Document(page_content=..., metadata={id, fare_class, ...})`. See [guia §13.4](../guia.md#134-document-with-filter-metadata-brief-reminder) and reminder in [M1 §11.3](../../01-fundamentos/guia.md#113-the-document-object).
+**Level 1 — Documents:** Load `data/policies.json` and convert each item to `Document(page_content=..., metadata={id, fare_class, ...})`. See [guide §13.4](../guide.md#134-document-with-filter-metadata-brief-reminder) and reminder in [M1 §11.3](../../01-fundamentals/guide.md#113-the-document-object).
 
-**Level 2 — BM25Retriever:** Create `BM25Retriever.from_documents(documentos)` and set `.k = 9`. What does `.invoke(QUERY)` return for the lab query? See [guia §13.5](../guia.md#135-bm25retriever--your-manual-bm25-packaged).
+**Level 2 — BM25Retriever:** Create `BM25Retriever.from_documents(documents)` and set `.k = 9`. What does `.invoke(QUERY)` return for the lab query? See [guide §13.5](../guide.md#135-bm25retriever--your-manual-bm25-packaged).
 
-**Level 3 — Vector retriever:** Instantiate `HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")`, create `Chroma.from_documents(documentos, embeddings)`, and get `as_retriever(search_kwargs={"k": 9})`. Chroma reminder: [M1 §11](../01-fundamentos/guia.md#11-layer--explained-langchain-from-scratch). M4 detail: [guia §13.6](../guia.md#136-vector-retriever--chroma--local-embeddings).
+**Level 3 — Vector retriever:** Instantiate `HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")`, create `Chroma.from_documents(documents, embeddings)`, and get `as_retriever(search_kwargs={"k": 9})`. Chroma reminder: [M1 §11](../01-fundamentals/guide.md#11-layer--explained-langchain-from-scratch). M4 detail: [guide §13.6](../guide.md#136-vector-retriever--chroma--local-embeddings).
 
-**Level 4 — EnsembleRetriever:** Combine both retrievers with `EnsembleRetriever(retrievers=[bm25, vector], weights=[0.4, 0.6])`. How does it relate to your scratch `rrf_fusion()`? See [guia §13.7](../guia.md#137-ensembleretriever--your-manual-rrf-automated) and RRF concept in [guia §4](../guia.md#4-hybrid-search).
+**Level 4 — EnsembleRetriever:** Combine both retrievers with `EnsembleRetriever(retrievers=[bm25, vector], weights=[0.4, 0.6])`. How does it relate to your scratch `rrf_fusion()`? See [guide §13.7](../guide.md#137-ensembleretriever--your-manual-rrf-automated) and RRF concept in [guide §4](../guide.md#4-hybrid-search).
 
-**Level 5 — Reranker:** Wrap the ensemble in `ContextualCompressionRetriever` with `CrossEncoderReranker(model=HuggingFaceCrossEncoder("BAAI/bge-reranker-base"), top_n=3)`. Why `top_n=3` and not `k=3` on the ensemble? See [guia §13.8](../guia.md#138-reranking--crossencoderreranker--contextualcompressionretriever).
+**Level 5 — Reranker:** Wrap the ensemble in `ContextualCompressionRetriever` with `CrossEncoderReranker(model=HuggingFaceCrossEncoder("BAAI/bge-reranker-base"), top_n=3)`. Why `top_n=3` and not `k=3` on the ensemble? See [guide §13.8](../guide.md#138-reranking--crossencoderreranker--contextualcompressionretriever).
 
-**Level 6 — Hard filter:** Implement `crear_retriever_filtrado(fare_class)` that filters `Document`s **before** rebuilding BM25, Chroma, Ensemble, and Compression. Why is Chroma `filter` alone not enough? See [guia §13.9](../guia.md#139-hard-filter--why-its-not-in-ensembleretriever) and [guia §7](../guia.md#7-hard-filters-as-a-safety-guardrail).
+**Level 6 — Hard filter:** Implement `create_filtered_retriever(fare_class)` that filters `Document`s **before** rebuilding BM25, Chroma, Ensemble, and Compression. Why is Chroma `filter` alone not enough? See [guide §13.9](../guide.md#139-hard-filter--why-its-not-in-ensembleretriever) and [guide §7](../guide.md#7-hard-filters-as-a-safety-guardrail).
 
-**Level 7 — Execution:** Run without filter and with `crear_retriever_filtrado("Basic")`. Print top-3 with `id`, `fare_class`, `categoria`. Verify:
-- Without filter: `any(c != "Basic" for c in clases)` → `True`
-- With filter: `all(c == "Basic" for c in clases)` → `True`
+**Level 7 — Execution:** Run without filter and with `create_filtered_retriever("Basic")`. Print top-3 with `id`, `fare_class`, `category`. Verify:
+- Without filter: `any(c != "Basic" for c in classes)` → `True`
+- With filter: `all(c == "Basic" for c in classes)` → `True`
 
 ### Success criteria (layer ③)
 
@@ -127,6 +127,6 @@ pip install langchain langchain-community rank-bm25 sentence-transformers chroma
 | Dense | BoW + cosine | `HuggingFaceEmbeddings` + Chroma |
 | Fusion | `rrf_fusion(k=60)` | `EnsembleRetriever` (RRF c=60) |
 | Rerank | token intersection | `CrossEncoderReranker` (BGE) |
-| Filter | filter `CORPUS` at start | `crear_retriever_filtrado()` |
+| Filter | filter `CORPUS` at start | `create_filtered_retriever()` |
 
-When finished, read `solucion_framework.py` and `solucion.md` to compare design decisions.
+When finished, read `solution_framework.py` and `solution.md` to compare design decisions.

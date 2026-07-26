@@ -47,20 +47,20 @@ Given this Python fragment implementing a minimal ReAct agent:
 
 ```python
 memory = [
-    {"role": "system", "content": "Eres asistente de vuelos."},
-    {"role": "user",   "content": "¿Cuánto cuesta cambiar mi vuelo?"}
+    {"role": "system", "content": "You are a flight assistant."},
+    {"role": "user",   "content": "How much does it cost to change my flight?"}
 ]
 
 def fake_llm(messages):
     last = messages[-1]["content"]
-    if "cuánto cuesta" in last.lower():
-        return {"action": "policy_rag", "args": {"query": "penalidad cambio vuelo"}}
+    if "how much" in last.lower():
+        return {"action": "policy_rag", "args": {"query": "flight change penalty"}}
     if "policy_rag" in str(last):
-        return {"final": "La penalidad es USD 50 según §3.2."}
-    return {"final": "No entendí la pregunta."}
+        return {"final": "The penalty is USD 50 per §3.2."}
+    return {"final": "I didn't understand the question."}
 
 def policy_rag(query):
-    return [{"text": "Penalidad de cambio: USD 50.", "source": "§3.2"}]
+    return [{"text": "Change penalty: USD 50.", "source": "§3.2"}]
 
 TOOLS = {"policy_rag": policy_rag}
 
@@ -68,7 +68,7 @@ step = 0
 while step < 5:
     response = fake_llm(memory)
     if "final" in response:
-        print("Respuesta:", response["final"])
+        print("Response:", response["final"])
         break
     tool_name = response["action"]
     tool_result = TOOLS[tool_name](**response["args"])
@@ -81,7 +81,7 @@ while step < 5:
 
 **(b)** What is printed on screen?
 
-**(c)** If the user asked in a **second turn** "¿y si soy premium?" (without adding anything to the history), would the agent remember that they previously asked about the change cost?
+**(c)** If the user asked in a **second turn** "and if I'm a premium member?" (without adding anything to the history), would the agent remember that they previously asked about the change cost?
 
 **(d)** What would need to change so the second turn remembers the first?
 
@@ -91,19 +91,19 @@ while step < 5:
 
 You have an airline customer service agent. In the current session the user has said:
 
-1. "Mi PNR es SCL-BOG-001."
-2. "Quiero cambiar al 17 de junio."
+1. "My PNR is SCL-BOG-001."
+2. "I want to change to June 17th."
 3. [The agent queried ReservationService: fare_class=ECONOMY_FLEX, penalty=USD 50]
 4. [The agent calculated delta=USD 80, total=USD 130]
-5. "Sí, confirmo el cambio."
+5. "Yes, I confirm the change."
 
 **(a)** What information goes in **conversational memory** (message history)?
 
 **(b)** What information goes in **agent state** (working memory / state dictionary)?
 
-**(c)** If the user now asks "¿y si en vez de FL305 elijo FL301?", which ReAct steps would the agent have to repeat? Which would it not?
+**(c)** If the user now asks "and what if instead of FL305 I choose FL301?", which ReAct steps would the agent have to repeat? Which would it not?
 
-**(d)** What would happen if the agent had no memory and the user said "sí, confirmo" on a separate second turn?
+**(d)** What would happen if the agent had no memory and the user said "yes, I confirm" on a separate second turn?
 
 ---
 
@@ -115,10 +115,10 @@ The following code attempts to implement an agent with simple memory:
 class AgentWithMemory:
     def __init__(self, tools):
         self.tools = tools
-        self.memory = []  # ← historial de mensajes
+        self.memory = []  # ← message history
 
     def chat(self, user_message):
-        # Bug 1: ¿hay algo mal en cómo se agrega el mensaje del usuario?
+        # Bug 1: is there something wrong with how the user message is added?
         self.memory = [{"role": "user", "content": user_message}]
 
         response = fake_llm(self.memory)
@@ -126,14 +126,14 @@ class AgentWithMemory:
         if "action" in response:
             tool = self.tools[response["action"]]
             result = tool(**response["args"])
-            # Bug 2: ¿qué falta aquí?
+            # Bug 2: what is missing here?
             response = fake_llm(self.memory)
 
-        return response.get("final", "Sin respuesta")
+        return response.get("final", "No response")
 
 agent = AgentWithMemory({"policy_rag": policy_rag})
-r1 = agent.chat("¿Cuánto cuesta cambiar mi vuelo?")
-r2 = agent.chat("¿Y si soy premium?")  # ¿recuerda el contexto?
+r1 = agent.chat("How much does it cost to change my flight?")
+r2 = agent.chat("And if I'm a premium member?")  # does it remember the context?
 ```
 
 **(a)** Identify and describe the two marked bugs.
@@ -173,11 +173,11 @@ class State(TypedDict):
     result:    str
 
 builder = StateGraph(State)
-builder.add_node("A", node_extract_pnr)    # extrae PNR del query
-builder.add_node("B", node_get_reservation) # llama ReservationService
-builder.add_node("C", node_check_policy)   # llama PolicyRAG
-builder.add_node("D", node_ask_confirm)    # pregunta confirmación
-builder.add_node("E", node_execute)        # ejecuta el cambio
+builder.add_node("A", node_extract_pnr)    # extracts PNR from query
+builder.add_node("B", node_get_reservation) # calls ReservationService
+builder.add_node("C", node_check_policy)   # calls PolicyRAG
+builder.add_node("D", node_ask_confirm)    # asks for confirmation
+builder.add_node("E", node_execute)        # executes the change
 
 builder.set_entry_point("A")
 builder.add_conditional_edges("A", lambda s: "B" if s["has_pnr"] else "D")
@@ -189,9 +189,9 @@ builder.add_edge("E", END)
 
 **(a)** Draw the graph (nodes and conditional edges).
 
-**(b)** If the user writes "Cambiar vuelo" (no PNR), which path does the graph follow?
+**(b)** If the user writes "Change flight" (no PNR), which path does the graph follow?
 
-**(c)** If the user writes "Cambiar vuelo PNR=SCL001" and already has `confirmed=True` in state, which path does it follow?
+**(c)** If the user writes "Change flight PNR=SCL001" and already has `confirmed=True` in state, which path does it follow?
 
 **(d)** What advantage does this explicit design have vs. a free ReAct that could also do this?
 
@@ -199,17 +199,17 @@ builder.add_edge("E", END)
 
 ## Exercise 21 · Reflection in practice
 
-A ReAct agent generates the following tentative response to "¿puedo llevar baterías de litio en mi maleta?":
+A ReAct agent generates the following tentative response to "can I carry lithium batteries in my luggage?":
 
-> "Sí, puedes llevar baterías de litio."
+> "Yes, you can carry lithium batteries."
 
 An internal evaluator (another LLM call) receives this response along with the retrieved context:
 
 ```
-Contexto recuperado:
-  - "Baterías de litio ≤100Wh: permitidas en equipaje de mano; prohibidas en bodega. [§4.2]"
-  - "Baterías 100-160Wh: requieren autorización previa. [§4.3]"
-  - "Baterías >160Wh: prohibidas. [§4.4]"
+Retrieved context:
+  - "Lithium batteries ≤100Wh: allowed in carry-on baggage; prohibited in checked baggage. [§4.2]"
+  - "Batteries 100-160Wh: require prior authorization. [§4.3]"
+  - "Batteries >160Wh: prohibited. [§4.4]"
 ```
 
 **(a)** What problems does the tentative response have? List at least 3.
@@ -241,7 +241,7 @@ You have an insurance assistant with two knowledge bases:
 - Index A: general coverage.
 - Index B: policy-specific exclusions.
 
-**(a)** With standard RAG, design how you would answer "¿mi póliza cubre daños por inundación?". What problem arises when the user asks something outside the documents?
+**(a)** With standard RAG, design how you would answer "does my policy cover flood damage?". What problem arises when the user asks something outside the documents?
 
 **(b)** With Agentic RAG, how would the agent use the two indexes for the same question? What would it do if neither index has the answer?
 
@@ -275,7 +275,7 @@ Review the `flow.json` of template `01-airline-flight-change` (in `examples/01-a
 
 **(d)** If you wanted to add a second RAG index (e.g., exception procedures for cancelled international flights), which nodes would you add and how would you connect them? Describe changes to `flow.json`.
 
-**(e)** The `system` prompt of `agent.react` says: "Flujo obligatorio: (1) Obtén itinerario... (2) Consulta PolicyRAG...". Does that turn the agent into a pipeline? Why or why not?
+**(e)** The `system` prompt of `agent.react` says: "Mandatory flow: (1) Get itinerary... (2) Query PolicyRAG...". Does that turn the agent into a pipeline? Why or why not?
 
 ---
 
@@ -303,31 +303,31 @@ An agent has these two tools decorated with `@tool`:
 
 ```python
 @tool
-def consultar_saldo(account_id: str) -> dict:
+def check_balance(account_id: str) -> dict:
     """
-    Devuelve el saldo actual de una cuenta bancaria.
-    Úsala SOLO cuando el cliente pregunte por su saldo o disponibilidad de fondos.
-    Requiere el account_id del cliente.
+    Returns the current balance of a bank account.
+    Use ONLY when the customer asks about their balance or available funds.
+    Requires the customer's account_id.
     """
     ...
 
 @tool
-def hacer_transferencia(from_account: str, to_account: str, amount: float) -> dict:
+def make_transfer(from_account: str, to_account: str, amount: float) -> dict:
     """
-    Ejecuta una transferencia entre cuentas.
-    ÚSALA ÚNICAMENTE después de confirmar saldo suficiente y obtener
-    confirmación explícita del cliente sobre el monto y la cuenta destino.
+    Executes a transfer between accounts.
+    USE ONLY after confirming sufficient balance and obtaining
+    explicit confirmation from the customer about the amount and destination account.
     """
     ...
 ```
 
-The user writes on the **first turn**: *"¿Cuánto tengo en mi cuenta ACC-4421?"*
+The user writes on the **first turn**: *"How much do I have in my account ACC-4421?"*
 
 **(a)** Which tool should the agent call on its first iteration? Why?
 
-**(b)** The user responds on a **second turn** (same session): *"Transfiere $200 a la cuenta ACC-9900."* Without having checked balance this turn, which tools should the agent call and in what order? Justify using the docstrings.
+**(b)** The user responds on a **second turn** (same session): *"Transfer $200 to account ACC-9900."* Without having checked balance this turn, which tools should the agent call and in what order? Justify using the docstrings.
 
-**(c)** If the `hacer_transferencia` docstring said only `"Transfiere dinero"`, what problem could occur?
+**(c)** If the `make_transfer` docstring said only `"Transfers money"`, what problem could occur?
 
 ---
 
@@ -338,7 +338,7 @@ You are building an explicit `StateGraph` for the lab agent. You have this incom
 ```python
 def should_continue(state: FlightChangeState) -> str:
     last = state["messages"][-1]
-    # TODO: completar — ¿hay tool_calls pendientes?
+    # TODO: complete — are there pending tool_calls?
     ...
 
 builder = StateGraph(FlightChangeState)
@@ -346,7 +346,7 @@ builder.add_node("agent", node_agent)
 builder.add_node("tools", node_call_tools)
 builder.set_entry_point("agent")
 builder.add_conditional_edges("agent", should_continue, {
-    # TODO: completar el mapa de destinos
+    # TODO: complete the destination map
 })
 builder.add_edge("tools", "agent")
 graph = builder.compile(checkpointer=MemorySaver())

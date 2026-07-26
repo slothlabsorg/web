@@ -6,7 +6,7 @@
 
 ## E14 · Reasoned multiple choice — Structured output
 
-**Context:** You are building the `logic.structured` node for insurance claim evaluation (template 04). The schema requires the fields `cubierto` (boolean), `monto_estimado` (number), `clausula_aplicada` (string), and `citations` (non-empty array).
+**Context:** You are building the `logic.structured` node for insurance claim evaluation (template 04). The schema requires the fields `covered` (boolean), `estimated_amount` (number), `applicable_clause` (string), and `citations` (non-empty array).
 
 **Question 1.** Which structured output mechanism guarantees that the `citations` field is never an empty array?
 
@@ -36,17 +36,17 @@ d) `outlines` produces JSON-mode; `instructor` produces tool-calling.
 **Context:** You are the architect of template 02 (banking). The `logic.structured` node must produce a credit decision with the following requirements:
 
 - `score`: integer between 0 and 100 (required).
-- `decision`: one of `"aprobar"`, `"revisar"`, `"rechazar"` (required, but `logic.rules` will overwrite it — it must still be in the schema for validation).
-- `factores`: list of strings with at least 1 element and at most 5 (required).
-- `justificacion`: string with at least 50 characters (required).
+- `decision`: one of `"approve"`, `"review"`, `"reject"` (required, but `logic.rules` will overwrite it — it must still be in the schema for validation).
+- `factors`: list of strings with at least 1 element and at most 5 (required).
+- `justification`: string with at least 50 characters (required).
 - `citations`: list of objects, each with `text` (string, required) and `source` (string, required), at least 1 element (required).
-- `nivel_riesgo`: one of `"bajo"`, `"medio"`, `"alto"` (optional).
+- `risk_level`: one of `"low"`, `"medium"`, `"high"` (optional).
 
 **Task A.** Write the complete JSON Schema that validates this object.
 
 **Task B.** Why does it make sense to include `decision` in the schema if `logic.rules` will overwrite it? What problem does having it solve?
 
-**Task C.** If the LLM emits `"decision": "APROBAR"` (uppercase) instead of `"aprobar"`, what happens with schema validation? How would you handle it?
+**Task C.** If the LLM emits `"decision": "APPROVE"` (uppercase) instead of `"approve"`, what happens with schema validation? How would you handle it?
 
 ---
 
@@ -73,40 +73,40 @@ h) Which policy clause applies to the type of damage described?
 import json
 
 CHUNKS = [
-    {"id": "c1", "text": "El solicitante reporta ingresos anuales de $85,000 en 2023.",
-     "source": "declaracion_2023.pdf"},
-    {"id": "c2", "text": "Historial de pagos: 97% de pagos puntuales en los últimos 12 meses.",
-     "source": "estado_cuenta_q3.pdf"},
+    {"id": "c1", "text": "The applicant reports annual income of $85,000 in 2023.",
+     "source": "tax_return_2023.pdf"},
+    {"id": "c2", "text": "Payment history: 97% on-time payments in the last 12 months.",
+     "source": "account_statement_q3.pdf"},
 ]
 
-def calcular_score(chunks):
-    # Bug 1: el LLM fake siempre devuelve el mismo score
+def calculate_score(chunks):
+    # Bug 1: the fake LLM always returns the same score
     return 75
 
-def generar_decision(score, chunks):
+def generate_decision(score, chunks):
     # Bug 2
     if score > 70:
-        decision = "aprobar"
+        decision = "approve"
     elif score > 40:
-        decision = "revisar"
+        decision = "review"
     else:
-        decision = "rechazar"
+        decision = "reject"
     
     return {
         "score": score,
         "decision": decision,
-        "factores": ["Ingresos altos", "Buen historial de pagos"],
+        "factors": ["High income", "Good payment history"],
         "citations": []  # Bug 3
     }
 
-def verificar_groundedness(decision_obj, chunks):
+def verify_groundedness(decision_obj, chunks):
     # Bug 4
     return len(decision_obj["citations"]) > 0
 
-resultado = generar_decision(calcular_score(CHUNKS), CHUNKS)
-print(json.dumps(resultado, ensure_ascii=False))
-es_grounded = verificar_groundedness(resultado, CHUNKS)
-print(f"Grounded: {es_grounded}")
+result = generate_decision(calculate_score(CHUNKS), CHUNKS)
+print(json.dumps(result, ensure_ascii=False))
+is_grounded = verify_groundedness(result, CHUNKS)
+print(f"Grounded: {is_grounded}")
 ```
 
 **Question A.** Identify the **4 bugs** marked in the code and explain why each one is a problem.
@@ -144,9 +144,9 @@ For each scenario, choose the most appropriate evaluation framework (**RAGAS**, 
   "type": "logic.router",
   "config": {
     "branches": [
-      {"when": "score >= 70 and decision == 'aprobar'", "output": "notif_aprobacion"},
-      {"when": "decision == 'revisar'", "output": "cola_revision"},
-      {"when": "decision == 'rechazar'", "output": "notif_rechazo"}
+      {"when": "score >= 70 and decision == 'approve'", "output": "approval_notification"},
+      {"when": "decision == 'review'", "output": "review_queue"},
+      {"when": "decision == 'reject'", "output": "rejection_notification"}
     ]
   }
 }
@@ -154,9 +154,9 @@ For each scenario, choose the most appropriate evaluation framework (**RAGAS**, 
 
 And the upstream pipeline produces these three decisions in three runs:
 
-- Case 1: `{"score": 72, "decision": "aprobar"}`
-- Case 2: `{"score": 55, "decision": "revisar"}`
-- Case 3: `{"score": 72, "decision": "revisar"}` ← produced before `logic.rules` corrects the decision
+- Case 1: `{"score": 72, "decision": "approve"}`
+- Case 2: `{"score": 55, "decision": "review"}`
+- Case 3: `{"score": 72, "decision": "review"}` ← produced before `logic.rules` corrects the decision
 
 **Question.** Which branch does each case route to? What does Case 3 reveal about the order in which `logic.rules` and `logic.router` must run?
 
@@ -189,22 +189,22 @@ context_recall:     0.78  ✓
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 
-class Cita(BaseModel):
+class Citation(BaseModel):
     text: str = Field(..., min_length=1)
     source: str = Field(..., min_length=1)
 
-class DecisionCredito(BaseModel):
+class CreditDecision(BaseModel):
     decision: str
     score: Optional[int] = Field(None, ge=0, le=100)
-    factores: list[str] = Field(..., min_length=1, max_length=5)
-    justificacion: str = Field(..., min_length=50)
-    citations: list[Cita] = Field(...)
+    factors: list[str] = Field(..., min_length=1, max_length=5)
+    justification: str = Field(..., min_length=50)
+    citations: list[Citation] = Field(...)
 
     @field_validator("decision")
     @classmethod
-    def decision_valida(cls, v):
-        if v not in {"aprobar", "revisar", "rechazar", "no_determinable"}:
-            raise ValueError("decision inválida")
+    def valid_decision(cls, v):
+        if v not in {"approve", "review", "reject", "undetermined"}:
+            raise ValueError("invalid decision")
         return v
 ```
 
@@ -212,45 +212,45 @@ For each construction attempt, indicate whether it **passes** or raises **`Valid
 
 **A.**
 ```python
-DecisionCredito(
-    decision="aprobar",
+CreditDecision(
+    decision="approve",
     score=84,
-    factores=["Ingreso estable"],
-    justificacion="Perfil sólido con ingreso estable y bajo endeudamiento según expediente.",
-    citations=[Cita(text="Ingreso: $85,000", source="declaracion_fiscal_2023.pdf")]
+    factors=["Stable income"],
+    justification="Solid profile with stable income and low debt according to file.",
+    citations=[Citation(text="Income: $85,000", source="tax_return_2023.pdf")]
 )
 ```
 
 **B.**
 ```python
-DecisionCredito(
-    decision="APROBAR",
+CreditDecision(
+    decision="APPROVE",
     score=84,
-    factores=["Ingreso estable"],
-    justificacion="Perfil sólido con ingreso estable y bajo endeudamiento según expediente.",
-    citations=[Cita(text="Ingreso: $85,000", source="declaracion_fiscal_2023.pdf")]
+    factors=["Stable income"],
+    justification="Solid profile with stable income and low debt according to file.",
+    citations=[Citation(text="Income: $85,000", source="tax_return_2023.pdf")]
 )
 ```
 
 **C.**
 ```python
-DecisionCredito(
-    decision="no_determinable",
+CreditDecision(
+    decision="undetermined",
     score=150,
-    factores=["Datos insuficientes"],
-    justificacion="No hay evidencia financiera suficiente en los documentos del expediente.",
+    factors=["Insufficient data"],
+    justification="There is not enough financial evidence in the file documents.",
     citations=[]
 )
 ```
 
 **D.**
 ```python
-DecisionCredito(
-    decision="revisar",
+CreditDecision(
+    decision="review",
     score=55,
-    factores=["f1", "f2", "f3", "f4", "f5", "f6"],
-    justificacion="Score intermedio que requiere revisión manual por el analista de riesgo.",
-    citations=[Cita(text="Deuda total: $12,000", source="datos_financieros.csv")]
+    factors=["f1", "f2", "f3", "f4", "f5", "f6"],
+    justification="Intermediate score that requires manual review by the risk analyst.",
+    citations=[Citation(text="Total debt: $12,000", source="financial_data.csv")]
 )
 ```
 
@@ -258,49 +258,49 @@ DecisionCredito(
 
 ## E20 · Complete the Field with the correct constraints
 
-**Context:** In `solucion_framework.py`, the Pydantic schema must be equivalent to the JSON Schema from exercise E15. Complete the missing `Field(...)` declarations:
+**Context:** In `solution_framework.py`, the Pydantic schema must be equivalent to the JSON Schema from exercise E15. Complete the missing `Field(...)` declarations:
 
 ```python
 from pydantic import BaseModel, Field
 from typing import Optional
 
-class Cita(BaseModel):
+class Citation(BaseModel):
     text: str = Field(..., min_length=1)
     source: str = Field(..., min_length=1)
 
-class DecisionCredito(BaseModel):
+class CreditDecision(BaseModel):
     score: int = Field(..., ge=___, le=___)
-    decision: str = Field(...)  # enum validado con @field_validator
-    factores: list[str] = Field(..., min_length=___, max_length=___)
-    justificacion: str = Field(..., min_length=___)
-    citations: list[Cita] = Field(..., min_length=___)
-    nivel_riesgo: Optional[str] = Field(None)  # enum: bajo, medio, alto
+    decision: str = Field(...)  # enum validated with @field_validator
+    factors: list[str] = Field(..., min_length=___, max_length=___)
+    justification: str = Field(..., min_length=___)
+    citations: list[Citation] = Field(..., min_length=___)
+    risk_level: Optional[str] = Field(None)  # enum: low, medium, high
 ```
 
 **Question A.** Write the correct numeric values for each `___`.
 
-**Question B.** Why does `citations` use `list[Cita]` instead of `list[dict]`? What advantage does it have over your scratch `validar_schema()`?
+**Question B.** Why does `citations` use `list[Citation]` instead of `list[dict]`? What advantage does it have over your scratch `validate_schema()`?
 
 ---
 
 ## E21 · Scratch → framework mapping and RAGAS metric
 
-**Context:** Review the functions in `lab/solucion_scratch.py` and the pipeline in `lab/solucion_framework.py`.
+**Context:** Review the functions in `lab/solution_scratch.py` and the pipeline in `lab/solution_framework.py`.
 
 **Question A.** Complete the table:
 
 | Scratch function | Framework equivalent | Does it change with the framework? |
 |---|---|---|
-| `validar_schema(obj)` | | |
-| `fake_llm(chunks, solicitud)` | | |
-| `verificar_groundedness(obj, chunks)` | | |
-| `aplicar_regla_umbral(obj)` | | |
+| `validate_schema(obj)` | | |
+| `fake_llm(chunks, request)` | | |
+| `verify_groundedness(obj, chunks)` | | |
+| `apply_threshold_rule(obj)` | | |
 
 **Question B.** A credit RAG system generates this response:
 
-> "El solicitante tiene un ingreso de $250,000 y 15 años de historial crediticio impecable."
+> "The applicant has an income of $250,000 and 15 years of impeccable credit history."
 
-The retrieved chunks only mention income of $85,000 and 6 years of job tenure. Your scratch `verificar_groundedness()` might pass if the sources exist but the text is invented.
+The retrieved chunks only mention income of $85,000 and 6 years of job tenure. Your scratch `verify_groundedness()` might pass if the sources exist but the text is invented.
 
 Which RAGAS metric detects this problem? Why is validating the Pydantic schema not enough?
 

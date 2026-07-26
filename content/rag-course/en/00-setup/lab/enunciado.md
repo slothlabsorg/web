@@ -10,7 +10,7 @@ There's no access to the webapp yet. Stdlib only. Python only.
 
 ## Your task
 
-Write a Python script (`explorador.py`) that, **using only the standard library**, does the following:
+Write a Python script (`explorer.py`) that, **using only the standard library**, does the following:
 
 1. **Load** `examples/09-hr-policy-assistant/flow.json` (path relative to the repo root).
 2. **List all nodes** showing, for each one, its `id` and `type`.
@@ -24,7 +24,7 @@ Write a Python script (`explorador.py`) that, **using only the standard library*
 
 - Stdlib modules only: `json`, `pathlib`, `sys` (and any others you need from stdlib).
 - No `pip install`. No network. No external dependencies.
-- The script must run with `python3 explorador.py` from any directory (use absolute paths derived from `__file__`).
+- The script must run with `python3 explorer.py` from any directory (use absolute paths derived from `__file__`).
 - Output must be deterministic (same order on every run).
 
 ---
@@ -45,18 +45,18 @@ Open it and explore it before writing the script. Notice:
 **Hint 1** — Load the JSON:
 ```python
 import json
-with open("ruta/al/flow.json", encoding="utf-8") as f:
+with open("path/to/flow.json", encoding="utf-8") as f:
     data = json.load(f)
-nodos = data["nodes"]   # lista de dicts
-aristas = data["edges"] # lista de dicts
+nodes = data["nodes"]   # list of dicts
+edges = data["edges"]   # list of dicts
 ```
 
 **Hint 2** — Robust path (independent of cwd):
 ```python
 import pathlib
-raiz = pathlib.Path(__file__).resolve().parents[N]  # N = niveles hasta la raíz del repo
+root = pathlib.Path(__file__).resolve().parents[N]  # N = levels up to the repo root
 ```
-Count how many levels there are between `explorador.py` and the repo root.
+Count how many levels there are between `explorer.py` and the repo root.
 
 **Hint 3** — Identify input/output node:
 There are two strategies. The simplest: an input node is one that **no edge points to** (doesn't appear as `target`). An output node is one that **has no outgoing edges** (doesn't appear as `source`). The more robust approach: look at the `type` field — `io.input` nodes start the flow; `io.output` nodes end it.

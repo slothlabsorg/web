@@ -33,8 +33,8 @@ RAG has a dependency chain: if retrieval fails, the LLM cannot generate a correc
 Retrieval fails in three dimensions:
 
 ```
-SEMANTIC FAILURE     — the user writes "baja de plan"
-                        the embedding does not associate it with "cancelación de servicio"
+SEMANTIC FAILURE     — the user writes "plan downgrade"
+                        the embedding does not associate it with "service cancellation"
                         → BM25 or query rewriting fixes it
 
 DOMAIN FAILURE       — the A320 technician gets a torque limit from the 787
@@ -57,7 +57,7 @@ This module covers the tools to address each type of failure.
 Dense search converts the query and each document into high-dimensional dense vectors (e.g. 1536 dimensions with text-embedding-3-large) and measures cosine similarity or dot product. It was covered in depth in M3. Here we recall it as a comparison point.
 
 ```
-Query: "procedimiento inspección tren de aterrizaje"
+Query: "landing gear inspection procedure"
           ↓ embedding model
      [0.23, -0.11, 0.87, ...]  ← 1536-dim vector
 
@@ -76,7 +76,7 @@ Corpus:
 ### When it fails
 
 - Highly specific technical jargon: "ATA 32-11-00" or "RRF" do not have good representations in general-purpose embeddings.
-- Short, exact queries: "GDPR artículo 17" retrieves better with keywords than with vectors.
+- Short, exact queries: "GDPR article 17" retrieves better with keywords than with vectors.
 - Internal company terms: the corporate glossary is not in the training data.
 
 ### RAGorbit node
@@ -116,9 +116,9 @@ Where:
 
 ### Formula intuition
 
-**IDF:** A term that appears in few documents is highly discriminative. "Tren de aterrizaje" appears in few corpus documents → high IDF → that term weighs heavily. "El" appears in all → IDF ≈ 0 → that term does not discriminate.
+**IDF:** A term that appears in few documents is highly discriminative. "Landing gear" appears in few corpus documents → high IDF → that term weighs heavily. "The" appears in all → IDF ≈ 0 → that term does not discriminate.
 
-**TF with saturation (k1):** Relevance does not grow linearly with frequency. If "mantenimiento" appears 1 time vs 2 times, there is a difference. If it appears 50 vs 51 times, the difference is almost nil. Parameter `k1` controls that saturation.
+**TF with saturation (k1):** Relevance does not grow linearly with frequency. If "maintenance" appears 1 time vs 2 times, there is a difference. If it appears 50 vs 51 times, the difference is almost nil. Parameter `k1` controls that saturation.
 
 **Length normalization (b):** A 1000-word document will naturally have more repetitions of any term than a 100-word one. Parameter `b` penalizes long documents so they do not dominate ranking simply by being long. With `b=0.75`, partial normalization is applied (not total).
 
@@ -130,8 +130,8 @@ Query: "ATA 32-11-00"
   Vector: ← "landing gear chapter 32" may be semantically closer
            but exact string "ATA 32-11-00" has better BM25
 
-Query: "procedimiento para revisar sistemas hidráulicos antes de vuelo"
-  BM25: ← may fail if the doc says "inspección pre-vuelo de actuadores"
+Query: "procedure to check hydraulic systems before flight"
+  BM25: ← may fail if the doc says "pre-flight inspection of actuators"
   Vector: ← captures semantics even when words differ
 ```
 
@@ -192,11 +192,11 @@ With `alpha=0.5` both get equal weight. Tune `alpha` by domain.
 
 ### Template 07 (Telecom)
 
-The call center copilot uses `retrieval.hybrid` because agents mix technical jargon ("roaming internacional EE.UU.") with natural language ("¿qué le digo al cliente?"). BM25 captures exact glossary terms; the vector captures question intent.
+The call center copilot uses `retrieval.hybrid` because agents mix technical jargon ("international roaming USA") with natural language ("what do I tell the customer?"). BM25 captures exact glossary terms; the vector captures question intent.
 
 ### Template 08 (Manufacturing)
 
-AMM manuals have exact identifiers (ATA, section numbers, part numbers). BM25 is very precise for "Task 32-11-00-581-001". The vector captures "procedimiento inspección tren morro" even when the document says "nose landing gear inspection procedure".
+AMM manuals have exact identifiers (ATA, section numbers, part numbers). BM25 is very precise for "Task 32-11-00-581-001". The vector captures "nose landing gear inspection procedure" even when the document says "nose landing gear inspection procedure".
 
 ---
 
@@ -226,10 +226,10 @@ Step 2 — Precise rerank (high precision)
 The bi-encoder (separate vectors) compresses the query into a vector without knowing which documents it will compare against. The cross-encoder, seeing both together, can capture subtle interactions:
 
 ```
-Query: "límite de torque del actuador del tren de morro"
+Query: "torque limit of the nose landing gear actuator"
 
-doc_A: "El torque máximo del actuador del tren principal es 45 Nm"  ← mentions torque but of the MAIN gear
-doc_B: "Para el tren de morro, el torque del actuador es 32 Nm"    ← exactly what is being searched
+doc_A: "The maximum torque of the main gear actuator is 45 Nm"  ← mentions torque but of the MAIN gear
+doc_B: "For the nose gear, the actuator torque is 32 Nm"        ← exactly what is being searched
 
 Bi-encoder: doc_A may score similarly to doc_B (both talk about torque and gear)
 Cross-encoder: doc_B scores much higher (nose gear + actuator + torque together)
@@ -257,7 +257,7 @@ The reranker adds ~100-200 ms to the pipeline, but the relevance improvement is 
 
 ### Template 05 (Legal) and 07 (Telecom)
 
-Both use `retrieval.reranker` with `topN: 3`. In legal, the reranker distinguishes a playbook fragment on "indemnización" in software contracts from the fragment on "indemnización" in infrastructure contracts—semantically similar but legally relevant in different ways. In telecom, it adjusts ranking based on agent feedback (`feedbackRef`).
+Both use `retrieval.reranker` with `topN: 3`. In legal, the reranker distinguishes a playbook fragment on "indemnification" in software contracts from the fragment on "indemnification" in infrastructure contracts—semantically similar but legally relevant in different ways. In telecom, it adjusts ranking based on agent feedback (`feedbackRef`).
 
 ### RAGorbit node: `retrieval.reranker`
 
@@ -290,10 +290,10 @@ PARENT LEVEL (large chunks, 800+ tokens)
   Complete section 32-11-01 (850-token procedure variant)
 
 CHILD LEVEL (small chunks, 100-200 tokens)
-  Step 1: Coloca la aeronave en jack...       (child of 32-11-00)
-  Step 2: Verifica el juego lateral...        (child of 32-11-00)
-  Step 3: Inspecciona visualmente...          (child of 32-11-00)
-  Step 4: Registra los resultados...          (child of 32-11-00)
+  Step 1: Place the aircraft on jacks...       (child of 32-11-00)
+  Step 2: Check lateral play...                (child of 32-11-00)
+  Step 3: Visually inspect...                  (child of 32-11-00)
+  Step 4: Record the results...                (child of 32-11-00)
 
 RETRIEVAL:
   1. CHILDREN are indexed and retrieved (high precision)
@@ -337,12 +337,12 @@ A **hard filter** is applied at the retrieval layer, **before** any document rea
 
 ```
 WITHOUT HARD FILTER:
-  Query: "criterios de RM de rodilla"
+  Query: "knee MRI criteria"
   Vector store returns: chunks from PPO-Gold, PPO-Basic, PPO-Platinum mixed
   LLM may use PPO-Platinum criteria for a PPO-Basic patient → CLINICAL ERROR
 
 WITH HARD FILTER (hardFilter: plan = "PPO-Basic"):
-  Query: "criterios de RM de rodilla"
+  Query: "knee MRI criteria"
   Vector store applies WHERE plan = 'PPO-Basic' before search
   Only PPO-Basic chunks reach the LLM → correct by design
 ```
@@ -399,7 +399,7 @@ This pattern appears in M3, M4, M5, and M9. In RAGorbit, `hardFilters[]` is avai
 
 The "simple" solution is to index everything in one vector store and search there. The problems:
 
-1. **Cross-domain noise:** a query about "indemnización" in the context of a software contract may retrieve indemnification fragments from construction contracts—semantically similar but legally irrelevant.
+1. **Cross-domain noise:** a query about "indemnification" in the context of a software contract may retrieve indemnification fragments from construction contracts—semantically similar but legally irrelevant.
 
 2. **Latency:** searching an index of 1 million documents is slower than three indexes of 100k each.
 
@@ -414,13 +414,13 @@ INDEXES:
   faq        ← frequently asked questions
 
 ROUTER RULES:
-  keyword "facturacion"   → index: policy
-  keyword "procedimiento" → index: procedure
-  keyword "cómo puedo"    → index: faq
+  keyword "billing"       → index: policy
+  keyword "procedure"     → index: procedure
+  keyword "how can I"     → index: faq
   fallback                → index: faq
 
-QUERY: "¿Cuánto me cobran por superar mi límite de datos?"
-  Router detects "cobran" → billing keyword → route to policy
+QUERY: "How much do they charge for exceeding my data limit?"
+  Router detects "charge" → billing keyword → route to policy
   Only searches policy → 0 noise from procedure or faq
   Latency: 30ms (1 index) vs 90ms (3 indexes in parallel)
 ```
@@ -444,11 +444,11 @@ Disadvantages: requires manual maintenance of the keyword glossary.
 Uses the `model.intent` classifier (lightweight embeddings, ~5-10ms) to detect query intent and route by label:
 
 ```
-intent("¿cuánto me cobran?") → "facturacion" → policy
-intent("cómo configuro el router?") → "soporte_tecnico" → procedure
+intent("how much do they charge?") → "billing" → policy
+intent("how do I configure the router?") → "tech_support" → procedure
 ```
 
-Advantages: captures semantic variants ("¿cuánto es la tarifa?" → facturacion even without "cobran").
+Advantages: captures semantic variants ("what is the rate?" → billing even without "charge").
 Disadvantages: requires training, can fail on ambiguous queries.
 
 ### RAGorbit nodes
@@ -463,9 +463,9 @@ retrieval.router    → selects the correct index by rules[] or intent
 ```
 indexes: [playbook, regulations, precedent]
 rules:
-  "indemniz"   → playbook
-  "regulacion" → regulations
-  "precedente" → precedent
+  "indemnif"   → playbook
+  "regulation" → regulations
+  "precedent"  → precedent
   fallback:      playbook
 ```
 
@@ -474,9 +474,9 @@ rules:
 ```
 indexes: [policy, procedure, faq]
 rules:
-  facturacion     → policy
-  soporte_tecnico → procedure
-  fallback:         faq
+  billing       → policy
+  tech_support  → procedure
+  fallback:       faq
 ```
 
 ---
@@ -490,9 +490,9 @@ The rewriter normalizes the user's query before sending it to the retriever. Its
 **1. Internal jargon normalization**
 
 ```
-"baja de plan" → "cancelación de servicio"
-"roaming gringo" → "roaming internacional EE.UU."
-"batería de la laptop" → "bateria litio portatil equipaje cabina"
+"plan downgrade" → "service cancellation"
+"US roaming" → "international roaming United States"
+"laptop battery" → "lithium battery portable cabin baggage"
 ```
 
 This is a mapping from internal/colloquial terms to canonical terms that appear in indexed documentation. Without this step, BM25 fails (no term match) and the vector may fail (the colloquial term's embedding differs from the technical one).
@@ -502,8 +502,8 @@ This is a mapping from internal/colloquial terms to canonical terms that appear 
 Adds related terms to improve BM25 recall:
 
 ```
-Original query: "RM rodilla"
-Expanded query: "resonancia magnética rodilla menisco cartílago articulación"
+Original query: "knee MRI"
+Expanded query: "magnetic resonance imaging knee meniscus cartilage joint"
 ```
 
 This is especially useful in medical or legal domains where users submit short queries and documents use full terminology.
@@ -514,9 +514,9 @@ Intent detection is not only for routing: its first function is to be the **gate
 
 ```
 CALL CENTER AUDIO FRAGMENTS:
-  "Oiga, y si viajo a Cancún..."   → intent: facturacion (score 0.71) → RAG
-  "Sí, claro, aja... un momento"   → intent: no_accionable (score 0.82) → DISCARD
-  "¿Cuánto cuesta el plan familiar?" → intent: facturacion (score 0.88) → RAG
+  "Hey, and if I travel to Cancun..."       → intent: billing (score 0.71) → RAG
+  "Yes, sure, uh-huh... one moment"         → intent: non_actionable (score 0.82) → DISCARD
+  "How much does the family plan cost?"     → intent: billing (score 0.88) → RAG
 ```
 
 Without this gate, 30-50% of audio fragments activate RAG unnecessarily, generating noise on the agent panel and consuming resources.
@@ -534,7 +534,7 @@ The difference between `query.intent` and `model.intent` in RAGorbit is that `qu
 ### Full query ops pipeline (Template 07)
 
 ```
-Audio → STT → model.intent → [if no_accionable: discard]
+Audio → STT → model.intent → [if non_actionable: discard]
                             → [if actionable: query.rewrite → retrieval.router → ...]
 ```
 
@@ -549,17 +549,17 @@ This pipeline removes noise before the first vector store call, with latency of 
 Embeddings capture text semantics but not structural relationships. Consider:
 
 ```
-"¿Qué procedimientos están afectados por la Directiva de Aeronavegabilidad AD-2024-0023?"
+"What procedures are affected by Airworthiness Directive AD-2024-0023?"
 
 With vectors:
   The query becomes a vector
   Similar chunks are searched → may find some procedures
-  But CANNOT navigate: AD-2024-0023 → afecta a → SB-2023-32-001 → requiere → Task 32-11-001
+  But CANNOT navigate: AD-2024-0023 → affects → SB-2023-32-001 → requires → Task 32-11-001
 
 With knowledge graph:
   AD-2024-0023 is a node
-  It has typed relations: AFECTA_A → [SB-2023-32-001, SB-2023-32-002]
-  Each SB has: REQUIERE → [Task 32-11-001, Task 32-11-002]
+  It has typed relations: AFFECTS → [SB-2023-32-001, SB-2023-32-002]
+  Each SB has: REQUIRES → [Task 32-11-001, Task 32-11-002]
   A neighborhood query returns the whole subgraph in 1-2 hops
 ```
 
@@ -567,25 +567,25 @@ With knowledge graph:
 
 **Node:** A domain entity. In an AMM: a procedure, an airworthiness directive, a part, a certified technician.
 
-**Relation (typed edge):** A connection with semantics. Not just "A is related to B", but "AFECTA_A", "REQUIERE", "REEMPLAZA_A", "ES_PREREQUISITO_DE".
+**Relation (typed edge):** A connection with semantics. Not just "A is related to B", but "AFFECTS", "REQUIRES", "REPLACES", "IS_PREREQUISITE_OF".
 
 **Neighborhood:** The set of nodes and relations 1 or more hops from a given node. "Neighborhood" retrieval is what distinguishes GraphRAG from vector RAG.
 
 ```
 GRAPH (partial view — AMM domain):
 
-[AD-2024-0023] --AFECTA_A--> [SB-2023-32-001]
+[AD-2024-0023] --AFFECTS--> [SB-2023-32-001]
                                |
-                           REQUIERE
+                           REQUIRES
                                |
-                          [Task 32-11-001] --ES_PARTE_DE--> [Seccion 32-11-00]
+                          [Task 32-11-001] --IS_PART_OF--> [Section 32-11-00]
                                |
-                           PREREQUISITO
+                           PREREQUISITE
                                |
-                          [Task 07-11-001]  (jack de mantenimiento)
+                          [Task 07-11-001]  (maintenance jack)
 
-QUERY: "qué tareas requiere AD-2024-0023?"
-GRAPH TRAVERSAL: AD-2024-0023 → AFECTA_A → SBs → REQUIERE → Tasks
+QUERY: "what tasks does AD-2024-0023 require?"
+GRAPH TRAVERSAL: AD-2024-0023 → AFFECTS → SBs → REQUIRES → Tasks
 RESULT: [Task 32-11-001, Task 07-11-001 (transitive)]
 ```
 
@@ -597,7 +597,7 @@ Neo4j is the most widely used graph database in production. Its two main advanta
 
 ```cypher
 -- Cypher: find all documents related to a directive
-MATCH (ad:Directive {id: "AD-2024-0023"})-[:AFECTA_A*1..2]->(doc:Document)
+MATCH (ad:Directive {id: "AD-2024-0023"})-[:AFFECTS*1..2]->(doc:Document)
 RETURN doc.text, doc.section, doc.revision
 ```
 
@@ -746,11 +746,11 @@ LangChain gives you composable retrievers: each implements the same interface an
 ```
 SCRATCH (M4 lab)                         LANGCHAIN (M4 lab)
 ────────────────────                     ────────────────────────────────────
-tokenizar() + BM25 manual      ────────▶  BM25Retriever.from_documents(docs)
-embed BoW + coseno manual      ────────▶  Chroma + HuggingFaceEmbeddings + as_retriever
-rrf_fusion() manual            ────────▶  EnsembleRetriever(retrievers=[...], weights=[...])
-rerank por intersección        ────────▶  CrossEncoderReranker + ContextualCompressionRetriever
-filtrar lista Python           ────────▶  crear_retriever_filtrado() o filter en Chroma
+tokenize() + manual BM25        ────────▶  BM25Retriever.from_documents(docs)
+embed BoW + manual cosine       ────────▶  Chroma + HuggingFaceEmbeddings + as_retriever
+manual rrf_fusion()             ────────▶  EnsembleRetriever(retrievers=[...], weights=[...])
+rerank by intersection          ────────▶  CrossEncoderReranker + ContextualCompressionRetriever
+filter Python list              ────────▶  create_filtered_retriever() or filter in Chroma
 ```
 
 ### 13.2 Bridge table: scratch → LangChain (M4)
@@ -758,10 +758,10 @@ filtrar lista Python           ────────▶  crear_retriever_filt
 | What you did by hand (layer ②) | LangChain piece (layer ③) | Concept section |
 |-------------------------------|--------------------------|---------------------|
 | `bm25_score()` + ranking over corpus | `BM25Retriever.from_documents(docs)` + `.k` attribute | [§3 BM25](#3-keyword-search-bm25) |
-| `embed_bow()` + `similitud_coseno()` | `HuggingFaceEmbeddings` + `Chroma.from_documents` + `as_retriever(search_kwargs={"k":...})` | [§2 Dense search](#2-dense-vector-search) + M1 §11 |
+| `embed_bow()` + `cosine_similarity()` | `HuggingFaceEmbeddings` + `Chroma.from_documents` + `as_retriever(search_kwargs={"k":...})` | [§2 Dense search](#2-dense-vector-search) + M1 §11 |
 | `rrf_fusion(bm25_rank, vector_rank, k=60)` | `EnsembleRetriever(retrievers=[...], weights=[...])` | [§4 Hybrid / RRF](#4-hybrid-search) |
-| `rerank_interseccion()` (cross-encoder proxy) | `CrossEncoderReranker` + `ContextualCompressionRetriever` | [§5 Reranking](#5-reranking-with-cross-encoder) |
-| Filter `CORPUS` by `fare_class` before search | `crear_retriever_filtrado()` or `search_kwargs={"filter": {...}}` in Chroma | [§7 Hard filters](#7-hard-filters-as-a-safety-guardrail) |
+| `rerank_intersection()` (cross-encoder proxy) | `CrossEncoderReranker` + `ContextualCompressionRetriever` | [§5 Reranking](#5-reranking-with-cross-encoder) |
+| Filter `CORPUS` by `fare_class` before search | `create_filtered_retriever()` or `search_kwargs={"filter": {...}}` in Chroma | [§7 Hard filters](#7-hard-filters-as-a-safety-guardrail) |
 | `main()` prints top-3 with/without filter | `.get_relevant_documents(query)` or `.invoke(query)` | M1 §11 (Retriever interface) |
 
 ### 13.3 Retriever as a composable interface
@@ -769,7 +769,7 @@ filtrar lista Python           ────────▶  crear_retriever_filt
 In M1 you learned that a **Retriever** is any object that, given a query (string), returns `list[Document]`. The minimal interface:
 
 ```python
-docs = retriever.invoke("¿puedo hacer cambios sin cargo?")
+docs = retriever.invoke("can I make changes without a fee?")
 # docs: list[Document] with page_content and metadata
 ```
 
@@ -803,14 +803,14 @@ In the lab, each policy from the JSON becomes a `Document`:
 ```python
 from langchain.schema import Document
 
-documentos = [
+documents = [
     Document(
-        page_content=item["texto"],
+        page_content=item["text"],
         metadata={
             "id": item["id"],
             "fare_class": item["metadata"]["fare_class"],  # ← key for hard filter
             "route_type": item["metadata"]["route_type"],
-            "categoria": item["metadata"]["categoria"],
+            "category": item["metadata"]["category"],
         },
     )
     for item in raw
@@ -829,10 +829,10 @@ Full `Document` detail: [M1 §11.3](../01-fundamentos/guia.md#113-the-document-o
 ```python
 from langchain_community.retrievers import BM25Retriever
 
-bm25_retriever = BM25Retriever.from_documents(documentos)
+bm25_retriever = BM25Retriever.from_documents(documents)
 bm25_retriever.k = 9   # how many documents to return per query (equivalent to your top-k)
 
-docs = bm25_retriever.invoke("cambios sin cargo adicional")
+docs = bm25_retriever.invoke("changes without additional charge")
 # docs[0].metadata["id"] → probably pol_008 (Top) without filter
 ```
 
@@ -841,7 +841,7 @@ docs = bm25_retriever.invoke("cambios sin cargo adicional")
 | `.from_documents(docs)` | Builds the BM25 index | Your IDF + TF loop over `CORPUS` |
 | `.k` | Top-k to return | Your BM25 ranking `[:9]` |
 
-**When to use:** domains with exact terms ("cambios", "sin cargo", ATA codes). **When NOT:** if you only need semantics and there are no exact identifiers — a vector retriever alone may suffice.
+**When to use:** domains with exact terms ("changes", "no charge", ATA codes). **When NOT:** if you only need semantics and there are no exact identifiers — a vector retriever alone may suffice.
 
 **Gotcha:** `BM25Retriever` does not accept metadata `filter`. If you need a hard filter, pass only already-filtered `Document`s (see §13.10).
 
@@ -856,10 +856,10 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 # Local model ~80MB; first run downloads from Hugging Face
 
-vector_store = Chroma.from_documents(documentos, embeddings)
+vector_store = Chroma.from_documents(documents, embeddings)
 vector_retriever = vector_store.as_retriever(search_kwargs={"k": 9})
 
-docs = vector_retriever.invoke("cambios de vuelo sin pagar")
+docs = vector_retriever.invoke("flight changes without paying")
 ```
 
 | Piece | Role | M1 reminder |
@@ -868,7 +868,7 @@ docs = vector_retriever.invoke("cambios de vuelo sin pagar")
 | `Chroma.from_documents` | Persists vectors + metadata | M1 §11.7 — vector store |
 | `as_retriever(search_kwargs={"k": N})` | Returns top-N by similarity | M1 §11.8 — `Retriever` |
 
-**Difference from your scratch:** your BoW embedding does not capture that "modificación de fecha" and "cambio de vuelo" are semantically close. `all-MiniLM-L6-v2` does — which is why the framework's vector ranking may differ from scratch, but the **pattern** (without filter → noise from other fares) holds.
+**Difference from your scratch:** your BoW embedding does not capture that "date modification" and "flight change" are semantically close. `all-MiniLM-L6-v2` does — which is why the framework's vector ranking may differ from scratch, but the **pattern** (without filter → noise from other fares) holds.
 
 **When to use:** natural language, synonyms, long queries. **When NOT:** exact ID search only with no semantic variation.
 
@@ -976,9 +976,9 @@ The name "ContextualCompression" is historical: it originally compressed long do
 **Strategy A (recommended in the lab):** filter the corpus **before** building retrievers:
 
 ```python
-def crear_retriever_filtrado(fare_class: str):
-    docs_filtrados = [d for d in documentos if d.metadata["fare_class"] == fare_class]
-    bm25_filtrado = BM25Retriever.from_documents(docs_filtrados)
+def create_filtered_retriever(fare_class: str):
+    filtered_docs = [d for d in documents if d.metadata["fare_class"] == fare_class]
+    filtered_bm25 = BM25Retriever.from_documents(filtered_docs)
     # ... rebuild vector store, ensemble, and compression retriever
 ```
 
@@ -1001,12 +1001,12 @@ Open `lab/solucion_framework.py` and follow this map. Each block corresponds to 
 ```
 BLOCK 1 — Load corpus → Documents
 ─────────────────────────────────────
-JSON → list[Document] with metadata fare_class, route_type, categoria
+JSON → list[Document] with metadata fare_class, route_type, category
 Why? BM25Retriever and Chroma consume Document, not loose dicts.
 
 BLOCK 2 — BM25Retriever
 ────────────────────────
-BM25Retriever.from_documents(documentos); bm25_retriever.k = 9
+BM25Retriever.from_documents(documents); bm25_retriever.k = 9
 Why k=9? Corpus of 9 policies; we want all candidates
               so the ensemble has material to fuse.
 
@@ -1025,14 +1025,14 @@ BLOCK 5 — Reranker + Compression retriever
 CrossEncoderReranker(BGE, top_n=3) wrapped in ContextualCompressionRetriever
 Why? Replicates your intersection rerank, but with a real cross-encoder.
 
-BLOCK 6 — crear_retriever_filtrado()
+BLOCK 6 — create_filtered_retriever()
 ──────────────────────────────────────
 Filter docs → rebuild BM25 + Chroma + Ensemble + Compression
 Why rebuild everything? EnsembleRetriever does not filter; BM25 has no filter.
 
 BLOCK 7 — Execution with/without filter
 ────────────────────────────────────
-compression_retriever.invoke(QUERY)  vs  crear_retriever_filtrado("Basic").invoke(QUERY)
+compression_retriever.invoke(QUERY)  vs  create_filtered_retriever("Basic").invoke(QUERY)
 Why? Demonstrate the same pattern as expected.md from scratch.
 ```
 
@@ -1059,7 +1059,7 @@ The framework may rank slightly differently from scratch (real embeddings vs BoW
 ### 13.12 Full pipeline diagram (framework)
 
 ```
-politicas.json
+policies.json
       │
       ▼
  list[Document]  ──────────────────────────────────────────────┐

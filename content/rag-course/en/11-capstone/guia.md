@@ -29,8 +29,8 @@ These patterns appear across multiple templates and modules. Mastering them is t
 **What it is:** retrieval is not a fixed pipeline step — it is a **tool** the agent invokes when it needs documentary evidence.
 
 ```
-Pipeline fijo (09 RRHH):     io.input → retrieval.vector → prompt → output
-RAG-as-tool (01 Aerolínea):  agent.react ──invoca──▶ tool.retriever (PolicyRAG)
+Fixed pipeline (09 HR):       io.input → retrieval.vector → prompt → output
+RAG-as-tool (01 Airline):     agent.react ──invokes──▶ tool.retriever (PolicyRAG)
 ```
 
 **When to use:**
@@ -53,8 +53,8 @@ RAG-as-tool (01 Aerolínea):  agent.react ──invoca──▶ tool.retriever (
 **What it is:** metadata filters applied **in the store/SQL**, not as a suggestion to the LLM.
 
 ```
-❌ Mal:  "Busca solo documentos del plan PPO" en el system prompt
-✅ Bien: retrieval.vector con hardFilters: [plan, condition] → SQL WHERE plan='PPO'
+❌ Wrong: "Search only PPO plan documents" in the system prompt
+✅ Right: retrieval.vector with hardFilters: [plan, condition] → SQL WHERE plan='PPO'
 ```
 
 **Why it matters:** semantic embedding can retrieve chunks from another plan if the text is similar. Hard-filters are a **precision guardrail** — the system cannot violate them through hallucination.
@@ -79,7 +79,7 @@ RAG-as-tool (01 Aerolínea):  agent.react ──invoca──▶ tool.retriever (
 | Draft justification | LLM | `logic.structured` / `logic.prompt` |
 | Charge with idempotency | Guardrail (code) | `guardrail.idempotency` |
 
-**Anti-pattern:** asking the LLM for `"decision": "aprobar"` and trusting it without `logic.rules`.
+**Anti-pattern:** asking the LLM for `"decision": "approve"` and trusting it without `logic.rules`.
 
 **Templates:** 02 (credit thresholds), 10 (simple vs complex track), 04 (deductible).
 
@@ -91,12 +91,12 @@ RAG-as-tool (01 Aerolínea):  agent.react ──invoca──▶ tool.retriever (
 
 ```
 io.event-source (Kafka)
-    → logic.rules (segmentar)
+    → logic.rules (segment)
     → logic.router (simple | complex)
     → agent.fanout (concurrency: 16)
         ├── tool.retriever (PolicyRAG)
         ├── tool.service (Alternatives)
-        └── auto-confirm (reglas) vs LLM (solo complex)
+        └── auto-confirm (rules) vs LLM (complex only)
 ```
 
 **When to use:** high volume, independent events (logistics, mass notifications).
@@ -113,10 +113,10 @@ io.event-source (Kafka)
 
 **Flow:**
 ```
-logic.prompt → Message (respuesta del LLM)
+logic.prompt → Message (LLM response)
                     ↓
-logic.citations ← Chunks (del retriever)
-    mode: enforce → rechaza/regenera si no hay cita
+logic.citations ← Chunks (from the retriever)
+    mode: enforce → rejects/regenerates if no citation
                     ↓
                io.output
 ```
@@ -133,13 +133,13 @@ logic.citations ← Chunks (del retriever)
 
 ```
 agent.react
-  ├── tool.retriever (guías clínicas)
-  ├── tool.service (historial paciente)
+  ├── tool.retriever (clinical guidelines)
+  ├── tool.service (patient history)
   └── ...
        ↓
 logic.citations (enforce)
        ↓
-hitl.escalate (casos críticos — estructural, no decidido por LLM)
+hitl.escalate (critical cases — structural, not decided by LLM)
 ```
 
 **Difference from linear RAG:** the agent decides the order of queries and can combine APIs + documents.
@@ -163,7 +163,7 @@ hitl.escalate (casos críticos — estructural, no decidido por LLM)
 | HITL | 03, 08 | M9 |
 | MCP | 01 (exportable PolicyRAG) | M8 |
 
-Full map: [`referencia/plantillas-mapeadas.md`](../referencia/plantillas-mapeadas.md).
+Full map: [`reference/mapped-templates.md`](../referencia/plantillas-mapeadas.md).
 
 ---
 
@@ -233,21 +233,21 @@ embedder:Embeddings → hr_store
 ### 3.1 Recommended process
 
 ```
-Brief de negocio
+Business brief
     ↓
-① Definir deploymentTarget (¿chat? ¿batch? ¿eventos?)
+① Define deploymentTarget (chat? batch? events?)
     ↓
-② Listar entradas/salidas (io.*)
+② List inputs/outputs (io.*)
     ↓
-③ Diseñar ingesta offline (si hay RAG)
+③ Design offline ingestion (if RAG is needed)
     ↓
-④ Diseñar runtime (pipeline o agente)
+④ Design runtime (pipeline or agent)
     ↓
-⑤ Añadir guardrails, HITL, observabilidad
+⑤ Add guardrails, HITL, observability
     ↓
-⑥ Validar contrato en RAGorbit
+⑥ Validate contract in RAGorbit
     ↓
-⑦ Probar con mocks → eval con dataset
+⑦ Test with mocks → eval with dataset
 ```
 
 ### 3.2 Decisions by category
@@ -269,7 +269,7 @@ Brief de negocio
 `io.batch → loaders → chunker → metadata → store → retrieval → structured → rules → io.output`
 
 **Level 3 — Transactional agent (01):**
-`ingesta → tool.retriever` + `io.input → agent.react ← tools ← guardrails → audit → io.output`
+`ingestion → tool.retriever` + `io.input → agent.react ← tools ← guardrails → audit → io.output`
 
 ---
 
@@ -278,9 +278,9 @@ Brief de negocio
 ### 4.1 Delegating thresholds to the LLM
 
 ```json
-// ❌ Anti-patrón
-"logic.structured": { "schema": { "decision": "aprobar|rechazar" } }
-// Sin logic.rules — el LLM decide aprobar con score 45
+// ❌ Anti-pattern
+"logic.structured": { "schema": { "decision": "approve|reject" } }
+// Without logic.rules — the LLM decides to approve with score 45
 ```
 
 **Fix:** deterministic `logic.rules` after `logic.structured`.
@@ -290,7 +290,7 @@ Brief de negocio
 ### 4.2 Filters in the prompt instead of hard-filters
 
 ```json
-// ❌ "Filtra por plan PPO en tu búsqueda"
+// ❌ "Filter by PPO plan in your search"
 // ✅
 "retrieval.vector": { "hardFilters": ["plan", "condition"] }
 ```
@@ -300,8 +300,8 @@ Brief de negocio
 ### 4.3 Citations only in the system prompt
 
 ```json
-// ❌ "Siempre cita tus fuentes" en system — el LLM puede ignorarlo
-// ✅ logic.citations con mode: enforce DESPUÉS del LLM
+// ❌ "Always cite your sources" in system — the LLM can ignore it
+// ✅ logic.citations with mode: enforce AFTER the LLM
 ```
 
 ---
@@ -309,8 +309,8 @@ Brief de negocio
 ### 4.4 HITL decided by the LLM
 
 ```json
-// ❌ "Si el caso es grave, di que escalarás a un humano"
-// ✅ hitl.escalate con condiciones estructurales (severidad, criterio_no_encontrado)
+// ❌ "If the case is severe, say you will escalate to a human"
+// ✅ hitl.escalate with structural conditions (severity, criteria_not_found)
 ```
 
 ---
@@ -334,8 +334,8 @@ Using `agent.react` for mass rebookings (thousands of shipments) → unsustainab
 ### 4.7 Guardrails in the agent prompt
 
 ```json
-// ❌ "Pide confirmación si el monto supera 500" en system del agente
-// ✅ guardrail.confirm envolviendo el tool Payment
+// ❌ "Ask for confirmation if the amount exceeds 500" in the agent's system prompt
+// ✅ guardrail.confirm wrapping the Payment tool
 ```
 
 The agent consumes `maxSteps` and may "forget" the instruction. Structural guardrails are code.
@@ -400,14 +400,14 @@ In AI systems, **evaluation is system testing** — there is no single determini
 
 ```
                     ┌─────────────────┐
-                    │  Eval end-to-end │  ← RAGAS, casos de negocio
-                    │  (lento, caro)   │
+                    │  End-to-end eval │  ← RAGAS, business cases
+                    │  (slow, costly)  │
                     ├─────────────────┤
-                    │  Integration      │  ← grafo completo con mocks
+                    │  Integration      │  ← full graph with mocks
                     │  (pytest + MOCK)  │
                     ├─────────────────┤
-                    │  Unit / nodos     │  ← rules, filters, guardrails
-                    │  (determinista)   │
+                    │  Unit / nodes     │  ← rules, filters, guardrails
+                    │  (deterministic)  │
                     └─────────────────┘
 ```
 
@@ -415,7 +415,7 @@ In AI systems, **evaluation is system testing** — there is no single determini
 
 | Component | Test | Example |
 |------------|------|---------|
-| `logic.rules` | Fixed input → output | score=72 → "aprobar" |
+| `logic.rules` | Fixed input → output | score=72 → "approve" |
 | `guardrail.idempotency` | 2nd call → deduplicated | M9 lab |
 | hard-filters | Query without chunks from another plan | top-k only from the file |
 | `logic.citations` enforce | Response without citation → rejected | M5 lab |
@@ -434,10 +434,10 @@ In AI systems, **evaluation is system testing** — there is no single determini
 ### 6.4 Eval as CI
 
 ```python
-# Pseudocódigo — patrón recomendado
+# Pseudocode — recommended pattern
 DATASET = [
-    {"query": "¿Vacaciones 3 años?", "must_contain": ["18 días"], "must_cite": "§3"},
-    {"query": "¿Precio acciones?", "must_contain": ["no está disponible"]},
+    {"query": "Vacation after 3 years?", "must_contain": ["18 days"], "must_cite": "§3"},
+    {"query": "Stock price?", "must_contain": ["not available"]},
 ]
 
 def test_rag_properties():
@@ -462,12 +462,12 @@ For your 09→02→01 reconstructions:
 
 ## 7. Reconstruction path 09 → 02 → 01
 
-Capstone order ([`plantillas-mapeadas.md` § Ruta](../referencia/plantillas-mapeadas.md)):
+Capstone order ([`mapped-templates.md` § Path](../referencia/plantillas-mapeadas.md)):
 
 ```
-09 RRHH        02 Banca           01 Aerolínea
-~10 nodos      ~12 nodos          ~18 nodos
-RAG lineal     batch+rules        agente+guardrails+RAG-tool
+09 HR          02 Banking          01 Airline
+~10 nodes      ~12 nodes           ~18 nodes
+Linear RAG     batch+rules         agent+guardrails+RAG-tool
 ```
 
 ### 7.1 Template 09 — what it validates
@@ -536,8 +536,8 @@ Open [`lab/solucion_framework.py`](lab/solucion_framework.py) and follow this ma
 #### Block 1 — Loader (M1 §11.4, M2 §10)
 
 ```python
-loader = TextLoader("datos/politicas_rrhh.txt", encoding="utf-8")
-documentos_raw = loader.load()
+loader = TextLoader("data/hr_policies.txt", encoding="utf-8")
+raw_documents = loader.load()
 ```
 
 Equivalent to `loader.pdf` when the document is already text. In production with real PDFs: `PyPDFLoader` or `UnstructuredPDFLoader` (M2).
@@ -546,7 +546,7 @@ Equivalent to `loader.pdf` when the document is already text. In production with
 
 ```python
 splitter = CharacterTextSplitter(separator="\n---\n", ...)
-chunks = splitter.split_documents(documentos_raw)
+chunks = splitter.split_documents(raw_documents)
 ```
 
 Equivalent to `ingest.chunker` with `strategy: by-section`. For `by-clause` (01, 05): `RecursiveCharacterTextSplitter` with legal separators.
@@ -586,7 +586,7 @@ Equivalent to `model.llm` + `logic.prompt`.
 #### Block 6 — LCEL chain (M1 §11.11)
 
 ```python
-rag_chain = {"contexto": retriever | formatear_chunks, "pregunta": RunnablePassthrough()} | prompt | llm | StrOutputParser()
+rag_chain = {"context": retriever | format_chunks, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()
 ```
 
 This is the linear chain of 09 without an agent.
@@ -594,7 +594,7 @@ This is the linear chain of 09 without an agent.
 #### Block 7 — Citations enforce (M5 §4)
 
 ```python
-def enforce_citations(respuesta, docs): ...
+def enforce_citations(response, docs): ...
 ```
 
 In RAGorbit it is a separate `logic.citations` node. In LangChain you can implement it as a post-processor or as a node in LangGraph.
@@ -612,11 +612,11 @@ On the 09 skeleton, add:
 ```python
 def apply_rules(decision: CreditDecision) -> CreditDecision:
     if decision.score >= 70:
-        decision.decision = "aprobar"
+        decision.decision = "approve"
     elif decision.score >= 40:
-        decision.decision = "revisar"
+        decision.decision = "review"
     else:
-        decision.decision = "rechazar"
+        decision.decision = "reject"
     return decision
 ```
 
@@ -649,14 +649,14 @@ payment_tool = with_resilience(with_confirm(with_idempotency(raw_payment_tool)))
 
 ```
 M1 (LCEL, Chroma) ──────┐
-M2 (splitters, meta) ───┼──▶ Template 09 (RAG lineal)
+M2 (splitters, meta) ───┼──▶ Template 09 (linear RAG)
 M3 (stores) ────────────┘
                         │
 M4 (filters) ───────────┼──▶ Template 02 (+ structured + rules)
 M5 (structured, eval) ──┘
                         │
 M6 (LangGraph, tools) ──┼──▶ Template 01 (+ guardrails + audit)
-M9 (producción) ────────┘
+M9 (production) ────────┘
 ```
 
 ### 12.6 When to use LangChain vs LangGraph vs LlamaIndex
@@ -668,7 +668,7 @@ M9 (producción) ────────┘
 | LlamaIndex | Query engines, complex indexes | 05 (alternative) |
 | CrewAI / AutoGen | Collaborative multi-agent | 10 (M7) |
 
-Full table: [`tecnologias-comparadas.md`](../referencia/tecnologias-comparadas.md).
+Full table: [`technologies-compared.md`](../referencia/tecnologias-comparadas.md).
 
 ---
 

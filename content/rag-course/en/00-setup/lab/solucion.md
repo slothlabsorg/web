@@ -17,7 +17,7 @@ This makes the script portable: it works regardless of the current working direc
 ### 2. Load the JSON
 
 ```python
-with open(ruta, encoding="utf-8") as f:
+with open(path, encoding="utf-8") as f:
     data = json.load(f)
 ```
 
@@ -48,8 +48,8 @@ The solution uses **two combined strategies**:
 
 **Semantic strategy (primary):**
 ```python
-nodo_entrada = next(n for n in nodes if n["type"].startswith("io.input"), None)
-nodos_salida = [n for n in nodes if n["type"].startswith("io.output")]
+input_node  = next(n for n in nodes if n["type"].startswith("io.input"), None)
+output_nodes = [n for n in nodes if n["type"].startswith("io.output")]
 ```
 Search by node type. It's the most robust strategy because it's based on the Flow IR contract (see `docs/01-concepts.md §2.2`): there must always be exactly one `io.input` node and at least one `io.output`.
 
@@ -57,8 +57,8 @@ Search by node type. It's the most robust strategy because it's based on the Flo
 ```python
 targets = {e["target"] for e in edges}
 sources = {e["source"] for e in edges}
-nodo_entrada = next(n for n in nodes if n["id"] not in targets, None)
-nodos_salida = [n for n in nodes if n["id"] not in sources]
+input_node  = next(n for n in nodes if n["id"] not in targets, None)
+output_nodes = [n for n in nodes if n["id"] not in sources]
 ```
 A node with no incoming edges is a graph "source". A node with no outgoing edges is a final "leaf". This strategy works with any directed acyclic graph, even if types don't follow the `io.*` convention.
 

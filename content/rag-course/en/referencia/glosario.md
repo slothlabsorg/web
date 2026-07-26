@@ -96,7 +96,7 @@ In the MCP protocol, **permission approval** requires the user (or the system) t
 
 **What it's for:** understanding the similarity mechanism without depending on external models; in production it is replaced by semantic embeddings.
 
-**Example:** `"días de vacaciones"` and `"días de descanso"` share the word "días" but not synonyms → partial, not total similarity.
+**Example:** `"vacation days"` and `"rest days"` share the word "days" but not synonyms → partial, not total similarity.
 
 **See also:** [../01-fundamentos/guia.md](../01-fundamentos/guia.md) · [../03-embeddings-y-stores/guia.md](../03-embeddings-y-stores/guia.md)
 
@@ -235,7 +235,7 @@ A **circuit breaker** temporarily stops calls to an external service when the fa
 
 **What it's for:** audit, user trust, and hallucination detection.
 
-**Example:** `"Employees have 15 days [Source: politica_vacaciones.pdf, §3.2]"`.
+**Example:** `"Employees have 15 days [Source: vacation_policy.pdf, §3.2]"`.
 
 **See also:** [../05-generacion-y-logic/guia.md](../05-generacion-y-logic/guia.md) · [`logic.citations`](./catalogo-nodos.md#logiccitations)
 
@@ -403,7 +403,7 @@ An **embedding** is a fixed-length vector of real numbers representing the meani
 
 **What it's for:** enabling search by meaning in vector stores; the **same model** must be used at ingestion and at query time.
 
-**Example:** "días de vacaciones" and "permiso remunerado anual" have close embeddings even though they do not share words.
+**Example:** "vacation days" and "paid annual leave" have close embeddings even though they do not share words.
 
 **See also:** [../01-fundamentos/guia.md](../01-fundamentos/guia.md) · [../03-embeddings-y-stores/guia.md](../03-embeddings-y-stores/guia.md) · [`model.embedding`](./catalogo-nodos.md#modelembedding)
 
@@ -627,7 +627,7 @@ A **guardrail** is a safety or resilience barrier around tools or the LLM: pre-e
 
 ### Intent detection
 
-**Intent detection** classifies the user message into actionable labels (`consulta_politica`, `saludo`, `silencio`) to decide whether to trigger the RAG pipeline, route to another agent, or discard noise (e.g. audio fragments in a call center).
+**Intent detection** classifies the user message into actionable labels (`policy_query`, `greeting`, `silence`) to decide whether to trigger the RAG pipeline, route to another agent, or discard noise (e.g. audio fragments in a call center).
 
 **What it's for:** reducing cost and latency by avoiding RAG on non-actionable messages; multi-index routing.
 
@@ -701,7 +701,7 @@ The **knowledge cutoff** is the date limit of the data the LLM was trained on. T
 
 ### Knowledge graph
 
-A **knowledge graph** models entities (nodes) and typed relations (edges): `Empresa → firmó → Contrato → contiene → Cláusula`. It enables neighborhood retrieval in addition to vector similarity.
+A **knowledge graph** models entities (nodes) and typed relations (edges): `Company → signed → Contract → contains → Clause`. It enables neighborhood retrieval in addition to vector similarity.
 
 **What it's for:** GraphRAG, multi-hop questions, domains with explicit relations (legal, healthcare, supply chain).
 
@@ -1026,7 +1026,7 @@ A **prompt template** is a template with variables (`{message}`, `{chunks}`) tha
 
 **Query rewriting** normalizes or expands the user's question before the retriever: maps internal jargon to canonical terms, adds synonyms or reformulations to improve recall.
 
-**What it's for:** "baja de plan" → "cancelación de servicio" in telecom; gap between user vocabulary and index vocabulary.
+**What it's for:** "plan downgrade" → "service cancellation" in telecom; gap between user vocabulary and index vocabulary.
 
 **See also:** [../04-retrieval-y-query/guia.md](../04-retrieval-y-query/guia.md) · [`query.rewrite`](./catalogo-nodos.md#queryrewrite)
 

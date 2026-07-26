@@ -9,17 +9,17 @@
 ```
 [Session.memory]  ← message list shared between turns
        ↓
-[Session.chat(mensaje_usuario)]
-       ↓ agrega mensaje a memoria
+[Session.chat(user_message)]
+       ↓ appends message to memory
 [react_loop(memory)]
-       ↓ itera MAX_STEPS=8 veces
-       ├─ [fake_llm(memory)]  → devuelve {"action":...} o {"final":...}
-       │         ↓ si action
-       │  [TOOLS[tool_name](**args)]  → ejecuta la tool real
-       │         ↓ resultado
-       │  [memory.append(tool_result)]  → agrega a historial
-       │         ↓ vuelve al inicio del loop
-       └─ si final → devuelve texto
+       ↓ iterates MAX_STEPS=8 times
+       ├─ [fake_llm(memory)]  → returns {"action":...} or {"final":...}
+       │         ↓ if action
+       │  [TOOLS[tool_name](**args)]  → executes the real tool
+       │         ↓ result
+       │  [memory.append(tool_result)]  → adds to history
+       │         ↓ returns to start of loop
+       └─ if final → returns text
 ```
 
 ### The deterministic fake LLM
@@ -29,8 +29,8 @@ The key to layer ② is `fake_llm`, which implements the reasoning logic without
 1. **Inspects the history** to see which tools have already been called.
 2. **Detects confirmation** (turn 2) by searching for keywords.
 3. **Follows a sequential flow** based on what is missing:
-   - Missing `consultar_reserva`? → call it.
-   - Missing `consultar_politica`? → call it.
+   - Missing `get_reservation`? → call it.
+   - Missing `get_policy`? → call it.
    - Have everything? → calculate and respond.
 
 ```python
@@ -39,22 +39,22 @@ def fake_llm(messages: list) -> dict:
     is_confirm = any(w in last_user for w in CONFIRM_WORDS)
 
     if is_confirm:
-        # Recuperar datos del turno anterior de la memoria
+        # Recover data from the previous turn in memory
         pnr = _find_in_memory(messages, "pnr")
         ...
-        return {"final": f"Cambio confirmado para **{pnr}**..."}
+        return {"final": f"Change confirmed for **{pnr}**..."}
 
-    if "consultar_reserva" not in called:
+    if "get_reservation" not in called:
         pnr = _extract_pnr(messages)
-        return {"action": "consultar_reserva", "args": {"pnr": pnr}}
+        return {"action": "get_reservation", "args": {"pnr": pnr}}
 
-    if "consultar_politica" not in called:
-        reserva = _tool_result(messages, "consultar_reserva")
-        return {"action": "consultar_politica",
-                "args": {"fare_class": reserva["fare_class"],
-                         "route_type": reserva["route_type"]}}
+    if "get_policy" not in called:
+        reservation = _tool_result(messages, "get_reservation")
+        return {"action": "get_policy",
+                "args": {"fare_class": reservation["fare_class"],
+                         "route_type": reservation["route_type"]}}
 
-    # Todo listo → calcular y responder
+    # Everything ready → calculate and respond
     ...
     return {"final": f"...Total: USD {total:.2f}..."}
 ```
@@ -64,24 +64,24 @@ def fake_llm(messages: list) -> dict:
 Memory is simply a list that grows with each turn:
 
 ```python
-# Estado de la memoria después del Turno 1 completo:
+# Memory state after Turn 1 is complete:
 [
-  {"role": "system",    "content": "Eres asistente de cambio de vuelo..."},
-  {"role": "user",      "content": "Quiero cambiar mi vuelo SCL-BOG-001..."},
-  {"role": "assistant", "content": "[tool_call: consultar_reserva({'pnr': 'SCL-BOG-001'})]"},
-  {"role": "tool",      "name": "consultar_reserva",
+  {"role": "system",    "content": "You are a flight change assistant..."},
+  {"role": "user",      "content": "I want to change my flight SCL-BOG-001..."},
+  {"role": "assistant", "content": "[tool_call: get_reservation({'pnr': 'SCL-BOG-001'})]"},
+  {"role": "tool",      "name": "get_reservation",
                          "content": '{"pnr":"SCL-BOG-001","fare_class":"ECONOMY_FLEX",...}'},
-  {"role": "assistant", "content": "[tool_call: consultar_politica(...)]"},
-  {"role": "tool",      "name": "consultar_politica",
+  {"role": "assistant", "content": "[tool_call: get_policy(...)]"},
+  {"role": "tool",      "name": "get_policy",
                          "content": '{"penalidad_usd":50,...}'},
-  {"role": "assistant", "content": "Encontré tu reserva SCL-BOG-001...Total: USD 130.00...\npnr:SCL-BOG-001\ntotal_usd:130.00"}
+  {"role": "assistant", "content": "I found your reservation SCL-BOG-001...Total: USD 130.00...\npnr:SCL-BOG-001\ntotal_usd:130.00"}
 ]
 ```
 
-The persistence trick between turns: the **Turn 1 response includes state lines** (`pnr:...`, `total_usd:...`, `vuelo_nuevo:...`) that `_find_in_memory` can recover on Turn 2. This minimally simulates agent state without a formal `TypedDict`.
+The persistence trick between turns: the **Turn 1 response includes state lines** (`pnr:...`, `total_usd:...`, `new_flight:...`) that `_find_in_memory` can recover on Turn 2. This minimally simulates agent state without a formal `TypedDict`.
 
 On Turn 2:
-1. The user message ("Sí, confirmo") is appended to the same list.
+1. The user message ("Yes, I confirm") is appended to the same list.
 2. `fake_llm` detects confirmation and calls `_find_in_memory`.
 3. It recovers PNR, flight, and total from the history.
 4. It responds without calling any tool.
@@ -104,18 +104,18 @@ The regex `\b([A-Z]{2,3}-[A-Z]{2,3}-\d{3})\b` captures the airline's standard PN
 ### Cost calculation
 
 ```python
-vuelos_candidatos = [
-    v for v in VUELOS["vuelos_disponibles"]
-    if v["origin"] == origen
-    and v["destination"] == destino
-    and (fecha_nueva in v["date"] if fecha_nueva else True)
+candidate_flights = [
+    v for v in FLIGHTS["vuelos_disponibles"]
+    if v["origin"] == origin
+    and v["destination"] == destination
+    and (new_date in v["date"] if new_date else True)
     and v["available_seats"] > 0
-    and reserva.get("fare_class") in v.get("fare_classes_available", [])
+    and reservation.get("fare_class") in v.get("fare_classes_available", [])
 ]
 
-mejor_vuelo = min(vuelos_candidatos, key=lambda v: v["price"])
-diferencial = max(0.0, mejor_vuelo["price"] - precio_base)
-total = penalidad + diferencial
+best_flight = min(candidate_flights, key=lambda v: v["price"])
+differential = max(0.0, best_flight["price"] - base_price)
+total = penalty + differential
 # = 50 + (295 - 215) = 50 + 80 = 130
 ```
 
@@ -142,10 +142,10 @@ The `max(0.0, ...)` avoids a negative differential if the new flight is cheaper 
 
 ```python
 agent = create_react_agent(
-    model=llm,          # cualquier ChatModel de LangChain
-    tools=TOOLS,        # lista de @tool
+    model=llm,          # any LangChain ChatModel
+    tools=TOOLS,        # list of @tool
     prompt=system_prompt,
-    checkpointer=checkpointer,  # MemorySaver para persistencia
+    checkpointer=checkpointer,  # MemorySaver for persistence
 )
 ```
 
@@ -158,10 +158,10 @@ Internally, `create_react_agent` builds a `StateGraph` with:
 
 ```python
 config = {"configurable": {"thread_id": "demo-001"}}
-# Turno 1:
-agent.invoke({"messages": [HumanMessage("Cambiar vuelo...")]}, config=config)
-# Turno 2 — recupera automáticamente el estado del Turno 1:
-agent.invoke({"messages": [HumanMessage("Sí, confirmo.")]}, config=config)
+# Turn 1:
+agent.invoke({"messages": [HumanMessage("Change flight...")]}, config=config)
+# Turn 2 — automatically recovers Turn 1 state:
+agent.invoke({"messages": [HumanMessage("Yes, I confirm.")]}, config=config)
 ```
 
 The `thread_id` identifies the session. LangGraph serializes the full state (message history, graph state) in `MemorySaver` (in memory) or in a persistent backend (SQLite, Postgres).
@@ -170,15 +170,15 @@ The `thread_id` identifies the session. LangGraph serializes the full state (mes
 
 ```python
 @tool
-def consultar_reserva(pnr: str) -> dict:
+def get_reservation(pnr: str) -> dict:
     """
-    Obtiene el itinerario completo de una reserva dado su PNR.
-    Úsala cuando el pasajero proporcione su número de reserva (PNR).
+    Gets the complete itinerary of a reservation given its PNR.
+    Use it when the passenger provides their reservation number (PNR).
     ...
     """
 ```
 
-The docstring **is the description the LLM receives**. Claude reads "Úsala cuando el pasajero proporcione su número de reserva" and learns when to call it. A poor description leads to tools being used incorrectly.
+The docstring **is the description the LLM receives**. Claude reads "Use it when the passenger provides their reservation number" and learns when to call it. A poor description leads to tools being used incorrectly.
 
 ### Block-by-block walkthrough
 
@@ -186,10 +186,10 @@ For the full line-by-line map, see guide §8.8. Summary:
 
 | Block in `solucion_framework.py` | Scratch equivalent |
 |-----------------------------------|---------------------|
-| `@tool` + `TOOLS = [...]` | `TOOLS = {"nombre": fn}` |
+| `@tool` + `TOOLS = [...]` | `TOOLS = {"name": fn}` |
 | `build_agent()` + `create_react_agent` | `react_loop` + `fake_llm` + `while` |
 | `config` with `thread_id` | `Session` with shared `memory` |
-| `agent.invoke({"messages": [...]})` | `chat(session, mensaje)` |
+| `agent.invoke({"messages": [...]})` | `chat(session, message)` |
 | Commented `StateGraph` section | `while` loop split into `agent`↔`tools` nodes |
 
 ### Explicit StateGraph (commented section)
@@ -219,13 +219,13 @@ model.llm ──(Model)──▶┐
                       │
 io.input ──(Message)──▶ agent.react ──(Message)──▶ io.output
                       │  ↑ (loop)
-tool.service "consultar_reserva" ──(Tool)──▶┘
-tool.service "consultar_politica" ──(Tool)──▶┘
+tool.service "get_reservation" ──(Tool)──▶┘
+tool.service "get_policy" ──(Tool)──▶┘
 ```
 
 The difference from template 01 (airline) is that it adds:
 - `tool.service "InventoryService"` and `"PricingService"` (which we calculate locally here).
-- `tool.retriever "PolicyRAG"` (which we simulate here with `consultar_politica`).
+- `tool.retriever "PolicyRAG"` (which we simulate here with `get_policy`).
 - `guardrail.confirm` + `guardrail.idempotency` + `guardrail.resilience` on payment.
 - `observability.audit` for Kafka traceability.
 

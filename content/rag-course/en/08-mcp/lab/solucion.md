@@ -2,7 +2,7 @@
 
 ---
 
-## Layer ② — From-scratch solution (`solucion_scratch.py`)
+## Layer ② — From-scratch solution (`solution_scratch.py`)
 
 ### Overall architecture
 
@@ -37,8 +37,8 @@ The key logic is in `MCPServer._tools_call`:
 ```python
 if name in SENSITIVE_TOOLS:
     if permission_token != "approved" or perm_id not in self.approved_permissions:
-        return permission_required_response  # NO ejecuta el handler
-# Solo llega aquí con permiso válido
+        return permission_required_response  # does NOT execute the handler
+# Only reaches here with a valid permission
 result = TOOL_HANDLERS[name](**arguments)
 ```
 
@@ -50,7 +50,7 @@ Using `subprocess.Popen` replicates the real MCP model (Cursor launches `python 
 
 ---
 
-## Layer ③ — FastMCP solution (`solucion_framework.py`)
+## Layer ③ — FastMCP solution (`solution_framework.py`)
 
 ### Scratch → FastMCP mapping
 
@@ -65,16 +65,16 @@ Using `subprocess.Popen` replicates the real MCP model (Cursor launches `python 
 ### What FastMCP does not do for you
 
 - **Permissions:** you must implement `permission_required` inside the tool (same as in scratch).
-- **Business logic:** read `politica.json`, validate PNR — that is your code.
+- **Business logic:** read `policy.json`, validate PNR — that is your code.
 - **Guardrails:** combine MCP permissions with `guardrail.confirm` in the RAGorbit graph.
 
 ### Run when you have pip
 
 ```bash
 pip install fastmcp
-python3 solucion_framework.py              # demo STDIO
-python3 solucion_framework.py --server     # solo server (para Cursor)
-python3 solucion_framework.py --http       # demo HTTP
+python3 solution_framework.py              # demo STDIO
+python3 solution_framework.py --server     # server only (for Cursor)
+python3 solution_framework.py --http       # demo HTTP
 ```
 
 ---
@@ -100,7 +100,7 @@ The `orchestrator` agent remains `agent.react` — only where the tools come fro
 
 ## Common mistakes
 
-1. **Forgetting `initialize`** before `tools/list` → "Cliente no inicializado" error.
+1. **Forgetting `initialize`** before `tools/list` → "Client not initialized" error.
 2. **Not calling `flush()`** after writing to subprocess stdin → the server never receives the message.
 3. **Running sensitive tool without gate** → charges without user consent.
 4. **Confusing resource with tool** → using `tools/call` to read a static file instead of `resources/read`.

@@ -66,11 +66,11 @@ d) It eliminates the need for `logic.citations`
 
 ---
 
-**Exercise 8 (P)** — A credit batch produces `{"score": 45, "decision": "aprobar"}` from the LLM. `logic.rules` defines: ≥70 approve, 40–69 review, <40 reject. What is the final `decision`?
+**Exercise 8 (P)** — A credit batch produces `{"score": 45, "decision": "approve"}` from the LLM. `logic.rules` defines: ≥70 approve, 40–69 review, <40 reject. What is the final `decision`?
 
-a) `"aprobar"`  
-b) `"revisar"`  
-c) `"rechazar"`  
+a) `"approve"`  
+b) `"review"`  
+c) `"reject"`  
 d) Error — the JSON is invalid
 
 ---
@@ -262,7 +262,7 @@ d) Any order
 
 ---
 
-**Exercise 32 (P)** — Vacation/3 years query on `politicas_rrhh.txt` with bag-of-words (M11 scratch). Expected top-4 indices (0-based):
+**Exercise 32 (P)** — Vacation/3 years query on `hr_policies.txt` with bag-of-words (M11 scratch). Expected top-4 indices (0-based):
 
 a) 0, 1, 2, 3  
 b) 1, 0, 7, 3  
@@ -286,7 +286,7 @@ d) Regulation mandates Chroma for HR
 
 **Exercise 35 (A)** — `requireCitations: true` in `logic.structured` of 02 requires:
 
-a) That the LLM cite only in the `justificacion` field  
+a) That the LLM cite only in the `justification` field  
 b) That each factor is anchored to retrieved fragments from the file  
 c) APA citations at the end of the JSON  
 d) Removing the `score` field
@@ -295,10 +295,10 @@ d) Removing the `score` field
 
 **Exercise 36 (P)** — File `applicant_001`: income $85k, debt $12k, payments 97%, tenure 6 years. LLM score: 72. `decision` after `logic.rules`?
 
-a) `"rechazar"`  
-b) `"revisar"`  
-c) `"aprobar"`  
-d) `"pendiente"`
+a) `"reject"`  
+b) `"review"`  
+c) `"approve"`  
+d) `"pending"`
 
 ---
 
@@ -339,7 +339,7 @@ d) Never test AI systems
 
 ---
 
-**Exercise 42 (P)** — `test_rules.py`: `assert apply_rules(score=69) == "revisar"`. Which component of template 02 does it validate?
+**Exercise 42 (P)** — `test_rules.py`: `assert apply_rules(score=69) == "review"`. Which component of template 02 does it validate?
 
 a) `model.embedding`  
 b) `logic.rules`  

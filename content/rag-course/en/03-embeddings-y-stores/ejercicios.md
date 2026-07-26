@@ -99,26 +99,26 @@ Does the system return the most relevant documents? How would you fix it?
 import chromadb
 
 client = chromadb.Client()
-collection = client.create_collection("politicas")
+collection = client.create_collection("policies")
 
 collection.add(
     ids=["p1", "p2", "p3"],
     documents=[
-        "Vacaciones: 15 días por año.",
-        "Seguro médico: cobertura familiar.",
-        "Home office: 2 días a la semana."
+        "Vacation: 15 days per year.",
+        "Health insurance: family coverage.",
+        "Home office: 2 days per week."
     ],
     metadatas=[
-        {"categoria": "vacaciones", "año": 2024},
-        {"categoria": "beneficios", "año": 2024},
-        {"categoria": "horario", "año": 2024, "etiquetas": ["flexibilidad", "bienestar"]}
+        {"category": "vacation", "year": 2024},
+        {"category": "benefits", "year": 2024},
+        {"category": "schedule", "year": 2024, "tags": ["flexibility", "wellness"]}
     ]
 )
 
-resultados = collection.query(
-    query_texts=["¿puedo trabajar desde casa?"],
+results = collection.query(
+    query_texts=["can I work from home?"],
     n_results=2,
-    where={"categoria": {"$contains": "horario"}}
+    where={"category": {"$contains": "schedule"}}
 )
 ```
 
@@ -126,7 +126,7 @@ There are two bugs. Identify them and propose the fix.
 
 **17.b)** Upsert vs update vs add: for a monthly re-ingestion pipeline where documents may have been updated, modified, or be completely new, which operation would you use? Justify.
 
-**17.c)** A team indexes HR policy documents and wants to retrieve only current ones (year >= 2024) in the "beneficios" category that contain the word "dental" in the text. Write the correct Chroma query.
+**17.c)** A team indexes HR policy documents and wants to retrieve only current ones (year >= 2024) in the "benefits" category that contain the word "dental" in the text. Write the correct Chroma query.
 
 **17.d)** Predict the output of the following code:
 
@@ -138,7 +138,7 @@ col = client.create_collection("test")
 
 col.add(
     ids=["a", "b", "c"],
-    documents=["python es un lenguaje", "java es tipado", "python tiene pandas"],
+    documents=["python is a language", "java is typed", "python has pandas"],
     metadatas=[{"lang": "python"}, {"lang": "java"}, {"lang": "python"}]
 )
 
@@ -167,12 +167,12 @@ For each business brief, choose the most suitable vector store among: ChromaDB, 
 
 ## Exercise 19 — sentence-transformers: from scratch to real embedding
 
-**19.a)** In the scratch workshop, `embeder()` produces a 20-dimensional bag-of-words vector. In layer ③ you use `SentenceTransformer("BAAI/bge-base-en-v1.5").encode(texto, normalize_embeddings=True)`. What changes in each of these aspects? Justify in 1–2 lines each:
+**19.a)** In the scratch workshop, `embeder()` produces a 20-dimensional bag-of-words vector. In layer ③ you use `SentenceTransformer("BAAI/bge-base-en-v1.5").encode(text, normalize_embeddings=True)`. What changes in each of these aspects? Justify in 1–2 lines each:
 
 | Aspect | Scratch (`embeder`) | Framework (`encode`) |
 |--------|---------------------|----------------------|
 | Vector dimensions | | |
-| Synonym capture ("vacaciones" ≈ "tiempo libre") | | |
+| Synonym capture ("vacation" ≈ "time off") | | |
 | Who normalizes the vector | | |
 | Dependencies (pip/network) | | |
 
@@ -181,8 +181,8 @@ For each business brief, choose the most suitable vector store among: ChromaDB, 
 A colleague writes this and complains that FAISS returns strange rankings:
 
 ```python
-modelo = SentenceTransformer("BAAI/bge-base-en-v1.5")
-embeddings = modelo.encode(textos)  # sin normalize_embeddings
+model = SentenceTransformer("BAAI/bge-base-en-v1.5")
+embeddings = model.encode(texts)  # without normalize_embeddings
 index = faiss.IndexFlatIP(768)
 index.add(embeddings.astype(np.float32))
 ```
@@ -211,46 +211,46 @@ col = client.create_collection("test", metadata={"hnsw:space": "cosine"})
 col.add(
     ids=["v1", "b1", "h1"],
     documents=[
-        "15 dias de vacaciones al ano para empleados",
-        "seguro medico dental y visual",
-        "horario flexible dos dias remoto"
+        "15 vacation days per year for employees",
+        "dental and vision health insurance",
+        "flexible schedule two remote days"
     ],
     embeddings=[
-        [1.0, 0.0, 0.0],   # vector unitario simplificado
+        [1.0, 0.0, 0.0],   # simplified unit vector
         [0.0, 1.0, 0.0],
         [0.0, 0.0, 1.0],
     ],
     metadatas=[
-        {"categoria": "vacaciones"},
-        {"categoria": "beneficios"},
-        {"categoria": "horario"},
+        {"category": "vacation"},
+        {"category": "benefits"},
+        {"category": "schedule"},
     ]
 )
 
-resultado = col.query(
+result = col.query(
     query_embeddings=[[1.0, 0.0, 0.0]],
     n_results=2,
-    where={"categoria": "vacaciones"},
+    where={"category": "vacation"},
     include=["ids", "distances"]
 )
 ```
 
 Answer:
-1. How many ids does `resultado["ids"][0]` return?
+1. How many ids does `result["ids"][0]` return?
 2. What is the id of the first result?
-3. What is the value of `resultado["distances"][0][0]` (top-1 distance)?
+3. What is the value of `result["distances"][0][0]` (top-1 distance)?
 4. What cosine similarity corresponds to that distance? (use `sim = 1 - dist/2`)
 
 **20.b)** Complete the correct `where` for this query:
 
-> "Retrieve documents in category `beneficios` or `vacaciones`, with `version >= 2024`, that contain the word `dental` in the text."
+> "Retrieve documents in category `benefits` or `vacation`, with `version >= 2024`, that contain the word `dental` in the text."
 
 ```python
-resultados = collection.query(
-    query_texts=["cobertura dental"],
+results = collection.query(
+    query_texts=["dental coverage"],
     n_results=5,
-    where=___COMPLETA_AQUI___,
-    where_document=___COMPLETA_AQUI___
+    where=___COMPLETE_HERE___,
+    where_document=___COMPLETE_HERE___
 )
 ```
 
@@ -258,7 +258,7 @@ resultados = collection.query(
 
 ## Exercise 21 — FAISS: id→doc map and post-filtering bug
 
-**21.a)** Why does FAISS need an external map `id_a_doc` (or equivalent) while ChromaDB does not? Explain in 3–4 lines what each one stores internally.
+**21.a)** Why does FAISS need an external map `id_to_doc` (or equivalent) while ChromaDB does not? Explain in 3–4 lines what each one stores internally.
 
 **21.b)** Find the bug in this post-filtering:
 
@@ -266,27 +266,27 @@ resultados = collection.query(
 import faiss
 import numpy as np
 
-# 100 docs: 5 de categoria "vacaciones", 95 de otras categorias
+# 100 docs: 5 in category "vacation", 95 in other categories
 index = faiss.IndexFlatIP(768)
 # ... index.add(embeddings) ...
 
-filtro_categoria = "vacaciones"
-query_vec = modelo.encode(["dias de permiso"], normalize_embeddings=True).astype(np.float32)
+filter_category = "vacation"
+query_vec = model.encode(["leave days"], normalize_embeddings=True).astype(np.float32)
 
-scores, indices = index.search(query_vec, k=3)  # solo pide 3
+scores, indices = index.search(query_vec, k=3)  # only requests 3
 
-filtrados = []
+filtered = []
 for score, idx in zip(scores[0], indices[0]):
-    doc = id_a_doc[idx]
-    if doc["metadata"]["categoria"] == filtro_categoria:
-        filtrados.append((score, doc))
+    doc = id_to_doc[idx]
+    if doc["metadata"]["category"] == filter_category:
+        filtered.append((score, doc))
 
-print(f"Resultados con filtro: {len(filtrados)}")
+print(f"Results with filter: {len(filtered)}")
 ```
 
-The code prints `Resultados con filtro: 0` even though 5 vacation documents exist. Identify the bug and propose the minimal fix.
+The code prints `Results with filter: 0` even though 5 vacation documents exist. Identify the bug and propose the minimal fix.
 
-**21.c)** Predict the behavior: with 12 documents (as in the workshop) and filter `categoria=vacaciones` (3 docs), does requesting `k=3` in FAISS and filtering afterward work? And with 1 million documents where only 0.1% is "vacaciones"? Justify in both cases.
+**21.c)** Predict the behavior: with 12 documents (as in the workshop) and filter `category=vacation` (3 docs), does requesting `k=3` in FAISS and filtering afterward work? And with 1 million documents where only 0.1% is "vacation"? Justify in both cases.
 
 ---
 

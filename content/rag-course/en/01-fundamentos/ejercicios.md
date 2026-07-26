@@ -18,8 +18,8 @@ d) Use a model with a 1 million token window — always the best option
 **Exercise 2 (P)** — Predict the approximate token count of the following text in Spanish using the module's rule of thumb:
 
 ```
-"La empresa otorga a sus empleados 15 días hábiles de vacaciones por año calendario,
-incrementándose en 2 días cada 5 años de antigüedad."
+"The company grants its employees 15 business days of vacation per calendar year,
+increasing by 2 days for every 5 years of seniority."
 ```
 
 a) ~10 tokens  
@@ -62,7 +62,7 @@ d) The same response only if the model is small; large models remain random
 
 ```python
 prompt = f"""
-Responde esta pregunta: {pregunta}
+Answer this question: {question}
 """
 response = llm.invoke(prompt)
 ```
@@ -80,13 +80,13 @@ d) Only in models with more than 70B parameters — it does not work in small mo
 
 ---
 
-**Exercise 8 (D)** — Write a few-shot prompt with 3 examples to classify HR questions into: `vacaciones`, `nómina`, `beneficios`, `onboarding`, `otro`. The question to classify is: "¿A partir de qué mes empiezo a cotizar al IMSS?"
+**Exercise 8 (D)** — Write a few-shot prompt with 3 examples to classify HR questions into: `vacation`, `payroll`, `benefits`, `onboarding`, `other`. The question to classify is: "Starting from which month do I begin contributing to social security?"
 
 ---
 
 ## Block 3 — RAG: why and how
 
-**Exercise 9 (A)** — An LLM responds with total confidence: "La empresa Acme otorga 30 días de vacaciones el primer año según su Manual del Empleado versión 2023." When you verify the real handbook, the figure is 15 days. This phenomenon is called:
+**Exercise 9 (A)** — An LLM responds with total confidence: "Acme company grants 30 vacation days in the first year according to their Employee Handbook version 2023." When you verify the real handbook, the figure is 15 days. This phenomenon is called:
 
 a) Model overfitting  
 b) Hallucination  
@@ -122,9 +122,9 @@ d) The response will have at most 4 sentences
 **Exercise 13 (P)** — You have three texts and their embeddings (simplified to 3 dimensions):
 
 ```
-A: "días de vacaciones anuales"    → [0.9, 0.1, 0.0]
-B: "política de descanso laboral"  → [0.8, 0.2, 0.1]
-C: "precio del barril de petróleo" → [0.0, 0.1, 0.9]
+A: "annual vacation days"              → [0.9, 0.1, 0.0]
+B: "workplace rest policy"             → [0.8, 0.2, 0.1]
+C: "price of a barrel of oil"          → [0.0, 0.1, 0.9]
 ```
 
 Using cosine similarity, which pair is more similar: (A, B) or (A, C)? Show the approximate calculation.
@@ -185,15 +185,15 @@ retriever = vectorstore.as_retriever(
     search_type="similarity",
     search_kwargs={"k": 3},
 )
-resultado = retriever.invoke("¿Cuántos días de vacaciones si llevo 3 años?")
+result = retriever.invoke("How many vacation days do I get after 3 years?")
 ```
 
-What type of value is `resultado`?
+What type of value is `result`?
 
 a) `str` — the concatenated text of the 3 chunks  
 b) `list[float]` — the question's embedding  
 c) `list[Document]` — three objects with `.page_content` and `.metadata`  
-d) `dict` with keys `"contexto"` and `"pregunta"`
+d) `dict` with keys `"context"` and `"question"`
 
 ---
 
@@ -201,10 +201,10 @@ d) `dict` with keys `"contexto"` and `"pregunta"`
 
 | Scratch function | Which LangChain piece? |
 |-----------------|------------------------------|
-| 1. `cargar_chunks()` | A. `OpenAIEmbeddings` |
+| 1. `load_chunks()` | A. `OpenAIEmbeddings` |
 | 2. `embed()` | B. `vectorstore.as_retriever(...)` |
-| 3. `recuperar()` | C. `TextLoader` + `CharacterTextSplitter` |
-| 4. `construir_prompt()` | D. `ChatPromptTemplate.from_messages(...)` |
+| 3. `retrieve()` | C. `TextLoader` + `CharacterTextSplitter` |
+| 4. `build_prompt()` | D. `ChatPromptTemplate.from_messages(...)` |
 
 Write the correct matching (1→?, 2→?, 3→?, 4→?).
 
@@ -214,19 +214,19 @@ Write the correct matching (1→?, 2→?, 3→?, 4→?).
 
 ```python
 prompt = ChatPromptTemplate.from_messages([
-    ("system", "Responde solo con el contexto."),
-    ("human", "Contexto:\n{contexto}\n\nPregunta: {pregunta}"),
+    ("system", "Answer only using the context."),
+    ("human", "Context:\n{context}\n\nQuestion: {question}"),
 ])
 
 chain = (
     {
-        "context": retriever | formatear_chunks,
-        "pregunta": RunnablePassthrough(),
+        "ctx": retriever | format_chunks,
+        "question": RunnablePassthrough(),
     }
     | prompt
     | llm
 )
-# respuesta = chain.invoke(query)
+# response = chain.invoke(query)
 ```
 
 ---

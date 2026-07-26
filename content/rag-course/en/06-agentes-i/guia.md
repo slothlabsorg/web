@@ -15,7 +15,7 @@
 A standard RAG pipeline follows a fixed path:
 
 ```
-Entrada → [Retrieval] → [Generación] → Salida
+Input → [Retrieval] → [Generation] → Output
 ```
 
 It is perfect when:
@@ -27,9 +27,9 @@ But it fails when the user query requires **multi-step reasoning with uncertaint
 
 | Request | Why a fixed pipeline fails |
 |-----------|--------------------------------|
-| "Quiero cambiar mi vuelo del 15 al 17" | You do not know in advance which PNR they have, whether a penalty applies, which flights are available, or how much it will cost. |
-| "¿Puedo devolver este pedido? ¿Y recibir un cambio en su lugar?" | Two distinct possible actions; depends on policy and the specific order. |
-| "¿Qué hay en mi factura que no reconozco?" | Requires retrieving the invoice, identifying the item, searching the knowledge base — in dynamic order. |
+| "I want to change my flight from the 15th to the 17th" | You do not know in advance which PNR they have, whether a penalty applies, which flights are available, or how much it will cost. |
+| "Can I return this order? And get an exchange instead?" | Two distinct possible actions; depends on policy and the specific order. |
+| "What's on my invoice that I don't recognize?" | Requires retrieving the invoice, identifying the item, searching the knowledge base — in dynamic order. |
 
 ### 1.2 Agent or rules?
 
@@ -53,15 +53,15 @@ In RAGorbit this materializes as:
 ### 1.3 Quick comparison
 
 ```
-                    Pipeline RAG         Agente ReAct
+                    RAG Pipeline         ReAct Agent
                     ─────────────        ────────────
-Pasos               fijos               dinámicos
-Herramientas        siempre las mismas  el LLM elige cuáles y cuándo
-Estado inter-turno  ninguno             memoria explícita
-Depuración          fácil (flujo fijo)  más difícil (traza de pasos)
-Costo LLM           bajo (1–2 llamadas) mayor (N llamadas)
-Riesgo              bajo                mayor (el LLM puede "alucinar" una acción)
-Cuándo usarlo       Q&A, extracción     servicio al cliente, asistentes transaccionales
+Steps               fixed               dynamic
+Tools               always the same     the LLM chooses which and when
+Inter-turn state    none                explicit memory
+Debugging           easy (fixed flow)   harder (step trace)
+LLM cost            low (1–2 calls)     higher (N calls)
+Risk                low                 higher (the LLM can "hallucinate" an action)
+When to use         Q&A, extraction     customer service, transactional assistants
 ```
 
 ---
@@ -97,7 +97,7 @@ In RAGorbit, the `tool.service` node defines all of this:
   "type": "tool.service",
   "config": {
     "name": "ReservationService",
-    "description": "Obtiene el itinerario completo de una reserva dado su PNR.",
+    "description": "Gets the full itinerary of a reservation given its PNR.",
     "baseUrl": "https://api.airline.internal/reservations",
     "operation": "getItinerary",
     "inputSchema": {
@@ -116,15 +116,15 @@ The `description` is crucial: it determines whether the LLM will call this tool 
 When the LLM calls tool A and uses its result to decide to call tool B, we have *chaining*. In template `01-airline-flight-change` the chaining is:
 
 ```
-ReservationService (obtener PNR)
-    ↓ resultado: fare_class = "ECONOMY_FLEX"
-PolicyRAG (buscar penalidad para ECONOMY_FLEX)
-    ↓ resultado: penalidad = USD 50
-InventoryService (buscar vuelos SCL-BOG del día 17)
-    ↓ resultado: flights = [FL-301, FL-305]
-PricingService (calcular diferencial para PNR + FL-301)
-    ↓ resultado: delta = USD 80
-PaymentService (cobrar USD 130 = 50 + 80)
+ReservationService (get PNR)
+    ↓ result: fare_class = "ECONOMY_FLEX"
+PolicyRAG (look up penalty for ECONOMY_FLEX)
+    ↓ result: penalty = USD 50
+InventoryService (search flights SCL-BOG on the 17th)
+    ↓ result: flights = [FL-301, FL-305]
+PricingService (calculate price differential for PNR + FL-301)
+    ↓ result: delta = USD 80
+PaymentService (charge USD 130 = 50 + 80)
 ```
 
 Each step uses the previous result. The LLM coordinates this chaining naturally — you do not need to hardcode the order (though in the agent's `system` prompt you do guide it for consistency).
@@ -138,7 +138,7 @@ In RAGorbit: `tool.retriever` wraps a `Retriever` from any `store.*` and exposes
 ```
 store.pgvector ──(Retriever)──▶ tool.retriever ──(Tool)──▶ agent.react
                                   name: "policy_rag"
-                                  description: "Consulta reglas de tarifa..."
+                                  description: "Queries fare rules..."
 ```
 
 ---
@@ -153,123 +153,123 @@ The idea: alternate between **reasoning** (the LLM thinks aloud about what to do
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                       BUCLE REACT                               │
+│                       REACT LOOP                                │
 │                                                                 │
-│   Mensaje                                                       │
-│   usuario  ──▶  [RAZONAR]  ──▶  [ACTUAR]  ──▶  [OBSERVAR]      │
+│   User                                                          │
+│   message  ──▶  [REASON]  ──▶  [ACT]  ──▶  [OBSERVE]           │
 │                    │                │               │           │
-│                    │   "Necesito    │  tool_call()  │  result   │
-│                    │   el PNR"      │               │           │
+│                    │   "I need      │  tool_call()  │  result   │
+│                    │   the PNR"     │               │           │
 │                    │                └───────────────┘           │
 │                    │                                            │
-│                    └──── iteración ────────────────────────────▶│
+│                    └──── iteration ────────────────────────────▶│
 │                                                                 │
-│                    [si respuesta lista] ──▶ Respuesta final     │
+│                    [if response ready] ──▶ Final response       │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ### 3.2 Diagram of a complete step
 
 ```
-Paso 1: Razonar
-  Contexto actual → LLM
-  LLM emite: "Thought: Necesito el itinerario del pasajero.
+Step 1: Reason
+  Current context → LLM
+  LLM emits: "Thought: I need the passenger's itinerary.
               Action: ReservationService(pnr='SCL-BOG-001')"
 
-Paso 2: Actuar
-  Framework detecta Action → ejecuta ReservationService
-  Resultado: { "flight": "LA501", "date": "2026-06-15",
+Step 2: Act
+  Framework detects Action → executes ReservationService
+  Result: { "flight": "LA501", "date": "2026-06-15",
                "fare_class": "ECONOMY_FLEX", "origin": "SCL",
                "destination": "BOG" }
 
-Paso 3: Observar
-  Framework agrega al contexto:
+Step 3: Observe
+  Framework adds to context:
   "Observation: { flight: LA501, date: 2026-06-15, fare_class: ECONOMY_FLEX }"
 
-  → vuelve al Paso 1 con contexto actualizado
+  → returns to Step 1 with updated context
 
-Paso 4: Razonar (segunda iteración)
-  LLM: "Thought: Ya tengo el itinerario. Ahora necesito la política
-        de penalidad para ECONOMY_FLEX en ruta internacional."
-  Action: policy_rag(query='penalidad cambio ECONOMY_FLEX internacional')
+Step 4: Reason (second iteration)
+  LLM: "Thought: I already have the itinerary. Now I need the penalty
+        policy for ECONOMY_FLEX on an international route."
+  Action: policy_rag(query='change penalty ECONOMY_FLEX international')
 
-... (itera hasta tener toda la información) ...
+... (iterates until all information is gathered) ...
 
-Paso final:
-  LLM: "Thought: Tengo todo. Puedo responder."
-  No hay más Actions → emite respuesta final al usuario.
+Final step:
+  LLM: "Thought: I have everything. I can respond."
+  No more Actions → emits final response to the user.
 ```
 
 ### 3.3 Example trace — Flight change
 
-The user writes: *"Quiero cambiar mi vuelo SCL-BOG del 15 al 17 de junio."*
+The user writes: *"I want to change my flight SCL-BOG from June 15 to June 17."*
 
 ```
-[TURNO 1 — USUARIO]
-  "Quiero cambiar mi vuelo SCL-BOG del 15 al 17 de junio."
+[TURN 1 — USER]
+  "I want to change my flight SCL-BOG from June 15 to June 17."
 
-[PASO 1 · RAZONAR]
-  Thought: Necesito obtener el itinerario del usuario para conocer
-           el PNR, la tarifa y verificar si es posible el cambio.
+[STEP 1 · REASON]
+  Thought: I need to get the user's itinerary to find
+           the PNR, the fare, and verify if the change is possible.
   Action: ReservationService(pnr="SCL-BOG-001")
 
-[PASO 1 · ACTUAR + OBSERVAR]
+[STEP 1 · ACT + OBSERVE]
   → Tool: ReservationService
   ← { "pnr": "SCL-BOG-001", "flight": "LA501",
       "origin": "SCL", "destination": "BOG",
       "date": "2026-06-15", "fare_class": "ECONOMY_FLEX",
       "passenger": "Ana García" }
 
-[PASO 2 · RAZONAR]
-  Thought: Tengo el itinerario. Tarifa ECONOMY_FLEX, ruta internacional.
-           Debo verificar la penalidad de cambio según la política.
-  Action: policy_rag(query="penalidad cambio vuelo ECONOMY_FLEX internacional")
+[STEP 2 · REASON]
+  Thought: I have the itinerary. Fare ECONOMY_FLEX, international route.
+           I must check the change penalty according to policy.
+  Action: policy_rag(query="flight change penalty ECONOMY_FLEX international")
 
-[PASO 2 · ACTUAR + OBSERVAR]
-  → Tool: policy_rag (RAG sobre fare rules)
-  ← [{ "text": "Tarifa ECONOMY_FLEX: cambio permitido con penalidad
-        de USD 50 para rutas internacionales.",
+[STEP 2 · ACT + OBSERVE]
+  → Tool: policy_rag (RAG over fare rules)
+  ← [{ "text": "ECONOMY_FLEX fare: change allowed with a penalty
+        of USD 50 for international routes.",
        "source": "fare-rules-2026#§3.2" }]
 
-[PASO 3 · RAZONAR]
-  Thought: Penalidad: USD 50. Ahora necesito vuelos disponibles
-           el 17 de junio en la ruta SCL-BOG.
+[STEP 3 · REASON]
+  Thought: Penalty: USD 50. Now I need available flights
+           on June 17 on the SCL-BOG route.
   Action: InventoryService(origin="SCL", destination="BOG", date="2026-06-17")
 
-[PASO 3 · ACTUAR + OBSERVAR]
+[STEP 3 · ACT + OBSERVE]
   → Tool: InventoryService
   ← { "flights": [
         { "id": "FL301", "departure": "08:30", "price": 320.00 },
         { "id": "FL305", "departure": "14:45", "price": 295.00 }
       ]}
 
-[PASO 4 · RAZONAR]
-  Thought: Hay dos opciones. Presentaré la más económica primero.
-           Debo calcular el diferencial de precio entre el vuelo
-           actual (incluido en la reserva) y FL305.
+[STEP 4 · REASON]
+  Thought: There are two options. I'll present the cheapest first.
+           I need to calculate the price differential between the
+           current flight (included in the reservation) and FL305.
   Action: PricingService(pnr="SCL-BOG-001", newFlightId="FL305")
 
-[PASO 4 · ACTUAR + OBSERVAR]
+[STEP 4 · ACT + OBSERVE]
   → Tool: PricingService
   ← { "pnr": "SCL-BOG-001", "newFlightId": "FL305",
       "delta": 80.00, "total": 130.00 }
-         ↑ penalidad (50) + diferencial de precio (80)
+         ↑ penalty (50) + price differential (80)
 
-[PASO 5 · RAZONAR]
-  Thought: Tengo toda la información. Costo total: USD 130.
-           Debo informar y pedir confirmación antes de cobrar.
+[STEP 5 · REASON]
+  Thought: I have all the information. Total cost: USD 130.
+           I must inform the user and ask for confirmation before charging.
 
-[RESPUESTA FINAL — AL USUARIO]
-  "Encontré tu reserva SCL-BOG para el 15 de junio (vuelo LA501,
-   tarifa ECONOMY_FLEX).
+[FINAL RESPONSE — TO USER]
+  "I found your SCL-BOG reservation for June 15 (flight LA501,
+   ECONOMY_FLEX fare).
 
-   Para cambiar al **17 de junio** te recomiendo el vuelo FL305
-   (salida 14:45), cuyo costo sería:
-   - Penalidad de cambio: USD 50
-   - Diferencial de tarifa: USD 80
+   To change to **June 17** I recommend flight FL305
+   (departure 14:45), with the following cost:
+   - Change penalty: USD 50
+   - Fare differential: USD 80
    **Total: USD 130**
 
-   ¿Confirmas el cambio?"
+   Do you confirm the change?"
 ```
 
 The agent **did not charge** until receiving confirmation. That control is not handled by the LLM but by `guardrail.confirm` on the `PaymentService` node.
@@ -280,7 +280,7 @@ The agent **did not charge** until receiving confirmation. That control is not h
 {
   "type": "agent.react",
   "config": {
-    "system": "Eres un asistente de cambio de vuelo...",
+    "system": "You are a flight change assistant...",
     "maxSteps": 10,
     "streaming": true
   }
@@ -301,28 +301,28 @@ An agent without memory treats each turn as if it were the first. That is useful
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│                    TIPOS DE MEMORIA                              │
+│                    TYPES OF MEMORY                               │
 │                                                                  │
-│  Corto plazo (In-Context)                                        │
+│  Short-term (In-Context)                                         │
 │  ─────────────────────────                                       │
-│  • El historial de mensajes dentro de la ventana de contexto.   │
-│  • Gratis: ya está en el prompt.                                 │
-│  • Límite: la ventana de contexto del modelo (~200K tokens).     │
-│  • Dura mientras dure la sesión.                                 │
+│  • The message history within the context window.               │
+│  • Free: it is already in the prompt.                            │
+│  • Limit: the model's context window (~200K tokens).             │
+│  • Lasts as long as the session lasts.                           │
 │                                                                  │
-│  Largo plazo (External)                                          │
+│  Long-term (External)                                            │
 │  ──────────────────────                                          │
-│  • Vector store, base de datos, Redis, archivo.                  │
-│  • Se recupera semánticamente ("¿qué reservas tiene este user?") │
-│  • Persiste entre sesiones.                                      │
-│  • Requiere decisión explícita de qué guardar.                  │
+│  • Vector store, database, Redis, file.                          │
+│  • Retrieved semantically ("what reservations does this user have?") │
+│  • Persists between sessions.                                    │
+│  • Requires an explicit decision of what to save.               │
 │                                                                  │
-│  Estado del agente (Working Memory)                              │
+│  Agent state (Working Memory)                                    │
 │  ────────────────────────────────                                │
-│  • Datos estructurados actualizados durante la sesión.           │
-│  • Ej: { pnr: "SCL-BOG-001", delta: 130, confirmed: false }     │
-│  • En LangGraph: el `state` del StateGraph.                      │
-│  • En scratch: un diccionario que pasa por los pasos.            │
+│  • Structured data updated during the session.                   │
+│  • E.g.: { pnr: "SCL-BOG-001", delta: 130, confirmed: false }   │
+│  • In LangGraph: the `state` of the StateGraph.                  │
+│  • In scratch: a dictionary that passes through the steps.       │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -331,21 +331,21 @@ An agent without memory treats each turn as if it were the first. That is useful
 The simplest form: accumulate the list of messages (user/assistant/tool) and pass it in full on each LLM call.
 
 ```python
-# Representación en Python simple
+# Simple Python representation
 memory = [
-    {"role": "system",    "content": "Eres asistente de vuelos..."},
-    {"role": "user",      "content": "Quiero cambiar mi vuelo del 15 al 17"},
-    {"role": "assistant", "content": "Voy a verificar tu reserva. [tool_call: ReservationService]"},
+    {"role": "system",    "content": "You are a flight assistant..."},
+    {"role": "user",      "content": "I want to change my flight from the 15th to the 17th"},
+    {"role": "assistant", "content": "I'm going to check your reservation. [tool_call: ReservationService]"},
     {"role": "tool",      "name": "ReservationService",
                           "content": '{"pnr":"SCL-BOG-001","fare_class":"ECONOMY_FLEX"}'},
-    # ... más pasos ...
-    {"role": "assistant", "content": "El costo total es USD 130. ¿Confirmas?"},
-    {"role": "user",      "content": "Sí, confirmo."},
+    # ... more steps ...
+    {"role": "assistant", "content": "The total cost is USD 130. Do you confirm?"},
+    {"role": "user",      "content": "Yes, I confirm."},
 ]
-# → el agente ahora RECUERDA todo el contexto previo
+# → the agent now REMEMBERS all previous context
 ```
 
-When the user says "sí, confirmo" on turn 2, the agent knows exactly what they are confirming because the full history is in the list.
+When the user says "yes, I confirm" on turn 2, the agent knows exactly what they are confirming because the full history is in the list.
 
 ### 4.3 Agent state (working memory)
 
@@ -353,12 +353,12 @@ For cases where the agent needs to *update* structured data during reasoning:
 
 ```python
 state = {
-    "pnr":       None,   # se llena tras ReservationService
-    "fare_class": None,   # ídem
-    "penalty":   None,   # se llena tras PolicyRAG
-    "delta":     None,   # se llena tras PricingService
-    "confirmed": False,  # cambia tras confirmación del usuario
-    "new_flight": None,  # ídem
+    "pnr":       None,   # filled after ReservationService
+    "fare_class": None,   # same
+    "penalty":   None,   # filled after PolicyRAG
+    "delta":     None,   # filled after PricingService
+    "confirmed": False,  # changes after user confirmation
+    "new_flight": None,  # same
 }
 ```
 
@@ -369,12 +369,12 @@ In LangGraph this is the `TypedDict` passed between nodes. In our scratch worksh
 For conversations across sessions or with thousands of facts about the user:
 
 ```python
-# Guardar:
-vector_store.add("El usuario prefiere ventanilla y vuelos de mañana", metadata={"user_id": "U123"})
+# Save:
+vector_store.add("The user prefers window seat and morning flights", metadata={"user_id": "U123"})
 
-# Recuperar en el próximo turno:
-recuerdos = vector_store.search("preferencias de asiento", filter={"user_id": "U123"})
-# → ["prefiere ventanilla y vuelos de mañana"]
+# Retrieve on the next turn:
+memories = vector_store.search("seat preferences", filter={"user_id": "U123"})
+# → ["prefers window seat and morning flights"]
 ```
 
 We do not implement this in this module (see M7 for LangGraph persistence).
@@ -388,27 +388,27 @@ We do not implement this in this module (see M7 for LangGraph persistence).
 The agent evaluates its own response before delivering it. Sequence:
 
 ```
-[Agente genera respuesta]
+[Agent generates response]
        ↓
-[Mismo LLM u otro evalúa]
-  "¿Respondí la pregunta? ¿Hay inconsistencias? ¿Me falta información?"
+[Same LLM or another evaluates]
+  "Did I answer the question? Are there inconsistencies? Am I missing information?"
        ↓
-[Si hay problemas] → el agente intenta de nuevo
-[Si es correcta]   → entrega la respuesta
+[If there are problems] → the agent tries again
+[If it is correct]      → delivers the response
 ```
 
 Example applied to flight change:
 
 ```
-Respuesta tentativa: "El costo es USD 130."
+Tentative response: "The cost is USD 130."
 
-Evaluación interna:
-  - ¿Expliqué el desglose? NO → hay que mejorar.
-  - ¿Pedí confirmación? NO → hay que agregar.
+Internal evaluation:
+  - Did I explain the breakdown? NO → needs improvement.
+  - Did I ask for confirmation? NO → needs to be added.
 
-Respuesta mejorada:
-  "Penalidad USD 50 + diferencial USD 80 = **Total USD 130**.
-   ¿Confirmas el cambio?"
+Improved response:
+  "Penalty USD 50 + differential USD 80 = **Total USD 130**.
+   Do you confirm the change?"
 ```
 
 ### 5.2 Reflexion (with X — the paper)
@@ -419,15 +419,15 @@ The Reflexion paper (Shinn et al., 2023) formalizes this with three components:
 ┌─────────────────────────────────────────────────────┐
 │                  REFLEXION                          │
 │                                                     │
-│  1. Actor (agente ReAct normal)                     │
-│     — genera trayectorias (intentos)                │
+│  1. Actor (normal ReAct agent)                      │
+│     — generates trajectories (attempts)             │
 │                                                     │
-│  2. Evaluador                                       │
-│     — puntúa la trayectoria (¿logró la tarea?)      │
+│  2. Evaluator                                       │
+│     — scores the trajectory (did it achieve the task?) │
 │                                                     │
-│  3. Reflexión verbal                                │
-│     — resume por qué falló → almacena en memoria   │
-│     — el actor usa ese resumen en el siguiente intento│
+│  3. Verbal reflection                               │
+│     — summarizes why it failed → stores in memory  │
+│     — the actor uses that summary on the next attempt │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -450,17 +450,17 @@ When NOT to use Reflexion:
 In standard RAG, retrieval always happens at the same place in the pipeline:
 
 ```
-Entrada → [Siempre recuperar] → [Siempre generar] → Salida
+Input → [Always retrieve] → [Always generate] → Output
 ```
 
 In **Agentic RAG**, the retriever is one more tool:
 
 ```
-Entrada → Agente ──decision──▶ ¿Recuperar ahora? ──sí──▶ [Retrieval] → contexto
-                 ↓                                                        ↓
-               ¿Qué query?                                             → LLM
-               ¿Con qué filtros?
-               ¿Necesito más contexto?
+Input → Agent ──decision──▶ Retrieve now? ──yes──▶ [Retrieval] → context
+                 ↓                                                   ↓
+               What query?                                         → LLM
+               With what filters?
+               Do I need more context?
 ```
 
 ### 6.2 Advantages of Agentic RAG
@@ -475,8 +475,8 @@ In template 01:
 ```
 ReservationService → { fare_class: "ECONOMY_FLEX" }
     ↓
-policy_rag(query="penalidad ECONOMY_FLEX internacional")
-    ↑ la query incluye datos del paso anterior
+policy_rag(query="penalty ECONOMY_FLEX international")
+    ↑ the query includes data from the previous step
 ```
 
 ### 6.3 Query routing
@@ -484,9 +484,9 @@ policy_rag(query="penalidad ECONOMY_FLEX internacional")
 The agent can decide *which index* to use:
 
 ```
-"¿Cuál es la política de maletas?"   → tool: policy_rag
-"¿Puedo cambiar mi vuelo?"           → tool: policy_rag + ReservationService
-"¿Hay vuelos el viernes?"            → tool: InventoryService (no necesita RAG)
+"What is the baggage policy?"           → tool: policy_rag
+"Can I change my flight?"               → tool: policy_rag + ReservationService
+"Are there flights on Friday?"          → tool: InventoryService (no RAG needed)
 ```
 
 The `tool.retriever` node in RAGorbit lets you expose it with a clear name and description so the LLM makes this decision in an informed way.
@@ -494,9 +494,9 @@ The `tool.retriever` node in RAGorbit lets you expose it with a clear name and d
 For multiple knowledge bases:
 
 ```
-tool.retriever "policy_rag"     → políticas de tarifa
-tool.retriever "faq_rag"        → preguntas frecuentes
-tool.retriever "procedures_rag" → procedimientos internos
+tool.retriever "policy_rag"     → fare policies
+tool.retriever "faq_rag"        → frequently asked questions
+tool.retriever "procedures_rag" → internal procedures
 ```
 
 The LLM chooses which to use according to each tool's description. This is the pattern of template 07 (telecom copilot).
@@ -509,7 +509,7 @@ The LLM chooses which to use according to each tool's description. This is the p
   "type": "tool.retriever",
   "config": {
     "name": "policy_rag",
-    "description": "Consulta reglas de tarifa y penalidades de cambio. Úsala cuando necesites saber si aplica penalidad y cuánto es."
+    "description": "Queries fare rules and change penalties. Use it when you need to know if a penalty applies and how much it is."
   }
 }
 ```
@@ -526,7 +526,7 @@ LangChain includes specialized agents for common use cases. Conceptually they ar
 ### 7.1 Data / analysis agent (CSV/DataFrame)
 
 ```python
-# Requiere: pip install langchain langchain-experimental
+# Requires: pip install langchain langchain-experimental
 from langchain_experimental.agents import create_pandas_dataframe_agent
 
 agent = create_pandas_dataframe_agent(
@@ -535,8 +535,8 @@ agent = create_pandas_dataframe_agent(
     agent_type="openai-tools",
     verbose=True
 )
-# El agente puede responder: "¿Cuál es el total de ventas por categoría?"
-# ejecutando código Python sobre el DataFrame
+# The agent can answer: "What is the total sales by category?"
+# by executing Python code on the DataFrame
 ```
 
 The agent generates and executes Python code internally. Use with care: generated code can have unwanted side effects.
@@ -547,9 +547,9 @@ The agent generates and executes Python code internally. Use with care: generate
 from langchain_community.agent_toolkits import create_sql_agent
 from langchain_community.utilities import SQLDatabase
 
-db = SQLDatabase.from_uri("sqlite:///ventas.db")
+db = SQLDatabase.from_uri("sqlite:///sales.db")
 agent = create_sql_agent(llm=llm, db=db, agent_type="openai-tools")
-# "¿Qué clientes compraron más de $1000 en junio?" → genera y ejecuta SQL
+# "Which customers bought more than $1000 in June?" → generates and executes SQL
 ```
 
 ### 7.3 Visualization agent
@@ -560,8 +560,8 @@ from langchain_experimental.agents import create_pandas_dataframe_agent
 agent = create_pandas_dataframe_agent(
     llm=llm, df=df, allow_dangerous_code=True
 )
-# "Crea una gráfica de barras de ventas por mes" →
-# el agente genera código matplotlib/seaborn y lo ejecuta
+# "Create a bar chart of sales by month" →
+# the agent generates matplotlib/seaborn code and executes it
 ```
 
 ### 7.4 When to use built-ins vs. your own agent
@@ -637,15 +637,15 @@ from langchain_core.tools import tool
 @tool
 def consultar_reserva(pnr: str) -> dict:
     """
-    Obtiene el itinerario completo de una reserva dado su PNR.
-    Úsala cuando el pasajero proporcione su número de reserva (PNR).
+    Gets the full itinerary of a reservation given its PNR.
+    Use it when the passenger provides their reservation number (PNR).
 
     Args:
-        pnr: Número de reserva en formato XXX-XXX-NNN (ej: SCL-BOG-001)
+        pnr: Reservation number in format XXX-XXX-NNN (e.g.: SCL-BOG-001)
     """
     reserva = RESERVAS.get(pnr)
     if not reserva:
-        return {"error": f"No se encontró reserva con PNR {pnr!r}"}
+        return {"error": f"No reservation found with PNR {pnr!r}"}
     return reserva
 ```
 
@@ -654,11 +654,11 @@ def consultar_reserva(pnr: str) -> dict:
 ```json
 {
   "name": "consultar_reserva",
-  "description": "Obtiene el itinerario completo... Úsala cuando el pasajero proporcione su PNR.",
+  "description": "Gets the full itinerary... Use it when the passenger provides their PNR.",
   "parameters": {
     "type": "object",
     "properties": {
-      "pnr": {"type": "string", "description": "Número de reserva en formato XXX-XXX-NNN"}
+      "pnr": {"type": "string", "description": "Reservation number in format XXX-XXX-NNN"}
     },
     "required": ["pnr"]
   }
@@ -669,10 +669,10 @@ def consultar_reserva(pnr: str) -> dict:
 
 ```python
 result = consultar_reserva.invoke({"pnr": "SCL-BOG-001"})
-# equivalente a: consultar_reserva(pnr="SCL-BOG-001")
+# equivalent to: consultar_reserva(pnr="SCL-BOG-001")
 ```
 
-**Gotcha:** if the docstring is vague ("consulta datos"), the LLM will call the tool at the wrong time or not call it. In §2.2 we saw that `description` is crucial — with `@tool`, the docstring **is** that description.
+**Gotcha:** if the docstring is vague ("queries data"), the LLM will call the tool at the wrong time or not call it. In §2.2 we saw that `description` is crucial — with `@tool`, the docstring **is** that description.
 
 ### 8.4 `ChatAnthropic` — the agent's LLM
 
@@ -683,7 +683,7 @@ from langchain_anthropic import ChatAnthropic
 
 llm = ChatAnthropic(
     model="claude-sonnet-4-6",
-    temperature=0.1,                              # baja = más determinista
+    temperature=0.1,                              # low = more deterministic
     api_key=os.environ.get("ANTHROPIC_API_KEY"),
 )
 ```
@@ -695,15 +695,15 @@ In scratch, `fake_llm` inspected the history and returned `{"action": ...}` or `
 `create_react_agent` from `langgraph.prebuilt` encapsulates the loop you implemented by hand in `react_loop`:
 
 ```
-SCRATCH (tu while)                    create_react_agent (interno)
+SCRATCH (your while)                  create_react_agent (internal)
 ──────────────────                    ─────────────────────────────
-fake_llm(memory)                      nodo "agent": llm.invoke(messages)
-  → {"action": "consultar_reserva"}     → AIMessage con tool_calls
-TOOLS[name](**args)                   nodo "tools": ejecuta cada @tool
-  → resultado                         → ToolMessage por cada resultado
-memory.append(tool_result)            add_messages acumula en state["messages"]
-  → vuelve al while                   arista "tools" → "agent" (otra iteración)
-  → {"final": "..."}                  sin tool_calls → END (respuesta final)
+fake_llm(memory)                      node "agent": llm.invoke(messages)
+  → {"action": "consultar_reserva"}     → AIMessage with tool_calls
+TOOLS[name](**args)                   node "tools": executes each @tool
+  → result                            → ToolMessage for each result
+memory.append(tool_result)            add_messages accumulates in state["messages"]
+  → back to while                     edge "tools" → "agent" (another iteration)
+  → {"final": "..."}                  no tool_calls → END (final response)
 ```
 
 Minimal construction (as in `solucion_framework.py`):
@@ -717,7 +717,7 @@ checkpointer = MemorySaver()
 agent = create_react_agent(
     model=llm,
     tools=[consultar_reserva, consultar_politica],
-    prompt="Eres un asistente de cambios de vuelo...",   # system prompt
+    prompt="You are a flight change assistant...",   # system prompt
     checkpointer=checkpointer,
 )
 ```
@@ -728,10 +728,10 @@ agent = create_react_agent(
 from langchain_core.messages import HumanMessage
 
 result = agent.invoke(
-    {"messages": [HumanMessage(content="Quiero cambiar mi vuelo SCL-BOG-001...")]},
+    {"messages": [HumanMessage(content="I want to change my flight SCL-BOG-001...")]},
     config={"configurable": {"thread_id": "demo-001"}},
 )
-respuesta = result["messages"][-1].content   # último mensaje = respuesta del agente
+response = result["messages"][-1].content   # last message = agent's response
 ```
 
 Input and output state is a dictionary with key `"messages"`. Each `invoke` **appends** messages to that session's history (does not replace it).
@@ -743,7 +743,7 @@ In scratch, memory was `session.memory` — a list that persisted between `chat(
 ```python
 from langgraph.checkpoint.memory import MemorySaver
 
-checkpointer = MemorySaver()   # en RAM; en producción: SqliteSaver, PostgresSaver...
+checkpointer = MemorySaver()   # in RAM; in production: SqliteSaver, PostgresSaver...
 ```
 
 The `thread_id` identifies the **conversation session**:
@@ -751,29 +751,29 @@ The `thread_id` identifies the **conversation session**:
 ```python
 config = {"configurable": {"thread_id": "demo-001"}}
 
-# Turno 1 — el grafo guarda el estado completo bajo "demo-001"
-agent.invoke({"messages": [HumanMessage("Cambiar vuelo del 15 al 17...")]}, config)
+# Turn 1 — the graph saves the full state under "demo-001"
+agent.invoke({"messages": [HumanMessage("Change flight from the 15th to the 17th...")]}, config)
 
-# Turno 2 — MISMO thread_id → recupera historial + estado del Turno 1
-agent.invoke({"messages": [HumanMessage("Sí, confirmo el cambio.")]}, config)
+# Turn 2 — SAME thread_id → retrieves history + state from Turn 1
+agent.invoke({"messages": [HumanMessage("Yes, I confirm the change.")]}, config)
 ```
 
 **Why it works:** at the end of Turn 1, `MemorySaver` serializes the graph state (all accumulated `HumanMessage`, `AIMessage`, `ToolMessage`). When Turn 2 starts with the same `thread_id`, LangGraph **restores** that state before processing the new message. The LLM sees the full history — equivalent to passing the entire `session.memory` to `fake_llm`, but without you managing the list.
 
 ```
-Turno 1 con thread_id="demo-001"
-  HumanMessage("Cambiar vuelo...")
+Turn 1 with thread_id="demo-001"
+  HumanMessage("Change flight...")
   AIMessage(tool_calls=[consultar_reserva])
-  ToolMessage(resultado reserva)
+  ToolMessage(reservation result)
   AIMessage(tool_calls=[consultar_politica])
-  ToolMessage(resultado política)
-  AIMessage("Total USD 130. ¿Confirmas?")
-       ↓ MemorySaver guarda todo bajo "demo-001"
+  ToolMessage(policy result)
+  AIMessage("Total USD 130. Do you confirm?")
+       ↓ MemorySaver saves everything under "demo-001"
 
-Turno 2 con thread_id="demo-001"  ← mismo ID
-  [estado restaurado] +
-  HumanMessage("Sí, confirmo")
-  AIMessage("Cambio confirmado para SCL-BOG-001...")
+Turn 2 with thread_id="demo-001"  ← same ID
+  [state restored] +
+  HumanMessage("Yes, I confirm")
+  AIMessage("Change confirmed for SCL-BOG-001...")
 ```
 
 **Gotchas:**
@@ -794,7 +794,7 @@ from typing import TypedDict, Annotated
 from langgraph.graph.message import add_messages
 
 class FlightChangeState(TypedDict):
-    messages:    Annotated[list, add_messages]   # historial — se ACUMULA, no se reemplaza
+    messages:    Annotated[list, add_messages]   # history — ACCUMULATES, does not replace
     pnr:         str
     fare_class:  str
     penalty:     float
@@ -810,7 +810,7 @@ A node receives the current state and returns **only the fields that change**:
 
 ```python
 def node_call_tools(state: FlightChangeState) -> FlightChangeState:
-    """Ejecuta las tool calls del último AIMessage — equivalente a TOOLS[name](**args) en scratch."""
+    """Executes the tool calls from the last AIMessage — equivalent to TOOLS[name](**args) in scratch."""
     last = state["messages"][-1]
     new_messages = []
     updates = {}
@@ -838,11 +838,11 @@ In scratch, the `while` decided: is there an `action`? → run tool; is there a 
 
 ```python
 def should_continue(state: FlightChangeState) -> str:
-    """¿El último mensaje tiene tool_calls pendientes?"""
+    """Does the last message have pending tool_calls?"""
     last = state["messages"][-1]
     if hasattr(last, "tool_calls") and last.tool_calls:
-        return "tools"    # → nodo "tools"
-    return "end"          # → END (respuesta final)
+        return "tools"    # → node "tools"
+    return "end"          # → END (final response)
 ```
 
 #### 8.7.4 Graph construction and compilation
@@ -857,7 +857,7 @@ builder.add_node("tools", node_call_tools)
 
 builder.set_entry_point("agent")
 builder.add_conditional_edges("agent", should_continue, {"tools": "tools", "end": END})
-builder.add_edge("tools", "agent")          # tras ejecutar tools → volver a razonar
+builder.add_edge("tools", "agent")          # after executing tools → reason again
 
 graph = builder.compile(checkpointer=MemorySaver())
 ```
@@ -866,20 +866,20 @@ ReAct loop diagram (same loop as §3):
 
 ```
                     ┌──────────────────────────────────┐
-                    │         BUCLE REACT              │
+                    │         REACT LOOP               │
                     │                                  │
   HumanMessage ──▶  │  [agent] ──should_continue──▶    │
        ▲            │     │              │            │
        │            │     │         tool_calls?        │
        │            │     │         ┌────┴────┐       │
-       │            │     │        sí        no        │
+       │            │     │        yes       no        │
        │            │     │         │         │        │
        │            │     │    [tools]      [END]      │
        │            │     │         │                  │
        │            │     └─────────┘ (add_edge)        │
        │            └──────────────────────────────────┘
        │
-  (Turno 2: estado restaurado por checkpointer + nuevo HumanMessage)
+  (Turn 2: state restored by checkpointer + new HumanMessage)
 ```
 
 This two-node graph (`agent` ↔ `tools`) **is** the `while` loop in `react_loop`. The `tools → agent` edge is your `memory.append(tool_result)` followed by another `while` iteration.
@@ -905,7 +905,7 @@ TOOLS = [consultar_reserva, consultar_politica]
 
 **Scratch bridge:** `TOOLS` was a `dict` name→function; now it is a `list` of `BaseTool` objects. Each function's docstring replaces the logic that in scratch was implicit in `fake_llm` ("if I haven't called consultar_reserva, call it").
 
-**Pedagogical detail:** `consultar_politica` says *"Úsala DESPUÉS de consultar_reserva"* — that guides the LLM to respect chaining order (§2.3).
+**Pedagogical detail:** `consultar_politica` says *"Use it AFTER consultar_reserva"* — that guides the LLM to respect chaining order (§2.3).
 
 #### Block 3 — `build_agent()` (lines 87–117)
 
@@ -929,7 +929,7 @@ The `system_prompt` includes the suggested flow (steps 1–6) — same as in scr
 config = {"configurable": {"thread_id": "demo-001"}}
 
 result1 = agent.invoke({"messages": [HumanMessage(content=turno1)]}, config=config)
-# ... más tarde, mismo config:
+# ... later, same config:
 result2 = agent.invoke({"messages": [HumanMessage(content=turno2)]}, config=config)
 ```
 
@@ -1015,20 +1015,20 @@ If you uncommented and completed that block (you would also need `llm.bind_tools
 ### `agent.react` — Orchestrator node
 
 ```
-Puertos de entrada:
-  → Model   (requerido)   — el LLM que razona
-  → Tool    (n)           — herramientas disponibles
-  → Retriever (n)         — retrievers directos (sin tool.retriever)
-  → Message               — mensaje del usuario
+Input ports:
+  → Model   (required)    — the LLM that reasons
+  → Tool    (n)           — available tools
+  → Retriever (n)         — direct retrievers (without tool.retriever)
+  → Message               — user message
 
-Puerto de salida:
-  Message →               — respuesta final + arista loop para ciclo ReAct
+Output port:
+  Message →               — final response + loop edge for ReAct cycle
 ```
 
 Key configuration:
 ```json
 {
-  "system":   "Prompt de sistema del agente",
+  "system":   "Agent system prompt",
   "maxSteps": 8,
   "streaming": true
 }
@@ -1037,7 +1037,7 @@ Key configuration:
 ### `tool.service` — Tool to HTTP service
 
 ```
-Puerto de salida: Tool →
+Output port: Tool →
 ```
 
 ```json
@@ -1052,14 +1052,14 @@ Puerto de salida: Tool →
 ### `tool.retriever` — RAG as tool
 
 ```
-Puerto de entrada: → Retriever  (del store.*)
-Puerto de salida:  Tool →
+Input port:  → Retriever  (from store.*)
+Output port: Tool →
 ```
 
 ```json
 {
   "name":        "policy_rag",
-  "description": "Consulta reglas de tarifa. Incluye fare_class en la query."
+  "description": "Queries fare rules. Include fare_class in the query."
 }
 ```
 

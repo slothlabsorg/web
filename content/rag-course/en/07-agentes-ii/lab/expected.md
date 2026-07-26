@@ -9,81 +9,81 @@
 
 ```
 ======================================================================
-MULTI-AGENTE — REBOOKING DISRUPCIÓN LOGÍSTICA (stdlib, determinista)
+MULTI-AGENT — LOGISTICS DISRUPTION REBOOKING (stdlib, deterministic)
 ======================================================================
-Evento: Cierre del hub MIA por tormenta tropical
-Hub: MIA | Causa: weather
-Envíos a procesar: 6
+Event: MIA hub closure due to tropical storm
+Hub: MIA | Cause: weather
+Shipments to process: 6
 ======================================================================
 
 --- SHP-20240614-00742 ---
   [priority_rules] SHP-20240614-00742 → P2 / track=simple
-  [profile_agent] tier=standard, email=cliente@example.com
+  [profile_agent] tier=standard, email=customer@example.com
   [policy_agent] cause=weather → penalty=$0, comp=$0
-  [alternatives_agent] 1 alternativas: ['ALT-881']
-  [autoconfirm_agent] Confirmado ALT-881 (ETA +6h)
-  [notify] canales=['email', 'push'] → cliente@example.com
+  [alternatives_agent] 1 alternatives: ['ALT-881']
+  [autoconfirm_agent] Confirmed ALT-881 (ETA +6h)
+  [notify] channels=['email', 'push'] → customer@example.com
   → handler=auto_confirm | auto_confirmed=True | alt=ALT-881
-  → Auto-confirmado ALT-881 (+6h, sin penalidad)
+  → Auto-confirmed ALT-881 (+6h, no penalty)
 
 --- SHP-20240614-00815 ---
   [priority_rules] SHP-20240614-00815 → P3 / track=simple
   [profile_agent] tier=standard, email=ops@retailco.com
   [policy_agent] cause=weather → penalty=$0, comp=$0
-  [alternatives_agent] 1 alternativas: ['ALT-902']
-  [autoconfirm_agent] Confirmado ALT-902 (ETA +10h)
-  [notify] canales=['email'] → ops@retailco.com
+  [alternatives_agent] 1 alternatives: ['ALT-902']
+  [autoconfirm_agent] Confirmed ALT-902 (ETA +10h)
+  [notify] channels=['email'] → ops@retailco.com
   → handler=auto_confirm | auto_confirmed=True | alt=ALT-902
-  → Auto-confirmado ALT-902 (+10h, sin penalidad)
+  → Auto-confirmed ALT-902 (+10h, no penalty)
 
 --- SHP-20240614-00189 ---
   [priority_rules] SHP-20240614-00189 → P1 / track=complex
-  [profile_agent] tier=premium, email=cliente.premium@example.com
+  [profile_agent] tier=premium, email=premium.customer@example.com
   [policy_agent] cause=weather → penalty=$0, comp=$15
-  [alternatives_agent] 3 alternativas: ['ALT-710', 'ALT-712', 'ALT-715']
-  [llm_agent] Multi-leg SHP-20240614-00189: propongo ALT-715 (MIA-SEA direct (charter), ETA +7h). Compensación $15. Opciones enviadas al cliente premium.
-  [notify] opciones ['ALT-710', 'ALT-712', 'ALT-715'] → cliente.premium@example.com
+  [alternatives_agent] 3 alternatives: ['ALT-710', 'ALT-712', 'ALT-715']
+  [llm_agent] Multi-leg SHP-20240614-00189: proposing ALT-715 (MIA-SEA direct (charter), ETA +7h). Compensation $15. Options sent to premium customer.
+  [notify] options ['ALT-710', 'ALT-712', 'ALT-715'] → premium.customer@example.com
   → handler=llm | auto_confirmed=False | alt=ALT-715
-  → Multi-leg SHP-20240614-00189: propongo ALT-715 (MIA-SEA direct (charter), ETA +7h). Compensación $15. Opciones enviadas al cliente premium.
+  → Multi-leg SHP-20240614-00189: proposing ALT-715 (MIA-SEA direct (charter), ETA +7h). Compensation $15. Options sent to premium customer.
 
 --- SHP-20240614-00331 ---
   [priority_rules] SHP-20240614-00331 → P1 / track=complex
   [profile_agent] tier=standard, email=urgent@pharma.com
   [policy_agent] cause=weather → penalty=$0, comp=$0
-  [alternatives_agent] 2 alternativas: ['ALT-640', 'ALT-641']
-  [llm_agent] CRITICAL SHP-20240614-00331: ruta express ALT-640 (ETA +4h). Sin auto-confirm — cliente elige.
-  [notify] opciones ['ALT-640', 'ALT-641'] → urgent@pharma.com
+  [alternatives_agent] 2 alternatives: ['ALT-640', 'ALT-641']
+  [llm_agent] CRITICAL SHP-20240614-00331: express route ALT-640 (ETA +4h). No auto-confirm — customer chooses.
+  [notify] options ['ALT-640', 'ALT-641'] → urgent@pharma.com
   → handler=llm | auto_confirmed=False | alt=ALT-640
-  → CRITICAL SHP-20240614-00331: ruta express ALT-640 (ETA +4h). Sin auto-confirm — cliente elige.
+  → CRITICAL SHP-20240614-00331: express route ALT-640 (ETA +4h). No auto-confirm — customer chooses.
 
 --- SHP-20240614-00556 ---
   [priority_rules] SHP-20240614-00556 → P2 / track=simple
   [profile_agent] tier=standard, email=flex@startup.io
   [policy_agent] cause=weather → penalty=$0, comp=$0
-  [alternatives_agent] 2 alternativas: ['ALT-903', 'ALT-904']
-  [autoconfirm_agent] Confirmado ALT-904 (ETA +8h)
-  [notify] canales=['email', 'push'] → flex@startup.io
+  [alternatives_agent] 2 alternatives: ['ALT-903', 'ALT-904']
+  [autoconfirm_agent] Confirmed ALT-904 (ETA +8h)
+  [notify] channels=['email', 'push'] → flex@startup.io
   → handler=auto_confirm | auto_confirmed=True | alt=ALT-904
-  → Auto-confirmado ALT-904 (+8h, sin penalidad)
+  → Auto-confirmed ALT-904 (+8h, no penalty)
 
 --- SHP-20240614-00204 ---
   [priority_rules] SHP-20240614-00204 → P1 / track=complex
   [profile_agent] tier=premium, email=vip@enterprise.com
   [policy_agent] cause=weather → penalty=$0, comp=$15
-  [alternatives_agent] 2 alternativas: ['ALT-520', 'ALT-521']
-  [llm_agent] Multi-leg SHP-20240614-00204: propongo ALT-521 (MIA-LAX direct, ETA +8h). Compensación $15. Opciones enviadas al cliente premium.
-  [notify] opciones ['ALT-520', 'ALT-521'] → vip@enterprise.com
+  [alternatives_agent] 2 alternatives: ['ALT-520', 'ALT-521']
+  [llm_agent] Multi-leg SHP-20240614-00204: proposing ALT-521 (MIA-LAX direct, ETA +8h). Compensation $15. Options sent to premium customer.
+  [notify] options ['ALT-520', 'ALT-521'] → vip@enterprise.com
   → handler=llm | auto_confirmed=False | alt=ALT-521
-  → Multi-leg SHP-20240614-00204: propongo ALT-521 (MIA-LAX direct, ETA +8h). Compensación $15. Opciones enviadas al cliente premium.
+  → Multi-leg SHP-20240614-00204: proposing ALT-521 (MIA-LAX direct, ETA +8h). Compensation $15. Options sent to premium customer.
 
 ======================================================================
-RESUMEN DE MÉTRICAS
+METRICS SUMMARY
 ======================================================================
-  Procesados:     6
+  Processed:      6
   Auto-confirm:   3 (50%)
   LLM:            3 (50%)
 
-  Tabla por envío:
+  Per-shipment table:
   SHIPMENT_ID            PRIO  TRACK    HANDLER        ALT        AUTO
   ------------------------------------------------------------------
   SHP-20240614-00742     P2    simple   auto_confirm   ALT-881    True
@@ -94,18 +94,18 @@ RESUMEN DE MÉTRICAS
   SHP-20240614-00204     P1    complex  llm            ALT-521    False
 
 ======================================================================
-TABLA DE TRADE-OFFS (auto-confirm vs LLM)
+TRADE-OFFS TABLE (auto-confirm vs LLM)
 ======================================================================
-  | Criterio          | Auto-confirm (determinista) | LLM (complejo)        |
+  | Criterion         | Auto-confirm (deterministic)| LLM (complex)         |
   |-------------------|-----------------------------|-----------------------|
-  | Latencia          | ~1.8–2.1 s (P2/P3)          | ~5–6 s (P1)           |
-  | Costo tokens      | $0                          | ~$0.02–0.08 por envío |
-  | Casos ideales     | 1 alt viable, sin multi-leg | Premium multi-leg     |
-  | Auditoría         | Trivial (reglas fijas)      | Requiere traza LLM    |
-  | Riesgo de error   | Bajo (reglas explícitas)    | Medio (ambigüedad)    |
+  | Latency           | ~1.8–2.1 s (P2/P3)          | ~5–6 s (P1)           |
+  | Token cost        | $0                          | ~$0.02–0.08 per shipment |
+  | Ideal cases       | 1 viable alt, no multi-leg  | Premium multi-leg     |
+  | Auditability      | Trivial (fixed rules)       | Requires LLM trace    |
+  | Error risk        | Low (explicit rules)        | Medium (ambiguity)    |
 ======================================================================
 
-Todas las verificaciones pasaron.
+All verifications passed.
 ```
 
 ---
@@ -127,7 +127,7 @@ Todas las verificaciones pasaron.
 
 ## Properties that must hold
 
-1. **Fan-out:** processes the 6 events from `datos/disruption_events.json`.
+1. **Fan-out:** processes the 6 events from `data/disruption_events.json`.
 2. **Segmentation:** P1 for premium/multi-leg/CRITICAL; P2 for flexible; P3 for the rest simple.
 3. **Auto-confirm:** the 3 simple cases confirm without LLM.
 4. **LLM:** the 3 complex cases delegate to `FakeLLMAgent`.

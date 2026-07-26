@@ -11,111 +11,111 @@ python3 rag-training/02-ingesta/lab/solucion_scratch.py
 ## Console output
 
 ```
-Contrato: CSP-2024-0087
-Chunks generados: 13
+Contract: CSP-2024-0087
+Chunks generated: 13
 ============================================================
 
 --- Chunk 1 ---
-titulo   : OBJETO DEL CONTRATO
-tipo     : objeto
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : OBJETO DEL CONTRATO
+type     : objeto
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 1. OBJETO DEL CONTRATO El presente contrato tiene por objeto la prestación de servicios de desarrollo de softwa...
 
 --- Chunk 2 ---
-titulo   : DURACIÓN Y VIGENCIA
-tipo     : vigencia
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : DURACIÓN Y VIGENCIA
+type     : vigencia
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 2. DURACIÓN Y VIGENCIA El presente contrato tendrá una vigencia de doce (12) meses contados a partir de la fech...
 
 --- Chunk 3 ---
-titulo   : CONTRAPRESTACIÓN Y FORMA DE PAGO
-tipo     : pago
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : CONTRAPRESTACIÓN Y FORMA DE PAGO
+type     : pago
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 3. CONTRAPRESTACIÓN Y FORMA DE PAGO EL CLIENTE se obliga a pagar a EL CLIENTE la cantidad de $480,000.00 (cua...
 
 --- Chunk 4 ---
-titulo   : OBLIGACIONES DEL PRESTADOR
-tipo     : obligaciones_prestador
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : OBLIGACIONES DEL PRESTADOR
+type     : obligaciones_prestador
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 4. OBLIGACIONES DEL PRESTADOR EL PRESTADOR se obliga a: (a) Ejecutar los servicios descritos en el Anexo A con ...
 
 --- Chunk 5 ---
-titulo   : OBLIGACIONES DEL CLIENTE
-tipo     : obligaciones_cliente
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : OBLIGACIONES DEL CLIENTE
+type     : obligaciones_cliente
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 5. OBLIGACIONES DEL CLIENTE EL CLIENTE se obliga a: (a) Proporcionar acceso a los sistemas, datos e infraestruc...
 
 --- Chunk 6 ---
-titulo   : PROPIEDAD INTELECTUAL
-tipo     : propiedad_intelectual
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : PROPIEDAD INTELECTUAL
+type     : propiedad_intelectual
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 6. PROPIEDAD INTELECTUAL Todos los desarrollos, códigos fuente, documentación técnica, diseños y demás creacion...
 
 --- Chunk 7 ---
-titulo   : PENALIZACIONES POR INCUMPLIMIENTO
-tipo     : penalizacion
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : PENALIZACIONES POR INCUMPLIMIENTO
+type     : penalizacion
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 7. PENALIZACIONES POR INCUMPLIMIENTO En caso de que EL PRESTADOR no entregue los hitos establecidos en el Anexo...
 
 --- Chunk 8 ---
-titulo   : LIMITACIÓN DE RESPONSABILIDAD
-tipo     : responsabilidad
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : LIMITACIÓN DE RESPONSABILIDAD
+type     : responsabilidad
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 8. LIMITACIÓN DE RESPONSABILIDAD La responsabilidad total de EL PRESTADOR derivada del presente contrato, ya se...
 
 --- Chunk 9 ---
-titulo   : CONFIDENCIALIDAD
-tipo     : confidencialidad
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : CONFIDENCIALIDAD
+type     : confidencialidad
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 9. CONFIDENCIALIDAD Ambas partes acuerdan mantener estricta confidencialidad respecto de toda la información in...
 
 --- Chunk 10 ---
-titulo   : RESOLUCIÓN DE DISPUTAS
-tipo     : disputas
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : RESOLUCIÓN DE DISPUTAS
+type     : disputas
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 10. RESOLUCIÓN DE DISPUTAS Cualquier controversia o reclamación derivada del presente contrato que no pueda res...
 
 --- Chunk 11 ---
-titulo   : CAUSAS DE RESCISIÓN
-tipo     : rescision
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : CAUSAS DE RESCISIÓN
+type     : rescision
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 11. CAUSAS DE RESCISIÓN El presente contrato podrá rescindirse sin responsabilidad para la parte afectada en lo...
 
 --- Chunk 12 ---
-titulo   : PROTECCIÓN DE DATOS PERSONALES
-tipo     : datos_personales
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : PROTECCIÓN DE DATOS PERSONALES
+type     : datos_personales
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 12. PROTECCIÓN DE DATOS PERSONALES EL PRESTADOR se obliga a tratar los datos personales a los que tenga acceso ...
 
 --- Chunk 13 ---
-titulo   : DISPOSICIONES GENERALES
-tipo     : general
-contrato : CSP-2024-0087
-fecha    : 2024-01-15
+title    : DISPOSICIONES GENERALES
+type     : general
+contract : CSP-2024-0087
+date     : 2024-01-15
 source   : contrato_muestra.txt
 text     : CLÁUSULA 13. DISPOSICIONES GENERALES El presente contrato constituye el acuerdo íntegro entre las partes respecto de su ...
 ```
@@ -146,7 +146,7 @@ This is the exact chunk that `solucion_scratch.py` must emit for Clause 1:
 
 ```
 ============================================================
-Resumen de tipos detectados:
+Detected types summary:
   confidencialidad               1
   datos_personales               1
   disputas                       1
@@ -169,7 +169,7 @@ Resumen de tipos detectados:
 | Criterion | Expected value |
 |----------|---------------|
 | Total chunks | **13** |
-| No false positives (e.g. "Cláusula 9 del presente instrumento") | 0 false positives |
+| No false positives (e.g. "Clause 9 of this instrument") | 0 false positives |
 | `chunks[0].metadata["clausula_id"]` | `1` |
 | `chunks[0].metadata["tipo"]` | `"objeto"` |
 | `chunks[8].metadata["tipo"]` | `"confidencialidad"` (index 8 = Clause 9) |

@@ -70,11 +70,11 @@ if str(meta.get("ata_chapter")) != str(ata_chapter):
     continue
 ```
 
-Without this, the B737 chunk (`amm-b737-32-11-001`) could slip in via lexical similarity on "tren de aterrizaje".
+Without this, the B737 chunk (`amm-b737-32-11-001`) could slip in via lexical similarity on "landing gear".
 
 ### Generation with citations — deterministic template
 
-`generate_answer` does not call a real LLM. It builds the response explicitly citing each retrieved chunk `source`. If `chunks` is empty, it returns `"No determinable"` — same M5 pattern (`logic.structured` without evidence).
+`generate_answer` does not call a real LLM. It builds the response explicitly citing each retrieved chunk `source`. If `chunks` is empty, it returns `"Not determinable"` — same M5 pattern (`logic.structured` without evidence).
 
 ---
 

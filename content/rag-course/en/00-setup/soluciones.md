@@ -26,7 +26,7 @@ True
 
 Reasoning:
 - `json.loads` returns a `dict` (the JSON text `{...}` is converted to a Python `dict`).
-- `true` in JSON becomes `True` in Python (boolean). `obj["activo"] is True` evaluates to `True`.
+- `true` in JSON becomes `True` in Python (boolean). `obj["active"] is True` evaluates to `True`.
 - `obj["version"]` is the integer `1` (JSON numbers without a decimal point convert to Python `int`). `1 + 1 = 2`.
 
 ---
@@ -35,18 +35,18 @@ Reasoning:
 
 **Problem:** missing `ensure_ascii=False`.
 
-Without that option, `json.dump` escapes all non-ASCII characters. The character `é` (U+00E9) becomes `é` in the resulting JSON. The file would look like:
+Without that option, `json.dump` escapes all non-ASCII characters. The character `é` (U+00E9) becomes `\u00e9` in the resulting JSON. The file would look like:
 ```json
-{"descripcion": "Días de vacaciones según el contrato", "dias": 22}
+{"description": "Vacation days according to the contract", "days": 22}
 ```
 
 **Solution:**
 ```python
 import json
 
-datos = {"descripcion": "Días de vacaciones según el contrato", "dias": 22}
-with open("salida.json", "w", encoding="utf-8") as f:
-    json.dump(datos, f, ensure_ascii=False)
+data = {"description": "Vacation days according to the contract", "days": 22}
+with open("output.json", "w", encoding="utf-8") as f:
+    json.dump(data, f, ensure_ascii=False)
 ```
 
 Two fixes:
@@ -62,22 +62,22 @@ Two fixes:
 Reasoning:
 - **a) True.** `@dataclass` automatically generates `__eq__` comparing all fields. `d1` and `d2` have the same values in all fields, so they are equal.
 - **b) True.** `d3.score = 0.5` while `d1.score = 0.0`. The comparison includes `score`, so `d1 != d3`.
-- **c) True.** `score: float = 0.0` defines a default value. `d1 = Documento("Hola", "test.pdf")` doesn't pass `score`, so it takes the value `0.0`.
-- **d) False.** `@dataclass` automatically generates `__repr__`. `print(d1)` will print `Documento(texto='Hola', fuente='test.pdf', score=0.0)`. There is no `AttributeError`.
+- **c) True.** `score: float = 0.0` defines a default value. `d1 = Document("Hello", "test.pdf")` doesn't pass `score`, so it takes the value `0.0`.
+- **d) False.** `@dataclass` automatically generates `__repr__`. `print(d1)` will print `Document(text='Hello', source='test.pdf', score=0.0)`. There is no `AttributeError`.
 
 ---
 
 ## Exercise 5 — pathlib: predict the output
 
 ```
-explorador.py
+explorer.py
 lab
 00-setup
 rag-training
 ```
 
 Reasoning:
-- `p.name` — file name (last part of the path): `explorador.py`.
+- `p.name` — file name (last part of the path): `explorer.py`.
 - `p.parent.name` — parent directory name: `lab`.
 - `p.parents[2].name` — `parents[0]` is `lab/`, `parents[1]` is `00-setup/`, `parents[2]` is `rag-training/`.
 - `p.parents[3].name` — `parents[3]` is `ragorbit/`.
@@ -116,21 +116,21 @@ e) The `retriever` node sends `Chunks` to **`prompt`** (port `Chunks`) and to **
 
 ## Exercise 8 — async: find the bug
 
-**Bug:** `obtener_precio("laptop")` is called without `await`, and outside an async context.
+**Bug:** `get_price("laptop")` is called without `await`, and outside an async context.
 
-`obtener_precio("laptop")` does **not** run the coroutine; it returns a `<coroutine object>`. The printed result is something like `Precio: <coroutine object obtener_precio at 0x10a2b3c40>`.
+`get_price("laptop")` does **not** run the coroutine; it returns a `<coroutine object>`. The printed result is something like `Price: <coroutine object get_price at 0x10a2b3c40>`.
 
 **Solution 1** — `asyncio.run` (appropriate outside an async context):
 ```python
-resultado = asyncio.run(obtener_precio("laptop"))
-print(f"Precio: {resultado}")   # Precio: 999.0
+result = asyncio.run(get_price("laptop"))
+print(f"Price: {result}")   # Price: 999.0
 ```
 
 **Solution 2** — inside another async with await:
 ```python
 async def main():
-    resultado = await obtener_precio("laptop")
-    print(f"Precio: {resultado}")
+    result = await get_price("laptop")
+    print(f"Price: {result}")
 
 asyncio.run(main())
 ```
@@ -144,13 +144,13 @@ Python 3.12+ emits a `RuntimeWarning` when a coroutine is created but never awai
 ```python
 from typing import Optional
 
-def buscar_por_tipo(nodos: list[dict], tipo: str) -> list[dict]:
-    """Devuelve todos los nodos cuyo 'type' coincide con el argumento."""
-    return [n for n in nodos if n["type"] == tipo]
+def search_by_type(nodes: list[dict], type_name: str) -> list[dict]:
+    """Returns all nodes whose 'type' matches the argument."""
+    return [n for n in nodes if n["type"] == type_name]
 
-def primer_nodo_entrada(nodos: list[dict]) -> Optional[dict]:
-    """Devuelve el primer nodo de tipo 'io.input', o None si no existe."""
-    return next((n for n in nodos if n["type"].startswith("io.input")), None)
+def first_input_node(nodes: list[dict]) -> Optional[dict]:
+    """Returns the first node of type 'io.input', or None if none exists."""
+    return next((n for n in nodes if n["type"].startswith("io.input")), None)
 ```
 
 Notes:
@@ -163,9 +163,9 @@ Notes:
 
 Steps in `do_GET`:
 
-1. **Check the path**: `if self.path == "/api/nodos":` — only respond for that URL.
+1. **Check the path**: `if self.path == "/api/nodes":` — only respond for that URL.
 2. **Load the flow.json**: `json.load(open(...))` — read the file and extract `data["nodes"]`.
-3. **Serialize to JSON**: `body = json.dumps(nodos, ensure_ascii=False).encode("utf-8")`.
+3. **Serialize to JSON**: `body = json.dumps(nodes, ensure_ascii=False).encode("utf-8")`.
 4. **Send headers**:
    - `self.send_response(200)` — HTTP OK status code.
    - `self.send_header("Content-Type", "application/json; charset=utf-8")`.
@@ -174,7 +174,7 @@ Steps in `do_GET`:
 5. **Send body**: `self.wfile.write(body)`.
 6. **Handle unknown routes**: `else: self.send_response(404); self.end_headers()`.
 
-Example response for `GET /api/nodos`:
+Example response for `GET /api/nodes`:
 ```json
 [{"id": "chat_input", "type": "io.input", ...}, ...]
 ```
@@ -199,18 +199,18 @@ Reasoning:
 import json
 from pathlib import Path
 
-def resumir_flow(ruta: str) -> dict:
-    with open(ruta, encoding="utf-8") as f:
+def summarize_flow(path: str) -> dict:
+    with open(path, encoding="utf-8") as f:
         data = json.load(f)
 
-    nodos   = data.get("nodes", [])
-    aristas = data.get("edges", [])
-    tipos   = sorted({n["type"] for n in nodos})   # set → ordenado
+    nodes = data.get("nodes", [])
+    edges = data.get("edges", [])
+    types = sorted({n["type"] for n in nodes})   # set → sorted
 
     return {
-        "total_nodos":       len(nodos),
-        "total_aristas":     len(aristas),
-        "tipos_unicos":      tipos,
+        "total_nodes":       len(nodes),
+        "total_edges":       len(edges),
+        "unique_types":      types,
         "deployment_target": data["flow"]["deploymentTarget"],
     }
 ```
@@ -219,9 +219,9 @@ For `"examples/09-hr-policy-assistant/flow.json"`, the result is:
 
 ```python
 {
-    "total_nodos":   10,
-    "total_aristas": 11,
-    "tipos_unicos":  [
+    "total_nodes":   10,
+    "total_edges":   11,
+    "unique_types":  [
         "ingest.chunker",
         "io.input",
         "io.output",
@@ -238,6 +238,6 @@ For `"examples/09-hr-policy-assistant/flow.json"`, the result is:
 ```
 
 Notes on the code:
-- `{n["type"] for n in nodos}` — **set comprehension**: creates a set (no duplicates).
+- `{n["type"] for n in nodes}` — **set comprehension**: creates a set (no duplicates).
 - `sorted(...)` — sorts alphabetically. In Python, strings sort lexicographically.
 - `data["flow"]["deploymentTarget"]` — nested access. If `"flow"` didn't exist it would raise `KeyError`. For more robustness: `data.get("flow", {}).get("deploymentTarget")`.

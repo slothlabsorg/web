@@ -8,7 +8,7 @@
 ## Test query
 
 ```
-¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?
+How many vacation days do I get if I have been at the company for 3 years?
 ```
 
 ---
@@ -17,33 +17,33 @@
 
 | Rank | Index (0-based) | Similarity | Chunk start |
 |----------|-----------------|-----------|-----------------|
-| 1 | 1 | 0.5080 | POLÍTICA DE VACACIONES §4 — Vacaciones adicionales por antigüedad... |
-| 2 | 0 | 0.4397 | POLÍTICA DE VACACIONES §3 — Acumulación y disfrute... |
-| 3 | 7 | 0.3384 | POLÍTICA DE CAPACITACIÓN §1 — Desarrollo profesional... |
+| 1 | 1 | 0.5080 | VACATION POLICY §4 — Additional vacation by seniority... |
+| 2 | 0 | 0.4397 | VACATION POLICY §3 — Accrual and use... |
+| 3 | 7 | 0.3384 | TRAINING POLICY §1 — Professional development... |
 
 **Exact printed line:**
 ```
-Índices recuperados (0-based): 1, 0, 7
-Similitudes:                   0.5080, 0.4397, 0.3384
+Retrieved indices (0-based): 1, 0, 7
+Similarities:                0.5080, 0.4397, 0.3384
 ```
 
 ---
 
 ## Why these chunks (analysis)
 
-**Chunk 1 (index 1, sim 0.5080):** "POLÍTICA DE VACACIONES §4 — Vacaciones adicionales por antigüedad"
-- Contains: "vacaciones", "días", "años", "empresa" — words present in the query.
-- The word "años" appears multiple times in this chunk, increasing its weight.
+**Chunk 1 (index 1, sim 0.5080):** "VACATION POLICY §4 — Additional vacation by seniority"
+- Contains: "vacation", "days", "years", "company" — words present in the query.
+- The word "years" appears multiple times in this chunk, increasing its weight.
 - It is the most relevant semantically even though it talks about >5 years (the bag-of-words embedding does not distinguish the exact number of years, only word co-occurrence).
 
-**Chunk 2 (index 0, sim 0.4397):** "POLÍTICA DE VACACIONES §3 — Acumulación y disfrute"
-- Contains the correct answer: "Después de 3 años completos de antigüedad el trabajador tiene derecho a 18 días hábiles".
-- Has high keyword density: "vacaciones", "días", "año", "años".
-- It is slightly less similar than §4 because §4 has more repetition of "días" and "años".
+**Chunk 2 (index 0, sim 0.4397):** "VACATION POLICY §3 — Accrual and use"
+- Contains the correct answer: "After 3 full years of seniority the employee is entitled to 18 business days".
+- Has high keyword density: "vacation", "days", "year", "years".
+- It is slightly less similar than §4 because §4 has more repetition of "days" and "years".
 
-**Chunk 3 (index 7, sim 0.3384):** "POLÍTICA DE CAPACITACIÓN §1 — Desarrollo profesional"
-- Appears because it shares words like "días" and "empresa". It is a partial false positive.
-- In a production system with real semantic embeddings, this chunk would NOT appear in top-3 — semantic similarity between "vacaciones/antigüedad" and "capacitación/cursos" is very low.
+**Chunk 3 (index 7, sim 0.3384):** "TRAINING POLICY §1 — Professional development"
+- Appears because it shares words like "days" and "company". It is a partial false positive.
+- In a production system with real semantic embeddings, this chunk would NOT appear in top-3 — semantic similarity between "vacation/seniority" and "training/courses" is very low.
 - **This demonstrates the toy embedding limitation:** bag-of-words does not capture meaning, only superficial word co-occurrence.
 
 ---
@@ -51,21 +51,21 @@ Similitudes:                   0.5080, 0.4397, 0.3384
 ## Complete augmented prompt (actual output)
 
 ```
-Eres el asistente de RRHH de la empresa. Responde ÚNICAMENTE basándote en los fragmentos de política proporcionados.
+You are the company's HR assistant. Answer ONLY based on the policy fragments provided.
 
-Fragmentos relevantes:
-[1] POLÍTICA DE VACACIONES §4 — Vacaciones adicionales por antigüedad
-La empresa reconoce la lealtad de sus empleados con días adicionales de vacaciones. Por cada 5 años completos de antigüedad se otorgan 2 días hábiles adicionales de vacaciones sobre la base vigente. Un empleado con 5 años tiene 20 días, con 10 años tiene 22 días, y con 15 años tiene 24 días hábiles anuales. Los días adicionales se acreditan automáticamente en el aniversario laboral.
+Relevant fragments:
+[1] VACATION POLICY §4 — Additional vacation by seniority
+The company recognizes employee loyalty with additional vacation days. For every 5 full years of seniority, 2 additional business days of vacation are granted on top of the current base. An employee with 5 years gets 20 days, with 10 years gets 22 days, and with 15 years gets 24 annual business days. Additional days are credited automatically on the work anniversary.
 
-[2] POLÍTICA DE VACACIONES §3 — Acumulación y disfrute
-Los empleados tienen derecho a vacaciones anuales pagadas. Durante el primer año de servicio se acumulan 12 días hábiles de vacaciones, prorrateados a partir del mes de inicio. A partir del segundo año, la empresa otorga 15 días hábiles. Después de 3 años completos de antigüedad el trabajador tiene derecho a 18 días hábiles de vacaciones. Los días de vacaciones deben solicitarse con al menos 15 días de anticipación a través del portal de RRHH.
+[2] VACATION POLICY §3 — Accrual and use
+Employees are entitled to paid annual vacation. During the first year of service, 12 business days of vacation are accrued, prorated from the start month. Starting from the second year, the company grants 15 business days. After 3 full years of seniority the employee is entitled to 18 business days of vacation. Vacation days must be requested at least 15 days in advance through the HR portal.
 
-[3] POLÍTICA DE CAPACITACIÓN §1 — Desarrollo profesional
-La empresa destina un presupuesto anual de capacitación de hasta 5,000 pesos por empleado para cursos, certificaciones o conferencias relacionadas con su área de trabajo. Las solicitudes deben presentarse con al menos 30 días de anticipación y ser aprobadas por el jefe directo y RRHH. Los cursos aprobados se toman en horario de trabajo sin afectar el sueldo ni los días de vacaciones.
+[3] TRAINING POLICY §1 — Professional development
+The company allocates an annual training budget of up to 5,000 pesos per employee for courses, certifications, or conferences related to their area of work. Requests must be submitted at least 30 days in advance and approved by the direct supervisor and HR. Approved courses are taken during work hours without affecting salary or vacation days.
 
-Pregunta del empleado: ¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?
+Employee question: How many vacation days do I get if I have been at the company for 3 years?
 
-Respuesta:
+Answer:
 ```
 
 ---
@@ -75,16 +75,16 @@ Respuesta:
 The augmented prompt contains the information needed to answer correctly. A real LLM like Claude would respond something like:
 
 ```
-Según la **Política de Vacaciones §3 — Acumulación y disfrute**, después de
-3 años completos de antigüedad tienes derecho a **18 días hábiles** de
-vacaciones anuales.
+According to **Vacation Policy §3 — Accrual and use**, after
+3 full years of seniority you are entitled to **18 business days** of
+annual vacation.
 
-> Fuente: Política de Vacaciones §3, "Acumulación y disfrute" — "Después de
-> 3 años completos de antigüedad el trabajador tiene derecho a 18 días hábiles
-> de vacaciones."
+> Source: Vacation Policy §3, "Accrual and use" — "After
+> 3 full years of seniority the employee is entitled to 18 business days
+> of vacation."
 
-Recuerda que debes solicitar tus vacaciones con al menos 15 días de
-anticipación a través del portal de RRHH.
+Remember that you must request your vacation at least 15 days in
+advance through the HR portal.
 ```
 
 Chunk [2] (§3) contains the exact answer. Chunk [1] (§4) is additional relevant context about seniority. Chunk [3] (training) is not relevant to this question — a well-instructed LLM would ignore it.
@@ -93,8 +93,8 @@ Chunk [2] (§3) contains the exact answer. Chunk [1] (§4) is additional relevan
 
 ## Observed limitation and its production solution
 
-The ranking §4 > §3 for the query about "3 years" is because §4 contains more repetitions of the words "años" and "días" than §3 (it mentions 5, 10, 15 years several times). The bag-of-words embedding rewards lexical frequency, not semantic relevance.
+The ranking §4 > §3 for the query about "3 years" is because §4 contains more repetitions of the words "years" and "days" than §3 (it mentions 5, 10, 15 years several times). The bag-of-words embedding rewards lexical frequency, not semantic relevance.
 
-**In production (real embeddings):** with OpenAI's `text-embedding-3-large` or local `bge-large`, chunk §3 would appear first because the semantic model would understand that "3 años de antigüedad" in the query corresponds exactly to the phrase "Después de 3 años completos de antigüedad" in §3.
+**In production (real embeddings):** with OpenAI's `text-embedding-3-large` or local `bge-large`, chunk §3 would appear first because the semantic model would understand that "3 years of seniority" in the query corresponds exactly to the phrase "After 3 full years of seniority" in §3.
 
 This is exactly what the `model.embedding` node of the `09-hr-policy-assistant` template solves compared to the toy embedding in this lab.

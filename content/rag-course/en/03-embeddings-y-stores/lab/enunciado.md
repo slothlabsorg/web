@@ -2,7 +2,7 @@
 
 ## Business context
 
-You are the only backend engineer at a 50-person startup. The HR director asks you to make the internal chatbot able to answer questions about company policies. You have the documents in `datos/` (12 fragments with metadata). There is no budget for external APIs or infrastructure — the prototype must run locally without installing anything.
+You are the only backend engineer at a 50-person startup. The HR director asks you to make the internal chatbot able to answer questions about company policies. You have the documents in `data/` (12 fragments with metadata). There is no budget for external APIs or infrastructure — the prototype must run locally without installing anything.
 
 Your goal is to build an **in-memory mini vector store** capable of:
 1. Indexing the 12 documents with a deterministic toy embedding.
@@ -13,23 +13,23 @@ Your goal is to build an **in-memory mini vector store** capable of:
 
 ## Available data
 
-Folder `datos/`: 12 JSON files (`doc_01.json` … `doc_12.json`).
+Folder `data/`: 12 JSON files (`doc_01.json` … `doc_12.json`).
 
 Each document has:
 ```json
 {
   "id": "doc_01",
-  "texto": "Los empleados tienen derecho a 15 días hábiles de vacaciones...",
+  "text": "Employees are entitled to 15 business days of vacation...",
   "metadata": {
-    "categoria": "vacaciones",
-    "tema": "tiempo libre",
+    "category": "vacation",
+    "topic": "time off",
     "version": "2024",
-    "departamento": "todos"
+    "department": "all"
   }
 }
 ```
 
-The categories present are: `vacaciones` (3 docs), `beneficios` (4 docs), `horario` (3 docs), `formacion` (2 docs).
+The categories present are: `vacation` (3 docs), `benefits` (4 docs), `schedule` (3 docs), `training` (2 docs).
 
 ---
 
@@ -37,7 +37,7 @@ The categories present are: `vacaciones` (3 docs), `beneficios` (4 docs), `horar
 
 ### Part 1 — Deterministic toy embedding
 
-Implement a function `embeder(texto: str) -> list[float]` that:
+Implement a function `embeder(text: str) -> list[float]` that:
 - Generates a 20-dimensional vector.
 - Is **deterministic**: the same text always produces the same vector.
 - Does not require pip or network.
@@ -45,29 +45,29 @@ Implement a function `embeder(texto: str) -> list[float]` that:
 
 ### Part 2 — Index the documents
 
-Load the 12 JSON files and build the store: a dictionary `{ id → { "vector": [...], "texto": ..., "metadata": {...} } }`.
+Load the 12 JSON files and build the store: a dictionary `{ id → { "vector": [...], "text": ..., "metadata": {...} } }`.
 
 Normalize the vectors before indexing.
 
 ### Part 3 — Top-K cosine query
 
-Implement `buscar(query: str, k: int, filtro: dict | None) -> list[dict]`.
+Implement `search(query: str, k: int, filter: dict | None) -> list[dict]`.
 
 - Compute the query embedding.
 - Normalize.
 - Compute cosine similarity with all vectors in the store.
-- If `filtro` is `{"categoria": "vacaciones"}`, only consider documents where `metadata["categoria"] == "vacaciones"`.
-- Return the top-K with `{"id", "score", "texto"}`.
+- If `filter` is `{"category": "vacation"}`, only consider documents where `metadata["category"] == "vacation"`.
+- Return the top-K with `{"id", "score", "text"}`.
 
 ### Part 4 — Compare results
 
 Run two searches with the same query:
 ```
-Query: "días de permiso y descanso que tengo derecho"
+Query: "leave days and rest I am entitled to"
 ```
 
 - **Search A:** no filter, top-3
-- **Search B:** with filter `{"categoria": "vacaciones"}`, top-3
+- **Search B:** with filter `{"category": "vacation"}`, top-3
 
 Print both results. Does the top-1 change? Why?
 
@@ -77,10 +77,10 @@ Print both results. Does the top-1 change? Why?
 
 **Hint 1 (vocabulary):** define a vocabulary of 20 words related to the domain:
 ```python
-VOCAB = ["vacaciones", "dias", "permiso", "descanso", "festivo",
-         "seguro", "medico", "beneficio", "bono", "salario",
-         "horario", "jornada", "teletrabajo", "remoto", "extra",
-         "formacion", "curso", "mentor", "restaurante", "ticket"]
+VOCAB = ["vacation", "days", "leave", "rest", "holiday",
+         "insurance", "medical", "benefit", "bonus", "salary",
+         "schedule", "workday", "remote_work", "remote", "overtime",
+         "training", "course", "mentor", "restaurant", "voucher"]
 ```
 
 **Hint 2 (bag-of-words):** vector `v[i]` counts how many times `VOCAB[i]` appears in the text (lowercased). If no vocabulary word appears in the text, the vector will be all zeros — treat it as a vector that cannot compete (similarity 0).
@@ -88,24 +88,24 @@ VOCAB = ["vacaciones", "dias", "permiso", "descanso", "festivo",
 **Hint 3 (normalization):**
 ```python
 import math
-def normalizar(v):
-    norma = math.sqrt(sum(x*x for x in v))
-    if norma == 0:
+def normalize(v):
+    norm = math.sqrt(sum(x*x for x in v))
+    if norm == 0:
         return v
-    return [x / norma for x in v]
+    return [x / norm for x in v]
 ```
 
 **Hint 4 (cosine):**
 ```python
-def coseno(a, b):
+def cosine(a, b):
     return sum(ai * bi for ai, bi in zip(a, b))
-# Con vectores normalizados, el dot product ES la similitud coseno.
+# With normalized vectors, the dot product IS the cosine similarity.
 ```
 
 **Hint 5 (filter):** before computing similarities, build the candidate list:
 ```python
-candidatos = [doc for doc in store.values()
-              if filtro is None or doc["metadata"].get(filtro_campo) == filtro_valor]
+candidates = [doc for doc in store.values()
+              if filter is None or doc["metadata"].get(filter_field) == filter_value]
 ```
 
 ---
@@ -113,8 +113,8 @@ candidatos = [doc for doc in store.values()
 ## Success criteria
 
 - The script runs with `python3 solucion_scratch.py` without installing anything.
-- Without filter: top-1 must be a document in category `vacaciones` or similar (there are 3 in the corpus).
-- With filter `vacaciones`: all 3 results are in category `vacaciones`.
+- Without filter: top-1 must be a document in category `vacation` or similar (there are 3 in the corpus).
+- With filter `vacation`: all 3 results are in category `vacation`.
 - Scores are numbers between 0 and 1 (or very close), with 1 being perfect similarity.
 - The script clearly prints both searches and the effect of the filter.
 
@@ -136,8 +136,8 @@ The first run will download the `BAAI/bge-base-en-v1.5` model (~440 MB).
 ### Objective
 
 Write **your own version** of `solucion_framework.py` that does the same as the scratch solution but with real libraries:
-1. Index the 12 JSON files in `datos/` with neural embeddings (BGE).
-2. Search top-3 with the same workshop query, with and without filter `categoria=vacaciones`.
+1. Index the 12 JSON files in `data/` with neural embeddings (BGE).
+2. Search top-3 with the same workshop query, with and without filter `category=vacation`.
 3. Implement both the ChromaDB **and** FAISS versions.
 4. Compare results with the reference `solucion_framework.py`.
 
@@ -152,11 +152,11 @@ Read [guide §15.2](../guia.md#152-sentence-transformers-your-embeder-for-real).
 ```python
 from sentence_transformers import SentenceTransformer
 
-modelo = SentenceTransformer("BAAI/bge-base-en-v1.5")
+model = SentenceTransformer("BAAI/bge-base-en-v1.5")
 
-# Prueba rápida:
-vec = modelo.encode("dias de permiso", normalize_embeddings=True)
-print(len(vec))  # debe ser 768
+# Quick test:
+vec = model.encode("leave days", normalize_embeddings=True)
+print(len(vec))  # should be 768
 ```
 
 **Checkpoint:** why `normalize_embeddings=True`? (Hint: guide §3 + §15.6 gotchas.)
@@ -165,23 +165,23 @@ print(len(vec))  # debe ser 768
 
 ### Hint 2 — Load the 12 documents (same as scratch)
 
-Reuse the scratch loading logic: iterate over `datos/doc_*.json` and build parallel lists `ids`, `textos`, `metadatas`.
+Reuse the scratch loading logic: iterate over `data/doc_*.json` and build parallel lists `ids`, `texts`, `metadatas`.
 
 ```python
 import json
 from pathlib import Path
 
-datos_dir = Path(__file__).parent / "datos"
-ids, textos, metadatas = [], [], []
-for archivo in sorted(datos_dir.glob("doc_*.json")):
-    with open(archivo, encoding="utf-8") as f:
+data_dir = Path(__file__).parent / "data"
+ids, texts, metadatas = [], [], []
+for file in sorted(data_dir.glob("doc_*.json")):
+    with open(file, encoding="utf-8") as f:
         doc = json.load(f)
     ids.append(doc["id"])
-    textos.append(doc["texto"])
+    texts.append(doc["text"])
     metadatas.append(doc["metadata"])
 ```
 
-**Checkpoint:** this is the equivalent of your `cargar_documentos()` — but now you will feed Chroma/FAISS instead of a `dict`.
+**Checkpoint:** this is the equivalent of your `load_documents()` — but now you will feed Chroma/FAISS instead of a `dict`.
 
 ---
 
@@ -195,16 +195,16 @@ Implement in this order:
 |------|---------------|---------|-------------------|
 | A.1 | In-memory client | `chromadb.Client()` | `store = {}` |
 | A.2 | Create collection with cosine metric | `get_or_create_collection(name=..., metadata={"hnsw:space": "cosine"})` | — |
-| A.3 | Compute embeddings | `modelo.encode(textos, normalize_embeddings=True).tolist()` | `embeder()` + `normalizar()` |
+| A.3 | Compute embeddings | `model.encode(texts, normalize_embeddings=True).tolist()` | `embeder()` + `normalize()` |
 | A.4 | Index | `collection.upsert(ids=..., documents=..., embeddings=..., metadatas=...)` | loop that fills `store[id]` |
-| A.5 | Search without filter | `collection.query(query_texts=[query], n_results=3, include=[...])` | `buscar(query, 3, None)` |
+| A.5 | Search without filter | `collection.query(query_texts=[query], n_results=3, include=[...])` | `search(query, 3, None)` |
 | A.6 | Convert distance → similarity | `sim = 1 - dist / 2` | your `score` is already similarity |
-| A.7 | Search with filter | `collection.query(..., where={"categoria": "vacaciones"})` | `buscar(query, 3, {"categoria": "vacaciones"})` |
+| A.7 | Search with filter | `collection.query(..., where={"category": "vacation"})` | `search(query, 3, {"category": "vacation"})` |
 | A.8 | (Optional) CRUD | `upsert` one doc, `delete` another, `count()` | scratch CRUD demo |
 
 **Query to use (same as scratch):**
 ```
-"dias de permiso y descanso que tengo derecho"
+"leave days and rest I am entitled to"
 ```
 
 **Checkpoint:** print top-3 with similarity and category. With a real embedding, `doc_01` should rank higher than in scratch (where it had score 0).
@@ -219,29 +219,29 @@ Implement in this order:
 
 | Step | What to write | Key API | Scratch equivalent |
 |------|---------------|---------|-------------------|
-| B.1 | Same embeddings | `modelo.encode(textos, normalize_embeddings=True)` | same as A.3 |
+| B.1 | Same embeddings | `model.encode(texts, normalize_embeddings=True)` | same as A.3 |
 | B.2 | IP index + IDs | `IndexFlatIP(dim)` + `IndexIDMap` + `add_with_ids(vectors.astype(np.float32), ids)` | `store` with vectors |
-| B.3 | External map | `id_a_doc = {i: docs[i] for i in range(len(docs))}` | metadata in each dict entry |
-| B.4 | Search without filter | `index.search(query_vec, k=3)` | `buscar(query, 3, None)` |
-| B.5 | Post-filtering | `search(k=12)` + filter by `metadata["categoria"]` in Python | `buscar` with manual filter |
+| B.3 | External map | `id_to_doc = {i: docs[i] for i in range(len(docs))}` | metadata in each dict entry |
+| B.4 | Search without filter | `index.search(query_vec, k=3)` | `search(query, 3, None)` |
+| B.5 | Post-filtering | `search(k=12)` + filter by `metadata["category"]` in Python | `search` with manual filter |
 | B.6 | (Optional) Persistence | `faiss.write_index` / `read_index` | does not exist in scratch |
 
 **Important:** FAISS returns `scores` (= cosine similarity if you normalized), **not** distances like Chroma. Do not apply `1 - dist/2` here.
 
-**Checkpoint:** do you get 3 results with filter `vacaciones`? If not, check that `k_extra` is large enough (with 12 docs, request all 12).
+**Checkpoint:** do you get 3 results with filter `vacation`? If not, check that `k_extra` is large enough (with 12 docs, request all 12).
 
 ---
 
 ### Hint 5 — Compare with the reference solution
 
-1. Run your script: `python3 mi_solucion_framework.py`
+1. Run your script: `python3 my_solution_framework.py`
 2. Open [`solucion_framework.py`](./solucion_framework.py) and compare block by block with [guide §15.5](../guia.md#155-block-by-block-walkthrough-of-labsolucion_frameworkpy).
-3. Fill in this table in a comment or in a `comparativa.md` file:
+3. Fill in this table in a comment or in a `comparison.md` file:
 
 | Aspect | Your ChromaDB | Your FAISS | Scratch (stdlib) |
 |--------|---------------|------------|------------------|
 | Top-1 without filter | ? | ? | doc_08 |
-| Top-1 with vacaciones filter | ? | ? | doc_08 |
+| Top-1 with vacation filter | ? | ? | doc_08 |
 | doc_01 in top-3? | ? | ? | Yes, but score 0 |
 | Approx. lines of code | ? | ? | ~150 |
 | Filter: pre or post | pre | post | pre (manual) |
@@ -255,7 +255,7 @@ Implement in this order:
 - [ ] Your script imports `chromadb`, `faiss`, `sentence_transformers` without errors.
 - [ ] You index the 12 documents with BGE-base (768 dims, normalized).
 - [ ] ChromaDB: `query` without filter returns 3 results with interpretable similarity (`1 - dist/2`).
-- [ ] ChromaDB: `query` with `where={"categoria": "vacaciones"}` returns only vacation docs.
+- [ ] ChromaDB: `query` with `where={"category": "vacation"}` returns only vacation docs.
 - [ ] FAISS: search without filter returns 3 results with scores in [0, 1].
 - [ ] FAISS: post-filtering returns 3 vacation docs (or you explain why not if `k_extra` is insufficient).
 - [ ] You can explain in 3 sentences the difference between pre-filtering (Chroma) and post-filtering (FAISS).
@@ -265,8 +265,8 @@ Implement in this order:
 ## Optional extension (layer ② or ③)
 
 If you finish early, add:
-- Support for `where={"categoria": {"$in": ["vacaciones", "horario"]}}` (multiple categories).
-- A function `actualizar(id, nuevo_texto, nueva_metadata)` that re-embeds and updates the store.
+- Support for `where={"category": {"$in": ["vacation", "schedule"]}}` (multiple categories).
+- A function `update(id, new_text, new_metadata)` that re-embeds and updates the store.
 - Measure indexing and query time with `time.perf_counter()`.
 
 ---

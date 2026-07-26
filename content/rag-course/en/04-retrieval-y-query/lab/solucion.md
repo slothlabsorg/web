@@ -2,7 +2,7 @@
 
 ## What this lab demonstrates
 
-The lab has a very specific goal: empirically show that the query `"¿puedo hacer cambios en mi vuelo sin pagar cargos adicionales?"` for a **Basic** fare passenger returns noise from other fares when there is no filter, and returns only correct, citable results when the hard filter `fare_class=Basic` is applied.
+The lab has a very specific goal: empirically show that the query `"can I make changes to my flight without paying additional fees?"` for a **Basic** fare passenger returns noise from other fares when there is no filter, and returns only correct, citable results when the hard filter `fare_class=Basic` is applied.
 
 ---
 
@@ -10,10 +10,10 @@ The lab has a very specific goal: empirically show that the query `"¿puedo hace
 
 ### Why without-filter fails
 
-The query contains the key terms "cambios" and "sin cargo adicional". Document `pol_008` (**Top** fare) contains exactly `"cambios ilimitados de fecha, hora y ruta sin cargo adicional"` — a perfect semantic and lexical match.
+The query contains the key terms "changes" and "without additional fee". Document `pol_008` (**Top** fare) contains exactly `"unlimited changes of date, time, and route without additional fee"` — a perfect semantic and lexical match.
 
-- BM25 ranks it first: "cambios" and "cargo" have high TF in that doc, medium IDF (appears in 3 of 9 docs), and the doc is medium length.
-- Cosine ranks it first: the query's BoW embedding overlaps pol_008's words more than pol_002's (which denies changes: "no se permiten cambios").
+- BM25 ranks it first: "changes" and "fee" have high TF in that doc, medium IDF (appears in 3 of 9 docs), and the doc is medium length.
+- Cosine ranks it first: the query's BoW embedding overlaps pol_008's words more than pol_002's (which denies changes: "flight changes are not allowed").
 - RRF consolidates first place for pol_008 (consensus between both retrievers).
 - The simple reranker (token intersection) does not change this because pol_008 also shares many tokens with the query.
 
@@ -21,11 +21,11 @@ Document pol_002 (Basic, changes) ranks third without filter — semantically co
 
 ### Why with-filter works
 
-With `fare_class=Basic`, the active corpus shrinks to [pol_001, pol_002, pol_003]. Now pol_002 competes only with two other Basic policies (baggage and refunds). The query about "cambios" makes pol_002 (category "cambios") rank first, in both BM25 and cosine. The result is correct and citable.
+With `fare_class=Basic`, the active corpus shrinks to [pol_001, pol_002, pol_003]. Now pol_002 competes only with two other Basic policies (baggage and refunds). The query about "changes" makes pol_002 (category "changes") rank first, in both BM25 and cosine. The result is correct and citable.
 
 ### Scratch design decisions
 
-**Tokenization:** `split()` + stopword removal. Simple but effective for this Spanish corpus. Accents are preserved as part of the alphanumeric character.
+**Tokenization:** `split()` + stopword removal. Simple but effective for this corpus. Accents are preserved as part of the alphanumeric character.
 
 **Normalized BoW embedding:** Each frequency is divided by total tokens, yielding proportions. This allows comparing documents of different lengths with cosine similarity. It is an extremely simplified embedding (no IDF), but sufficient to demonstrate the concept.
 
@@ -37,7 +37,7 @@ With `fare_class=Basic`, the active corpus shrinks to [pol_001, pol_002, pol_003
 
 ## Layer ③ — Framework solution (LangChain)
 
-> **Before reading this:** you should have tried writing the framework guided by [guia.md §13](../guia.md#13-layer--explained-langchain-retrievers-from-scratch) and the "Layer ③" section of [`enunciado.md`](enunciado.md). This section summarizes decisions; the full teaching is in the guide, not here.
+> **Before reading this:** you should have tried writing the framework guided by [guide.md §13](../guide.md#13-layer--explained-langchain-retrievers-from-scratch) and the "Layer ③" section of [`enunciado.md`](enunciado.md). This section summarizes decisions; the full teaching is in the guide, not here.
 
 ### Key components
 
@@ -47,7 +47,7 @@ With `fare_class=Basic`, the active corpus shrinks to [pol_001, pol_002, pol_003
 
 **ContextualCompressionRetriever + CrossEncoderReranker** is LangChain's standard pattern for adding a reranker over any retriever. The `base_retriever` retrieves the initial top-K and the `base_compressor` reorders and trims to `top_n`.
 
-**Hard filter in the framework:** LangChain has no central "hardFilter" in EnsembleRetriever. The correct strategy is to filter the corpus before building retrievers (as `crear_retriever_filtrado` does). With Chroma, you can also pass `filter={"fare_class": fare_class}` in the vector retriever's `search_kwargs` — but that filter only applies to the vector retriever, not BM25. That is why the most robust solution filters the corpus at the start.
+**Hard filter in the framework:** LangChain has no central "hardFilter" in EnsembleRetriever. The correct strategy is to filter the corpus before building retrievers (as `create_filtered_retriever` does). With Chroma, you can also pass `filter={"fare_class": fare_class}` in the vector retriever's `search_kwargs` — but that filter only applies to the vector retriever, not BM25. That is why the most robust solution filters the corpus at the start.
 
 ### Key difference scratch vs framework
 

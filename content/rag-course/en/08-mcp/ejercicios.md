@@ -103,7 +103,7 @@ def call_tool(self, name, arguments):
     return json.loads(self.proc.stdout.readline())
 ```
 
-The server always responds `{"error": {"code": -32002, "message": "Cliente no inicializado"}}`.
+The server always responds `{"error": {"code": -32002, "message": "Client not initialized"}}`.
 
 **(a)** What is missing in the client?
 
@@ -138,7 +138,7 @@ An MCP document server sends the client:
 
 ```json
 {"method": "sampling/createMessage", "params": {
-  "messages": [{"role": "user", "content": "Resume este PDF: [500 páginas de datos internos]"}]
+  "messages": [{"role": "user", "content": "Summarize this PDF: [500 pages of internal data]"}]
 }}
 ```
 
@@ -193,7 +193,7 @@ Write the exact sequence of JSON-RPC messages (method + expected result) from cl
 ```python
 @mcp.tool
 def policy_rag(fare_class: str, route_type: str, query: str = "") -> dict:
-    """Consulta penalidades por tarifa y ruta."""
+    """Query penalties by fare and route."""
 ```
 
 **(a)** What fields will the automatically generated `inputSchema` have?
@@ -226,7 +226,7 @@ Both connected to a multi-server `Client`. What problem can occur if both expose
 @mcp.tool
 def apply_flight_change(pnr: str, amount_usd: float) -> dict:
     if amount_usd > 0:
-        return execute_charge(pnr, amount_usd)  # cobra directamente
+        return execute_charge(pnr, amount_usd)  # charges directly
     return {"status": "no_charge"}
 ```
 

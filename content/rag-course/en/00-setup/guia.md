@@ -26,32 +26,32 @@ This module gives you everything you need to get started: a configured environme
 Python has a global package system that can cause conflicts between projects. A **virtual environment** (`venv`) creates an isolated copy of the interpreter for each project. That way, the LangChain versions RAGorbit needs won't clash with those in your other project.
 
 ```
-ragorbit/          ← raíz del repo
-├── venv/          ← tu entorno virtual (NO se sube a git)
+ragorbit/          ← repo root
+├── venv/          ← your virtual environment (NOT pushed to git)
 ├── app/
 ├── examples/
-├── rag-training/  ← este material de estudio
+├── rag-training/  ← this study material
 └── ...
 ```
 
 ### 1.2 Create and activate the environment
 
 ```bash
-# Desde la raíz del repo ragorbit:
+# From the ragorbit repo root:
 python3 -m venv venv
 
-# Activar (macOS/Linux):
+# Activate (macOS/Linux):
 source venv/bin/activate
 
-# Activar (Windows PowerShell):
+# Activate (Windows PowerShell):
 venv\Scripts\Activate.ps1
 
-# Verificar que estás dentro:
-which python   # debe apuntar a ragorbit/venv/bin/python
+# Verify you are inside:
+which python   # should point to ragorbit/venv/bin/python
 
-# Instalar dependencias del proyecto:
-pip install -e .          # instala ragorbit y sus deps desde pyproject.toml
-# o si hay requirements:
+# Install project dependencies:
+pip install -e .          # installs ragorbit and its deps from pyproject.toml
+# or if there is a requirements file:
 pip install -r requirements.txt
 ```
 
@@ -69,13 +69,13 @@ RAGorbit can work in **two modes**:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  Tu script / app                                        │
+│  Your script / app                                      │
 │       ↓                                                 │
-│  RAGorbit runtime mock                                  │
+│  RAGorbit mock runtime                                  │
 │       ↓                                                 │
-│  Función "fake LLM" determinista (plantillas fijas)     │
-│  Vector store en memoria (diccionarios Python)          │
-│  Embeddings de juguete (hashing / bag-of-words)         │
+│  Deterministic "fake LLM" function (fixed templates)    │
+│  In-memory vector store (Python dictionaries)           │
+│  Toy embeddings (hashing / bag-of-words)                │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -87,13 +87,13 @@ RAGorbit can work in **two modes**:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  Tu script / app                                        │
+│  Your script / app                                      │
 │       ↓                                                 │
-│  RAGorbit runtime real                                  │
+│  RAGorbit real runtime                                  │
 │       ↓                                                 │
-│  Claude / OpenAI / Gemini (API key requerida)           │
-│  ChromaDB / pgvector / Qdrant (Docker o servicio cloud) │
-│  Embeddings reales (text-embedding-3-large, etc.)       │
+│  Claude / OpenAI / Gemini (API key required)            │
+│  ChromaDB / pgvector / Qdrant (Docker or cloud service) │
+│  Real embeddings (text-embedding-3-large, etc.)         │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -119,11 +119,11 @@ This course's workshops follow the **determinism first** principle:
 
 1. **Learn the mechanism** with pure code (stdlib, no dependencies).
 2. **Verify it works** without needing anything external.
-3. **Optional and separate**: the same problem with real frameworks (marked with `# Requiere: pip install ...`).
+3. **Optional and separate**: the same problem with real frameworks (marked with `# Requires: pip install ...`).
 
 This is not a limitation: it's exactly how software engineers write tests. Production systems also have "mocks" of external services so tests are fast and cost-free.
 
-> **In this course**: all `solucion_scratch.py` files run with `python3 archivo.py` with no installation. The `solucion_framework.py` files are real commented code you can run when you have network and pip.
+> **In this course**: all `solucion_scratch.py` files run with `python3 file.py` with no installation. The `solucion_framework.py` files are real commented code you can run when you have network and pip.
 
 ---
 
@@ -138,13 +138,13 @@ Type annotations in Python are **optional at runtime** but valuable for readabil
 ```python
 from typing import Optional, Union
 
-def buscar_nodo(id: str, nodos: list[dict]) -> Optional[dict]:
-    """Devuelve el nodo con ese id, o None si no existe."""
-    return next((n for n in nodos if n["id"] == id), None)
+def find_node(id: str, nodes: list[dict]) -> Optional[dict]:
+    """Returns the node with that id, or None if it doesn't exist."""
+    return next((n for n in nodes if n["id"] == id), None)
 
-# Python 3.10+: se puede usar | en vez de Union
-def parsear(valor: str | int) -> str:
-    return str(valor)
+# Python 3.10+: you can use | instead of Union
+def parse(value: str | int) -> str:
+    return str(value)
 ```
 
 **For the workshops we'll use:**
@@ -167,14 +167,14 @@ class Chunk:
     score: float = 0.0
     metadata: dict = field(default_factory=dict)
 
-# Uso:
-c = Chunk(text="El empleado tiene 15 días de vacaciones", source="manual_rrhh.pdf")
+# Usage:
+c = Chunk(text="The employee has 15 vacation days", source="hr_manual.pdf")
 print(c)
-# Chunk(text='El empleado tiene 15 días...', source='manual_rrhh.pdf', score=0.0, metadata={})
+# Chunk(text='The employee has 15 vacation days...', source='hr_manual.pdf', score=0.0, metadata={})
 
-# Comparación automática:
-c2 = Chunk(text="El empleado tiene 15 días de vacaciones", source="manual_rrhh.pdf")
-print(c == c2)  # True — __eq__ compara campo por campo
+# Automatic comparison:
+c2 = Chunk(text="The employee has 15 vacation days", source="hr_manual.pdf")
+print(c == c2)  # True — __eq__ compares field by field
 ```
 
 We'll use `dataclass` to represent **documents**, **chunks**, **retrieval results**, and **messages** throughout the course.
@@ -186,19 +186,19 @@ The stdlib `json` module converts between JSON text and Python objects.
 ```python
 import json
 
-# Leer un archivo JSON:
+# Read a JSON file:
 with open("flow.json", encoding="utf-8") as f:
-    data = json.load(f)          # -> dict o list
+    data = json.load(f)          # -> dict or list
 
-# Leer desde string:
-texto = '{"id": "chat_input", "type": "io.input"}'
-nodo  = json.loads(texto)        # -> dict
+# Read from string:
+text = '{"id": "chat_input", "type": "io.input"}'
+node = json.loads(text)          # -> dict
 
-# Escribir a string (con formato legible):
-salida = json.dumps(data, indent=2, ensure_ascii=False)
+# Write to string (with readable formatting):
+output = json.dumps(data, indent=2, ensure_ascii=False)
 
-# Escribir a archivo:
-with open("resultado.json", "w", encoding="utf-8") as f:
+# Write to file:
+with open("result.json", "w", encoding="utf-8") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
 ```
 
@@ -212,7 +212,7 @@ Important points:
 For HTTP calls. In the stdlib layer we use `urllib`; in production we use `requests` (more ergonomic).
 
 ```python
-# stdlib (sin pip):
+# stdlib (no pip):
 import urllib.request
 import json
 
@@ -221,9 +221,9 @@ with urllib.request.urlopen(url) as resp:
     data = json.loads(resp.read().decode("utf-8"))
 print(data)
 
-# Petición POST con urllib:
+# POST request with urllib:
 import urllib.parse
-payload = json.dumps({"query": "¿Cuántos días de vacaciones tengo?"}).encode()
+payload = json.dumps({"query": "How many vacation days do I have?"}).encode()
 req = urllib.request.Request(
     url="http://localhost:8080/api/query",
     data=payload,
@@ -235,16 +235,16 @@ with urllib.request.urlopen(req) as resp:
 ```
 
 ```python
-# Con requests (pip install requests):
+# With requests (pip install requests):
 import requests
 
 resp = requests.get("http://localhost:8080/api/health")
-resp.raise_for_status()   # lanza excepción si 4xx/5xx
+resp.raise_for_status()   # raises exception if 4xx/5xx
 data = resp.json()
 
 resp = requests.post(
     "http://localhost:8080/api/query",
-    json={"query": "¿Cuántos días de vacaciones tengo?"}
+    json={"query": "How many vacation days do I have?"}
 )
 ```
 
@@ -258,8 +258,8 @@ import json
 
 class HRApiHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == "/api/policy/vacaciones":
-            body = json.dumps({"dias": 22, "tipo": "laborables"}).encode()
+        if self.path == "/api/policy/vacation":
+            body = json.dumps({"days": 22, "type": "business_days"}).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
@@ -269,11 +269,11 @@ class HRApiHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
     def log_message(self, *args):
-        pass  # silencia el log por defecto
+        pass  # silence the default log
 
 if __name__ == "__main__":
     server = HTTPServer(("localhost", 9090), HRApiHandler)
-    print("Servidor mock en http://localhost:9090")
+    print("Mock server at http://localhost:9090")
     server.serve_forever()
 ```
 
@@ -286,21 +286,21 @@ RAGorbit generates asynchronous code (LangGraph is async-first). You need to und
 ```python
 import asyncio
 
-# Una corrutina: función con async def
-async def saludar(nombre: str) -> str:
-    await asyncio.sleep(0.1)   # operación "costosa" (simulada)
-    return f"Hola, {nombre}"
+# A coroutine: function with async def
+async def greet(name: str) -> str:
+    await asyncio.sleep(0.1)   # "expensive" operation (simulated)
+    return f"Hello, {name}"
 
-# Ejecutar una sola corrutina:
-resultado = asyncio.run(saludar("Ana"))
-print(resultado)   # "Hola, Ana"
+# Run a single coroutine:
+result = asyncio.run(greet("Ana"))
+print(result)   # "Hello, Ana"
 
-# Ejecutar varias en paralelo (gather):
+# Run several in parallel (gather):
 async def main():
     r1, r2, r3 = await asyncio.gather(
-        saludar("Ana"),
-        saludar("Luis"),
-        saludar("María"),
+        greet("Ana"),
+        greet("Luis"),
+        greet("Maria"),
     )
     print(r1, r2, r3)
 
@@ -310,13 +310,13 @@ asyncio.run(main())
 **The golden rule of async:** an `async def` function doesn't run when you call it; it returns a coroutine object. To run it you need `await` (inside another async function) or `asyncio.run()` (at the top level).
 
 ```python
-# ERROR frecuente:
-resultado = saludar("Ana")   # esto NO ejecuta la función
-print(resultado)             # <coroutine object saludar at 0x...>
+# Common ERROR:
+result = greet("Ana")   # this does NOT execute the function
+print(result)           # <coroutine object greet at 0x...>
 
-# CORRECTO:
-resultado = asyncio.run(saludar("Ana"))
-print(resultado)             # "Hola, Ana"
+# CORRECT:
+result = asyncio.run(greet("Ana"))
+print(result)           # "Hello, Ana"
 ```
 
 In this course's workshops, scratch solutions are **synchronous** (simpler to read). Frameworks like LangGraph are async; when you use them in layer ③, you'll see `async def` and `await` frequently.
@@ -326,23 +326,23 @@ In this course's workshops, scratch solutions are **synchronous** (simpler to re
 ```python
 from pathlib import Path
 
-# Ruta del script actual:
-aqui = Path(__file__).resolve()         # /Users/dany/dev/ragorbit/rag-training/00-setup/lab/script.py
-directorio = aqui.parent                # /Users/dany/dev/ragorbit/rag-training/00-setup/lab
-raiz_repo  = aqui.parents[3]            # /Users/dany/dev/ragorbit
+# Path of the current script:
+here = Path(__file__).resolve()         # /Users/dany/dev/ragorbit/rag-training/00-setup/lab/script.py
+directory = here.parent                 # /Users/dany/dev/ragorbit/rag-training/00-setup/lab
+repo_root = here.parents[3]            # /Users/dany/dev/ragorbit
 
-# Construir rutas:
-flow = raiz_repo / "examples" / "09-hr-policy-assistant" / "flow.json"
+# Build paths:
+flow = repo_root / "examples" / "09-hr-policy-assistant" / "flow.json"
 
-# Leer:
-texto = flow.read_text(encoding="utf-8")
+# Read:
+text = flow.read_text(encoding="utf-8")
 
-# Existe?
+# Exists?
 if not flow.exists():
-    raise FileNotFoundError(f"No encuentro {flow}")
+    raise FileNotFoundError(f"Cannot find {flow}")
 
-# Listar archivos:
-for json_file in (raiz_repo / "examples").rglob("flow.json"):
+# List files:
+for json_file in (repo_root / "examples").rglob("flow.json"):
     print(json_file)
 ```
 
@@ -355,7 +355,7 @@ for json_file in (raiz_repo / "examples").rglob("flow.json"):
 ### 5.1 Start the webapp
 
 ```bash
-# Desde la raíz del repo, con el venv activado:
+# From the repo root, with venv activated:
 python3 -m ragorbit serve
 ```
 
@@ -388,17 +388,17 @@ import json
 with open("examples/09-hr-policy-assistant/flow.json", encoding="utf-8") as f:
     flow = json.load(f)
 
-# Metadatos del flujo:
-print(flow["flow"]["name"])            # "Asistente de políticas y beneficios..."
+# Flow metadata:
+print(flow["flow"]["name"])            # "Policy and benefits assistant..."
 print(flow["flow"]["deploymentTarget"])# "chat-service"
 
-# Nodos:
-for nodo in flow["nodes"]:
-    print(nodo["id"], "→", nodo["type"])
+# Nodes:
+for node in flow["nodes"]:
+    print(node["id"], "→", node["type"])
 
-# Aristas:
-for arista in flow["edges"]:
-    print(f"{arista['source']}:{arista['sourcePort']} → {arista['target']}:{arista['targetPort']}")
+# Edges:
+for edge in flow["edges"]:
+    print(f"{edge['source']}:{edge['sourcePort']} → {edge['target']}:{edge['targetPort']}")
 ```
 
 This is exactly the task for this module's workshop.
@@ -456,29 +456,29 @@ You'll study all 53 node types in detail in later modules. For now, what matters
 This course has 12 modules (M0–M11). Here is the learning map:
 
 ```
-M0  Setup y repaso Python
+M0  Setup and Python refresher
  │
-M1  LLMs y prompting — el bloque model
+M1  LLMs and prompting — the model block
  │
-M2  Ingesta — loaders, chunking, metadata
+M2  Ingestion — loaders, chunking, metadata
  │
-M3  Embeddings y Vector Stores — el bloque store
+M3  Embeddings and Vector Stores — the store block
  │
-M4  Retrieval avanzado — híbrido, rerank, GraphRAG
+M4  Advanced Retrieval — hybrid, rerank, GraphRAG
  │
-M5  Generación y lógica — structured output, citas, evaluación RAG
+M5  Generation and logic — structured output, citations, RAG evaluation
  │
-M6  Agentes I — tool calling, ReAct, memoria, Reflection
+M6  Agents I — tool calling, ReAct, memory, Reflection
  │
-M7  Agentes II — multi-agente, LangGraph, CrewAI, AutoGen, BeeAI
+M7  Agents II — multi-agent, LangGraph, CrewAI, AutoGen, BeeAI
  │
-M8  MCP — servidores y clientes con FastMCP
+M8  MCP — servers and clients with FastMCP
  │
-M9  Producción y seguridad — guardrails, observabilidad, despliegue
+M9  Production and security — guardrails, observability, deployment
  │
-M10 Multimodal — voz (Whisper), visión, generación
+M10 Multimodal — voice (Whisper), vision, generation
  │
-M11 Capstone — reconstruir 3 templates + diseñar arquitectura + examen
+M11 Capstone — rebuild 3 templates + design architecture + exam
 ```
 
 ### The 10 templates and when they appear
@@ -501,9 +501,9 @@ M11 Capstone — reconstruir 3 templates + diseñar arquitectura + examen
 Each module covers concepts in three layers:
 
 ```
-① Diseño/concepto    → qué es, por qué existe, cuándo usar, cuándo NO, alternativas
-② Python puro        → implementas el mecanismo a mano con stdlib
-③ Framework real     → cómo se hace con LangChain/LangGraph/LlamaIndex/CrewAI/etc.
+① Design/concept      → what it is, why it exists, when to use, when NOT to, alternatives
+② Pure Python         → you implement the mechanism by hand with stdlib
+③ Real framework      → how it's done with LangChain/LangGraph/LlamaIndex/CrewAI/etc.
 ```
 
 Layer ② always runs on your machine with nothing installed. Layer ③ is real commented code for when you have pip and network.

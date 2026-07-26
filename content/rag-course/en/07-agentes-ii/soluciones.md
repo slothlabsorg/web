@@ -119,14 +119,14 @@
 ## Exercise 41
 
 ```
-Evento
+Event
   → PriorityRulesAgent (P1/P2/P3, track)
   → ProfileAgent
   → PolicyAgent
   → AlternativesAgent
-  → ¿track simple?
-        SÍ → AutoConfirmAgent → notify
-        NO → FakeLLMAgent → notify (opciones al cliente)
+  → track simple?
+        YES → AutoConfirmAgent → notify
+        NO → FakeLLMAgent → notify (options to customer)
 ```
 
 Branch after `AlternativesAgent`, based on `track` and obvious-option rules.

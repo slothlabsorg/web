@@ -110,7 +110,7 @@ It is the **capstone starting point**: if you can rebuild 09 in ~40 lines (scrat
 
 ### Business problem
 
-A credit officer receives batches of files (PDF statements, account statements, financial CSV). Manual process is slow and inconsistent. A batch job is needed that emits JSON with `score`, `decision`, `factores`, and `justificacion`, with document citations and **deterministic** approval thresholds (not delegated to the LLM).
+A credit officer receives batches of files (PDF statements, account statements, financial CSV). Manual process is slow and inconsistent. A batch job is needed that emits JSON with `score`, `decision`, `factors`, and `justification`, with document citations and **deterministic** approval thresholds (not delegated to the LLM).
 
 ### Flow diagram
 
@@ -147,7 +147,7 @@ io.batch ──Documents──▶ ingest.chunker ◀── loader.pdf
 | `store.pgvector` | `credit_docs` index |
 | `retrieval.vector` | Hard-filters per file |
 | `model.llm` | Temperature 0.1 |
-| `logic.structured` | Schema score/decision/factores/justificacion |
+| `logic.structured` | Schema score/decision/factors/justification |
 | `logic.rules` | Deterministic thresholds |
 | `io.output` | JSON without streaming |
 
@@ -174,7 +174,7 @@ Capstone second step: combine multi-source ingestion, production store (pgvector
 
 ### Business problem
 
-An adjuster receives folders with policy PDF and damage photos. Manual review takes 20–45 minutes per case and decisions are hard to audit. JSON per claim is needed: `cubierto`, `monto_estimado`, `deducible_aplicado`, `clausula_aplicada`, `razon` — with clause citation and deterministic rules for deductible, exclusions, and validity.
+An adjuster receives folders with policy PDF and damage photos. Manual review takes 20–45 minutes per case and decisions are hard to audit. JSON per claim is needed: `covered`, `estimated_amount`, `deductible_applied`, `clause_applied`, `reason` — with clause citation and deterministic rules for deductible, exclusions, and validity.
 
 ### Flow diagram
 
@@ -237,7 +237,7 @@ How to extend the 02 batch pipeline with **non-textual content** and why `logic.
 
 ### Business problem
 
-Legal teams must compare an incoming contract with internal playbook, current regulations, and precedents. High volume causes omissions. The user asks about risks in a clause and receives structured findings (`alto`/`medio`/`bajo`) with **dual citations** (contract + reference source).
+Legal teams must compare an incoming contract with internal playbook, current regulations, and precedents. High volume causes omissions. The user asks about risks in a clause and receives structured findings (`high`/`medium`/`low`) with **dual citations** (contract + reference source).
 
 ### Flow diagram
 
@@ -275,7 +275,7 @@ Legal teams must compare an incoming contract with internal playbook, current re
 | `retrieval.vector` | On contract |
 | `retrieval.router` | Keyword → correct index |
 | `retrieval.reranker` | `bge-reranker`, topN=3 |
-| `logic.structured` | `hallazgos` array with risk enum |
+| `logic.structured` | `findings` array with risk enum |
 | `logic.citations` | `enforce` — dual citations |
 | `model.embedding` / `model.llm` | Shared |
 
@@ -458,7 +458,7 @@ faq_loader (web)─┘
 | `type` | Role |
 |--------|------|
 | `io.stt` | Deepgram streaming |
-| `model.intent` | Discards `no_accionable` |
+| `model.intent` | Discards `non_actionable` |
 | `query.rewrite` | Internal glossary → canonical terms |
 | `loader.pdf` ×2 + `loader.web` | Three sources → multi-index |
 | `retrieval.router` | Intent/keyword → index |

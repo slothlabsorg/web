@@ -12,17 +12,17 @@
 You have a corpus of **4 documents** on aircraft maintenance:
 
 ```
-doc_1: "inspección del tren de aterrizaje principal"
-doc_2: "tren de aterrizaje principal: procedimiento de inspección detallado"
-doc_3: "cambio de aceite del motor"
-doc_4: "inspección de frenos y tren de aterrizaje"
+doc_1: "main landing gear inspection"
+doc_2: "main landing gear: detailed inspection procedure"
+doc_3: "engine oil change"
+doc_4: "brake and landing gear inspection"
 ```
 
-The query is: `"inspección tren"`
+The query is: `"inspection gear"`
 
 **BM25 parameters:** k1=1.5, b=0.75. Lengths: doc_1=5 tokens, doc_2=7 tokens, doc_3=5 tokens, doc_4=6 tokens. avgdl=5.75.
 
-**(a)** The term "inspección" appears in documents 1, 2, and 4. The term "tren" appears in documents 1, 2, and 4. With N=4 documents, compute the IDF of both terms using the formula:
+**(a)** The term "inspection" appears in documents 1, 2, and 4. The term "gear" appears in documents 1, 2, and 4. With N=4 documents, compute the IDF of both terms using the formula:
 
 ```
 IDF(t) = log((N - n_t + 0.5) / (n_t + 0.5) + 1)
@@ -54,7 +54,7 @@ Where `n_t` is the number of documents containing term `t`.
 
 **Type: predict the output + reasoning**
 
-You have a BM25 retriever and a vector retriever. For the query "¿cuánto cuesta el plan familiar?", each returns (in relevance order):
+You have a BM25 retriever and a vector retriever. For the query "how much does the family plan cost?", each returns (in relevance order):
 
 ```
 BM25:   [doc_F, doc_A, doc_C, doc_B]
@@ -135,11 +135,11 @@ With target latency of 800ms and the system already using 300ms on retrieval + 4
 
 ```
 Corpus:
-  chunk_A: "Criterios RM rodilla PPO-Basic: diagnóstico M23.x, 4 semanas tratamiento conservador"
-  chunk_B: "Criterios RM rodilla PPO-Gold: diagnóstico M23.x, sin requisito de tiempo"
-  chunk_C: "Criterios RM rodilla PPO-Platinum: aprobación automática para M23.x"
+  chunk_A: "Knee MRI criteria PPO-Basic: diagnosis M23.x, 4 weeks conservative treatment"
+  chunk_B: "Knee MRI criteria PPO-Gold: diagnosis M23.x, no time requirement"
+  chunk_C: "Knee MRI criteria PPO-Platinum: automatic approval for M23.x"
 
-Query: "¿Se aprueba RM de rodilla para diagnóstico M23.2?"
+Query: "Is a knee MRI approved for diagnosis M23.2?"
 Patient: PPO-Basic plan
 ```
 
@@ -154,29 +154,29 @@ What does the system return WITH hardFilter and WITHOUT hardFilter? What is the 
 **Type: design + multiple choice + find the bug**
 
 An airline wants to build its call center agent system. It has 3 knowledge bases:
-- `tarifas`: fare conditions, baggage, changes by class
-- `procedimientos`: step-by-step customer service protocols
-- `regulaciones`: applicable civil aviation regulations
+- `fares`: fare conditions, baggage, changes by class
+- `procedures`: step-by-step customer service protocols
+- `regulations`: applicable civil aviation regulations
 
 **(a)** (Design) An agent receives the following queries. For each, indicate which index you would route to and which keyword or intent you would detect:
 
-1. "¿Puedo cambiar mi vuelo con tarifa Basic?"
-2. "¿Cómo proceso un rebooking de grupo de más de 10 pasajeros?"
-3. "¿Qué dice la regulación sobre reembolsos por vuelo cancelado?"
-4. "Necesito cambiar la fecha a un cliente Business, ¿qué pasos sigo?"
-5. "¿Hay algún límite legal para el equipaje de mano?"
+1. "Can I change my flight with a Basic fare?"
+2. "How do I process a group rebooking for more than 10 passengers?"
+3. "What does the regulation say about refunds for canceled flights?"
+4. "I need to change the date for a Business customer, what steps do I follow?"
+5. "Is there a legal limit for carry-on baggage?"
 
-**(b)** (Multiple choice) A passenger says: "oye mi maleta lleva la cosita esa de lítio de la laptop, ¿puedo meterla en la bodega?". Without query rewriting, what is the risk?
+**(b)** (Multiple choice) A passenger says: "hey my bag has that lithium thingy from the laptop, can I put it in the hold?". Without query rewriting, what is the risk?
 
-   A) Vector retrieval will fail because the vector of "cosita de lítio" is not similar to the vector of "batería de litio portátil"
-   B) The router will never find the correct keyword in "cosita de lítio" and may route incorrectly
+   A) Vector retrieval will fail because the vector of "lithium thingy" is not similar to the vector of "portable lithium battery"
+   B) The router will never find the correct keyword in "lithium thingy" and may route incorrectly
    C) The LLM will receive the unnormalized query but can infer the meaning
    D) Both A and B are real risks
 
 **(c)** (Multiple choice) The `query.intent` node in RAGorbit produces two output ports: `Query` and `Decision`. What is the `Decision` port for?
 
    A) It only routes the query to the correct index
-   B) It allows branching the flow: if intent is no_accionable, the flow can end without invoking RAG
+   B) It allows branching the flow: if intent is non_actionable, the flow can end without invoking RAG
    C) It contains the rewritten query
    D) It is used to authenticate the user
 
@@ -184,10 +184,10 @@ An airline wants to build its call center agent system. It has 3 knowledge bases
 
 ```python
 rules = [
-    {"keyword": "tari",      "index": "tarifas"},
-    {"keyword": "tarifa",    "index": "tarifas"},
-    {"keyword": "cambio",    "index": "procedimientos"},
-    {"keyword": "regulacion","index": "regulaciones"},
+    {"keyword": "far",       "index": "fares"},
+    {"keyword": "fare",      "index": "fares"},
+    {"keyword": "change",    "index": "procedures"},
+    {"keyword": "regulation","index": "regulations"},
 ]
 
 def route(query: str, rules: list, fallback: str) -> str:
@@ -198,7 +198,7 @@ def route(query: str, rules: list, fallback: str) -> str:
     return fallback
 
 # Test:
-print(route("¿cuál es la tarifa de cambio de vuelo?", rules, "tarifas"))
+print(route("what is the fare for a flight change?", rules, "fares"))
 ```
 
 What is the test output and why is it incorrect? How do you fix it?
@@ -227,15 +227,15 @@ What is the test output and why is it incorrect? How do you fix it?
 
 ```cypher
 (ad:Directive {id:"AD-2024-0023", type:"airworthiness"})
-  -[:AFECTA_A]->
+  -[:AFFECTS]->
 (sb:Bulletin {id:"SB-2023-32-001", ata_chapter:"32"})
-  -[:REQUIERE]->
+  -[:REQUIRES]->
 (task:Task {id:"Task-32-11-001", title:"Landing gear inspection"})
-  -[:ES_PREREQUISITO_DE]->
+  -[:IS_PREREQUISITE_OF]->
 (task2:Task {id:"Task-07-11-001", title:"Aircraft jacking"})
 ```
 
-A technician asks: "¿Qué tareas debo hacer por la AD-2024-0023?". Describe the traversal `retrieval.graph` would perform with `hops: 2` and which nodes it would return.
+A technician asks: "What tasks must I do for AD-2024-0023?". Describe the traversal `retrieval.graph` would perform with `hops: 2` and which nodes it would return.
 
 **(c)** (Design) A law firm has a corpus with:
    - Signed contracts (thousands)
@@ -244,9 +244,9 @@ A technician asks: "¿Qué tareas debo hacer por la AD-2024-0023?". Describe the
    - Precedents: prior contracts with known resolution
 
 Lawyers ask questions like:
-- "¿Qué contratos con cláusula de indemnización ilimitada hemos firmado con proveedores de IT?"
-- "¿Hay precedentes de cláusulas de penalización que hayamos negociado exitosamente?"
-- "¿La cláusula 12.3 de este contrato es coherente con nuestra política interna y la normativa vigente?"
+- "What contracts with unlimited indemnification clauses have we signed with IT vendors?"
+- "Are there precedents of penalty clauses we have successfully negotiated?"
+- "Is clause 12.3 of this contract consistent with our internal policy and current regulations?"
 
 For each question, indicate whether you would prefer vector RAG, GraphRAG, or a combination, and justify.
 
@@ -278,7 +278,7 @@ You implemented `rrf_fusion()` in scratch (M4 lab) and now want the LangChain eq
 from langchain_community.retrievers import BM25Retriever
 from langchain.retrievers import EnsembleRetriever
 
-bm25 = BM25Retriever.from_documents(documentos)
+bm25 = BM25Retriever.from_documents(documents)
 bm25.k = 9
 vector = vector_store.as_retriever(search_kwargs={"k": 9})
 
@@ -289,7 +289,7 @@ ensemble = EnsembleRetriever(
 )
 ```
 
-The domain is an airline call center: queries mix exact jargon ("tarifa Basic", "sin cargo") with natural language ("¿puedo cambiar mi vuelo?").
+The domain is an airline call center: queries mix exact jargon ("Basic fare", "no charge") with natural language ("can I change my flight?").
 
 **(a)** Complete `retrievers` and `weights`. Justify why you chose those weights (hint: they are not the weighted-sum `alpha` from §4).
 
@@ -310,21 +310,21 @@ The domain is an airline call center: queries mix exact jargon ("tarifa Basic", 
 
 **Type: predict the output + reasoning**
 
-A LangChain pipeline (without hard filter) returns these candidates from `EnsembleRetriever` for the query `"cambios sin cargo adicional"`:
+A LangChain pipeline (without hard filter) returns these candidates from `EnsembleRetriever` for the query `"changes without additional fee"`:
 
 ```
 Position after ensemble (RRF order):
-  1. pol_008  (Top,   "cambios ilimitados sin cargo adicional")
-  2. pol_005  (Plus,  "un cambio sin cargo adicional hasta 24h")
-  3. pol_002  (Basic, "no se permiten cambios de vuelo")
-  4. pol_003  (Basic, reembolsos)
-  5. pol_001  (Basic, equipaje)
+  1. pol_008  (Top,   "unlimited changes without additional fee")
+  2. pol_005  (Plus,  "one change without additional fee up to 24h")
+  3. pol_002  (Basic, "flight changes are not allowed")
+  4. pol_003  (Basic, refunds)
+  5. pol_001  (Basic, baggage)
 ```
 
 `CrossEncoderReranker` with `top_n=3` scores each (query, document) pair and reorders. Simulated cross-encoder scores:
 
 ```
-pol_008: 0.91   (query asks for "sin cargo" → Top doc promises it explicitly)
+pol_008: 0.91   (query asks for "no fee" → Top doc promises it explicitly)
 pol_005: 0.78   (similar but Plus, not unlimited)
 pol_002: 0.35   (Basic doc denies changes — low relevance for that query)
 pol_003: 0.12
@@ -353,13 +353,13 @@ pol_001: 0.08
 A student implemented the hard filter like this (trying to save memory by reusing the full BM25 index):
 
 ```python
-def crear_retriever_con_filtro_chroma(fare_class: str):
-    vector_filtrado = vector_store.as_retriever(
+def create_retriever_with_chroma_filter(fare_class: str):
+    filtered_vector = vector_store.as_retriever(
         search_kwargs={"k": 9, "filter": {"fare_class": fare_class}}
     )
     # Reuses bm25_retriever from the FULL corpus (9 docs)
     ensemble = EnsembleRetriever(
-        retrievers=[bm25_retriever, vector_filtrado],
+        retrievers=[bm25_retriever, filtered_vector],
         weights=[0.4, 0.6],
     )
     return ContextualCompressionRetriever(
@@ -367,15 +367,15 @@ def crear_retriever_con_filtro_chroma(fare_class: str):
         base_retriever=ensemble,
     )
 
-docs = crear_retriever_con_filtro_chroma("Basic").invoke(QUERY)
-# QUERY = "¿puedo hacer cambios sin pagar cargos adicionales?"
+docs = create_retriever_with_chroma_filter("Basic").invoke(QUERY)
+# QUERY = "can I make changes without paying additional fees?"
 ```
 
 The student expects only `fare_class=Basic` documents, but the top-3 still includes `pol_008` (Top).
 
 **(a)** Explain why the filter fails: which retriever in the ensemble ignores Chroma's `filter`?
 
-**(b)** (Find the bug) Propose the minimal fix following the `crear_retriever_filtrado()` pattern in `lab/solucion_framework.py`. How many retrievers must be rebuilt?
+**(b)** (Find the bug) Propose the minimal fix following the `create_filtered_retriever()` pattern in `lab/solucion_framework.py`. How many retrievers must be rebuilt?
 
 **(c)** (Choose the technology) For a healthcare system with `hardFilters: ["plan"]` in RAGorbit, which strategy is equivalent and correct in LangChain?
 
@@ -384,4 +384,4 @@ The student expects only `fare_class=Basic` documents, but the top-3 still inclu
    C) Add to the system prompt: "ignore documents from other plans"
    D) Post-filter LLM output removing incorrect citations
 
-**(d)** Compare in a 3-row table: your scratch (`filtrar CORPUS`), LangChain strategy B, and strategy A (Chroma filter only). Columns: BM25 filtered? Vector filtered? Possible noise?
+**(d)** Compare in a 3-row table: your scratch (`filter CORPUS`), LangChain strategy B, and strategy A (Chroma filter only). Columns: BM25 filtered? Vector filtered? Possible noise?

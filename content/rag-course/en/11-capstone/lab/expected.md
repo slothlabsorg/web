@@ -1,6 +1,6 @@
 # Expected — M11 · Capstone · Template 09 (scratch)
 
-> Concrete result when running `python3 solucion_scratch.py` from the `lab/` directory.
+> Concrete result when running `python3 solution_scratch.py` from the `lab/` directory.
 > Generated with the script's actual output — if your solution matches, you're on track.
 
 ---
@@ -8,7 +8,7 @@
 ## Test query
 
 ```
-¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?
+How many vacation days am I entitled to if I have been at the company for 3 years?
 ```
 
 ---
@@ -22,8 +22,8 @@
 | Indices (0-based) | `1, 0, 7, 3` |
 | Similarities | `0.5080, 0.4397, 0.3384, 0.3215` |
 | `citations_ok` | `True` |
-| Days in response | **18 días hábiles** |
-| Cited source | Política de Vacaciones §3 |
+| Days in response | **18 business days** |
+| Cited source | Vacation Policy §3 |
 
 ---
 
@@ -31,15 +31,15 @@
 
 | Position | Index (0-based) | Similarity | Source |
 |----------|-----------------|-----------|--------|
-| 1 | 1 | 0.5080 | POLÍTICA DE VACACIONES §4 — Vacaciones adicionales por antigüedad |
-| 2 | 0 | 0.4397 | POLÍTICA DE VACACIONES §3 — Acumulación y disfrute |
-| 3 | 7 | 0.3384 | POLÍTICA DE CAPACITACIÓN §1 — Desarrollo profesional |
-| 4 | 3 | 0.3215 | POLÍTICA DE PERMISOS §2 — Permiso por maternidad y paternidad |
+| 1 | 1 | 0.5080 | VACATION POLICY §4 — Additional vacation by seniority |
+| 2 | 0 | 0.4397 | VACATION POLICY §3 — Accrual and usage |
+| 3 | 7 | 0.3384 | TRAINING POLICY §1 — Professional development |
+| 4 | 3 | 0.3215 | LEAVE POLICY §2 — Maternity and paternity leave |
 
 **Exact printed lines:**
 ```
-Índices recuperados (0-based): 1, 0, 7, 3
-Similitudes:                   0.5080, 0.4397, 0.3384, 0.3215
+Retrieved indices (0-based): 1, 0, 7, 3
+Similarities:                 0.5080, 0.4397, 0.3384, 0.3215
 ```
 
 ---
@@ -47,25 +47,25 @@ Similitudes:                   0.5080, 0.4397, 0.3384, 0.3215
 ## Final response (fake_llm + logic.citations enforce)
 
 ```
-Después de **3 años completos de antigüedad** tienes derecho a **18 días hábiles** de vacaciones anuales.
+After **3 full years of seniority** you are entitled to **18 business days** of annual vacation.
 
-> Fuente: Política de Vacaciones §3 — Acumulación y disfrute
+> Source: Vacation Policy §3 — Accrual and usage
 
 citations_ok: True
-citations:    ['POLÍTICA DE VACACIONES §4 — Vacaciones adicionales por antigüedad', 'POLÍTICA DE VACACIONES §3 — Acumulación y disfrute', 'POLÍTICA DE CAPACITACIÓN §1 — Desarrollo profesional']
+citations:    ['VACATION POLICY §4 — Additional vacation by seniority', 'VACATION POLICY §3 — Accrual and usage', 'TRAINING POLICY §1 — Professional development']
 ```
 
 ---
 
 ## Acceptance criteria — Challenge 1 (template 09 scratch)
 
-Your `solucion_scratch.py` **passes** if:
+Your `solution_scratch.py` **passes** if:
 
-1. Runs with `python3 solucion_scratch.py` without external dependencies.
-2. Indexes exactly **8** chunks from `datos/politicas_rrhh.txt`.
+1. Runs with `python3 solution_scratch.py` without external dependencies.
+2. Indexes exactly **8** chunks from `data/hr_policies.txt`.
 3. For the vacation/3 years query, retrieved indices are **`1, 0, 7, 3`** (order and values).
 4. Similarities match to **4 decimal places**: `0.5080, 0.4397, 0.3384, 0.3215`.
-5. Final response mentions **18 días hábiles** and a **source** (§3 or equivalent).
+5. Final response mentions **18 business days** and a **source** (§3 or equivalent).
 6. `citations_ok` is `True`.
 
 ---
@@ -76,10 +76,10 @@ There is no executable reference script here (higher complexity). Your deliverab
 
 ### Template 02 (banking)
 
-- Processes `datos/applicants/applicant_001/` and emits JSON with `score`, `decision`, `factores`, `justificacion`.
-- `logic.rules` overrides `decision`: score ≥ 70 → `"aprobar"` (deterministic, not delegated to LLM).
+- Processes `data/applicants/applicant_001/` and emits JSON with `score`, `decision`, `factors`, `justification`.
+- `logic.rules` overrides `decision`: score ≥ 70 → `"approve"` (deterministic, not delegated to LLM).
 - Hard-filters by `doc_type`/`period` avoid mixing files.
-- Each factor in `factores` references a document from the file.
+- Each factor in `factors` references a document from the file.
 
 ### Template 01 (airline)
 
@@ -96,9 +96,9 @@ There is no executable reference script here (higher complexity). Your deliverab
 Your `flow.json` + diagram + justification pass if:
 
 1. **RAGorbit validation:** 0 contract errors when clicking Validate.
-2. **Test with mocks:** answers at least 2 of the 3 questions in `datos/brief_telemedicina.json`.
+2. **Test with mocks:** answers at least 2 of the 3 questions in `data/brief_telemedicine.json`.
 3. Includes: retrieval with hard-filters, mandatory citations, HITL escalation, and audit.
-4. Justifies each node against an alternative from [`tecnologias-comparadas.md`](../../referencia/tecnologias-comparadas.md).
+4. Justifies each node against an alternative from [`compared-technologies.md`](../../referencia/tecnologias-comparadas.md).
 
 ---
 

@@ -41,8 +41,8 @@ Whisper does support Spanish (rules out 1), does produce timestamps (rules out 2
 ## Exercise 17 · Predict the output — mock STT
 
 ```
-Audio desconocido: 'AUDIO-INEXISTENTE'
-Técnico en rampa. Detectamos fuga de flui
+Unknown audio: 'AUDIO-INEXISTENTE'
+Ramp technician. We detected a hydraulic
 ```
 
 The first line comes from `get("error", "OK")` when `audio_ref` does not match. The second is the first 40 characters of the transcript.
@@ -62,10 +62,10 @@ for chunk in corpus:
         continue
     if str(meta.get("ata_chapter")) != str(ata_chapter):
         continue
-    # ... resto del scoring
+    # ... rest of scoring
 ```
 
-Without this, the B737 chunk can score high on shared terms ("tren de aterrizaje", "32-11-00").
+Without this, the B737 chunk can score high on shared terms ("landing gear", "32-11-00").
 
 ---
 
@@ -81,7 +81,7 @@ Without this, the B737 chunk can score high on shared terms ("tren de aterrizaje
 
 ## Exercise 20 · Tables → JSON
 
-**(a)** JSON preserves **structure** (key `Colisión` → `500`) that `logic.rules` can read deterministically. Plain text forces the LLM to interpret numbers — inconsistent and not auditable.
+**(a)** JSON preserves **structure** (key `Collision` → `500`) that `logic.rules` can read deterministically. Plain text forces the LLM to interpret numbers — inconsistent and not auditable.
 
 **(b)** `logic.rules` — applies deductibles, exclusions, and thresholds without delegating to the LLM (template 04).
 
@@ -138,7 +138,7 @@ Union problem: if each branch returns top-2, you can have 4 chunks with redundan
 
 ## Exercise 25 · Template 07 — intent gate
 
-**(a)** Greetings ("buenos días"), confirmations ("ajá", "ok"), silence transcribed as noise, filler ("ehh", "un momento"), short goodbyes.
+**(a)** Greetings ("good morning"), confirmations ("uh-huh", "ok"), silence transcribed as noise, filler ("umm", "one moment"), short goodbyes.
 
 **(b)** In streaming **many** partial fragments arrive; without the gate each would trigger RAG ($$$ and latency). In batch you process a complete, cleaned transcript.
 
@@ -182,7 +182,7 @@ Valid example:
 
 ```
 [audio_in] io.stt ──Message──▶ [query_fusion]
-[foto_in]  model.vision ──Model──▶ [loader o fusion]
+[photo_in] model.vision ──Model──▶ [loader or fusion]
 [store] retrieval.vector ◀── Query (hardFilters: aircraft_type, ata_chapter)
 retrieval.vector ──Chunks──▶ logic.citations ◀── Message (LLM)
 logic.citations ──Message──▶ hitl.escalate (when: WARNING)

@@ -22,7 +22,7 @@ All reference material is in [`../../referencia/plantillas-mapeadas.md`](../../r
 
 ### Objective
 
-Implement in **scratch (stdlib)** and **framework (LangChain/LangGraph)** the three templates in increasing difficulty order. The reference script `solucion_scratch.py` rebuilds **09** and should serve as your model; you complete 02 and 01.
+Implement in **scratch (stdlib)** and **framework (LangChain/LangGraph)** the three templates in increasing difficulty order. The reference script `solution_scratch.py` rebuilds **09** and should serve as your model; you complete 02 and 01.
 
 ### Mandatory order
 
@@ -34,27 +34,27 @@ Implement in **scratch (stdlib)** and **framework (LangChain/LangGraph)** the th
 
 **Read:** `flow.json` + template README.
 
-**Your scratch deliverable (`tu_scratch_09.py` or extension of `solucion_scratch.py`):**
+**Your scratch deliverable (`your_scratch_09.py` or extension of `solution_scratch.py`):**
 
 - Pipeline: loader → chunker → embed → store → retrieve → prompt → LLM stub → citations enforce.
-- Data: `datos/politicas_rrhh.txt`.
+- Data: `data/hr_policies.txt`.
 - Must match [`expected.md`](expected.md) (indices, similarities, response with 18 days).
 
-**Your framework deliverable (`tu_framework_09.py`):**
+**Your framework deliverable (`your_framework_09.py`):**
 
 - LangChain + Chroma following [guide §12](../guia.md#12-layer--explained-how-to-rebuild-a-template-with-a-framework).
-- Compare block by block with `solucion_framework.py`.
+- Compare block by block with `solution_framework.py`.
 
 ### Part B — Template 02 (`examples/02-banking-credit-scoring/`)
 
-**Read:** `flow.json` + README. Mock data: `datos/applicants/applicant_001/`.
+**Read:** `flow.json` + README. Mock data: `data/applicants/applicant_001/`.
 
 **Scratch:**
 
 - Two loaders (PDF/txt + tabular CSV) converge in chunker.
 - Metadata `doc_type` and `period` on each chunk.
 - In-memory vector store with hard-filters.
-- LLM stub that emits JSON with `score`, `factores`, `justificacion`.
+- LLM stub that emits JSON with `score`, `factors`, `justification`.
 - Deterministic `logic.rules`: ≥70 approve, 40–69 review, <40 reject.
 - **The final decision is NOT made by the LLM** — `logic.rules` overrides it.
 
@@ -63,11 +63,11 @@ Implement in **scratch (stdlib)** and **framework (LangChain/LangGraph)** the th
 - Structured output with Pydantic schema (M5).
 - pgvector or Chroma with metadata filters (M3/M4).
 
-**Criterion:** output JSON for `applicant_001` with `decision: "aprobar"` and score ≥ 70.
+**Criterion:** output JSON for `applicant_001` with `decision: "approve"` and score ≥ 70.
 
 ### Part C — Template 01 (`examples/01-airline-flight-change/`)
 
-**Read:** `flow.json` + README. Reuse stubs from M6 (`06-agentes-i/lab/datos/`).
+**Read:** `flow.json` + README. Reuse stubs from M6 (`06-agents-i/lab/data/`).
 
 **Scratch:**
 
@@ -89,7 +89,7 @@ Implement in **scratch (stdlib)** and **framework (LangChain/LangGraph)** the th
 <details>
 <summary>Hint 1 — Where do I start with 09?</summary>
 
-Open `solucion_scratch.py` and run `python3 solucion_scratch.py`. If the output matches `expected.md`, you understand the skeleton. Then rewrite it yourself without copying.
+Open `solution_scratch.py` and run `python3 solution_scratch.py`. If the output matches `expected.md`, you understand the skeleton. Then rewrite it yourself without copying.
 </details>
 
 <details>
@@ -107,7 +107,7 @@ Implement `guardrail.idempotency` as a wrapper on the Payment tool: key `(pnr, s
 <details>
 <summary>Hint 4 — Framework for 01</summary>
 
-Start with the M6 graph (`06-agentes-i/lab/solucion_framework.py`) and add service tools + guardrail chain. PolicyRAG is `tool.retriever` — a retriever wrapped as an invocable function.
+Start with the M6 graph (`06-agents-i/lab/solution_framework.py`) and add service tools + guardrail chain. PolicyRAG is `tool.retriever` — a retriever wrapped as an invocable function.
 </details>
 
 ---
@@ -116,7 +116,7 @@ Start with the M6 graph (`06-agentes-i/lab/solucion_framework.py`) and add servi
 
 ### Business brief
 
-Read [`datos/brief_telemedicina.json`](datos/brief_telemedicina.json): telemedicine copilot for SaludPlus Seguros.
+Read [`data/brief_telemedicine.json`](data/brief_telemedicine.json): telemedicine copilot for SaludPlus Insurance.
 
 ### Your deliverable
 
@@ -124,7 +124,7 @@ Read [`datos/brief_telemedicina.json`](datos/brief_telemedicina.json): telemedic
 2. **Valid `flow.json`** importable in RAGorbit (0 errors on Validate).
 3. **Justification document** (1–2 pages) that for each node explains:
    - Why you chose it.
-   - Which alternative you discarded and why (table from [`tecnologias-comparadas.md`](../../referencia/tecnologias-comparadas.md)).
+   - Which alternative you discarded and why (table from [`compared-technologies.md`](../../referencia/tecnologias-comparadas.md)).
    - How it meets brief constraints (PHI, latency, HITL, audit).
 
 ### Minimum expected nodes
@@ -185,21 +185,21 @@ Answer all **50 questions** in [`ejercicios.md`](../ejercicios.md) without looki
 ## Deliverables
 
 ```
-tu-capstone/
-  reto1/
+your-capstone/
+  challenge1/
     scratch_09.py
     scratch_02.py
     scratch_01.py
     framework_09.py
     framework_02.py
     framework_01.py
-  reto2/
-    diagrama.txt
+  challenge2/
+    diagram.txt
     flow.json
-    justificacion.md
-  reto3/
-    defensa.md (or video/script)
-    ejercicios_resueltos.md
+    justification.md
+  challenge3/
+    defense.md (or video/script)
+    solved_exercises.md
 ```
 
 ---

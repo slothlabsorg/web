@@ -17,11 +17,11 @@ Implement the **minimal RAG pattern** (retrieve → augment → respond) in two 
 
 ## Input data
 
-Policy documents are in `datos/politicas_rrhh.txt`. The file contains **8 policy fragments**, separated by `---` lines. Each fragment has a first line that is its title.
+Policy documents are in `data/hr_policies.txt`. The file contains **8 policy fragments**, separated by `---` lines. Each fragment has a first line that is its title.
 
 **Test query:**
 ```
-¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?
+How many vacation days do I get if I have been at the company for 3 years?
 ```
 
 ---
@@ -29,10 +29,10 @@ Policy documents are in `datos/politicas_rrhh.txt`. The file contains **8 policy
 ## Scratch solution specification (`solucion_scratch.py`)
 
 ### Step 1 — Load and parse fragments
-Read `datos/politicas_rrhh.txt`, split by `---`, and strip whitespace. Result: list of strings, one per fragment.
+Read `data/hr_policies.txt`, split by `---`, and strip whitespace. Result: list of strings, one per fragment.
 
 ### Step 2 — Toy embeddings (normalized bag-of-words)
-Implement an `embed(texto)` function that:
+Implement an `embed(text)` function that:
 1. Converts text to lowercase and extracts words (split on spaces and punctuation).
 2. Builds a global vocabulary with all words from all fragments.
 3. Returns a normalized frequency vector (divide each count by text length in words).
@@ -40,36 +40,36 @@ Implement an `embed(texto)` function that:
 **Do not use numpy, scipy, or any external library.**
 
 ### Step 3 — Manual cosine similarity
-Implement `similitud_coseno(a, b)` that operates on `{word: weight}` dictionaries (not dense lists — more efficient for large vocabularies).
+Implement `cosine_similarity(a, b)` that operates on `{word: weight}` dictionaries (not dense lists — more efficient for large vocabularies).
 
 ```python
-def similitud_coseno(a: dict, b: dict) -> float:
+def cosine_similarity(a: dict, b: dict) -> float:
     # dot product only over common keys
     # divide by norms
     ...
 ```
 
 ### Step 4 — Retrieve top-k
-Implement `recuperar(query, chunks, k=3)` that:
+Implement `retrieve(query, chunks, k=3)` that:
 1. Embeds the query.
 2. Computes cosine similarity between the query and each chunk.
 3. Returns the `k` most similar indices and texts, ordered from highest to lowest similarity.
 
 ### Step 5 — Build the augmented prompt
-Implement `construir_prompt(query, chunks_recuperados)` that returns the full prompt string:
+Implement `build_prompt(query, retrieved_chunks)` that returns the full prompt string:
 
 ```
-Eres el asistente de RRHH de la empresa. Responde ÚNICAMENTE basándote
-en los fragmentos de política proporcionados.
+You are the company's HR assistant. Answer ONLY based on the
+policy fragments provided.
 
-Fragmentos relevantes:
-[1] <texto del chunk 1>
-[2] <texto del chunk 2>
-[3] <texto del chunk 3>
+Relevant fragments:
+[1] <text of chunk 1>
+[2] <text of chunk 2>
+[3] <text of chunk 3>
 
-Pregunta del empleado: <query>
+Employee question: <query>
 
-Respuesta:
+Answer:
 ```
 
 ### Step 6 — Program output
@@ -86,7 +86,7 @@ The script must print:
 
 **Hint 2 (if cosine similarity gives odd values):** make sure the dot product only sums over keys that exist in BOTH dictionaries. Use `set(a.keys()) & set(b.keys())` for common keys.
 
-**Hint 3 (if results don't seem intuitive):** the bag-of-words embedding is simple but limited. "Días de vacaciones" and "días de descanso" will share the word "días" but not "vacaciones"/"descanso" — similarity will be partial. This is expected with the toy embedding; in production you would use semantic embeddings that capture synonyms.
+**Hint 3 (if results don't seem intuitive):** the bag-of-words embedding is simple but limited. "Vacation days" and "rest days" will share the word "days" but not "vacation"/"rest" — similarity will be partial. This is expected with the toy embedding; in production you would use semantic embeddings that capture synonyms.
 
 **Hint 4 (if the script won't run):** verify with `python3 -m py_compile solucion_scratch.py` before running it. Syntax errors appear there.
 
@@ -102,10 +102,10 @@ The script must print:
 
 A `solucion_framework.py` file that replicates the scratch pipeline with LangChain:
 
-1. Load and chunk `datos/politicas_rrhh.txt` → 8 `Document`s.
+1. Load and chunk `data/hr_policies.txt` → 8 `Document`s.
 2. Index in Chroma with `OpenAIEmbeddings`.
 3. Retrieve top-3 with a retriever.
-4. Build prompt with `ChatPromptTemplate` (variables `{contexto}` and `{pregunta}`).
+4. Build prompt with `ChatPromptTemplate` (variables `{context}` and `{question}`).
 5. Compose an LCEL chain ending in `StrOutputParser()`.
 6. (Optional when running) Call `chain.invoke(query)` with the same lab query.
 
@@ -130,11 +130,11 @@ Create `solucion_framework.py` with the dependency header (as in the reference s
 
 **Hint 1:** if you don't know what each import does, read §11.3–§11.11 in the guide — there is a mini-example per abstraction.
 
-### Step 2 — Loader + splitter (≈ `cargar_chunks`)
+### Step 2 — Loader + splitter (≈ `load_chunks`)
 
 ```python
-loader = TextLoader("datos/politicas_rrhh.txt", encoding="utf-8")
-documentos_raw = loader.load()
+loader = TextLoader("data/hr_policies.txt", encoding="utf-8")
+raw_documents = loader.load()
 
 splitter = CharacterTextSplitter(
     separator="\n---\n",
@@ -142,12 +142,12 @@ splitter = CharacterTextSplitter(
     chunk_overlap=0,
     keep_separator=False,
 )
-chunks = splitter.split_documents(documentos_raw)
+chunks = splitter.split_documents(raw_documents)
 ```
 
 **Mental check:** how many `Document`s do you expect? (8, same as scratch.) If you don't know why `split_documents` and not `split_text`, review §11.5.
 
-**Hint 2:** the `separator` must be **identical** to what `cargar_chunks()` uses in scratch: `\n---\n`.
+**Hint 2:** the `separator` must be **identical** to what `load_chunks()` uses in scratch: `\n---\n`.
 
 ### Step 3 — Embeddings + Chroma (≈ `embed` + in-memory index)
 
@@ -163,7 +163,7 @@ vectorstore = Chroma.from_documents(
 
 **Hint 3:** `embedding=` receives the **object** `OpenAIEmbeddings`, not a loose vector. Chroma will call `.embed_documents()` internally. See §11.6–§11.7.
 
-### Step 4 — Retriever (≈ `recuperar`)
+### Step 4 — Retriever (≈ `retrieve`)
 
 ```python
 retriever = vectorstore.as_retriever(
@@ -174,11 +174,11 @@ retriever = vectorstore.as_retriever(
 
 Define the same `query` as in scratch. **Write yourself** (without looking at the solution) what type `retriever.invoke(query)` returns. Then verify with §11.8 and exercise 19.
 
-**Hint 4:** `k=3` is equivalent to `recuperar(..., k=3)` in scratch.
+**Hint 4:** `k=3` is equivalent to `retrieve(..., k=3)` in scratch.
 
-### Step 5 — Prompt + LLM (≈ `construir_prompt` + model call)
+### Step 5 — Prompt + LLM (≈ `build_prompt` + model call)
 
-Define `SYSTEM_PROMPT` and `HUMAN_TEMPLATE` with the same instructions as the scratch prompt (HR assistant, fragments only, employee question). The human template **must** use `{contexto}` and `{pregunta}` — those are the names the chain will use.
+Define `SYSTEM_PROMPT` and `HUMAN_TEMPLATE` with the same instructions as the scratch prompt (HR assistant, fragments only, employee question). The human template **must** use `{context}` and `{question}` — those are the names the chain will use.
 
 ```python
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
@@ -193,15 +193,15 @@ prompt = ChatPromptTemplate.from_messages([
 
 ### Step 6 — LCEL chain (≈ orchestrated `main`)
 
-Write the `formatear_chunks(docs)` function that converts `list[Document]` into the numbered string `[1] ...\n\n[2] ...` (as `construir_prompt` does in scratch).
+Write the `format_chunks(docs)` function that converts `list[Document]` into the numbered string `[1] ...\n\n[2] ...` (as `build_prompt` does in scratch).
 
 Then compose the chain:
 
 ```python
 chain = (
     {
-        "contexto": retriever | formatear_chunks,
-        "pregunta": RunnablePassthrough(),
+        "context": retriever | format_chunks,
+        "question": RunnablePassthrough(),
     }
     | prompt
     | llm
@@ -216,12 +216,12 @@ chain = (
 ### Step 7 — Execution and inspection
 
 ```python
-query = "¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?"
+query = "How many vacation days do I get if I have been at the company for 3 years?"
 
-chunks_recuperados = retriever.invoke(query)
+retrieved_chunks = retriever.invoke(query)
 # Print preview of each retrieved chunk
 
-# respuesta = chain.invoke(query)  # uncomment when you have API key
+# response = chain.invoke(query)  # uncomment when you have API key
 ```
 
 ### Step 8 — Compare with the reference solution
@@ -237,7 +237,7 @@ chunks_recuperados = retriever.invoke(query)
 - [ ] You use `TextLoader` + `CharacterTextSplitter` with `separator="\n---\n"`.
 - [ ] `Chroma.from_documents` with `collection_name="hr_policies"`.
 - [ ] Retriever with `search_kwargs={"k": 3}`.
-- [ ] `ChatPromptTemplate` with `system` and `human` roles and `{contexto}` / `{pregunta}` variables.
+- [ ] `ChatPromptTemplate` with `system` and `human` roles and `{context}` / `{question}` variables.
 - [ ] LCEL chain with dict + `RunnablePassthrough` + `StrOutputParser`.
 - [ ] You can explain out loud what each `|` in your chain does without reading the guide.
 
@@ -248,8 +248,8 @@ chunks_recuperados = retriever.invoke(query)
 - [ ] The script runs with `python3 solucion_scratch.py` without errors.
 - [ ] Uses only `stdlib` (no external package `import`).
 - [ ] The `embed()` function produces `{word: float}` dictionaries.
-- [ ] `similitud_coseno()` returns 1.0 for identical vectors and 0.0 for vectors with no common words.
-- [ ] `recuperar()` returns chunks in order from highest to lowest similarity.
+- [ ] `cosine_similarity()` returns 1.0 for identical vectors and 0.0 for vectors with no common words.
+- [ ] `retrieve()` returns chunks in order from highest to lowest similarity.
 - [ ] The augmented prompt has the specified format.
 - [ ] Printed indices and similarities match what `expected.md` says.
 

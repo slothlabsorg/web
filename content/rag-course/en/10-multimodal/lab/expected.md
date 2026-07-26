@@ -9,33 +9,33 @@
 
 ```
 ============================================================
-PIPELINE MULTIMODAL MRO — stdlib, determinista
+MULTIMODAL MRO PIPELINE — stdlib, deterministic
 ============================================================
 
-[1/4] STT (transcript mock)
-  → Técnico en rampa. Detectamos fuga de fluido hidráulico en el actuador del tren d...
+[1/4] STT (mock transcript)
+  → Ramp technician. We detected a hydraulic fluid leak in the main landing gear act...
 
-[2/4] Visión (descripción mock)
-  → Fotografía del tren de aterrizaje principal izquierdo de un Airbus A320. Se obse...
+[2/4] Vision (mock description)
+  → Photograph of the left main landing gear of an Airbus A320. An active green-yell...
 
 [3/4] Retrieval (top chunks)
   • amm-32-11-00-001 (score=0.4356) — AMM-A320#32-11-00#rev45
   • amm-32-11-00-200-001 (score=0.3167) — AMM-A320#32-11-00-200-001#rev45
 
-[4/4] Respuesta citada
-**Hallazgo multimodal:** la nota de voz reporta fuga hidráulica en MLG del A320; la imagen confirma fuga activa en el actuador de retracción.
+[4/4] Cited response
+**Multimodal finding:** the voice note reports a hydraulic leak in the A320 MLG; the image confirms an active leak on the retraction actuator.
 
-**Procedimiento aplicable** (según AMM-A320#32-11-00#rev45):
-AMM 32-11-00 — Inspección del Tren de Aterrizaje Principal (MLG). Rev. 45 (2026-01-15). Paso 1: Inspeccionar visualmente el actuador de retracción en busca de fugas de fluido hidráulico (Skydrol). Paso 2: Si hay fuga activa, aplicar procedimiento 32-11-00-200-001 antes de liberar la aeronave.
+**Applicable procedure** (per AMM-A320#32-11-00#rev45):
+AMM 32-11-00 — Main Landing Gear (MLG) Inspection. Rev. 45 (2026-01-15). Step 1: Visually inspect the retraction actuator for hydraulic fluid leaks (Skydrol). Step 2: If there is an active leak, apply procedure 32-11-00-200-001 before releasing the aircraft.
 
-**Acción correctiva referenciada** (AMM-A320#32-11-00-200-001#rev45):
-AMM 32-11-00-200-001 — Reparación de fuga en actuador MLG. Rev. 45. WARNING: No operar el sistema hidráulico con fuga activa. Aislar circuito hidráulico verde, drenar residual, reemplazar junta del cilindro P/N 32-ACT-447 según torque 28 N·m (tabla 32-11-T01).
+**Referenced corrective action** (AMM-A320#32-11-00-200-001#rev45):
+AMM 32-11-00-200-001 — MLG Actuator Leak Repair. Rev. 45. WARNING: Do not operate the hydraulic system with an active leak. Isolate the green hydraulic circuit, drain residual fluid, replace the cylinder seal P/N 32-ACT-447 per torque 28 N·m (table 32-11-T01).
 
-**Recomendación:** seguir pasos del AMM 32-11-00 antes de liberar la aeronave. Revisión vigente: 45.
+**Recommendation:** follow AMM 32-11-00 steps before releasing the aircraft. Current revision: 45.
 
-⚠️ **WARNING detectado** — escalar a inspector certificado (hitl.escalate).
+⚠️ **WARNING detected** — escalate to certified inspector (hitl.escalate).
 
-Todas las verificaciones pasaron.
+All checks passed.
 ```
 
 ---
@@ -44,8 +44,8 @@ Todas las verificaciones pasaron.
 
 ```json
 {
-  "transcript": "Técnico en rampa. Detectamos fuga de fluido hidráulico en el actuador del tren de aterrizaje principal del A320. ¿Cuál es el procedimiento de inspección según el AMM sección 32-11-00?",
-  "image_description": "Fotografía del tren de aterrizaje principal izquierdo de un Airbus A320. Se observa mancha verde-amarilla de fluido hidráulico (Skydrol) en el actuador de retracción del MLG. Gota activa en la junta del cilindro. Corrosión superficial leve en el bracete inferior.",
+  "transcript": "Ramp technician. We detected a hydraulic fluid leak in the main landing gear actuator of the A320. What is the inspection procedure according to AMM section 32-11-00?",
+  "image_description": "Photograph of the left main landing gear of an Airbus A320. An active green-yellow hydraulic fluid (Skydrol) stain is observed on the MLG retraction actuator. Active drop on the cylinder seal. Minor surface corrosion on the lower bracket.",
   "vision_metadata": {
     "aircraft_type": "A320",
     "ata_chapter": "32",

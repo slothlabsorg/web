@@ -23,10 +23,10 @@ What does the following code print? Reason through it before running it.
 ```python
 import json
 
-texto = '{"nombre": "RAGorbit", "version": 1, "activo": true}'
-obj = json.loads(texto)
+text = '{"name": "RAGorbit", "version": 1, "active": true}'
+obj = json.loads(text)
 print(type(obj))
-print(obj["activo"] is True)
+print(obj["active"] is True)
 print(obj["version"] + 1)
 ```
 
@@ -34,14 +34,14 @@ print(obj["version"] + 1)
 
 ## Exercise 3 — json: find the bug
 
-The following code tries to save a dictionary with Spanish characters to a JSON file, but the result has escaped characters (`é` instead of `é`). What's wrong and how do you fix it?
+The following code tries to save a dictionary with Spanish characters to a JSON file, but the result has escaped characters (`\u00e9` instead of `é`). What's wrong and how do you fix it?
 
 ```python
 import json
 
-datos = {"descripcion": "Días de vacaciones según el contrato", "dias": 22}
-with open("salida.json", "w") as f:
-    json.dump(datos, f)
+data = {"description": "Vacation days according to the contract", "days": 22}
+with open("output.json", "w") as f:
+    json.dump(data, f)
 ```
 
 ---
@@ -54,14 +54,14 @@ Given the following code:
 from dataclasses import dataclass
 
 @dataclass
-class Documento:
-    texto: str
-    fuente: str
+class Document:
+    text: str
+    source: str
     score: float = 0.0
 
-d1 = Documento("Hola", "test.pdf")
-d2 = Documento("Hola", "test.pdf")
-d3 = Documento("Hola", "test.pdf", 0.5)
+d1 = Document("Hello", "test.pdf")
+d2 = Document("Hello", "test.pdf")
+d3 = Document("Hello", "test.pdf", 0.5)
 ```
 
 Which of these statements is **false**?
@@ -75,7 +75,7 @@ d) `print(d1)` raises an `AttributeError` because we didn't define `__repr__`.
 
 ## Exercise 5 — pathlib: predict the output
 
-Given this script saved at `/Users/ana/proyectos/ragorbit/rag-training/00-setup/lab/explorador.py`:
+Given this script saved at `/Users/ana/projects/ragorbit/rag-training/00-setup/lab/explorer.py`:
 
 ```python
 from pathlib import Path
@@ -121,13 +121,13 @@ The following code tries to get data from a coroutine but prints something unexp
 ```python
 import asyncio
 
-async def obtener_precio(producto: str) -> float:
+async def get_price(product: str) -> float:
     await asyncio.sleep(0)
-    precios = {"laptop": 999.0, "teclado": 79.0}
-    return precios.get(producto, 0.0)
+    prices = {"laptop": 999.0, "keyboard": 79.0}
+    return prices.get(product, 0.0)
 
-resultado = obtener_precio("laptop")
-print(f"Precio: {resultado}")
+result = get_price("laptop")
+print(f"Price: {result}")
 ```
 
 ---
@@ -139,20 +139,20 @@ Complete the type annotations in the following functions so they are correct:
 ```python
 from typing import ???
 
-def buscar_por_tipo(nodos: ???, tipo: ???) -> ???:
-    """Devuelve todos los nodos cuyo 'type' coincide con el argumento."""
-    return [n for n in nodos if n["type"] == tipo]
+def search_by_type(nodes: ???, type_name: ???) -> ???:
+    """Returns all nodes whose 'type' matches the argument."""
+    return [n for n in nodes if n["type"] == type_name]
 
-def primer_nodo_entrada(nodos: list[dict]) -> ???:
-    """Devuelve el primer nodo de tipo 'io.input', o None si no existe."""
-    return next((n for n in nodos if n["type"].startswith("io.input")), None)
+def first_input_node(nodes: list[dict]) -> ???:
+    """Returns the first node of type 'io.input', or None if none exists."""
+    return next((n for n in nodes if n["type"].startswith("io.input")), None)
 ```
 
 ---
 
 ## Exercise 10 — stdlib HTTP: design
 
-You want to create an HTTP server with `http.server` that exposes a `GET /api/nodos` endpoint and returns the list of nodes from flow 09 in JSON format. Describe (in pseudocode or prose) the steps you need to implement in the handler's `do_GET` method.
+You want to create an HTTP server with `http.server` that exposes a `GET /api/nodes` endpoint and returns the list of nodes from flow 09 in JSON format. Describe (in pseudocode or prose) the steps you need to implement in the handler's `do_GET` method.
 
 ---
 
@@ -170,14 +170,14 @@ d) You're debugging why an edge in your `flow.json` is invalid.
 ## Exercise 12 — integrator: short code
 
 Write a Python function (pure stdlib) that receives the path to a `flow.json` and returns a `dict` with:
-- `"total_nodos"`: number of nodes.
-- `"total_aristas"`: number of edges.
-- `"tipos_unicos"`: list of unique node types, without duplicates and sorted alphabetically.
+- `"total_nodes"`: number of nodes.
+- `"total_edges"`: number of edges.
+- `"unique_types"`: list of unique node types, without duplicates and sorted alphabetically.
 - `"deployment_target"`: the value of `flow.deploymentTarget`.
 
 Expected signature:
 ```python
-def resumir_flow(ruta: str) -> dict:
+def summarize_flow(path: str) -> dict:
     ...
 ```
 

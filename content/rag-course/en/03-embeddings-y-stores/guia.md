@@ -41,24 +41,24 @@ Imagine a city where every idea has an address. "vacation policy" and "annual le
 An embedding model (BERT, E5, text-embedding-3-large…) receives text, processes it with a transformer architecture, and extracts the hidden state of a special token (`[CLS]`) or the average of all tokens. This vector summarizes the meaning of the text in that mathematical space.
 
 ```
-Texto: "¿Cuántos días de vacaciones tengo?"
+Text: "How many vacation days do I have?"
          │
          ▼
-  Tokenización
+  Tokenization
          │
          ▼
-  Transformer (N capas de atención)
+  Transformer (N attention layers)
          │
          ▼
-  Pooling (CLS o mean)
+  Pooling (CLS or mean)
          │
          ▼
-  Vector: [0.12, -0.34, 0.78, ..., 0.05]   ← 1536 dimensiones (text-embedding-3-small)
+  Vector: [0.12, -0.34, 0.78, ..., 0.05]   ← 1536 dimensions (text-embedding-3-small)
 ```
 
 ### Why not use TF-IDF or BM25
 
-TF-IDF and BM25 are **lexical** representations: two phrases identical in vocabulary but different in intent will have similar vectors; synonyms will have completely different vectors. Dense embeddings capture **semantics**: "¿Cuántos días de vacaciones tengo?" and "días de permiso remunerado al año" end up close even though they share no words.
+TF-IDF and BM25 are **lexical** representations: two phrases identical in vocabulary but different in intent will have similar vectors; synonyms will have completely different vectors. Dense embeddings capture **semantics**: "How many vacation days do I have?" and "paid leave days per year" end up close even though they share no words.
 
 This does NOT mean embeddings are always superior. For exact-term search (IDs, function names, product codes), BM25 often wins. Hybrid search (M4) combines both worlds.
 
@@ -97,7 +97,7 @@ To **visualize** embeddings, they are reduced to 2 or 3 dimensions with UMAP or 
 A vector is **normalized** if its L2 norm (geometric length) is 1. Normalization is applied by dividing by its norm:
 
 ```
-v̂ = v / ‖v‖₂       donde  ‖v‖₂ = √(v₁² + v₂² + ... + vₙ²)
+v̂ = v / ‖v‖₂       where  ‖v‖₂ = √(v₁² + v₂² + ... + vₙ²)
 ```
 
 ### Numeric example
@@ -137,18 +137,18 @@ Range: [-1, 1]
 **Example with small vectors:**
 
 ```
-A = [1, 0, 1]    (representa "perro come hueso")
-B = [1, 0, 0.8]  (representa "can mastica alimento")
-C = [0, 1, 0]    (representa "política fiscal")
+A = [1, 0, 1]    (represents "dog eats bone")
+B = [1, 0, 0.8]  (represents "canine chews food")
+C = [0, 1, 0]    (represents "fiscal policy")
 
 A · B = 1×1 + 0×0 + 1×0.8 = 1.8
 ‖A‖ = √(1+0+1) = √2 ≈ 1.414
 ‖B‖ = √(1+0+0.64) = √1.64 ≈ 1.281
 
-cos(A,B) = 1.8 / (1.414 × 1.281) ≈ 1.8 / 1.812 ≈ 0.994  → muy similar ✓
+cos(A,B) = 1.8 / (1.414 × 1.281) ≈ 1.8 / 1.812 ≈ 0.994  → very similar ✓
 
 A · C = 0
-cos(A,C) = 0 / (1.414 × 1) = 0  → sin relación ✓
+cos(A,C) = 0 / (1.414 × 1) = 0  → no relation ✓
 ```
 
 **When to use cosine:** almost always in text retrieval. It is robust to text length.
@@ -204,8 +204,8 @@ A **vector index** is a data structure that efficiently answers the question: "w
 With N stored vectors, answering a query requires computing distance with EVERY vector. This is **exhaustive search** (brute force):
 
 ```
-Complejidad: O(N × D)   donde D = dimensiones
-N = 1 000 000, D = 1 536 → 1.5 × 10⁹ operaciones por query
+Complexity: O(N × D)   where D = dimensions
+N = 1 000 000, D = 1 536 → 1.5 × 10⁹ operations per query
 ```
 
 At 10 ms per million multiplications: 15 seconds per query. Unacceptable.
@@ -215,9 +215,9 @@ At 10 ms per million multiplications: 15 seconds per query. Unacceptable.
 ANN indexes sacrifice a bit of **recall** (they may miss a real neighbor) in exchange for drastically higher speed. The speed/recall balance is the central design parameter.
 
 ```
-Recall = |vecinos_reales_encontrados| / K
+Recall = |real_neighbors_found| / K
 
-Ejemplo: buscas top-5; el índice devuelve 5 resultados, 4 son los reales top-5 → recall@5 = 80%
+Example: you search top-5; the index returns 5 results, 4 are the real top-5 → recall@5 = 80%
 ```
 
 ---
@@ -233,7 +233,7 @@ Not an ANN index: compares the query with ALL vectors.
            │
     ┌──────┴──────┐
     ▼             ▼
- Todos los vectores se comparan
+ All vectors are compared
     ▼             ▼
     └──────┬──────┘
            │
@@ -262,19 +262,19 @@ Not an ANN index: compares the query with ALL vectors.
 **Intuition:** groups vectors into C clusters (Voronoi cells). When a query arrives, it only searches the nlist_probe closest clusters instead of all of them.
 
 ```
-   Entrenamiento (k-means):
+   Training (k-means):
    ┌────────────────────────┐
    │  ●  ●                  │
-   │    ☆ (centroide 1)     │
+   │    ☆ (centroid 1)      │
    │  ●  ●    ○  ○          │
-   │         ☆ (centroide 2)│
+   │         ☆ (centroid 2) │
    │         ○  ○           │
    └────────────────────────┘
 
    Query Q:
-   1. Calcular distancia Q a los C centroides (barato: C << N)
-   2. Seleccionar los nprobe centroides más cercanos
-   3. Búsqueda exhaustiva solo dentro de esas celdas
+   1. Compute distance from Q to the C centroids (cheap: C << N)
+   2. Select the nprobe closest centroids
+   3. Exhaustive search only within those cells
 ```
 
 **Key parameters:**
@@ -282,9 +282,9 @@ Not an ANN index: compares the query with ALL vectors.
 - `nprobe`: how many clusters to explore at query time. Higher nprobe → higher recall → higher latency.
 
 ```
-nprobe = 1   → rápido, recall bajo (~60-70%)
-nprobe = 10  → equilibrado, recall ~90%
-nprobe = C   → igual que flat (exhaustivo)
+nprobe = 1   → fast, low recall (~60-70%)
+nprobe = 10  → balanced, recall ~90%
+nprobe = C   → same as flat (exhaustive)
 ```
 
 **Advantages:**
@@ -303,15 +303,15 @@ nprobe = C   → igual que flat (exhaustivo)
 **Intuition:** builds a navigable graph in multiple layers (like a highway + secondary roads + alleys). Search starts at the top layer (few connections, long jumps) and descends to the bottom layer (many connections, fine search).
 
 ```
-Capa 2 (autopista):    A ──────────── E
-Capa 1 (secundaria):   A ─── B ─── D ─ E
-Capa 0 (local):        A - a - B - C - D - d - E
+Layer 2 (highway):     A ──────────── E
+Layer 1 (secondary):   A ─── B ─── D ─ E
+Layer 0 (local):       A - a - B - C - D - d - E
 
-Query Q: "encuentra el vecino más cercano a Q"
-1. Entrar en la capa superior por el entry point
-2. Greedy search: saltar al vecino más cercano al query
-3. Descender a la capa inferior
-4. Repetir hasta capa 0 con búsqueda local exhaustiva
+Query Q: "find the nearest neighbor to Q"
+1. Enter the top layer at the entry point
+2. Greedy search: jump to the neighbor closest to query
+3. Descend to the layer below
+4. Repeat until layer 0 with local exhaustive search
 ```
 
 **Key parameters:**
@@ -320,9 +320,9 @@ Query Q: "encuentra el vecino más cercano a Q"
 - `ef_search` (or `ef`): size of the search queue at query time. Higher → more recall → slower.
 
 ```
-M=16, ef_construction=200 → construcción equilibrada
-ef_search=50  → recall ~95%, rápido
-ef_search=200 → recall ~99%, más lento
+M=16, ef_construction=200 → balanced construction
+ef_search=50  → recall ~95%, fast
+ef_search=200 → recall ~99%, slower
 ```
 
 **Advantages:**
@@ -338,9 +338,9 @@ ef_search=200 → recall ~99%, más lento
 **Visual comparison:**
 
 ```
-                Velocidad de query
-                ◄──── más lento    más rápido ────►
-Exactitud
+                Query speed
+                ◄──── slower    faster ────►
+Accuracy
      ▲    Flat ●
      │          HNSW ●
      │               IVF+HNSW ●
@@ -370,13 +370,13 @@ Vector stores can operate in two modes:
 
 **In-memory (ephemeral):**
 ```
-store = chromadb.Client()  # desaparece al cerrar el proceso
+store = chromadb.Client()  # disappears when the process closes
 ```
 Useful for: tests, rapid prototyping, workshops without dependencies.
 
 **Persistent on disk:**
 ```
-store = chromadb.PersistentClient(path="./chroma_db")  # escribe en disco
+store = chromadb.PersistentClient(path="./chroma_db")  # writes to disk
 ```
 Useful for: local development, demos, collections built once and queried many times.
 
@@ -421,35 +421,35 @@ import chromadb
 # In-memory
 client = chromadb.Client()
 
-# Persistente en disco
-client = chromadb.PersistentClient(path="./datos/chroma")
+# Persistent on disk
+client = chromadb.PersistentClient(path="./data/chroma")
 
-# Servidor remoto
+# Remote server
 client = chromadb.HttpClient(host="localhost", port=8000)
 ```
 
 ### 8.2 Managing collections
 
 ```python
-# Crear colección
+# Create collection
 collection = client.create_collection(
     name="hr_policies",
-    metadata={"hnsw:space": "cosine"}  # métrica de distancia
+    metadata={"hnsw:space": "cosine"}  # distance metric
 )
 
-# Obtener existente (falla si no existe)
+# Get existing (fails if it does not exist)
 collection = client.get_collection("hr_policies")
 
-# Obtener o crear (idempotente)
+# Get or create (idempotent)
 collection = client.get_or_create_collection(
     name="hr_policies",
     metadata={"hnsw:space": "cosine"}
 )
 
-# Listar todas las colecciones
-colecciones = client.list_collections()
+# List all collections
+collections = client.list_collections()
 
-# Eliminar colección
+# Delete collection
 client.delete_collection("hr_policies")
 ```
 
@@ -459,17 +459,17 @@ client.delete_collection("hr_policies")
 collection.add(
     ids=["doc_001", "doc_002", "doc_003"],
     documents=[
-        "Los empleados tienen 15 días de vacaciones al año.",
-        "El seguro médico cubre hasta 3 dependientes.",
-        "La jornada laboral es de 8 horas con 1 hora de almuerzo."
+        "Employees have 15 vacation days per year.",
+        "Health insurance covers up to 3 dependents.",
+        "The work day is 8 hours with a 1-hour lunch break."
     ],
     metadatas=[
-        {"categoria": "vacaciones", "version": "2024"},
-        {"categoria": "beneficios", "version": "2024"},
-        {"categoria": "horario", "version": "2023"}
+        {"category": "vacation", "version": "2024"},
+        {"category": "benefits", "version": "2024"},
+        {"category": "schedule", "version": "2023"}
     ],
-    # Si no proporcionas embeddings, Chroma los genera con su modelo interno
-    # embeddings=[[0.1, 0.2, ...], ...]  # opcional
+    # If you do not provide embeddings, Chroma generates them with its internal model
+    # embeddings=[[0.1, 0.2, ...], ...]  # optional
 )
 ```
 
@@ -481,42 +481,42 @@ collection.add(
 ### 8.4 QUERY — search
 
 ```python
-resultados = collection.query(
-    query_texts=["¿cuántos días de vacaciones tengo?"],
+results = collection.query(
+    query_texts=["how many vacation days do I have?"],
     n_results=3,
-    where={"categoria": "vacaciones"},  # filtro de metadata (opcional)
+    where={"category": "vacation"},  # metadata filter (optional)
     include=["documents", "metadatas", "distances", "embeddings"]
 )
 
-# Estructura del resultado:
+# Result structure:
 # {
 #   'ids': [['doc_001']],
 #   'distances': [[0.12]],
-#   'metadatas': [[{'categoria': 'vacaciones', 'version': '2024'}]],
-#   'documents': [['Los empleados tienen 15 días de vacaciones al año.']]
+#   'metadatas': [[{'category': 'vacation', 'version': '2024'}]],
+#   'documents': [['Employees have 15 vacation days per year.']]
 # }
 ```
 
 **Metadata filters (operators):**
 
 ```python
-# Igualdad
-where={"categoria": "vacaciones"}
+# Equality
+where={"category": "vacation"}
 
-# Operadores: $eq, $ne, $gt, $gte, $lt, $lte, $in, $nin
+# Operators: $eq, $ne, $gt, $gte, $lt, $lte, $in, $nin
 where={"version": {"$gte": "2024"}}
-where={"categoria": {"$in": ["vacaciones", "beneficios"]}}
+where={"category": {"$in": ["vacation", "benefits"]}}
 
-# Combinaciones: $and, $or
+# Combinations: $and, $or
 where={"$and": [
-    {"categoria": "vacaciones"},
+    {"category": "vacation"},
     {"version": {"$gte": "2023"}}
 ]}
 ```
 
 **Content filter with `where_document`:**
 ```python
-where_document={"$contains": "15 días"}
+where_document={"$contains": "15 days"}
 ```
 
 ### 8.5 UPDATE — update
@@ -524,8 +524,8 @@ where_document={"$contains": "15 días"}
 ```python
 collection.update(
     ids=["doc_001"],
-    documents=["Los empleados tienen 20 días de vacaciones al año (nueva política 2025)."],
-    metadatas=[{"categoria": "vacaciones", "version": "2025"}]
+    documents=["Employees have 20 vacation days per year (new 2025 policy)."],
+    metadatas=[{"category": "vacation", "version": "2025"}]
 )
 ```
 
@@ -535,7 +535,7 @@ Chroma automatically recalculates the embedding of the new text.
 
 ```python
 collection.upsert(
-    ids=["doc_001", "doc_004"],  # doc_001 existe → update; doc_004 no existe → insert
+    ids=["doc_001", "doc_004"],  # doc_001 exists → update; doc_004 does not exist → insert
     documents=["...", "..."],
     metadatas=[{...}, {...}]
 )
@@ -546,20 +546,20 @@ Upsert is the safest operation for ingestion pipelines that run repeatedly.
 ### 8.7 DELETE — remove
 
 ```python
-# Por id
+# By id
 collection.delete(ids=["doc_001", "doc_002"])
 
-# Por filtro de metadata
+# By metadata filter
 collection.delete(where={"version": "2023"})
 
-# Por contenido
-collection.delete(where_document={"$contains": "texto obsoleto"})
+# By content
+collection.delete(where_document={"$contains": "obsolete text"})
 ```
 
 ### 8.8 GET — retrieve by id (without similarity)
 
 ```python
-resultado = collection.get(
+result = collection.get(
     ids=["doc_001", "doc_002"],
     include=["documents", "metadatas"]
 )
@@ -570,29 +570,29 @@ Useful to verify what is indexed or for audit pipelines.
 ### 8.9 COUNT and PEEK
 
 ```python
-total = collection.count()  # número de documentos en la colección
+total = collection.count()  # number of documents in the collection
 
-sample = collection.peek(5)  # primeros 5 documentos (para debug)
+sample = collection.peek(5)  # first 5 documents (for debug)
 ```
 
 ### Typical ChromaDB flow diagram
 
 ```
-PDF/texto
+PDF/text
    │
    ▼
 Chunker (M2)
-   │  chunks con metadata
+   │  chunks with metadata
    ▼
-collection.upsert()  ← añade/actualiza vectores
+collection.upsert()  ← adds/updates vectors
    │
-   │  [más tarde, en query time]
+   │  [later, at query time]
    │
    ▼
 collection.query(query_texts=[...], where={...})
    │
    ▼
-Top-K chunks → LLM → respuesta con citas
+Top-K chunks → LLM → response with citations
 ```
 
 ---
@@ -618,43 +618,43 @@ Top-K chunks → LLM → respuesta con citas
 import faiss
 import numpy as np
 
-dim = 1536  # dimensión de los embeddings
+dim = 1536  # embedding dimensions
 
-# Flat (exacto)
+# Flat (exact)
 index_flat = faiss.IndexFlatL2(dim)
 
-# Flat con similitud coseno (vectores normalizados)
+# Flat with cosine similarity (normalized vectors)
 index_ip = faiss.IndexFlatIP(dim)
 
 # IVF + Flat
 quantizer = faiss.IndexFlatL2(dim)
 index_ivf = faiss.IndexIVFFlat(quantizer, dim, nlist=100)
-index_ivf.train(train_vectors)  # requiere entrenamiento
+index_ivf.train(train_vectors)  # requires training
 index_ivf.nprobe = 10
 
 # HNSW
 index_hnsw = faiss.IndexHNSWFlat(dim, M=16)
 
-# IVF + PQ (compresión extrema)
+# IVF + PQ (extreme compression)
 index_pq = faiss.IndexIVFPQ(quantizer, dim, nlist=100, M=8, nbits=8)
 ```
 
 ### Basic operations
 
 ```python
-# Añadir vectores (deben ser float32)
+# Add vectors (must be float32)
 vectors = np.array([[...], [...]], dtype=np.float32)
 index.add(vectors)
 
-# Buscar top-K
+# Search top-K
 query = np.array([[...]], dtype=np.float32)
 distances, indices = index.search(query, k=5)
-# distances: (1, 5) array con distancias
-# indices: (1, 5) array con posiciones en el índice
+# distances: (1, 5) array with distances
+# indices: (1, 5) array with positions in the index
 
-# Persistencia manual
-faiss.write_index(index, "mis_vectores.faiss")
-index = faiss.read_index("mis_vectores.faiss")
+# Manual persistence
+faiss.write_index(index, "my_vectors.faiss")
+index = faiss.read_index("my_vectors.faiss")
 ```
 
 ### FAISS with custom IDs
@@ -662,11 +662,11 @@ index = faiss.read_index("mis_vectores.faiss")
 By default, FAISS assigns integer indices (0, 1, 2...). To map to your document IDs, keep an external dictionary:
 
 ```python
-id_map = {}  # indice_faiss → id_documento
-for i, doc_id in enumerate(tus_ids):
+id_map = {}  # faiss_index → document_id
+for i, doc_id in enumerate(your_ids):
     id_map[i] = doc_id
 
-# O usa IndexIDMap para gestión automática
+# Or use IndexIDMap for automatic management
 index_with_ids = faiss.IndexIDMap(index_flat)
 ids_array = np.array([101, 205, 307], dtype=np.int64)
 index_with_ids.add_with_ids(vectors, ids_array)
@@ -679,7 +679,7 @@ FAISS has native GPU support (CUDA):
 ```python
 res = faiss.StandardGpuResources()
 index_gpu = faiss.index_cpu_to_gpu(res, 0, index_flat)
-# Búsqueda hasta 100× más rápida en GPU
+# Search up to 100× faster on GPU
 ```
 
 ### When to choose FAISS over ChromaDB
@@ -699,21 +699,21 @@ index_gpu = faiss.index_cpu_to_gpu(res, 0, index_flat)
 An SQL table can store embeddings as arrays:
 
 ```sql
-CREATE TABLE documentos (
+CREATE TABLE documents (
     id TEXT PRIMARY KEY,
-    texto TEXT,
+    text TEXT,
     embedding FLOAT8[],
-    categoria TEXT
+    category TEXT
 );
 ```
 
 But finding the K nearest requires:
 
 ```sql
-SELECT id, texto,
-       embedding <-> query_embedding AS distancia
-FROM documentos
-ORDER BY distancia
+SELECT id, text,
+       embedding <-> query_embedding AS distance
+FROM documents
+ORDER BY distance
 LIMIT 5;
 ```
 
@@ -729,18 +729,18 @@ This is exhaustive search — `O(N)`. With 1M documents, it is extremely slow.
 ```sql
 CREATE EXTENSION vector;
 
-CREATE TABLE documentos (
+CREATE TABLE documents (
     id TEXT PRIMARY KEY,
-    texto TEXT,
+    text TEXT,
     embedding vector(1536),
-    categoria TEXT
+    category TEXT
 );
 
-CREATE INDEX ON documentos USING hnsw (embedding vector_cosine_ops);
+CREATE INDEX ON documents USING hnsw (embedding vector_cosine_ops);
 
-SELECT id, texto
-FROM documentos
-WHERE categoria = 'vacaciones'
+SELECT id, text
+FROM documents
+WHERE category = 'vacation'
 ORDER BY embedding <=> query_embedding
 LIMIT 5;
 ```
@@ -771,13 +771,13 @@ The semantic search engine of a vector store is fundamentally a recommendation e
 "Given an item the user is viewing, recommend similar items":
 
 ```
-Ítem actual: embedding(descripción_producto_A)
+Current item: embedding(product_A_description)
                      │
                      ▼
-      query al vector store con ese embedding
+      query the vector store with that embedding
                      │
                      ▼
-       Top-5 productos más similares → mostrar como recomendaciones
+       Top-5 most similar products → display as recommendations
 ```
 
 ### User-to-item pattern (dense collaborative filtering)
@@ -788,17 +788,17 @@ The semantic search engine of a vector store is fundamentally a recommendation e
 2. Search top-K in item space.
 
 ```python
-# Perfil del usuario como promedio de embeddings de artículos leídos
-perfil_usuario = np.mean([embedding(articulo_1), embedding(articulo_2), ...], axis=0)
-top_k = vector_store.query(perfil_usuario, k=5)
+# User profile as average of embeddings of articles read
+user_profile = np.mean([embedding(article_1), embedding(article_2), ...], axis=0)
+top_k = vector_store.query(user_profile, k=5)
 ```
 
 ### Duplicate/near-duplicate detection pattern
 
 ```
-Para cada nuevo documento:
-  embedding(doc_nuevo) → query top-1 en el store
-  Si similitud > 0.95 → probable duplicado, no indexar
+For each new document:
+  embedding(new_doc) → query top-1 in the store
+  If similarity > 0.95 → probable duplicate, do not index
 ```
 
 ### RAGorbit anchor
@@ -913,12 +913,12 @@ To use a local model:
 
 **Symmetric:** query and document are the same type (both questions or both answers). Standard models work well.
 
-**Asymmetric:** the query is short ("¿días de vacaciones?") and the document is long (full policy paragraph). Models like **E5** and **BGE** have specific variants for asymmetric retrieval:
+**Asymmetric:** the query is short ("vacation days?") and the document is long (full policy paragraph). Models like **E5** and **BGE** have specific variants for asymmetric retrieval:
 
 ```python
-# E5: prefijo de tarea
-query_text = "query: ¿cuántos días de vacaciones tengo?"
-doc_text = "passage: Los empleados tienen derecho a 15 días..."
+# E5: task prefix
+query_text = "query: how many vacation days do I have?"
+doc_text = "passage: Employees are entitled to 15 days..."
 ```
 
 In RAG, retrieval is almost always asymmetric. For production with high quality, use E5 or BGE with the corresponding prefixes.
@@ -989,25 +989,25 @@ The `doc_type` and `period` filters ensure that when evaluating the 2023 case fi
 In the scratch workshop you built a complete pipeline with standard Python only. Each piece has a production equivalent:
 
 ```
-  CAPA ② (scratch)                    CAPA ③ (framework)
+  LAYER ② (scratch)                   LAYER ③ (framework)
   ─────────────────                   ──────────────────────────────
 
-  embeder(texto)                      SentenceTransformer.encode()
+  embeder(text)                       SentenceTransformer.encode()
   bag-of-words 20 dim                 BGE-base 768 dim (transformer)
 
-  store = {id: {vector, texto,       chromadb.Client() +
+  store = {id: {vector, text,         chromadb.Client() +
     metadata}}                        collection.upsert(...)
 
-  coseno(a, b) manual                 Chroma: distances en query()
+  cosine(a, b) manual                 Chroma: distances in query()
                                       FAISS: IndexFlatIP.search()
 
   for doc in store: top-k manual      collection.query(n_results=k)
                                       index.search(query_vec, k)
 
-  if metadata["cat"] == "vac":        Chroma: where={"categoria":...}
-  filtro antes del ranking            FAISS: post-filtering en Python
+  if metadata["cat"] == "vac":        Chroma: where={"category":...}
+  filter before ranking               FAISS: post-filtering in Python
 
-  dict en RAM (se pierde al cerrar)   Chroma: PersistentClient
+  dict in RAM (lost on close)         Chroma: PersistentClient
                                       FAISS: write_index / read_index
 ```
 
@@ -1015,10 +1015,10 @@ In the scratch workshop you built a complete pipeline with standard Python only.
 
 | What you did by hand (scratch) | Real piece | Library / API |
 |--------------------------------|------------|----------------|
-| `embeder(texto)` — count of 20 vocabulary words | Neural model that converts text → dense 768-dim vector | `sentence-transformers`: `SentenceTransformer("BAAI/bge-base-en-v1.5").encode(textos, normalize_embeddings=True)` |
-| `store[id] = {"vector", "texto", "metadata"}` — Python dict | Collection with indexed vectors + text + metadata | `chromadb`: `client.get_or_create_collection(...)` + `collection.upsert(ids, documents, embeddings, metadatas)` |
-| `coseno(query_vec, doc_vec)` — dot product of normalized vectors | Index that computes IP (= cosine if you normalize) over millions of vectors in C++ | `faiss`: `IndexFlatIP(dim)` + `search(query_vec, k)` |
-| `buscar(query, k, filtro)` — iterate all docs, filter, sort | Query with filter integrated in the index (pre-filtering) | `chromadb`: `collection.query(..., where={"categoria": "vacaciones"})` — see [§8.4](#84-query--search) |
+| `embeder(text)` — count of 20 vocabulary words | Neural model that converts text → dense 768-dim vector | `sentence-transformers`: `SentenceTransformer("BAAI/bge-base-en-v1.5").encode(texts, normalize_embeddings=True)` |
+| `store[id] = {"vector", "text", "metadata"}` — Python dict | Collection with indexed vectors + text + metadata | `chromadb`: `client.get_or_create_collection(...)` + `collection.upsert(ids, documents, embeddings, metadatas)` |
+| `cosine(query_vec, doc_vec)` — dot product of normalized vectors | Index that computes IP (= cosine if you normalize) over millions of vectors in C++ | `faiss`: `IndexFlatIP(dim)` + `search(query_vec, k)` |
+| `search(query, k, filter)` — iterate all docs, filter, sort | Query with filter integrated in the index (pre-filtering) | `chromadb`: `collection.query(..., where={"category": "vacation"})` — see [§8.4](#84-query--search) |
 | Same filter in FAISS | Request K_extra results and filter in Python afterward | Post-filtering manual — see [§9](#9-faiss-what-it-is-and-when-to-use-it) and [§15.5](#155-block-by-block-walkthrough-of-labsolucion_frameworkpy) |
 | No persistence (RAM) | Save to disk and recover | Chroma: `PersistentClient(path=...)` · FAISS: `faiss.write_index` / `read_index` |
 | O(N) exhaustive search over 12 docs | ANN index (HNSW) for millions | Chroma activates HNSW internally · FAISS: `IndexHNSWFlat(dim, M)` |
@@ -1030,8 +1030,8 @@ In the scratch workshop you built a complete pipeline with standard Python only.
            │
            ▼
   ┌─────────────────────────────────────┐
-  │  SentenceTransformer.encode()       │  ← reemplaza embeder()
-  │  textos → array (12, 768) float32   │
+  │  SentenceTransformer.encode()       │  ← replaces embeder()
+  │  texts → array (12, 768) float32    │
   │  normalize_embeddings=True          │
   └──────────────┬──────────────────────┘
                  │
@@ -1039,11 +1039,11 @@ In the scratch workshop you built a complete pipeline with standard Python only.
        ▼                   ▼
   ChromaDB              FAISS
   collection.upsert()   IndexIDMap.add_with_ids()
-  + where en query      + id_a_doc mapa externo
+  + where in query      + id_to_doc external map
        │                   │
        ▼                   ▼
-  query + filtro          query + post-filter
-  nativo (pre-filter)     manual en Python
+  query + filter          query + post-filter
+  native (pre-filter)     manual in Python
 ```
 
 ---
@@ -1056,7 +1056,7 @@ In the scratch workshop you built a complete pipeline with standard Python only.
 
 ```bash
 pip install sentence-transformers
-# La primera vez descarga el modelo (~440 MB para BGE-base)
+# The first time it downloads the model (~440 MB for BGE-base)
 ```
 
 #### Minimal installation and first use
@@ -1064,47 +1064,47 @@ pip install sentence-transformers
 ```python
 from sentence_transformers import SentenceTransformer
 
-# Cargar modelo (descarga automática la primera vez)
-modelo = SentenceTransformer("BAAI/bge-base-en-v1.5")
+# Load model (automatic download the first time)
+model = SentenceTransformer("BAAI/bge-base-en-v1.5")
 
-# Un solo texto → vector 1D de 768 floats
-vec = modelo.encode("dias de permiso y descanso", normalize_embeddings=True)
+# A single text → 1D vector of 768 floats
+vec = model.encode("leave days and rest time", normalize_embeddings=True)
 print(len(vec))   # 768
-print(vec[:3])    # [-0.02, 0.15, -0.08, ...]  (valores reales, no conteos)
+print(vec[:3])    # [-0.02, 0.15, -0.08, ...]  (real values, not counts)
 
-# Varios textos → matriz (n, 768)
-textos = [
-    "Los empleados tienen 15 dias de vacaciones al ano.",
-    "El seguro medico cubre dependientes.",
+# Multiple texts → matrix (n, 768)
+texts = [
+    "Employees have 15 vacation days per year.",
+    "Health insurance covers dependents.",
 ]
-matriz = modelo.encode(textos, normalize_embeddings=True)
-print(matriz.shape)  # (2, 768)
+matrix = model.encode(texts, normalize_embeddings=True)
+print(matrix.shape)  # (2, 768)
 ```
 
 #### How it replaces your scratch `embeder()`
 
-| Aspect | Scratch `embeder()` | Real `modelo.encode()` |
+| Aspect | Scratch `embeder()` | Real `model.encode()` |
 |---------|---------------------|------------------------|
 | Dimensions | 20 (fixed, manual vocabulary) | 768 (learned by the model) |
 | Semantics | Exact vocabulary words only | Synonyms and paraphrases close |
 | Determinism | Yes (same text → same vector) | Yes (same model + same text → same vector) |
 | Network / pip | Not required | Requires pip + model download |
-| Normalization | You call `normalizar()` | `normalize_embeddings=True` does it |
+| Normalization | You call `normalize()` | `normalize_embeddings=True` does it |
 
 **Mini comparative example:**
 
 ```python
-# SCRATCH (lo que hiciste en el taller):
-def embeder(texto):
-    tokens = texto.lower().split()
+# SCRATCH (what you did in the workshop):
+def embeder(text):
+    tokens = text.lower().split()
     return [float(tokens.count(p)) for p in VOCAB]  # 20 dims, bag-of-words
 
-# FRAMEWORK (lo que usarás en capa ③):
-modelo = SentenceTransformer("BAAI/bge-base-en-v1.5")
-vec = modelo.encode(texto, normalize_embeddings=True)  # 768 dims, semántica real
+# FRAMEWORK (what you will use in layer ③):
+model = SentenceTransformer("BAAI/bge-base-en-v1.5")
+vec = model.encode(text, normalize_embeddings=True)  # 768 dims, real semantics
 ```
 
-With the real embedding, `"dias de permiso"` and `"vacaciones anuales"` will have high similarity even though they share no words — impossible with bag-of-words.
+With the real embedding, `"leave days"` and `"annual vacation"` will have high similarity even though they share no words — impossible with bag-of-words.
 
 #### Why `normalize_embeddings=True`?
 
@@ -1136,9 +1136,9 @@ You already read the full APIs in [§8](#8-chromadb-in-depth-crud-operations) an
 | Your scratch function | ChromaDB equivalent | Section |
 |-------------------|---------------------|---------|
 | `store[id] = {...}` when loading JSONs | `collection.upsert(ids, documents, embeddings, metadatas)` | [§8.6](#86-upsert--create-or-update) |
-| `buscar(query, k, filtro=None)` | `collection.query(query_texts=[query], n_results=k, where=filtro)` | [§8.4](#84-query--search) |
-| `actualizar(id, ...)` in CRUD demo | `collection.upsert(ids=[id], ...)` | [§8.6](#86-upsert--create-or-update) |
-| `eliminar(id)` | `collection.delete(ids=[id])` | [§8.7](#87-delete--remove) |
+| `search(query, k, filter=None)` | `collection.query(query_texts=[query], n_results=k, where=filter)` | [§8.4](#84-query--search) |
+| `update(id, ...)` in CRUD demo | `collection.upsert(ids=[id], ...)` | [§8.6](#86-upsert--create-or-update) |
+| `delete(id)` | `collection.delete(ids=[id])` | [§8.7](#87-delete--remove) |
 | `len(store)` | `collection.count()` | [§8.9](#89-count-and-peek) |
 
 **FAISS = only the fast vector search engine; you manage the rest:**
@@ -1146,10 +1146,10 @@ You already read the full APIs in [§8](#8-chromadb-in-depth-crud-operations) an
 | Your scratch function | FAISS equivalent | Section |
 |-------------------|------------------|---------|
 | `store` dict with vectors | `IndexFlatIP(dim)` or `IndexHNSWFlat(dim, M)` | [§9](#9-faiss-what-it-is-and-when-to-use-it) |
-| String IDs (`"doc_01"`) | `IndexIDMap` + `add_with_ids(vectors, ids_numericos)` | [§9 — FAISS with custom IDs](#faiss-with-custom-ids) |
-| `metadata` in each dict entry | **Does not exist in FAISS** → external map `id_a_doc = {i: doc}` | [§9 — differences from ChromaDB](#differences-from-chromadb) |
-| `buscar()` with filter | `search(k_extra)` + filter in Python (post-filtering) | [§15.5](#155-block-by-block-walkthrough-of-labsolucion_frameworkpy) |
-| Save store to disk | `faiss.write_index(index, "archivo.faiss")` | [§9 — basic operations](#basic-operations) |
+| String IDs (`"doc_01"`) | `IndexIDMap` + `add_with_ids(vectors, numeric_ids)` | [§9 — FAISS with custom IDs](#faiss-with-custom-ids) |
+| `metadata` in each dict entry | **Does not exist in FAISS** → external map `id_to_doc = {i: doc}` | [§9 — differences from ChromaDB](#differences-from-chromadb) |
+| `search()` with filter | `search(k_extra)` + filter in Python (post-filtering) | [§15.5](#155-block-by-block-walkthrough-of-labsolucion_frameworkpy) |
+| Save store to disk | `faiss.write_index(index, "file.faiss")` | [§9 — basic operations](#basic-operations) |
 
 ---
 
@@ -1157,7 +1157,7 @@ You already read the full APIs in [§8](#8-chromadb-in-depth-crud-operations) an
 
 ```bash
 pip install chromadb faiss-cpu sentence-transformers
-# faiss-cpu en Mac/Linux sin GPU; usa faiss-gpu si tienes CUDA
+# faiss-cpu on Mac/Linux without GPU; use faiss-gpu if you have CUDA
 ```
 
 The first run downloads `BAAI/bge-base-en-v1.5` (~440 MB). You need network. In the course environment (no pip/network) only layer ② runs; you run layer ③ on your machine when you have the packages.
@@ -1173,21 +1173,21 @@ Open [`lab/solucion_framework.py`](./lab/solucion_framework.py) while reading. T
 **Block 1: Client and collection (lines ~31–38)**
 
 ```python
-client = chromadb.Client()  # in-memory; en producción: PersistentClient(path="./datos")
+client = chromadb.Client()  # in-memory; in production: PersistentClient(path="./data")
 collection = client.get_or_create_collection(
     name="hr_policies",
-    metadata={"hnsw:space": "cosine"}  # métrica coseno en el índice interno
+    metadata={"hnsw:space": "cosine"}  # cosine metric in the internal index
 )
 ```
 
 - `Client()` = equivalent to your empty `store = {}` in RAM. Disappears when the process closes.
-- `get_or_create_collection` = create the "table" where vectors + text + metadata will live. The `metadata={"hnsw:space": "cosine"}` tells Chroma to use cosine distance (like your manual `coseno()`).
+- `get_or_create_collection` = create the "table" where vectors + text + metadata will live. The `metadata={"hnsw:space": "cosine"}` tells Chroma to use cosine distance (like your manual `cosine()`).
 - Persistence detail: [§7.1](#71-persistence-modes) and [§8.1](#81-installation-and-client).
 
 **Block 2: Embedding model (lines ~40–44)**
 
 ```python
-modelo = SentenceTransformer("BAAI/bge-base-en-v1.5")
+model = SentenceTransformer("BAAI/bge-base-en-v1.5")
 ```
 
 Replaces your `embeder()`. Chroma *could* embed with `documents=` and its internal model (all-MiniLM), but here we want to control the model — same as production with `model.embedding` in RAGorbit.
@@ -1195,42 +1195,42 @@ Replaces your `embeder()`. Chroma *could* embed with `documents=` and its intern
 **Block 3: Load JSONs (lines ~46–54)**
 
 ```python
-for archivo in sorted(datos_dir.glob("doc_*.json")):
+for file in sorted(data_dir.glob("doc_*.json")):
     doc = json.load(f)
     ids.append(doc["id"])
-    textos.append(doc["texto"])
+    texts.append(doc["text"])
     metadatas.append(doc["metadata"])
 ```
 
-Identical to your scratch `cargar_documentos()`: you separate `id`, text, and metadata into parallel lists (Chroma wants them this way).
+Identical to your scratch `load_documents()`: you separate `id`, text, and metadata into parallel lists (Chroma wants them this way).
 
 **Block 4: Index with pre-calculated embeddings (lines ~64–71)**
 
 ```python
-embeddings = modelo.encode(textos, normalize_embeddings=True).tolist()
+embeddings = model.encode(texts, normalize_embeddings=True).tolist()
 collection.upsert(
     ids=ids,
-    documents=textos,
+    documents=texts,
     embeddings=embeddings,
     metadatas=metadatas,
 )
 ```
 
-- `modelo.encode(...)` → matrix (12, 768); `.tolist()` because Chroma expects Python lists, not numpy.
+- `model.encode(...)` → matrix (12, 768); `.tolist()` because Chroma expects Python lists, not numpy.
 - `upsert` = "create if not exists, update if exists" — the safe operation for ingestion pipelines. See [§8.6](#86-upsert--create-or-update).
 - Passing explicit `embeddings=` avoids Chroma using its internal model (different dimensionality).
 
 **Block 5: Search A — no filter (lines ~75–91)**
 
 ```python
-resultados = collection.query(
+results = collection.query(
     query_texts=[query],
     n_results=3,
     include=["documents", "metadatas", "distances"]
 )
 ```
 
-- Equivalent to your `buscar(query, k=3, filtro=None)`.
+- Equivalent to your `search(query, k=3, filter=None)`.
 - `query_texts` accepts raw text; Chroma embeds it internally **or** you can pass `query_embeddings=` if you already computed the vector with your model.
 - `include` controls which fields are returned. Always request `distances` to interpret scores.
 
@@ -1243,7 +1243,7 @@ Chroma with cosine space returns **distance** (not similarity):
 Conversion to cosine similarity:
 
 ```
-similitud = 1 - distancia / 2
+similarity = 1 - distance / 2
 ```
 
 The lab code does `sim = 1 - dist / 2`. With normalized vectors, `sim` will be in [0, 1] (1 = maximum similarity).
@@ -1251,15 +1251,15 @@ The lab code does `sim = 1 - dist / 2`. With normalized vectors, `sim` will be i
 **Block 6: Search B — with filter (lines ~93–107)**
 
 ```python
-resultados_filtro = collection.query(
+filtered_results = collection.query(
     query_texts=[query],
     n_results=3,
-    where={"categoria": "vacaciones"},
+    where={"category": "vacation"},
     include=["documents", "metadatas", "distances"]
 )
 ```
 
-- Equivalent to your `buscar(query, k=3, filtro={"categoria": "vacaciones"})`.
+- Equivalent to your `search(query, k=3, filter={"category": "vacation"})`.
 - **Pre-filtering:** Chroma filters *before* ranking. The 3 results are **guaranteed** to pass the filter. See operators in [§8.4](#84-query--search).
 
 **Block 7: Advanced filters (lines ~109–127)**
@@ -1267,7 +1267,7 @@ resultados_filtro = collection.query(
 ```python
 where={
     "$and": [
-        {"categoria": {"$in": ["vacaciones", "horario"]}},
+        {"category": {"$in": ["vacation", "schedule"]}},
         {"version": {"$gte": "2024"}}
     ]
 }
@@ -1278,10 +1278,10 @@ Demonstrates `$and`, `$in`, `$gte` — what in scratch you would program by hand
 **Block 8: CRUD (lines ~129–141)**
 
 ```python
-collection.upsert(ids=["doc_01"], documents=[...], metadatas=[...])  # actualizar
-collection.delete(ids=["doc_11", "doc_12"])                          # eliminar
-collection.get(ids=["doc_01"], include=["metadatas"])                # leer por id
-collection.count()                                                   # contar
+collection.upsert(ids=["doc_01"], documents=[...], metadatas=[...])  # update
+collection.delete(ids=["doc_11", "doc_12"])                          # delete
+collection.get(ids=["doc_01"], include=["metadatas"])                # read by id
+collection.count()                                                   # count
 ```
 
 Replicates the CRUD demo from your `solucion_scratch.py` with native APIs. See [§8.5–8.9](#85-update--update).
@@ -1291,8 +1291,8 @@ Replicates the CRUD demo from your `solucion_scratch.py` with native APIs. See [
 **Block 1: Same model, same data (lines ~162–174)**
 
 ```python
-modelo = SentenceTransformer("BAAI/bge-base-en-v1.5")
-embeddings = modelo.encode(textos, normalize_embeddings=True)
+model = SentenceTransformer("BAAI/bge-base-en-v1.5")
+embeddings = model.encode(texts, normalize_embeddings=True)
 dim = embeddings.shape[1]  # 768
 ```
 
@@ -1301,22 +1301,22 @@ Same embedding as Chroma. The difference starts **after** you have the vectors.
 **Block 2: Build index (lines ~179–189)**
 
 ```python
-index = faiss.IndexFlatIP(dim)                    # producto punto exacto
-index_with_ids = faiss.IndexIDMap(index)          # permite IDs numéricos arbitrarios
+index = faiss.IndexFlatIP(dim)                    # exact dot product
+index_with_ids = faiss.IndexIDMap(index)          # allows arbitrary numeric IDs
 index_with_ids.add_with_ids(
-    embeddings.astype(np.float32),                # FAISS exige float32
-    ids_numericos                                 # np.arange(12)
+    embeddings.astype(np.float32),                # FAISS requires float32
+    numeric_ids                                   # np.arange(12)
 )
 ```
 
-- `IndexFlatIP` = exhaustive dot product search. With normalized vectors, IP = cosine — same as your `for doc in store: coseno(...)` loop.
+- `IndexFlatIP` = exhaustive dot product search. With normalized vectors, IP = cosine — same as your `for doc in store: cosine(...)` loop.
 - `IndexIDMap` wraps the index so you can use integer IDs (0, 1, 2…) instead of implicit positions.
 - **FAISS does not store text or metadata** — only vectors and positions.
 
 **Block 3: id → document map (line ~193)**
 
 ```python
-id_a_doc = {i: docs[i] for i in range(len(docs))}
+id_to_doc = {i: docs[i] for i in range(len(docs))}
 ```
 
 **Mandatory.** Without this external dictionary, `search()` returns numeric indices (0, 5, 3) but you do not know which document it is or its category. Chroma resolves this internally; in FAISS it is your responsibility.
@@ -1324,7 +1324,7 @@ id_a_doc = {i: docs[i] for i in range(len(docs))}
 **Block 4: Search A — no filter (lines ~195–203)**
 
 ```python
-query_vec = modelo.encode([query], normalize_embeddings=True).astype(np.float32)
+query_vec = model.encode([query], normalize_embeddings=True).astype(np.float32)
 scores, indices = index_with_ids.search(query_vec, k=3)
 ```
 
@@ -1334,38 +1334,38 @@ scores, indices = index_with_ids.search(query_vec, k=3)
 **Block 5: Search B — post-filtering (lines ~205–225)**
 
 ```python
-k_extra = 12  # pedir TODOS porque FAISS no puede filtrar
+k_extra = 12  # request ALL because FAISS cannot filter
 scores_all, indices_all = index_with_ids.search(query_vec, k=k_extra)
-filtrados = []
+filtered = []
 for score, idx in zip(scores_all[0], indices_all[0]):
-    doc = id_a_doc[idx]
-    if doc["metadata"]["categoria"] == filtro_categoria:
-        filtrados.append((score, doc))
-    if len(filtrados) == 3:
+    doc = id_to_doc[idx]
+    if doc["metadata"]["category"] == filter_category:
+        filtered.append((score, doc))
+    if len(filtered) == 3:
         break
 ```
 
-**Why `k_extra = 12`:** with only 12 documents, we request all and filter. With 1M documents and a restrictive filter, requesting `k=3` could return 0 valid results (the 3 most similar globally are not in category "vacaciones"). Solution: request `k=100` or `k=1000` and filter — but recall degrades.
+**Why `k_extra = 12`:** with only 12 documents, we request all and filter. With 1M documents and a restrictive filter, requesting `k=3` could return 0 valid results (the 3 most similar globally are not in category "vacation"). Solution: request `k=100` or `k=1000` and filter — but recall degrades.
 
 **Block 6: Persistence (lines ~227–232)**
 
 ```python
 faiss.write_index(index_with_ids, "/tmp/hr_policies.faiss")
-index_recuperado = faiss.read_index("/tmp/hr_policies.faiss")
+recovered_index = faiss.read_index("/tmp/hr_policies.faiss")
 ```
 
-Only saves vectors + index structure. Your `id_a_doc` map must be persisted separately (JSON, SQLite…). Chroma with `PersistentClient` saves everything together.
+Only saves vectors + index structure. Your `id_to_doc` map must be persisted separately (JSON, SQLite…). Chroma with `PersistentClient` saves everything together.
 
 **Block 7: HNSW alternative (lines ~234–242)**
 
 ```python
-index_hnsw = faiss.IndexHNSWFlat(dim, 16)  # M=16 conexiones por nodo
+index_hnsw = faiss.IndexHNSWFlat(dim, 16)  # M=16 connections per node
 index_hnsw.add(embeddings.astype(np.float32))
 ```
 
 For large collections (>100k) where flat is slow. Here with 12 docs it is irrelevant — illustrative. See [§6.3](#63-hnsw-hierarchical-navigable-small-world).
 
-#### Final comparison (`imprimir_comparativa`)
+#### Final comparison (`print_comparison`)
 
 Summarizes in a table what you just saw: Chroma = less code, native filters, CRUD; FAISS = more control, more speed at scale, more manual code.
 
@@ -1376,7 +1376,7 @@ Summarizes in a table what you just saw: Chroma = less code, native filters, CRU
 | Gotcha | What happens | How to avoid |
 |--------|----------|---------------|
 | **Distance ≠ similarity in Chroma** | You interpret `distances=0.12` as "12% similar" | With cosine: `sim = 1 - dist/2`. With normalized vectors, dist 0 = identical, dist 2 = opposite |
-| **FAISS without id→doc map** | `search()` returns `5` but you do not know which document | Keep `id_a_doc = {i: doc}` or use `IndexIDMap` + inverse mapping |
+| **FAISS without id→doc map** | `search()` returns `5` but you do not know which document | Keep `id_to_doc = {i: doc}` or use `IndexIDMap` + inverse mapping |
 | **Post-filtering with k too small** | You request top-3 in FAISS, filter by category, get 0–1 results | Request large `k_extra` (at least 10× desired k) and filter afterward |
 | **Forgetting `normalize_embeddings=True`** | FAISS IP and Chroma cosine give incorrect rankings | Always normalize on `.encode()` and when indexing |
 | **Float types in FAISS** | Silent error or crash | `embeddings.astype(np.float32)` — FAISS does not accept float64 |
@@ -1391,10 +1391,10 @@ Summarizes in a table what you just saw: Chroma = less code, native filters, CRU
 Before writing `solucion_framework.py` (or your own version), verify you can:
 
 - [ ] Install `chromadb`, `faiss-cpu`, `sentence-transformers` and download BGE-base.
-- [ ] Explain what replaces each scratch function (`embeder`, `buscar`, `store`, filter).
+- [ ] Explain what replaces each scratch function (`embeder`, `search`, `store`, filter).
 - [ ] Write `collection.upsert(...)` and `collection.query(..., where=...)` without copying.
 - [ ] Convert Chroma `distances` to similarity with `1 - dist/2`.
-- [ ] Build `IndexFlatIP` + `IndexIDMap` + `id_a_doc` map in FAISS.
+- [ ] Build `IndexFlatIP` + `IndexIDMap` + `id_to_doc` map in FAISS.
 - [ ] Implement post-filtering in FAISS by requesting `k_extra` results.
 - [ ] Compare Chroma vs FAISS for the workshop case (12 docs, filter by category).
 
@@ -1418,9 +1418,9 @@ Before writing `solucion_framework.py` (or your own version), verify you can:
 - [ ] List 3 reasons to choose FAISS and 3 to choose ChromaDB.
 - [ ] Choose between pgvector, Qdrant, and Pinecone given a technical brief.
 - [ ] Explain why template 02 Banking uses `store.pgvector` with `doc_type`/`period` filters.
-- [ ] **New:** map each piece of your scratch (`embeder`, `store`, `buscar`, filter) to its equivalent in sentence-transformers, ChromaDB, and FAISS.
+- [ ] **New:** map each piece of your scratch (`embeder`, `store`, `search`, filter) to its equivalent in sentence-transformers, ChromaDB, and FAISS.
 - [ ] **New:** write `collection.query(...)` from memory with `where` filter and convert `distances` to similarity.
-- [ ] **New:** explain why FAISS needs an `id_a_doc` map and what post-filtering is.
+- [ ] **New:** explain why FAISS needs an `id_to_doc` map and what post-filtering is.
 
 ### What to review if something is unclear
 

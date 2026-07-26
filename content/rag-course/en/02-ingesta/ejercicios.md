@@ -12,7 +12,7 @@ A bank has four types of documents:
 | Type | Description |
 |------|-------------|
 | A | Tax returns in PDF: continuous text, no marked sections, ~6 pages |
-| B | Credit contracts: 15 numbered clauses (CLÁUSULA 1… CLÁUSULA 15) |
+| B | Credit contracts: 15 numbered clauses (CLAUSE 1… CLAUSE 15) |
 | C | Product manuals in HTML: well-structured `<h1>`, `<h2>`, `<h3>` |
 | D | Customer service call transcripts (continuous text, ~2000 words) |
 
@@ -52,10 +52,10 @@ d) A similarity penalty is applied to B787 chunks before ranking.
 Given the following text fragment:
 
 ```
-CLÁUSULA 8. LIMITACIÓN DE RESPONSABILIDAD
-La responsabilidad total queda limitada conforme a la Cláusula 3 del contrato.
-CLÁUSULA 9. CONFIDENCIALIDAD
-Ambas partes mantendrán confidencialidad.
+CLAUSE 8. LIMITATION OF LIABILITY
+Total liability is limited in accordance with Clause 3 of the contract.
+CLAUSE 9. CONFIDENTIALITY
+Both parties shall maintain confidentiality.
 ```
 
 And two regex patterns:
@@ -63,9 +63,9 @@ And two regex patterns:
 ```python
 import re
 # Pattern A (without MULTILINE):
-pA = re.compile(r'^CL[AÁ]USULA\s+(\d+)', re.IGNORECASE)
+pA = re.compile(r'^CL[AÁ]US[UE]LA\s+(\d+)', re.IGNORECASE)
 # Pattern B (with MULTILINE):
-pB = re.compile(r'^CL[AÁ]USULA\s+(\d+)', re.IGNORECASE | re.MULTILINE)
+pB = re.compile(r'^CL[AÁ]US[UE]LA\s+(\d+)', re.IGNORECASE | re.MULTILINE)
 ```
 
 How many matches does each pattern produce on the full text?
@@ -73,7 +73,7 @@ How many matches does each pattern produce on the full text?
 a) Pattern A: 2 matches; Pattern B: 2 matches
 b) Pattern A: 1 match; Pattern B: 2 matches
 c) Pattern A: 0 matches; Pattern B: 2 matches
-d) Pattern A: 3 matches; Pattern B: 3 matches (the reference "Cláusula 3" also matches)
+d) Pattern A: 3 matches; Pattern B: 3 matches (the reference "Clause 3" also matches)
 
 ---
 
@@ -84,20 +84,20 @@ The following chunker produces 5 chunks for a contract with 3 clauses:
 ```python
 import re
 
-texto = """
-CLÁUSULA 1. OBJETO
-Desarrollar software según el Anexo A.
+text = """
+CLAUSE 1. PURPOSE
+Develop software according to Annex A.
 
-CLÁUSULA 2. PAGO
-El pago será de $100,000. Ver Cláusula 3 para penalizaciones.
+CLAUSE 2. PAYMENT
+Payment shall be $100,000. See Clause 3 for penalties.
 
-CLÁUSULA 3. PENALIZACIONES
-Retraso mayor a 5 días: descuento del 5%.
+CLAUSE 3. PENALTIES
+Delay greater than 5 days: 5% discount.
 """
 
-patron = re.compile(r'CL[AÁ]USULA\s+(\d+)', re.IGNORECASE)
-matches = list(patron.finditer(texto))
-print(f"Matches encontrados: {len(matches)}")  # Imprime: 4
+pattern = re.compile(r'CL[AÁ]US[UE]LA\s+(\d+)', re.IGNORECASE)
+matches = list(pattern.finditer(text))
+print(f"Matches found: {len(matches)}")  # Prints: 4
 ```
 
 What is the bug and how is it fixed?
@@ -111,9 +111,9 @@ A team must index the following documents. Which loader node should be used in e
 | Document | Detail |
 |-----------|---------|
 | 1. Insurance policies in PDF | Scanned documents (photo of the form) |
-| 2. Product catalog | PostgreSQL table: `SELECT sku, nombre, descripcion FROM productos` |
+| 2. Product catalog | PostgreSQL table: `SELECT sku, name, description FROM products` |
 | 3. Aircraft maintenance manual | PDF with torque tables and hydraulic diagrams |
-| 4. Frequently asked questions | Website `https://empresa.com/faq`, with no external links to follow |
+| 4. Frequently asked questions | Website `https://company.com/faq`, with no external links to follow |
 | 5. Credit files | S3 folder with PDFs and CSVs per applicant |
 
 ---
@@ -156,17 +156,17 @@ d) Unstructured.io in `hi_res` mode — detects and categorizes all elements (ta
 A company has an internal regulation with the following structure:
 
 ```
-Artículo 1. Ámbito de aplicación
-  1.1 Esta normativa aplica a todos los empleados...
-  1.2 Quedan excluidos los contratistas...
-Artículo 2. Definiciones
-  2.1 Se entiende por "incidente"...
+Article 1. Scope of Application
+  1.1 This regulation applies to all employees...
+  1.2 Contractors are excluded...
+Article 2. Definitions
+  2.1 "Incident" is understood as...
 ```
 
 Which chunking strategy best preserves semantic coherence?
 
 a) `recursive` with `chunkSize: 500` — articles are short and fit easily.
-b) `by-clause` with separator `Artículo N.` — each article is an autonomous semantic and legal unit.
+b) `by-clause` with separator `Article N.` — each article is an autonomous semantic and legal unit.
 c) `fixed` with `chunkSize: 1000, overlap: 200` — simple and sufficient for regulatory text.
 d) `semantic` — embeddings capture topics better than numbering.
 
@@ -202,18 +202,18 @@ d) It is a pgvector technical requirement: it does not accept documents with met
 The following pipeline in pseudocode loses `aircraft_type` metadata in the vector store:
 
 ```python
-# Paso 1: cargar
+# Step 1: load
 docs = loader.load("amm_a320.pdf")  # docs[i].metadata = {"source": "amm_a320.pdf"}
 
-# Paso 2: chunkear
-chunks = chunker.split_documents(docs)  # preserva metadata del doc padre
+# Step 2: chunk
+chunks = chunker.split_documents(docs)  # preserves parent doc metadata
 
-# Paso 3: añadir metadata de dominio
+# Step 3: add domain metadata
 for chunk in chunks:
     chunk.metadata["ata_chapter"] = extract_ata(chunk.text)
-    # FALTA algo aquí
+    # MISSING something here
 
-# Paso 4: indexar
+# Step 4: index
 vectorstore.add_documents(chunks)
 ```
 
@@ -237,9 +237,9 @@ d) Custom loader in pure Python with `pathlib.glob`.
 Given this text (lengths in parentheses):
 
 ```
-Intro del contrato (80 chars, sin "CLÁUSULA")\n\n
-CLÁUSULA 1. OBJETO (chunk de 600 chars de cuerpo)\n\n
-CLÁUSULA 2. PAGO (chunk de 900 chars de cuerpo)
+Contract intro (80 chars, no "CLAUSE")\n\n
+CLAUSE 1. PURPOSE (chunk of 600 chars body)\n\n
+CLAUSE 2. PAYMENT (chunk of 900 chars body)
 ```
 
 And this splitter:
@@ -248,43 +248,43 @@ And this splitter:
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 splitter = RecursiveCharacterTextSplitter(
-    separators=["\n\nCLÁUSULA ", "\n\n", "\n", " "],
+    separators=["\n\nCLAUSE ", "\n\n", "\n", " "],
     chunk_size=700,
     chunk_overlap=0,
     keep_separator=True,
 )
-chunks = splitter.create_documents([texto])
+chunks = splitter.create_documents([text])
 ```
 
 How many chunks does it produce and what is the approximate shape of the first one?
 
-a) 2 chunks: Chunk 0 = intro + entire CLÁUSULA 1; Chunk 1 = entire CLÁUSULA 2
-b) 3 chunks: Chunk 0 = intro only; Chunk 1 = CLÁUSULA 1; Chunk 2 = CLÁUSULA 2
-c) 2 chunks: Chunk 0 = intro alone; Chunk 1 = CLÁUSULA 1 + CLÁUSULA 2 (because 600+900 < 700×2 with overlap)
-d) 4 chunks: the algorithm splits CLÁUSULA 2 by `\n` because it exceeds 700 chars
+a) 2 chunks: Chunk 0 = intro + entire CLAUSE 1; Chunk 1 = entire CLAUSE 2
+b) 3 chunks: Chunk 0 = intro only; Chunk 1 = CLAUSE 1; Chunk 2 = CLAUSE 2
+c) 2 chunks: Chunk 0 = intro alone; Chunk 1 = CLAUSE 1 + CLAUSE 2 (because 600+900 < 700×2 with overlap)
+d) 4 chunks: the algorithm splits CLAUSE 2 by `\n` because it exceeds 700 chars
 
 ---
 
 ## Exercise 29 — Complete the method: inherit from TextSplitter (PS)
 
-You want a splitter that splits on the `---` separator and preserves parent document metadata. The method marked with `# COMPLETA` is missing:
+You want a splitter that splits on the `---` separator and preserves parent document metadata. The method marked with `# COMPLETE` is missing:
 
 ```python
 from langchain_text_splitters import TextSplitter
 from langchain_core.documents import Document
 
-class SeparadorGuiones(TextSplitter):
+class DashSplitter(TextSplitter):
     def split_text(self, text: str) -> list[str]:
         return [p.strip() for p in text.split("---") if p.strip()]
 
     def split_documents(self, documents: list[Document]) -> list[Document]:
         result = []
         for doc in documents:
-            for i, parte in enumerate(self.split_text(doc.page_content)):
+            for i, part in enumerate(self.split_text(doc.page_content)):
                 result.append(Document(
-                    page_content=parte,
+                    page_content=part,
                     metadata={
-                        # COMPLETA: copia metadata del padre y añade chunk_index
+                        # COMPLETE: copy parent metadata and add chunk_index
                     },
                 ))
         return result
@@ -309,26 +309,26 @@ class ClauseSplitter(TextSplitter):
         return [c.page_content for c in self._split_to_docs(text)]
 
     def _split_to_docs(self, text: str) -> list[Document]:
-        # ... regex correcto, 13 Document con clausula_id, titulo, tipo ...
+        # ... correct regex, 13 Documents with clause_id, title, type ...
         return docs
 
-# Uso en el pipeline:
-loader = TextLoader("contrato_muestra.txt")
-docs = loader.load()  # docs[0].metadata == {"source": "contrato_muestra.txt"}
+# Usage in the pipeline:
+loader = TextLoader("sample_contract.txt")
+docs = loader.load()  # docs[0].metadata == {"source": "sample_contract.txt"}
 
-splitter = ClauseSplitter(contract_id="CSP-2024-0087", fecha="2024-01-15")
+splitter = ClauseSplitter(contract_id="CSP-2024-0087", date="2024-01-15")
 chunks = []
 for doc in docs:
-    for texto in splitter.split_text(doc.page_content):
-        chunks.append(Document(page_content=texto, metadata=splitter._last_meta))
+    for text in splitter.split_text(doc.page_content):
+        chunks.append(Document(page_content=text, metadata=splitter._last_meta))
 vectordb.add_documents(chunks)
 ```
 
-`_last_meta` only contains `clausula_id`, `titulo`, `tipo`, `contrato`, `fecha` — it never copies `source` from the loader.
+`_last_meta` only contains `clause_id`, `title`, `type`, `contract`, `date` — it never copies `source` from the loader.
 
 What is the bug and the minimal fix?
 
 a) The bug is in `TextLoader`; you must use `PyPDFLoader` instead.
 b) The bug is not calling `split_documents()`; the fix is `chunks = splitter.split_documents(docs)` which propagates `source` from the parent.
 c) The bug is `chunk_size` too small; it must be raised to 2000.
-d) The bug is the regex; `re.MULTILINE` is missing from `_PATRON`.
+d) The bug is the regex; `re.MULTILINE` is missing from `_PATTERN`.

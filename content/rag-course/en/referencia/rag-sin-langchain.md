@@ -4,9 +4,9 @@
 >
 > **Audience:** Python programmers who have already completed layer ② (`01-fundamentos/lab/solucion_scratch.py`) and want to be a **full AI engineer**, not only a `lang*` expert.
 >
-> **Reference query throughout this document:** `¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?`
+> **Reference query throughout this document:** `How many vacation days am I entitled to if I have been at the company for 3 years?`
 >
-> **Expected answer (per §3 of the policies):** 18 días hábiles de vacaciones.
+> **Expected answer (per §3 of the policies):** 18 business days of vacation.
 
 ---
 
@@ -38,7 +38,7 @@ This table maps **each function** from [`solucion_scratch.py`](../01-fundamentos
 | `embed(texto)` — bag-of-words → `dict` | `OpenAIEmbeddings` | `Settings.embed_model` / `OpenAIEmbedding` | `SentenceTransformer.encode()` or embeddings API | `SentenceTransformersDocumentEmbedder` |
 | `chunks` list in memory | `Chroma.from_documents(...)` | `VectorStoreIndex.from_documents(...)` | `collection.upsert(...)` | `document_store.write_documents(...)` |
 | `similitud_coseno()` + `sort` | `as_retriever(search_kwargs={"k": 3})` | `as_query_engine(similarity_top_k=3)` / `as_retriever` | `collection.query(n_results=3)` | `InMemoryEmbeddingRetriever` |
-| `recuperar()` → `(índice, sim, texto)` | `retriever.invoke(query)` → `list[Document]` | `retriever.retrieve(query)` → `list[NodeWithScore]` | `resultados["documents"]` + `distances` | `retriever.run(query=...)` → `documents` |
+| `recuperar()` → `(index, sim, text)` | `retriever.invoke(query)` → `list[Document]` | `retriever.retrieve(query)` → `list[NodeWithScore]` | `resultados["documents"]` + `distances` | `retriever.run(query=...)` → `documents` |
 | `construir_prompt()` — f-string | `ChatPromptTemplate` | `PromptTemplate` + `text_qa_template` | f-string / manual `str.format` | `PromptBuilder` (Jinja2 template) |
 | (no LLM in scratch) | `ChatOpenAI` / `ChatAnthropic` | `Settings.llm` / `Anthropic` | `anthropic.Anthropic().messages.create(...)` | `OpenAIGenerator` / `AnthropicChatGenerator` |
 | `main()` orchestrating | LCEL chain with `\|` | `query_engine.query(...)` | Sequential `responder(query)` function | `Pipeline.run(...)` |
@@ -97,13 +97,13 @@ LlamaIndex uses `Document` with the **`text`** field (not `page_content` like La
 from llama_index.core import Document
 
 doc = Document(
-    text="POLÍTICA DE VACACIONES §3 — Acumulación y disfrute\nLos empleados...",
-    metadata={"source": "datos/politicas_rrhh.txt", "seccion": "§3"},
+    text="VACATION POLICY §3 — Accrual and use\nEmployees...",
+    metadata={"source": "data/hr_policies.txt", "section": "§3"},
 )
 ```
 
 - **`text`:** the fragment content (equivalent to each string in your scratch `chunks` list).
-- **`metadata`:** tags for later filters (M4). In HR you could add `{"tipo": "vacaciones"}`.
+- **`metadata`:** tags for later filters (M4). In HR you could add `{"type": "vacation"}`.
 
 Indexes **consume** `list[Document]` and convert them internally into **nodes** (`TextNode`) with embeddings.
 
@@ -183,11 +183,11 @@ from llama_index.core import PromptTemplate
 
 # Template equivalent to construir_prompt() from scratch
 QA_TEMPLATE = PromptTemplate(
-    "Eres el asistente de RRHH de la empresa. "
-    "Responde ÚNICAMENTE basándote en los fragmentos de política proporcionados.\n\n"
-    "Fragmentos relevantes:\n{context_str}\n\n"
-    "Pregunta del empleado: {query_str}\n\n"
-    "Responde en markdown con lenguaje claro y sencillo."
+    "You are the company's HR assistant. "
+    "Answer ONLY based on the provided policy fragments.\n\n"
+    "Relevant fragments:\n{context_str}\n\n"
+    "Employee question: {query_str}\n\n"
+    "Answer in markdown with clear and simple language."
 )
 
 query_engine = index.as_query_engine(
@@ -196,7 +196,7 @@ query_engine = index.as_query_engine(
 )
 
 response = query_engine.query(
-    "¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?"
+    "How many vacation days am I entitled to if I have been at the company for 3 years?"
 )
 print(response.response)   # final LLM text
 # response.source_nodes     # retrieved nodes (for inspection / citations)
@@ -208,7 +208,7 @@ print(response.response)   # final LLM text
 | `text_qa_template` | Template with `{context_str}` and `{query_str}` | `construir_prompt()` |
 | `response_mode` | `"compact"`, `"tree_summarize"`, etc. | How it condenses long context (default `"compact"` is enough for HR) |
 
-**Important prediction:** with real semantic embeddings, §3 ("Después de 3 años… 18 días") usually ranks **first** — not §4 as in scratch bag-of-words. The mechanism is identical; vector quality changes.
+**Important prediction:** with real semantic embeddings, §3 ("After 3 years… 18 days") usually ranks **first** — not §4 as in scratch bag-of-words. The mechanism is identical; vector quality changes.
 
 ### 1.7 `as_retriever` — retrieve only, no generation
 
@@ -218,7 +218,7 @@ If you want to **control the prompt yourself** (as in LangChain LCEL), use the r
 retriever = index.as_retriever(similarity_top_k=3)
 
 nodos = retriever.retrieve(
-    "¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?"
+    "How many vacation days am I entitled to if I have been at the company for 3 years?"
 )
 # nodos: list[NodeWithScore]
 # nodos[0].text          → chunk text
@@ -267,11 +267,11 @@ index = VectorStoreIndex.from_documents(
 
 ```python
 # Requiere: pip install llama-index llama-index-embeddings-openai llama-index-llms-anthropic
-# Opcional Chroma: pip install llama-index-vector-stores-chroma chromadb
-# Este archivo es ILUSTRATIVO — no se ejecuta en el entorno de desarrollo sin red.
+# Optional Chroma: pip install llama-index-vector-stores-chroma chromadb
+# This file is ILLUSTRATIVE — it does not run in the development environment without network.
 #
-# Mismo pipeline que solucion_scratch.py y solucion_framework.py (LangChain),
-# pero con LlamaIndex. Query de prueba al final.
+# Same pipeline as solucion_scratch.py and solucion_framework.py (LangChain),
+# but with LlamaIndex. Test query at the end.
 
 import re
 from pathlib import Path
@@ -281,51 +281,51 @@ from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.anthropic import Anthropic
 
 # ---------------------------------------------------------------------------
-# CONFIGURACIÓN GLOBAL (reemplaza ServiceContext — eliminado en LlamaIndex 0.11)
+# GLOBAL CONFIGURATION (replaces ServiceContext — removed in LlamaIndex 0.11)
 # ---------------------------------------------------------------------------
 Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
 Settings.llm = Anthropic(model="claude-opus-4-8", temperature=0.2)
 
 # ---------------------------------------------------------------------------
-# BLOQUE 1 — CARGAR Y TROCEAR (≈ cargar_chunks del scratch)
+# BLOCK 1 — LOAD AND CHUNK (≈ cargar_chunks from scratch)
 # ---------------------------------------------------------------------------
-ruta = Path("datos/politicas_rrhh.txt")
+ruta = Path("data/hr_policies.txt")
 contenido = ruta.read_text(encoding="utf-8")
 fragmentos = [p.strip() for p in re.split(r"\n---\n", contenido) if p.strip()]
-# fragmentos: 8 strings — uno por política
+# fragmentos: 8 strings — one per policy
 
 documentos = [
     Document(text=texto, metadata={"source": str(ruta), "chunk_id": i})
     for i, texto in enumerate(fragmentos)
 ]
-print(f"Total de documentos: {len(documentos)}")  # Esperado: 8
+print(f"Total documents: {len(documentos)}")  # Expected: 8
 
 # ---------------------------------------------------------------------------
-# BLOQUE 2 — ÍNDICE VECTORIAL (≈ embed + store del scratch)
+# BLOCK 2 — VECTOR INDEX (≈ embed + store from scratch)
 # ---------------------------------------------------------------------------
 index = VectorStoreIndex.from_documents(documentos, show_progress=True)
 
 # ---------------------------------------------------------------------------
-# BLOQUE 3 — RETRIEVER (inspección — ≈ recuperar del scratch)
+# BLOCK 3 — RETRIEVER (inspection — ≈ recuperar from scratch)
 # ---------------------------------------------------------------------------
 retriever = index.as_retriever(similarity_top_k=3)
-query = "¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?"
+query = "How many vacation days am I entitled to if I have been at the company for 3 years?"
 
 nodos = retriever.retrieve(query)
-print("\nTOP-3 NODOS RECUPERADOS:")
+print("\nTOP-3 RETRIEVED NODES:")
 for i, nodo in enumerate(nodos):
     print(f"  [{i+1}] score={nodo.score:.4f} | {nodo.text[:80].replace(chr(10), ' ')}...")
 
 # ---------------------------------------------------------------------------
-# BLOQUE 4 — QUERY ENGINE (≈ construir_prompt + LLM del scratch)
+# BLOCK 4 — QUERY ENGINE (≈ construir_prompt + LLM from scratch)
 # ---------------------------------------------------------------------------
 qa_template = PromptTemplate(
-    "Eres el asistente de RRHH de la empresa. "
-    "Responde ÚNICAMENTE basándote en los fragmentos de política proporcionados. "
-    "Si la información no está en los fragmentos, dilo explícitamente.\n\n"
-    "Fragmentos relevantes:\n{context_str}\n\n"
-    "Pregunta del empleado: {query_str}\n\n"
-    "Responde en markdown con lenguaje claro y sencillo."
+    "You are the company's HR assistant. "
+    "Answer ONLY based on the provided policy fragments. "
+    "If the information is not in the fragments, state so explicitly.\n\n"
+    "Relevant fragments:\n{context_str}\n\n"
+    "Employee question: {query_str}\n\n"
+    "Answer in markdown with clear and simple language."
 )
 
 query_engine = index.as_query_engine(
@@ -334,12 +334,12 @@ query_engine = index.as_query_engine(
 )
 
 # ---------------------------------------------------------------------------
-# BLOQUE 5 — EJECUTAR
+# BLOCK 5 — RUN
 # ---------------------------------------------------------------------------
 # response = query_engine.query(query)
-# print("\nRespuesta del LLM:")
+# print("\nLLM Response:")
 # print(response.response)
-print("\n(requiere ANTHROPIC_API_KEY y OPENAI_API_KEY — descomenta las líneas anteriores)")
+print("\n(requires ANTHROPIC_API_KEY and OPENAI_API_KEY — uncomment the lines above)")
 ```
 
 ### 1.10 Block-by-block walkthrough
@@ -473,7 +473,7 @@ collection = client.get_or_create_collection(
 from sentence_transformers import SentenceTransformer
 
 modelo = SentenceTransformer("BAAI/bge-base-en-v1.5")
-vec = modelo.encode("¿Cuántos días de vacaciones?", normalize_embeddings=True)
+vec = modelo.encode("How many vacation days?", normalize_embeddings=True)
 # vec: ndarray of 768 floats — not a bag-of-words dict
 ```
 
@@ -494,7 +494,7 @@ collection.upsert(
 #### Retrieve (online phase)
 
 ```python
-query = "¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?"
+query = "How many vacation days am I entitled to if I have been at the company for 3 years?"
 query_vec = modelo.encode([query], normalize_embeddings=True).tolist()
 
 resultados = collection.query(
@@ -517,7 +517,7 @@ mensaje = client.messages.create(
     model="claude-opus-4-8",
     max_tokens=1024,
     temperature=0.2,
-    system="Eres el asistente de RRHH. Responde SOLO con los fragmentos dados.",
+    system="You are the HR assistant. Answer ONLY with the given fragments.",
     messages=[{"role": "user", "content": prompt_aumentado}],
 )
 respuesta = mensaje.content[0].text
@@ -529,10 +529,10 @@ respuesta = mensaje.content[0].text
 
 ```python
 # Requiere: pip install chromadb sentence-transformers anthropic
-# Este archivo es ILUSTRATIVO — no se ejecuta en el entorno de desarrollo sin red.
+# This file is ILLUSTRATIVE — it does not run in the development environment without network.
 #
-# RAG sin lang*: stdlib + chromadb + sentence-transformers + anthropic SDK.
-# Mismo caso RRHH, misma query que solucion_scratch.py.
+# RAG without lang*: stdlib + chromadb + sentence-transformers + anthropic SDK.
+# Same HR case, same query as solucion_scratch.py.
 
 import re
 from pathlib import Path
@@ -542,19 +542,19 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 
 # ---------------------------------------------------------------------------
-# BLOQUE 1 — CARGAR Y TROCEAR (stdlib — idéntico al scratch)
+# BLOCK 1 — LOAD AND CHUNK (stdlib — identical to scratch)
 # ---------------------------------------------------------------------------
 def cargar_chunks(ruta: str) -> list[str]:
     contenido = Path(ruta).read_text(encoding="utf-8")
     partes = re.split(r"\n---\n", contenido)
     return [p.strip() for p in partes if p.strip()]
 
-RUTA_DATOS = "datos/politicas_rrhh.txt"
+RUTA_DATOS = "data/hr_policies.txt"
 fragmentos = cargar_chunks(RUTA_DATOS)
-print(f"Total de chunks: {len(fragmentos)}")  # Esperado: 8
+print(f"Total chunks: {len(fragmentos)}")  # Expected: 8
 
 # ---------------------------------------------------------------------------
-# BLOQUE 2 — EMBEDDINGS + CHROMA (≈ embed + store del scratch)
+# BLOCK 2 — EMBEDDINGS + CHROMA (≈ embed + store from scratch)
 # ---------------------------------------------------------------------------
 modelo = SentenceTransformer("BAAI/bge-base-en-v1.5")
 
@@ -574,7 +574,7 @@ collection.upsert(
 )
 
 # ---------------------------------------------------------------------------
-# BLOQUE 3 — RECUPERAR TOP-3 (≈ recuperar del scratch)
+# BLOCK 3 — RETRIEVE TOP-3 (≈ recuperar from scratch)
 # ---------------------------------------------------------------------------
 def recuperar(query: str, k: int = 3) -> list[tuple[float, str]]:
     query_vec = modelo.encode([query], normalize_embeddings=True).tolist()
@@ -588,22 +588,22 @@ def recuperar(query: str, k: int = 3) -> list[tuple[float, str]]:
     return list(zip(dists, docs))
 
 # ---------------------------------------------------------------------------
-# BLOQUE 4 — PROMPT AUMENTADO (≈ construir_prompt del scratch)
+# BLOCK 4 — AUGMENTED PROMPT (≈ construir_prompt from scratch)
 # ---------------------------------------------------------------------------
 def construir_prompt(query: str, resultados: list[tuple[float, str]]) -> str:
     lineas = [f"[{i+1}] {texto}" for i, (_, texto) in enumerate(resultados)]
     contexto = "\n\n".join(lineas)
     return (
-        "Eres el asistente de RRHH de la empresa. "
-        "Responde ÚNICAMENTE basándote en los fragmentos de política proporcionados. "
-        "Si la información no está en los fragmentos, dilo explícitamente.\n\n"
-        f"Fragmentos relevantes:\n{contexto}\n\n"
-        f"Pregunta del empleado: {query}\n\n"
-        "Responde en markdown con lenguaje claro y sencillo."
+        "You are the company's HR assistant. "
+        "Answer ONLY based on the provided policy fragments. "
+        "If the information is not in the fragments, state so explicitly.\n\n"
+        f"Relevant fragments:\n{contexto}\n\n"
+        f"Employee question: {query}\n\n"
+        "Answer in markdown with clear and simple language."
     )
 
 # ---------------------------------------------------------------------------
-# BLOQUE 5 — LLM + ORQUESTACIÓN (≈ main del scratch, con LLM real)
+# BLOCK 5 — LLM + ORCHESTRATION (≈ main from scratch, with real LLM)
 # ---------------------------------------------------------------------------
 def responder(query: str, k: int = 3) -> str:
     resultados = recuperar(query, k=k)
@@ -618,22 +618,22 @@ def responder(query: str, k: int = 3) -> str:
     return mensaje.content[0].text
 
 # ---------------------------------------------------------------------------
-# BLOQUE 6 — EJECUTAR
+# BLOCK 6 — RUN
 # ---------------------------------------------------------------------------
-QUERY = "¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?"
+QUERY = "How many vacation days am I entitled to if I have been at the company for 3 years?"
 
 resultados = recuperar(QUERY, k=3)
-print("\nTOP-3 CHUNKS RECUPERADOS:")
+print("\nTOP-3 RETRIEVED CHUNKS:")
 for i, (dist, texto) in enumerate(resultados, start=1):
     print(f"  [{i}] distancia={dist:.4f} | {texto[:80].replace(chr(10), ' ')}...")
 
-print("\nPROMPT AUMENTADO:")
+print("\nAUGMENTED PROMPT:")
 print(construir_prompt(QUERY, resultados))
 
 # respuesta = responder(QUERY)
-# print("\nRespuesta del LLM:")
+# print("\nLLM Response:")
 # print(respuesta)
-print("\n(requiere ANTHROPIC_API_KEY — descomenta las líneas anteriores)")
+print("\n(requires ANTHROPIC_API_KEY — uncomment the lines above)")
 ```
 
 ### 2.5 Block-by-block walkthrough
@@ -750,8 +750,8 @@ pipeline.run({...})  → each component receives typed inputs and produces typed
 from haystack import Document
 
 doc = Document(
-    content="POLÍTICA DE VACACIONES §3 — Acumulación y disfrute\n...",
-    meta={"source": "politicas_rrhh.txt", "chunk_id": 0},
+    content="VACATION POLICY §3 — Accrual and use\n...",
+    meta={"source": "hr_policies.txt", "chunk_id": 0},
 )
 ```
 
@@ -765,7 +765,7 @@ from haystack.components.retrievers.in_memory import InMemoryEmbeddingRetriever
 
 pipeline = Pipeline()
 pipeline.add_component("retriever", retriever)
-pipeline.add_component("prompt_builder", PromptBuilder(template=mi_plantilla))
+pipeline.add_component("prompt_builder", PromptBuilder(template=my_template))
 pipeline.add_component("llm", OpenAIGenerator(model="gpt-4o-mini"))
 
 # Explicit connection: retriever output → prompt builder input
@@ -782,20 +782,20 @@ pipeline.connect("prompt_builder", "llm")
 ```python
 from haystack.components.builders import PromptBuilder
 
-plantilla = """
-Eres el asistente de RRHH. Responde SOLO con los fragmentos dados.
+template = """
+You are the HR assistant. Answer ONLY with the given fragments.
 
-Fragmentos relevantes:
+Relevant fragments:
 {% for doc in documents %}
 [{{ loop.index }}] {{ doc.content }}
 {% endfor %}
 
-Pregunta del empleado: {{ query }}
+Employee question: {{ query }}
 
-Responde en markdown con lenguaje claro y sencillo.
+Answer in markdown with clear and simple language.
 """
 
-prompt_builder = PromptBuilder(template=plantilla)
+prompt_builder = PromptBuilder(template=template)
 ```
 
 > **Haystack 2.x also offers `ChatPromptBuilder`** for chat models with system/user messages. For this workshop we use `PromptBuilder` + `OpenAIGenerator` because it is the most direct pair to map scratch `construir_prompt()`. In production with Claude/GPT-4o, many teams migrate to `ChatPromptBuilder` + `AnthropicChatGenerator`.
@@ -804,10 +804,10 @@ prompt_builder = PromptBuilder(template=plantilla)
 
 ```python
 # Requiere: pip install haystack-ai sentence-transformers
-# Este archivo es ILUSTRATIVO — no se ejecuta en el entorno de desarrollo sin red.
+# This file is ILLUSTRATIVE — it does not run in the development environment without network.
 #
-# RAG con Haystack 2.x — mismo caso RRHH que solucion_scratch.py.
-# Pipeline: indexación offline → Retriever + PromptBuilder + Generator.
+# RAG with Haystack 2.x — same HR case as solucion_scratch.py.
+# Pipeline: offline indexing → Retriever + PromptBuilder + Generator.
 
 import re
 from pathlib import Path
@@ -824,9 +824,9 @@ from haystack.components.generators import OpenAIGenerator
 from haystack.utils import Secret
 
 # ---------------------------------------------------------------------------
-# BLOQUE 1 — CARGAR Y TROCEAR (≈ cargar_chunks del scratch)
+# BLOCK 1 — LOAD AND CHUNK (≈ cargar_chunks from scratch)
 # ---------------------------------------------------------------------------
-ruta = Path("datos/politicas_rrhh.txt")
+ruta = Path("data/hr_policies.txt")
 contenido = ruta.read_text(encoding="utf-8")
 fragmentos = [p.strip() for p in re.split(r"\n---\n", contenido) if p.strip()]
 
@@ -834,10 +834,10 @@ documentos = [
     Document(content=texto, meta={"source": str(ruta), "chunk_id": i})
     for i, texto in enumerate(fragmentos)
 ]
-print(f"Total de documentos: {len(documentos)}")  # Esperado: 8
+print(f"Total documents: {len(documentos)}")  # Expected: 8
 
 # ---------------------------------------------------------------------------
-# BLOQUE 2 — DOCUMENT STORE + EMBEDDINGS (≈ embed + store del scratch)
+# BLOCK 2 — DOCUMENT STORE + EMBEDDINGS (≈ embed + store from scratch)
 # ---------------------------------------------------------------------------
 document_store = InMemoryDocumentStore()
 
@@ -846,12 +846,12 @@ doc_embedder = SentenceTransformersDocumentEmbedder(
 )
 doc_embedder.warm_up()
 
-# Embedder calcula vectores y los adjunta a los Document
+# Embedder computes vectors and attaches them to the Documents
 docs_con_embeddings = doc_embedder.run(documents=documentos)["documents"]
 document_store.write_documents(docs_con_embeddings)
 
 # ---------------------------------------------------------------------------
-# BLOQUE 3 — COMPONENTES DEL PIPELINE RAG
+# BLOCK 3 — RAG PIPELINE COMPONENTS
 # ---------------------------------------------------------------------------
 text_embedder = SentenceTransformersTextEmbedder(
     model="BAAI/bge-base-en-v1.5",
@@ -861,16 +861,16 @@ text_embedder.warm_up()
 retriever = InMemoryEmbeddingRetriever(document_store=document_store, top_k=3)
 
 plantilla = """
-Eres el asistente de RRHH de la empresa. Responde ÚNICAMENTE basándote en los fragmentos de política proporcionados. Si la información no está en los fragmentos, dilo explícitamente.
+You are the company's HR assistant. Answer ONLY based on the provided policy fragments. If the information is not in the fragments, state so explicitly.
 
-Fragmentos relevantes:
+Relevant fragments:
 {% for doc in documents %}
 [{{ loop.index }}] {{ doc.content }}
 {% endfor %}
 
-Pregunta del empleado: {{ query }}
+Employee question: {{ query }}
 
-Responde en markdown con lenguaje claro y sencillo.
+Answer in markdown with clear and simple language.
 """
 
 prompt_builder = PromptBuilder(template=plantilla)
@@ -881,7 +881,7 @@ llm = OpenAIGenerator(
 )
 
 # ---------------------------------------------------------------------------
-# BLOQUE 4 — ENSAMBLAR PIPELINE (Retriever → PromptBuilder → Generator)
+# BLOCK 4 — ASSEMBLE PIPELINE (Retriever → PromptBuilder → Generator)
 # ---------------------------------------------------------------------------
 rag_pipeline = Pipeline()
 rag_pipeline.add_component("text_embedder", text_embedder)
@@ -894,28 +894,28 @@ rag_pipeline.connect("retriever.documents", "prompt_builder.documents")
 rag_pipeline.connect("prompt_builder", "llm")
 
 # ---------------------------------------------------------------------------
-# BLOQUE 5 — EJECUTAR
+# BLOCK 5 — RUN
 # ---------------------------------------------------------------------------
-QUERY = "¿Cuántos días de vacaciones me corresponden si llevo 3 años en la empresa?"
+QUERY = "How many vacation days am I entitled to if I have been at the company for 3 years?"
 
-# Solo recuperación (inspección — ≈ recuperar del scratch):
+# Retrieval only (inspection — ≈ recuperar from scratch):
 embedding_result = text_embedder.run(text=QUERY)
 docs_recuperados = retriever.run(
     query_embedding=embedding_result["embedding"],
 )["documents"]
 
-print("\nTOP-3 DOCUMENTOS RECUPERADOS:")
+print("\nTOP-3 RETRIEVED DOCUMENTS:")
 for i, doc in enumerate(docs_recuperados):
     print(f"  [{i+1}] {doc.content[:80].replace(chr(10), ' ')}...")
 
-# Pipeline completo (descomentar con OPENAI_API_KEY):
+# Full pipeline (uncomment with OPENAI_API_KEY):
 # result = rag_pipeline.run({
 #     "text_embedder": {"text": QUERY},
 #     "prompt_builder": {"query": QUERY},
 # })
-# print("\nRespuesta del LLM:")
+# print("\nLLM Response:")
 # print(result["llm"]["replies"][0])
-print("\n(requiere OPENAI_API_KEY — descomenta las líneas anteriores)")
+print("\n(requires OPENAI_API_KEY — uncomment the lines above)")
 ```
 
 ### 3.5 Block-by-block walkthrough
@@ -1025,7 +1025,7 @@ Do you need stateful agents, HITL, fan-out?
 
 ```
                     ┌─────────────────────────────────────┐
-                    │  politicas_rrhh.txt (8 fragments)   │
+                    │  hr_policies.txt (8 fragments)   │
                     └──────────────────┬──────────────────┘
                                        │
            ┌───────────┬───────────────┼───────────────┬───────────────┐
@@ -1039,11 +1039,11 @@ Do you need stateful agents, HITL, fan-out?
                                        │                               │
                                        ▼                               │
                     ┌─────────────────────────────────────┐          │
-                    │  top-3 chunks on "vacaciones 3      │          │
-                    │  años" → augmented prompt → LLM     │          │
+                    │  top-3 chunks on "vacation 3        │          │
+                    │  years" → augmented prompt → LLM     │          │
                     └──────────────────┬──────────────────┘          │
                                        ▼                               │
-                    "Tienes derecho a 18 días hábiles..."  ◀───────────┘
+                    "You are entitled to 18 business days..."  ◀───────────┘
 ```
 
 ---

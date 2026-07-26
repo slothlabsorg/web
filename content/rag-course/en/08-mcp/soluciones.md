@@ -150,7 +150,7 @@ HTTP `tool.service` would work, but you would lose dynamic discovery and portabi
 
 **(b)** `required`: `["fare_class", "route_type"]` — `query` has a default, not required.
 
-**(c)** From the function **docstring**: `"Consulta penalidades por tarifa y ruta."`
+**(c)** From the function **docstring**: `"Query penalties by fare and route."`
 
 ---
 

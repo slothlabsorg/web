@@ -6,18 +6,18 @@
 
 ## Exercise 14 · BM25
 
-**(a) IDF of "inspección" and "tren"**
+**(a) IDF of "inspection" and "gear"**
 
 Both terms appear in 3 of the 4 documents (doc_1, doc_2, doc_4). n_t = 3, N = 4:
 
 ```
-IDF("inspección") = log((4 - 3 + 0.5) / (3 + 0.5) + 1)
+IDF("inspection") = log((4 - 3 + 0.5) / (3 + 0.5) + 1)
                   = log(1.5 / 3.5 + 1)
                   = log(0.4286 + 1)
                   = log(1.4286)
                   ≈ 0.357
 
-IDF("tren") = same calculation ≈ 0.357
+IDF("gear") = same calculation ≈ 0.357
 ```
 
 The low IDF (0.357) reflects that both terms are common in this corpus. If there were a rarer term (like "34-11-00"), its IDF would be much higher and weigh more in the score.
@@ -27,10 +27,10 @@ The low IDF (0.357) reflects that both terms are common in this corpus. If there
 From most to least relevant: **doc_1 > doc_4 > doc_2 > doc_3**
 
 Reasoning:
-- doc_3 ("cambio de aceite del motor"): contains neither term → score 0. Last for certain.
-- doc_1 ("inspección del tren de aterrizaje principal"): contains both terms, short length (5 tokens ≈ avgdl) → good normalization.
-- doc_4 ("inspección de frenos y tren de aterrizaje"): contains both, medium length (6 tokens, slightly above avgdl).
-- doc_2 ("tren de aterrizaje principal: procedimiento de inspección detallado"): contains both but is longest (7 tokens > avgdl) → penalized by length.
+- doc_3 ("engine oil change"): contains neither term → score 0. Last for certain.
+- doc_1 ("main landing gear inspection"): contains both terms, short length (5 tokens ≈ avgdl) → good normalization.
+- doc_4 ("brake and landing gear inspection"): contains both, medium length (6 tokens, slightly above avgdl).
+- doc_2 ("main landing gear: detailed inspection procedure"): contains both but is longest (7 tokens > avgdl) → penalized by length.
 
 **(c) Why doc_2 may not be most relevant**
 
@@ -135,7 +135,7 @@ The correct choice is **local BGE-reranker** with active latency monitoring, and
 
 **Correct answer: B**
 
-The bi-encoder encodes the query without seeing the document and vice versa. The vector for "límite de torque del actuador" is the same regardless of which documents are in the corpus. The cross-encoder sees BOTH together and can detect that "torque del tren de morro" is more specific than "torque del tren principal" for that particular query. This contextual interaction is what gives the precision improvement.
+The bi-encoder encodes the query without seeing the document and vice versa. The vector for "actuator torque limit" is the same regardless of which documents are in the corpus. The cross-encoder sees BOTH together and can detect that "nose gear torque" is more specific than "main gear torque" for that particular query. This contextual interaction is what gives the precision improvement.
 
 - A is incorrect: the cross-encoder is slower, not faster.
 - C is incorrect: the cross-encoder is impractical for large corpora (does not scale).
@@ -146,8 +146,8 @@ The bi-encoder encodes the query without seeing the document and vice versa. The
 **Without hardFilter:**
 ```
 System returns: chunk_A, chunk_B, chunk_C (all three, ordered by similarity)
-LLM may use chunk_C (PPO-Platinum: "aprobación automática")
-Likely answer: "Se aprueba automáticamente"
+LLM may use chunk_C (PPO-Platinum: "automatic approval")
+Likely answer: "It is automatically approved"
 Consequence: PPO-Basic patient receives approval they are not entitled to → 
               insurance fraud + regulatory risk
 ```
@@ -156,8 +156,8 @@ Consequence: PPO-Basic patient receives approval they are not entitled to →
 ```
 WHERE plan = 'PPO-Basic' before search
 System returns: only chunk_A
-LLM uses chunk_A: "diagnóstico M23.x, 4 semanas tratamiento conservador"
-Answer: "Se aprueba si M23.2 confirmado y 4 semanas de tratamiento conservador"
+LLM uses chunk_A: "diagnosis M23.x, 4 weeks conservative treatment"
+Answer: "Approved if M23.2 confirmed and 4 weeks of conservative treatment"
 Consequence: correct by design
 ```
 
@@ -173,42 +173,42 @@ The `feedbackRef` field points to an `observability.feedback` store where user `
 
 | Query | Index | Keyword/Intent |
 |-------|--------|----------------|
-| "¿Puedo cambiar mi vuelo con tarifa Basic?" | tarifas | keyword "tarifa" + keyword "cambio" (but "tarifa" is more specific) |
-| "¿Cómo proceso un rebooking de grupo de más de 10 pasajeros?" | procedimientos | keyword "proceso", "rebooking" → intent: operational procedure |
-| "¿Qué dice la regulación sobre reembolsos por vuelo cancelado?" | regulaciones | keyword "regulación" |
-| "Necesito cambiar la fecha a un cliente Business, ¿qué pasos sigo?" | procedimientos | keyword "pasos", "cómo" → intent: step-by-step guide |
-| "¿Hay algún límite legal para el equipaje de mano?" | regulaciones | keyword "legal", "límite" → intent: regulatory |
+| "Can I change my flight with a Basic fare?" | fares | keyword "fare" + keyword "change" (but "fare" is more specific) |
+| "How do I process a group rebooking for more than 10 passengers?" | procedures | keyword "process", "rebooking" → intent: operational procedure |
+| "What does the regulation say about refunds for canceled flights?" | regulations | keyword "regulation" |
+| "I need to change the date for a Business customer, what steps do I follow?" | procedures | keyword "steps", "how" → intent: step-by-step guide |
+| "Is there a legal limit for carry-on baggage?" | regulations | keyword "legal", "limit" → intent: regulatory |
 
-Note: query 1 could route to "tarifas" or "procedimientos" depending on design. The most specific keyword is "tarifa", so "tarifas" is the best choice. If the router detects both keywords ("tarifa" and "cambio"), it should prioritize the more specific one or have a precedence rule.
+Note: query 1 could route to "fares" or "procedures" depending on design. The most specific keyword is "fare", so "fares" is the best choice. If the router detects both keywords ("fare" and "change"), it should prioritize the more specific one or have a precedence rule.
 
 **(b) Risk without query rewriting**
 
 **Correct answer: D** — both risks are real.
 
-"cosita de lítio" has a very different embedding from "batería de litio portátil" — it probably resembles "objeto extraño" or "cosa de plástico" more. The vector store will return incorrect results.
+"lithium thingy" has a very different embedding from "portable lithium battery" — it probably resembles "strange object" or "plastic thing" more. The vector store will return incorrect results.
 
-Also, the keyword-based router will not find any known keyword in "cosita de lítio" and may fall back or route incorrectly.
+Also, the keyword-based router will not find any known keyword in "lithium thingy" and may fall back or route incorrectly.
 
-The query rewriter, with its corporate glossary, would convert "cosita de lítio" → "batería de litio portátil equipaje cabina" before any search.
+The query rewriter, with its corporate glossary, would convert "lithium thingy" → "portable lithium battery cabin baggage" before any search.
 
 **(c) query.intent Decision port**
 
 **Correct answer: B**
 
-The `Decision` port lets you build a graph that branches by intent: if `intent == no_accionable`, a branch ends the flow without invoking RAG (avoiding unnecessary latency and cost). If intent is actionable, it continues to the retrieval pipeline. The `Query` port is the query (possibly modified with the intent label) for the next step.
+The `Decision` port lets you build a graph that branches by intent: if `intent == non_actionable`, a branch ends the flow without invoking RAG (avoiding unnecessary latency and cost). If intent is actionable, it continues to the retrieval pipeline. The `Query` port is the query (possibly modified with the intent label) for the next step.
 
 **(d) Router bug**
 
-The test output is `"tarifas"` for the query `"¿cuál es la tarifa de cambio de vuelo?"`.
+The test output is `"fares"` for the query `"what is the fare for a flight change?"`.
 
-The problem: keyword `"tari"` (prefix of "tarifa") matches first in the list before "cambio". The query contains "tarifa de **cambio** de vuelo" — it should route to "procedimientos" for "cambio", but "tari" matches first.
+The problem: keyword `"far"` (prefix of "fare") matches first in the list before "change". The query contains "fare for a flight **change**" — it should route to "procedures" for "change", but "far" matches first.
 
 There are two fix approaches:
 1. **Sort by specificity:** put longer/more specific keywords first.
-2. **Remove unnecessary prefixes:** if you already have "tarifa", you do not need "tari".
+2. **Remove unnecessary prefixes:** if you already have "fare", you do not need "far".
 3. **Precedence logic:** count how many keywords from each index appear and use the majority.
 
-Minimal fix: remove the `"tari"` rule (redundant with `"tarifa"`) and sort keywords by descending length.
+Minimal fix: remove the `"far"` rule (redundant with `"fare"`) and sort keywords by descending length.
 
 **(e) Embeddings vs LLM for intent classification**
 
@@ -237,11 +237,11 @@ Starting point (vector search):
   → finds [AD-2024-0023] (directive node)
 
 Hop 1 (follow outgoing relations):
-  AD-2024-0023 -[:AFECTA_A]-> SB-2023-32-001
+  AD-2024-0023 -[:AFFECTS]-> SB-2023-32-001
 
 Hop 2 (follow outgoing relations from hop 1):
-  SB-2023-32-001 -[:REQUIERE]-> Task-32-11-001
-  Task-32-11-001 -[:ES_PREREQUISITO_DE]-> Task-07-11-001
+  SB-2023-32-001 -[:REQUIRES]-> Task-32-11-001
+  Task-32-11-001 -[:IS_PREREQUISITE_OF]-> Task-07-11-001
 
 Returned nodes:
   [AD-2024-0023, SB-2023-32-001, Task-32-11-001, Task-07-11-001]
@@ -258,9 +258,9 @@ With `hops: 1` it would only return AD-2024-0023 and SB-2023-32-001, missing the
 
 | Question | Strategy | Justification |
 |---------|-----------|---------------|
-| "¿Qué contratos con cláusula de indemnización ilimitada hemos firmado con proveedores de IT?" | Vector RAG + hard filters (tipo_proveedor=IT, tipo_clausula=indemnización) | Semantic search over a text corpus. Contracts do not have complex relations between them; you only need metadata filtering. |
-| "¿Hay precedentes de cláusulas de penalización que hayamos negociado exitosamente?" | Vector RAG over precedents index, with filter outcome=exitoso | Semantic search over precedents corpus. No graph relations needed. |
-| "¿La cláusula 12.3 de este contrato es coherente con política interna y normativa vigente?" | Hybrid: vector multi-index (playbook + regulations) + routing | You need to search two distinct indexes and compare them. Template 05 (Legal) implements exactly this with multi-index + router + reranker. GraphRAG would be useful if relations between playbook rules and regulation articles were explicitly modeled (e.g. "playbook §4.2 implements regulation Art. 18"). If not modeled, multi-index is enough. |
+| "What contracts with unlimited indemnification clauses have we signed with IT vendors?" | Vector RAG + hard filters (vendor_type=IT, clause_type=indemnification) | Semantic search over a text corpus. Contracts do not have complex relations between them; you only need metadata filtering. |
+| "Are there precedents of penalty clauses we have successfully negotiated?" | Vector RAG over precedents index, with filter outcome=successful | Semantic search over precedents corpus. No graph relations needed. |
+| "Is clause 12.3 of this contract consistent with internal policy and current regulations?" | Hybrid: vector multi-index (playbook + regulations) + routing | You need to search two distinct indexes and compare them. Template 05 (Legal) implements exactly this with multi-index + router + reranker. GraphRAG would be useful if relations between playbook rules and regulation articles were explicitly modeled (e.g. "playbook §4.2 implements regulation Art. 18"). If not modeled, multi-index is enough. |
 
 **(e) Retrieval pipeline for pharmaceutical**
 
@@ -268,10 +268,10 @@ With `hops: 1` it would only return AD-2024-0023 and SB-2023-32-001, missing the
 PROPOSED DESIGN:
 
 Indexes (store.multi-index):
-  fichas_tecnicas   → drug information by product + country
-  estudios          → clinical evidence, side effects + country
-  normativa         → FDA/EMA regulations by country
-  guias             → prescribing guidelines by country + speciality
+  datasheets        → drug information by product + country
+  studies           → clinical evidence, side effects + country
+  regulations       → FDA/EMA regulations by country
+  guidelines        → prescribing guidelines by country + specialty
 
 Hard filters (on all retrieval.vector):
   hardFilters: ["country"]      ← non-negotiable, safety guardrail
@@ -282,10 +282,10 @@ Query ops pipeline:
   query.intent                  ← gate: is it an actionable medical question?
     ↓ (if actionable)
   query.rewrite                 ← normalize generic ↔ brand names
-    ↓                             (e.g. "ibuprofeno" ↔ "Advil/Nurofen/...")
-  retrieval.router              ← by intent: comparison → fichas+estudios
-    ↓                              contraindications → fichas+guias
-    ↓                              regulation → normativa
+    ↓                             (e.g. "ibuprofen" ↔ "Advil/Nurofen/...")
+  retrieval.router              ← by intent: comparison → datasheets+studies
+    ↓                              contraindications → datasheets+guidelines
+    ↓                              regulation → regulations
   retrieval.hybrid (alpha=0.4)  ← more BM25 weight: exact drug names
     + hardFilters: ["country"]
     ↓ (top-20 candidates)
@@ -297,7 +297,7 @@ Query ops pipeline:
 
 Justification for alpha=0.4 (more BM25):
   Drug names are exact identifiers
-  ("metformina 850mg" has no useful semantic variants)
+  ("metformin 850mg" has no useful semantic variants)
   BM25 captures these exact matches better
 
 Note on latency (< 2s):
@@ -319,7 +319,7 @@ ensemble = EnsembleRetriever(
 )
 ```
 
-Justification for `weights=[0.4, 0.6]`: in an airline call center there is a mix of exact jargon ("tarifa Basic", "sin cargo") and natural language ("¿puedo cambiar mi vuelo?"). **More weight on vector (0.6)** captures semantic intent, but BM25 stays relevant (0.4) for exact policy terms. These weights **are not** the weighted-sum `alpha` from §4 — they do not multiply BM25×0.4 + cosine×0.6. They influence RRF tiebreaking when a document appears in only one list.
+Justification for `weights=[0.4, 0.6]`: in an airline call center there is a mix of exact jargon ("Basic fare", "no charge") and natural language ("can I change my flight?"). **More weight on vector (0.6)** captures semantic intent, but BM25 stays relevant (0.4) for exact policy terms. These weights **are not** the weighted-sum `alpha` from §4 — they do not multiply BM25×0.4 + cosine×0.6. They influence RRF tiebreaking when a document appears in only one list.
 
 If the domain were exact ATA codes only, you would use `[0.7, 0.3]` (more BM25, consistent with the §4 table).
 
@@ -363,7 +363,7 @@ pol_003 and pol_001 are out because `top_n=3`.
 
 **(b) Does the reranker fix the domain problem?**
 
-**No.** The reranker optimizes **textual relevance** of the query to the document, not **permissibility** by `fare_class`. The query asks for "cambios sin cargo" and `pol_008` (Top) answers exactly that — the cross-encoder scores it high (0.91). The reranker **reinforces** domain noise, it does not remove it.
+**No.** The reranker optimizes **textual relevance** of the query to the document, not **permissibility** by `fare_class`. The query asks for "changes without a fee" and `pol_008` (Top) answers exactly that — the cross-encoder scores it high (0.91). The reranker **reinforces** domain noise, it does not remove it.
 
 The hard filter (§7) must be applied **before** any retriever. The reranker only improves precision within the candidate set you already retrieved — if that set includes wrong fares, the reranker may rank them first.
 
@@ -387,31 +387,31 @@ The reranker receives at most **3 candidates** (what the ensemble returns). It c
 
 **(a) Why the filter fails**
 
-The `filter={"fare_class": fare_class}` in Chroma's `search_kwargs` **only applies to the vector retriever**. `bm25_retriever` remains indexed over the **full 9 documents** (Basic, Plus, Top). In RRF fusion, `pol_008` (Top) enters via BM25 with high score — the query contains "cambios" and "sin cargo adicional", terms that match Top's text perfectly. The filtered vector does not return it, but BM25 does, and RRF includes it in the final result.
+The `filter={"fare_class": fare_class}` in Chroma's `search_kwargs` **only applies to the vector retriever**. `bm25_retriever` remains indexed over the **full 9 documents** (Basic, Plus, Top). In RRF fusion, `pol_008` (Top) enters via BM25 with high score — the query contains "changes" and "without additional fee", terms that match Top's text perfectly. The filtered vector does not return it, but BM25 does, and RRF includes it in the final result.
 
 **(b) Minimal fix**
 
 Rebuild **both** retrievers over the filtered corpus:
 
 ```python
-def crear_retriever_filtrado(fare_class: str):
-    docs_filtrados = [d for d in documentos if d.metadata["fare_class"] == fare_class]
+def create_filtered_retriever(fare_class: str):
+    filtered_docs = [d for d in documents if d.metadata["fare_class"] == fare_class]
 
-    bm25_filtrado = BM25Retriever.from_documents(docs_filtrados)
-    bm25_filtrado.k = len(docs_filtrados)
+    filtered_bm25 = BM25Retriever.from_documents(filtered_docs)
+    filtered_bm25.k = len(filtered_docs)
 
-    vector_filtrado_store = Chroma.from_documents(docs_filtrados, embeddings)
-    vector_filtrado = vector_filtrado_store.as_retriever(
-        search_kwargs={"k": len(docs_filtrados)}
+    filtered_vector_store = Chroma.from_documents(filtered_docs, embeddings)
+    filtered_vector = filtered_vector_store.as_retriever(
+        search_kwargs={"k": len(filtered_docs)}
     )
 
-    ensemble_filtrado = EnsembleRetriever(
-        retrievers=[bm25_filtrado, vector_filtrado],
+    filtered_ensemble = EnsembleRetriever(
+        retrievers=[filtered_bm25, filtered_vector],
         weights=[0.4, 0.6],
     )
     return ContextualCompressionRetriever(
         base_compressor=reranker,
-        base_retriever=ensemble_filtrado,
+        base_retriever=filtered_ensemble,
     )
 ```
 
@@ -431,6 +431,6 @@ Filtering `Document` before building BM25 and Chroma is equivalent to `hardFilte
 
 | Strategy | BM25 filtered? | Vector filtered? | Possible noise? |
 |------------|-----------------|-------------------|-----------------|
-| Scratch: `filtrar CORPUS` at start | Yes (corpus already reduced) | Yes (corpus already reduced) | No |
+| Scratch: `filter CORPUS` at start | Yes (corpus already reduced) | Yes (corpus already reduced) | No |
 | LangChain B: filter `Document` before `.from_documents()` | Yes | Yes | No |
 | LangChain A: Chroma `filter` only | **No** (BM25 still on full corpus) | Yes | **Yes** — docs from other fares/plans via BM25 |

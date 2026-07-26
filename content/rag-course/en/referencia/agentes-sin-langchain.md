@@ -74,15 +74,15 @@ TOOLS_SCHEMA = [
     {
         "name": "consultar_reserva",
         "description": (
-            "Obtiene el itinerario de una reserva. "
-            "Úsala cuando el pasajero proporcione su PNR (formato XXX-XXX-NNN)."
+            "Gets the itinerary of a reservation. "
+            "Use it when the passenger provides their PNR (format XXX-XXX-NNN)."
         ),
         "input_schema": {
             "type": "object",
             "properties": {
                 "pnr": {
                     "type": "string",
-                    "description": "Número de reserva, ej: SCL-BOG-001",
+                    "description": "Reservation number, e.g.: SCL-BOG-001",
                 }
             },
             "required": ["pnr"],
@@ -91,8 +91,8 @@ TOOLS_SCHEMA = [
     {
         "name": "consultar_politica",
         "description": (
-            "Devuelve penalidad y condiciones de cambio. "
-            "Úsala DESPUÉS de consultar_reserva, con fare_class y route_type del itinerario."
+            "Returns penalty and change conditions. "
+            "Use it AFTER consultar_reserva, with fare_class and route_type from the itinerary."
         ),
         "input_schema": {
             "type": "object",
@@ -111,17 +111,17 @@ Equivalent to your manual registry `TOOLS = {...}` plus the metadata you previou
 #### The manual loop — reason → act → observe
 
 ```python
-# Fragmento del patrón (no es el archivo completo)
+# Fragment of the pattern (not the full file)
 response = client.messages.create(
     model="claude-sonnet-4-6",
     max_tokens=4096,
     system=SYSTEM_PROMPT,
     tools=TOOLS_SCHEMA,
-    messages=messages,  # historial acumulado
+    messages=messages,  # accumulated history
 )
 
 while response.stop_reason == "tool_use":
-    # 1. Extraer tool_use blocks del response.content
+    # 1. Extract tool_use blocks from response.content
     tool_results = []
     for block in response.content:
         if block.type == "tool_use":
@@ -132,10 +132,10 @@ while response.stop_reason == "tool_use":
                 "tool_use_id": block.id,
                 "content": json.dumps(result, ensure_ascii=False),
             })
-    # 2. Añadir respuesta del asistente + resultados al historial
+    # 2. Add assistant response + results to history
     messages.append({"role": "assistant", "content": response.content})
     messages.append({"role": "user", "content": tool_results})
-    # 3. Volver a llamar al modelo
+    # 3. Call the model again
     response = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=4096,
@@ -157,8 +157,8 @@ There is no `MemorySaver`: you reuse the same `messages` list between user turns
 ```python
 # Requiere: pip install anthropic
 """
-Agente de cambio de vuelo — loop nativo Anthropic (sin LangChain/LangGraph).
-Mismo caso que 06-agentes-i/lab/solucion_scratch.py y solucion_framework.py.
+Flight change agent — native Anthropic loop (without LangChain/LangGraph).
+Same case as 06-agentes-i/lab/solucion_scratch.py and solucion_framework.py.
 """
 
 import json
@@ -167,24 +167,24 @@ from pathlib import Path
 
 import anthropic
 
-# --- Datos mock (misma carpeta datos/ del lab M6) ---
+# --- Mock data (same datos/ folder from M6 lab) ---
 _HERE = Path(__file__).parent
-_DATOS = _HERE / "datos"  # copia o symlink a 06-agentes-i/lab/datos/
+_DATOS = _HERE / "datos"  # copy or symlink to 06-agentes-i/lab/datos/
 
 RESERVAS = json.loads((_DATOS / "reservas.json").read_text(encoding="utf-8"))
 POLITICA = json.loads((_DATOS / "politica.json").read_text(encoding="utf-8"))
 
-# --- Implementaciones de tools (capa ②: funciones puras) ---
+# --- Tool implementations (layer ②: pure functions) ---
 
 def consultar_reserva(pnr: str) -> dict:
-    return RESERVAS.get(pnr, {"error": f"No se encontró reserva con PNR {pnr!r}"})
+    return RESERVAS.get(pnr, {"error": f"No reservation found with PNR {pnr!r}"})
 
 
 def consultar_politica(fare_class: str, route_type: str) -> dict:
     for regla in POLITICA["penalidades"]:
         if regla["fare_class"] == fare_class and regla["route_type"] == route_type:
             return regla
-    return {"error": f"No hay política para {fare_class!r} / {route_type!r}"}
+    return {"error": f"No policy for {fare_class!r} / {route_type!r}"}
 
 
 IMPLEMENTACIONES = {
@@ -195,7 +195,7 @@ IMPLEMENTACIONES = {
 TOOLS_SCHEMA = [
     {
         "name": "consultar_reserva",
-        "description": "Obtiene itinerario dado el PNR del pasajero.",
+        "description": "Gets itinerary given the passenger's PNR.",
         "input_schema": {
             "type": "object",
             "properties": {"pnr": {"type": "string"}},
@@ -204,7 +204,7 @@ TOOLS_SCHEMA = [
     },
     {
         "name": "consultar_politica",
-        "description": "Penalidad de cambio según fare_class y route_type.",
+        "description": "Change penalty based on fare_class and route_type.",
         "input_schema": {
             "type": "object",
             "properties": {
@@ -216,18 +216,18 @@ TOOLS_SCHEMA = [
     },
 ]
 
-SYSTEM_PROMPT = """Eres un asistente de cambios de vuelo.
-Flujo: (1) consultar_reserva con el PNR, (2) consultar_politica con fare_class y route_type,
-(3) calcula total = penalidad + max(0, precio_nuevo - precio_base). Vuelo alternativo
-más económico en la misma ruta para el 17 de junio 2026: LA503 a USD 295 (asume este dato
-si no tienes otra fuente). (4) Presenta desglose y pide confirmación. (5) Si el pasajero
-confirma en un mensaje posterior, confirma el cambio sin volver a llamar las tools."""
+SYSTEM_PROMPT = """You are a flight change assistant.
+Flow: (1) consultar_reserva with the PNR, (2) consultar_politica with fare_class and route_type,
+(3) calculate total = penalty + max(0, new_price - base_price). Cheapest alternative flight
+on the same route for June 17, 2026: LA503 at USD 295 (assume this data
+if you have no other source). (4) Present breakdown and ask for confirmation. (5) If the passenger
+confirms in a subsequent message, confirm the change without calling the tools again."""
 
 MAX_STEPS = 8
 
 
 def _texto_final(content) -> str:
-    """Extrae texto de bloques text del último response."""
+    """Extracts text from text blocks of the last response."""
     partes = []
     for block in content:
         if hasattr(block, "text"):
@@ -239,8 +239,8 @@ def _texto_final(content) -> str:
 
 def react_loop_nativo(client: anthropic.Anthropic, messages: list) -> str:
     """
-    Bucle ReAct — equivalente directo a react_loop() del scratch.
-    Modifica messages in-place (memoria entre pasos y entre turnos).
+    ReAct loop — direct equivalent to react_loop() from scratch.
+    Modifies messages in-place (memory between steps and between turns).
     """
     response = client.messages.create(
         model="claude-sonnet-4-6",
@@ -256,14 +256,14 @@ def react_loop_nativo(client: anthropic.Anthropic, messages: list) -> str:
             messages.append({"role": "assistant", "content": response.content})
             return texto
 
-        # --- Actuar: ejecutar cada tool_use ---
+        # --- Act: execute each tool_use ---
         tool_results = []
         for block in response.content:
             if block.type != "tool_use":
                 continue
             fn = IMPLEMENTACIONES.get(block.name)
             if not fn:
-                result = {"error": f"Tool desconocida: {block.name}"}
+                result = {"error": f"Unknown tool: {block.name}"}
             else:
                 result = fn(**block.input)
             tool_results.append({
@@ -283,11 +283,11 @@ def react_loop_nativo(client: anthropic.Anthropic, messages: list) -> str:
             messages=messages,
         )
 
-    return "Alcancé el límite de pasos sin poder responder."
+    return "Reached the step limit without being able to respond."
 
 
 class Session:
-    """Memoria conversacional — misma idea que Session del scratch."""
+    """Conversational memory — same idea as Session from scratch."""
 
     def __init__(self, client: anthropic.Anthropic):
         self.client = client
@@ -302,14 +302,14 @@ def main():
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     session = Session(client)
 
-    print(">>> TURNO 1")
+    print(">>> TURN 1")
     r1 = session.chat(
-        "Quiero cambiar mi vuelo SCL-BOG-001 del 15 al 17 de junio."
+        "I want to change my flight SCL-BOG-001 from June 15 to June 17."
     )
     print(r1)
 
-    print("\n>>> TURNO 2")
-    r2 = session.chat("Sí, confirmo el cambio.")
+    print("\n>>> TURN 2")
+    r2 = session.chat("Yes, I confirm the change.")
     print(r2)
 
 
@@ -375,7 +375,7 @@ from crewai.tools import tool
 
 @tool("consultar_reserva")
 def consultar_reserva(pnr: str) -> dict:
-    """Obtiene el itinerario completo dado el PNR."""
+    """Gets the complete itinerary given the PNR."""
     ...
 ```
 
@@ -387,9 +387,9 @@ CrewAI also accepts LangChain tools (`langchain_core.tools.tool`) — as in `07-
 from crewai import Agent
 
 analista = Agent(
-    role="Analista de itinerario",
-    goal="Obtener reserva y política de cambio del pasajero",
-    backstory="Especialista en PNR y reglas tarifarias internacionales.",
+    role="Itinerary analyst",
+    goal="Get the passenger's reservation and change policy",
+    backstory="Specialist in PNR and international fare rules.",
     tools=[consultar_reserva, consultar_politica],
     llm=llm,
     verbose=True,
@@ -405,22 +405,22 @@ from crewai import Task
 
 task_itinerario = Task(
     description=(
-        "El pasajero dice: '{solicitud}'. "
-        "Usa consultar_reserva con el PNR y consultar_politica con fare_class y route_type. "
-        "Devuelve JSON con pnr, passenger, fare_class, penalidad_usd, cambio_permitido."
+        "The passenger says: '{solicitud}'. "
+        "Use consultar_reserva with the PNR and consultar_politica with fare_class and route_type. "
+        "Return JSON with pnr, passenger, fare_class, penalidad_usd, cambio_permitido."
     ),
-    expected_output="JSON con datos de reserva y política",
+    expected_output="JSON with reservation and policy data",
     agent=analista,
 )
 
 task_costos = Task(
     description=(
-        "Con el itinerario y la política del contexto, calcula el cambio al 17 de junio 2026. "
-        "Vuelo LA503 a USD 295. base_price del JSON. "
-        "total = penalidad + max(0, 295 - base_price). "
-        "Presenta desglose y pregunta si confirma. NO cobres sin confirmación."
+        "With the itinerary and policy from context, calculate the change to June 17, 2026. "
+        "Flight LA503 at USD 295. base_price from JSON. "
+        "total = penalty + max(0, 295 - base_price). "
+        "Present breakdown and ask if they confirm. Do NOT charge without confirmation."
     ),
-    expected_output="Propuesta con desglose USD y pregunta de confirmación",
+    expected_output="Proposal with USD breakdown and confirmation question",
     agent=calculador,
     context=[task_itinerario],  # recibe output de la task anterior
 )
@@ -440,7 +440,7 @@ crew = Crew(
     verbose=True,
 )
 
-resultado = crew.kickoff(inputs={"solicitud": "Cambiar SCL-BOG-001 del 15 al 17 de junio"})
+resultado = crew.kickoff(inputs={"solicitud": "Change SCL-BOG-001 from June 15 to June 17"})
 ```
 
 - `Process.sequential` — A finishes → B starts (fixed pipeline).
@@ -451,8 +451,8 @@ resultado = crew.kickoff(inputs={"solicitud": "Cambiar SCL-BOG-001 del 15 al 17 
 ```python
 # Requiere: pip install crewai langchain-anthropic
 """
-Cambio de vuelo con CrewAI — dos roles, Process.sequential.
-Complementa M6 (un solo agente) y M7 §9 (CrewAI logística, no duplicado aquí).
+Flight change with CrewAI — two roles, Process.sequential.
+Complements M6 (single agent) and M7 §9 (CrewAI logistics, not duplicated here).
 """
 
 import json
@@ -471,17 +471,17 @@ POLITICA = json.loads((_DATOS / "politica.json").read_text(encoding="utf-8"))
 
 @tool("consultar_reserva")
 def consultar_reserva(pnr: str) -> dict:
-    """Obtiene itinerario dado el PNR (formato XXX-XXX-NNN)."""
-    return RESERVAS.get(pnr, {"error": f"PNR no encontrado: {pnr}"})
+    """Gets itinerary given the PNR (format XXX-XXX-NNN)."""
+    return RESERVAS.get(pnr, {"error": f"PNR not found: {pnr}"})
 
 
 @tool("consultar_politica")
 def consultar_politica(fare_class: str, route_type: str) -> dict:
-    """Penalidad y condiciones de cambio para fare_class y route_type."""
+    """Penalty and change conditions for fare_class and route_type."""
     for r in POLITICA["penalidades"]:
         if r["fare_class"] == fare_class and r["route_type"] == route_type:
             return r
-    return {"error": "Política no encontrada"}
+    return {"error": "Policy not found"}
 
 
 def build_crew():
@@ -492,32 +492,32 @@ def build_crew():
     )
 
     analista = Agent(
-        role="Analista de itinerario",
-        goal="Recuperar reserva y política de cambio",
-        backstory="Experto en PNR y tarifas LATAM.",
+        role="Itinerary analyst",
+        goal="Retrieve reservation and change policy",
+        backstory="Expert in PNR and LATAM fares.",
         tools=[consultar_reserva, consultar_politica],
         llm=llm,
     )
 
     calculador = Agent(
-        role="Calculador de costos",
-        goal="Calcular total del rebooking y pedir confirmación",
-        backstory="Nunca cobra sin confirmación explícita del pasajero.",
+        role="Cost calculator",
+        goal="Calculate rebooking total and ask for confirmation",
+        backstory="Never charges without explicit passenger confirmation.",
         llm=llm,
     )
 
     t1 = Task(
-        description="Solicitud del pasajero: '{solicitud}'. Llama las tools necesarias.",
+        description="Passenger request: '{solicitud}'. Call the necessary tools.",
         expected_output="JSON: pnr, passenger, fare_class, base_price, penalidad_usd",
         agent=analista,
     )
 
     t2 = Task(
         description=(
-            "Calcula cambio al 17-jun-2026 con vuelo LA503 (USD 295). "
-            "total = penalidad + max(0, 295 - base_price). Desglose y pide confirmación."
+            "Calculate change to 17-Jun-2026 with flight LA503 (USD 295). "
+            "total = penalty + max(0, 295 - base_price). Breakdown and ask for confirmation."
         ),
-        expected_output="Propuesta con total USD y pregunta de confirmación",
+        expected_output="Proposal with USD total and confirmation question",
         agent=calculador,
         context=[t1],
     )
@@ -533,20 +533,20 @@ def build_crew():
 def main():
     crew = build_crew()
 
-    # Turno 1 — cotización
+    # Turn 1 — quote
     r1 = crew.kickoff(inputs={
-        "solicitud": "Quiero cambiar mi vuelo SCL-BOG-001 del 15 al 17 de junio."
+        "solicitud": "I want to change my flight SCL-BOG-001 from June 15 to June 17."
     })
-    print("TURNO 1:", r1)
+    print("TURN 1:", r1)
 
-    # Turno 2 — confirmación (nuevo kickoff con historial en el input)
+    # Turn 2 — confirmation (new kickoff with history in the input)
     r2 = crew.kickoff(inputs={
         "solicitud": (
-            "El pasajero confirma el cambio. Contexto previo: " + str(r1) +
-            ". Responde con confirmación de cobro USD 130 y nuevo vuelo LA503."
+            "The passenger confirms the change. Previous context: " + str(r1) +
+            ". Respond with confirmation of USD 130 charge and new flight LA503."
         )
     })
-    print("TURNO 2:", r2)
+    print("TURN 2:", r2)
 
 
 if __name__ == "__main__":
@@ -611,8 +611,8 @@ llm_config = LLMConfig(
 )
 
 asistente = ConversableAgent(
-    name="asistente_vuelo",
-    system_message="Eres asistente de cambios de vuelo. Delega ejecución de tools al ejecutor.",
+    name="flight_assistant",
+    system_message="You are a flight change assistant. Delegate tool execution to the executor.",
     llm_config=llm_config,
 )
 ```
@@ -626,13 +626,13 @@ Central AG2 pattern: **one agent proposes** the tool (caller), **another execute
 ```python
 from autogen import register_function
 
-ejecutor = ConversableAgent(name="ejecutor", human_input_mode="NEVER")
+ejecutor = ConversableAgent(name="executor", human_input_mode="NEVER")
 
 register_function(
     consultar_reserva,
     caller=asistente,
     executor=ejecutor,
-    description="Obtiene itinerario dado el PNR",
+    description="Gets itinerary given the PNR",
 )
 ```
 
@@ -643,7 +643,7 @@ Equivalent to separating decision (`fake_llm`) from execution (`TOOLS[name](**ar
 ```python
 ejecutor.initiate_chat(
     asistente,
-    message="Quiero cambiar mi vuelo SCL-BOG-001 del 15 al 17 de junio.",
+    message="I want to change my flight SCL-BOG-001 from June 15 to June 17.",
     max_turns=10,
 )
 ```
@@ -659,7 +659,7 @@ groupchat = GroupChat(
     agents=[asistente, ejecutor, user_proxy],
     messages=[],
     max_round=12,
-    speaker_selection_method="auto",  # el manager elige quién habla
+    speaker_selection_method="auto",  # the manager chooses who speaks
 )
 manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
 user_proxy.initiate_chat(manager, message="...")
@@ -672,7 +672,7 @@ Useful if you add a "policy reviewer" agent or a human proxy. **Gotcha:** `speak
 ```python
 # Requiere: pip install ag2
 """
-Cambio de vuelo con AG2 — diálogo asistente ↔ ejecutor de tools.
+Flight change with AG2 — assistant ↔ tool executor dialogue.
 """
 
 import json
@@ -694,13 +694,13 @@ def consultar_reserva(pnr: Annotated[str, "PNR formato XXX-XXX-NNN"]) -> str:
 
 
 def consultar_politica(
-    fare_class: Annotated[str, "Clase tarifaria"],
-    route_type: Annotated[str, "nacional o internacional"],
+    fare_class: Annotated[str, "Fare class"],
+    route_type: Annotated[str, "domestic or international"],
 ) -> str:
     for r in POLITICA["penalidades"]:
         if r["fare_class"] == fare_class and r["route_type"] == route_type:
             return json.dumps(r, ensure_ascii=False)
-    return json.dumps({"error": "Política no encontrada"})
+    return json.dumps({"error": "Policy not found"})
 
 
 def main():
@@ -713,38 +713,38 @@ def main():
     )
 
     asistente = ConversableAgent(
-        name="asistente_vuelo",
+        name="flight_assistant",
         system_message=(
-            "Asistente de cambios de vuelo. "
-            "1) Pide al ejecutor consultar_reserva y consultar_politica. "
-            "2) Calcula total con LA503 USD 295. "
-            "3) Pide confirmación antes de cobrar."
+            "Flight change assistant. "
+            "1) Ask the executor for consultar_reserva and consultar_politica. "
+            "2) Calculate total with LA503 USD 295. "
+            "3) Ask for confirmation before charging."
         ),
         llm_config=llm_config,
     )
 
     ejecutor = ConversableAgent(
-        name="ejecutor",
+        name="executor",
         human_input_mode="NEVER",
-        llm_config=False,  # no necesita LLM — solo ejecuta funciones
+        llm_config=False,  # does not need LLM — only executes functions
     )
 
     register_function(consultar_reserva, caller=asistente, executor=ejecutor,
-                      description="Obtiene itinerario por PNR")
+                      description="Gets itinerary by PNR")
     register_function(consultar_politica, caller=asistente, executor=ejecutor,
-                      description="Penalidad de cambio por fare_class y route_type")
+                      description="Change penalty by fare_class and route_type")
 
-    # Turno 1
+    # Turn 1
     ejecutor.initiate_chat(
         asistente,
-        message="Quiero cambiar mi vuelo SCL-BOG-001 del 15 al 17 de junio.",
+        message="I want to change my flight SCL-BOG-001 from June 15 to June 17.",
         max_turns=8,
     )
 
-    # Turno 2 — mismo par de agentes, nuevo chat con contexto
+    # Turn 2 — same pair of agents, new chat with context
     ejecutor.initiate_chat(
         asistente,
-        message="Sí, confirmo el cambio de vuelo.",
+        message="Yes, I confirm the flight change.",
         max_turns=4,
     )
 
@@ -811,7 +811,7 @@ agent = Agent(
     'anthropic:claude-sonnet-4-6',
     deps_type=FlightDeps,
     output_type=CotizacionCambio,  # antes result_type; API 0.x usaba result_type
-    instructions="Eres asistente de cambios de vuelo...",
+    instructions="You are a flight change assistant...",
 )
 ```
 
@@ -824,8 +824,8 @@ from pydantic_ai import RunContext
 
 @agent.tool
 def consultar_reserva(ctx: RunContext[FlightDeps], pnr: str) -> dict:
-    """Obtiene itinerario dado el PNR."""
-    return ctx.deps.reservas.get(pnr, {"error": f"PNR no encontrado: {pnr}"})
+    """Gets itinerary given the PNR."""
+    return ctx.deps.reservas.get(pnr, {"error": f"PNR not found: {pnr}"})
 ```
 
 - `@agent.tool` — **requires** `RunContext` as first argument (access to deps, usage, messages).
@@ -839,14 +839,14 @@ from pydantic_ai import ModelMessage
 historial: list[ModelMessage] = []
 
 result1 = agent.run_sync(
-    "Cambiar SCL-BOG-001 del 15 al 17 de junio",
+    "Change SCL-BOG-001 from June 15 to June 17",
     deps=deps,
     message_history=historial,
 )
 historial = result1.all_messages()
 
 result2 = agent.run_sync(
-    "Sí, confirmo el cambio",
+    "Yes, I confirm the change",
     deps=deps,
     message_history=historial,
 )
@@ -860,7 +860,7 @@ cotizacion = result2.output  # CotizacionCambio validado
 ```python
 # Requiere: pip install pydantic-ai
 """
-Cambio de vuelo con Pydantic-AI — tools tipadas + CotizacionCambio validada.
+Flight change with Pydantic-AI — typed tools + validated CotizacionCambio.
 """
 
 import json
@@ -897,30 +897,30 @@ agent = Agent(
     deps_type=FlightDeps,
     output_type=CotizacionCambio,
     instructions=(
-        "Asistente de cambios de vuelo. "
-        "Flujo: consultar_reserva → consultar_politica → calcula con LA503 USD 295. "
-        "total = penalidad + max(0, 295 - base_price). "
-        "requiere_confirmacion=True hasta que el usuario confirme. "
-        "Tras confirmación, requiere_confirmacion=False y confirma el cobro."
+        "Flight change assistant. "
+        "Flow: consultar_reserva → consultar_politica → calculate with LA503 USD 295. "
+        "total = penalty + max(0, 295 - base_price). "
+        "requiere_confirmacion=True until the user confirms. "
+        "After confirmation, requiere_confirmacion=False and confirm the charge."
     ),
 )
 
 
 @agent.tool
 def consultar_reserva(ctx: RunContext[FlightDeps], pnr: str) -> dict:
-    """Obtiene itinerario dado el PNR."""
-    return ctx.deps.reservas.get(pnr, {"error": f"PNR no encontrado: {pnr}"})
+    """Gets itinerary given the PNR."""
+    return ctx.deps.reservas.get(pnr, {"error": f"PNR not found: {pnr}"})
 
 
 @agent.tool
 def consultar_politica(
     ctx: RunContext[FlightDeps], fare_class: str, route_type: str
 ) -> dict:
-    """Penalidad y condiciones de cambio."""
+    """Penalty and change conditions."""
     for r in ctx.deps.politica["penalidades"]:
         if r["fare_class"] == fare_class and r["route_type"] == route_type:
             return r
-    return {"error": "Política no encontrada"}
+    return {"error": "Policy not found"}
 
 
 def main():
@@ -928,22 +928,22 @@ def main():
     historial = []
 
     r1 = agent.run_sync(
-        "Quiero cambiar mi vuelo SCL-BOG-001 del 15 al 17 de junio.",
+        "I want to change my flight SCL-BOG-001 from June 15 to June 17.",
         deps=deps,
         message_history=historial,
     )
     historial = r1.all_messages()
     cot1 = r1.output
-    print("TURNO 1:", cot1.mensaje)
+    print("TURN 1:", cot1.mensaje)
     print(f"  Total: USD {cot1.total_usd:.2f}, confirmar: {cot1.requiere_confirmacion}")
 
     r2 = agent.run_sync(
-        "Sí, confirmo el cambio.",
+        "Yes, I confirm the change.",
         deps=deps,
         message_history=historial,
     )
     cot2 = r2.output
-    print("TURNO 2:", cot2.mensaje)
+    print("TURN 2:", cot2.mensaje)
 
 
 if __name__ == "__main__":
@@ -1039,4 +1039,4 @@ Template 01 (airline) implements this flow with the [`agent.react`](./catalogo-n
 > - **Nodes `agent.react` and `agent.fanout`:** [catalogo-nodos.md](./catalogo-nodos.md)
 > - **Layer ② reference:** [06-agentes-i/lab/solucion_scratch.py](../06-agentes-i/lab/solucion_scratch.py)
 > - **Template 01 airline:** [examples/01-airline-flight-change/](../../examples/01-airline-flight-change/)
-> - **Authorship convention (layer ③):** [HANDOFF.md §3](../HANDOFF.md#3-método-de-autoría-obligatorio-para-mantener-consistencia)
+> - **Authorship convention (layer ③):** [HANDOFF.md §3](../HANDOFF.md#3-mandatory-authorship-method-for-consistency)

@@ -22,7 +22,7 @@ SupervisorOrchestrator
 
 ```python
 if autoconfirm_agent.can_auto_confirm(track, policy, alternatives, profile):
-    # track=simple + opción obvia
+    # track=simple + obvious option
     ...
 else:
     llm_result = llm_agent.analyze(...)

@@ -317,7 +317,7 @@ AutoGen models agents that **send messages** to each other until they converge:
 ```python
 user_proxy = UserProxyAgent(name="user")
 assistant = AssistantAgent(name="assistant", llm_config=...)
-user_proxy.initiate_chat(assistant, message="Diseña el rebook para SHP-001")
+user_proxy.initiate_chat(assistant, message="Design the rebook for SHP-001")
 ```
 
 The flow **is not in a graph** — it emerges from dialogue.
@@ -356,7 +356,7 @@ Modular framework oriented to **IBM/watsonx enterprise**:
 - Automatic planners that chain plugins.
 - Ideal in Azure/OpenAI ecosystem; less common in pure Python.
 
-### 7.3 Quick comparison (see also [tecnologias-comparadas.md §9](../referencia/tecnologias-comparadas.md#9-frameworks-de-agentes-y-multi-agente))
+### 7.3 Quick comparison (see also [technologies-compared.md §9](../referencia/tecnologias-comparadas.md#9-frameworks-de-agentes-y-multi-agente))
 
 | Framework | Control | Fan-out | Enterprise |
 |-----------|---------|---------|------------|
@@ -443,9 +443,9 @@ The `flow.json` abstracts the framework:
 from crewai import Agent
 
 researcher = Agent(
-    role="Investigador de rebook",           # título del rol
-    goal="Recopilar perfil, política y alternativas",
-    backstory="Conoce PolicyRAG y servicios de routing.",
+    role="Rebook investigator",              # role title
+    goal="Gather profile, policy, and alternatives",
+    backstory="Knows PolicyRAG and routing services.",
     tools=[get_shipment_profile, get_alternatives],  # LangChain @tool
     llm=llm,
     verbose=True,
@@ -461,10 +461,10 @@ researcher = Agent(
 from crewai import Task
 
 research_task = Task(
-    description="Para el envío en {event_json}, llama las tools necesarias.",
-    expected_output="JSON con perfil, política y alternativas",
+    description="For the shipment in {event_json}, call the necessary tools.",
+    expected_output="JSON with profile, policy, and alternatives",
     agent=researcher,
-    context=[classify_task],   # recibe output de tasks anteriores
+    context=[classify_task],   # receives output from previous tasks
 )
 ```
 

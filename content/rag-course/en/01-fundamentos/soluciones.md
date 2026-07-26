@@ -14,7 +14,7 @@
 
 **Exercise 2 → b) ~30 tokens**
 
-**Reason:** The text has 32 words in Spanish. Using the rule of 1.5–2 tokens/word in Spanish: 32 × ~1.7 ≈ 54 tokens... but the closest option is (c) ~55. However, the rule is _approximate_: the text has short words (la, a, de, en, 2) that are often 1 token, and words like "incrementándose" that can be 3–4 tokens. A more careful count: ~40–50 tokens. The correct answer is (c) ~55 tokens — it is the estimate closest to reality.
+**Reason:** The text has 32 words in Spanish. Using the rule of 1.5–2 tokens/word in Spanish: 32 × ~1.7 ≈ 54 tokens... but the closest option is (c) ~55. However, the rule is _approximate_: the text has short words (the, to, of, in, 2) that are often 1 token, and words like "increasing" that can be 3–4 tokens. A more careful count: ~40–50 tokens. The correct answer is (c) ~55 tokens — it is the estimate closest to reality.
 
 > **Note:** if you chose (b) ~30, your estimate assumed 1 token per word on average, which is closer to English. In Spanish the more precise answer is (c).
 
@@ -49,20 +49,20 @@
 3. Optionally: an instruction to say "I don't know" if there is no relevant information.
 
 ```python
-SYSTEM = """Eres el asistente oficial de RRHH.
-Responde ÚNICAMENTE basándote en los fragmentos de política proporcionados.
-Si la información no está en los fragmentos, di explícitamente que no tienes esa información."""
+SYSTEM = """You are the official HR assistant.
+Answer ONLY based on the policy fragments provided.
+If the information is not in the fragments, explicitly say you don't have that information."""
 
-TEMPLATE = """Pregunta del empleado: {pregunta}
+TEMPLATE = """Employee question: {question}
 
-Fragmentos de política relevantes:
+Relevant policy fragments:
 {chunks}
 
-Responde en markdown con lenguaje claro y sencillo."""
+Answer in markdown with clear and simple language."""
 
 messages = [
     {"role": "system", "content": SYSTEM},
-    {"role": "user", "content": TEMPLATE.format(pregunta=pregunta, chunks=chunks_texto)}
+    {"role": "user", "content": TEMPLATE.format(question=question, chunks=chunks_text)}
 ]
 response = llm.invoke(messages)
 ```
@@ -81,21 +81,21 @@ Without the system message and without the chunks, the model invents the answer 
 
 ```
 [system]
-Clasifica la pregunta de RRHH en una de estas categorías:
-vacaciones, nómina, beneficios, onboarding, otro.
-Responde SOLO con la categoría, sin explicación.
+Classify the HR question into one of these categories:
+vacation, payroll, benefits, onboarding, other.
+Answer ONLY with the category, no explanation.
 
-Pregunta: ¿Cuándo puedo tomar mis días de vacaciones acumulados?
-Categoría: vacaciones
+Question: When can I take my accumulated vacation days?
+Category: vacation
 
-Pregunta: ¿Cómo veo mi recibo de nómina en el portal?
-Categoría: nómina
+Question: How do I see my payslip on the portal?
+Category: payroll
 
-Pregunta: ¿Puedo inscribir a mis hijos en el seguro médico de la empresa?
-Categoría: beneficios
+Question: Can I enroll my children in the company's health insurance?
+Category: benefits
 
-Pregunta: ¿A partir de qué mes empiezo a cotizar al IMSS?
-Categoría:
+Question: Starting from which month do I begin contributing to social security?
+Category:
 ```
 
 **Expected answer:** `onboarding` (it is a question about the onboarding process, specifically about legal benefits that apply from day one).
@@ -127,15 +127,15 @@ Categoría:
 **Exercise 12 → Offline phase of template 09**
 
 ```
-1. loader.pdf (node "Docs RRHH")
+1. loader.pdf (node "HR Docs")
    Input: PDF files in data/hr_docs/
    Output: Documents (list of documents with text and metadata)
 
-2. ingest.chunker (node "Troceador por sección")
+2. ingest.chunker (node "Section Chunker")
    Input: Documents
    Output: Documents (smaller fragments, ~800 tokens each, strategy: by-section)
 
-3. model.embedding (node "Modelo Embedding") + store.chroma (node "Chroma hr_policies")
+3. model.embedding (node "Embedding Model") + store.chroma (node "Chroma hr_policies")
    The chunker feeds store.chroma with Documents.
    model.embedding feeds store.chroma with Embeddings (vectors for each chunk).
    store.chroma indexes and persists the (chunk, vector) pairs in the hr_policies collection.
@@ -218,14 +218,14 @@ Additional nodes:
    - The agent decides when to search policies and when to act in Workday
 
 2. tool.retriever (wraps existing retrieval.vector as an agent tool)
-   - name: "buscar_politica_rrhh"
-   - description: "Busca en las políticas de RRHH de la empresa"
+   - name: "search_hr_policy"
+   - description: "Searches the company's HR policies"
 
 3. tool.service → Workday API
-   - name: "solicitar_vacaciones"
+   - name: "request_vacation"
    - baseUrl: "https://api.workday.com/..."
-   - operation: "crear_solicitud_vacaciones"
-   - inputSchema: {empleado_id, fecha_inicio, fecha_fin, dias}
+   - operation: "create_vacation_request"
+   - inputSchema: {employee_id, start_date, end_date, days}
    - Secret: WORKDAY_API_KEY
 
 4. guardrail.confirm (optional but recommended)
@@ -233,7 +233,7 @@ Additional nodes:
    - Asks for confirmation before creating the request
 
 5. guardrail.idempotency (recommended for transactional actions)
-   - keyFields: [empleado_id, fecha_inicio, fecha_fin]
+   - keyFields: [employee_id, start_date, end_date]
    - Prevents creating two identical requests if the user clicks twice
 ```
 
@@ -245,9 +245,9 @@ Additional nodes:
 
 **Exercise 19 → c) `list[Document]`
 
-**Reason:** `as_retriever()` converts the vector store into a `Retriever` object whose standard interface is `.invoke(query) → list[Document]`. Each `Document` has `page_content` (chunk text) and `metadata` (e.g. `source`). It does not return a concatenated string — your `formatear_chunks` function does that in the chain. It does not return an embedding (Chroma does that internally via `embeddings.embed_query`). It does not return the dict `{"contexto", "pregunta"}` — that dict is **built** by the LCEL chain in the `RunnableParallel` step (the dict with two branches) before passing to `ChatPromptTemplate`.
+**Reason:** `as_retriever()` converts the vector store into a `Retriever` object whose standard interface is `.invoke(query) → list[Document]`. Each `Document` has `page_content` (chunk text) and `metadata` (e.g. `source`). It does not return a concatenated string — your `format_chunks` function does that in the chain. It does not return an embedding (Chroma does that internally via `embeddings.embed_query`). It does not return the dict `{"context", "question"}` — that dict is **built** by the LCEL chain in the `RunnableParallel` step (the dict with two branches) before passing to `ChatPromptTemplate`.
 
-**Mental check:** in `solucion_framework.py`, `chunks_recuperados = retriever.invoke(query)` and then you iterate `for doc in chunks_recuperados: doc.page_content` — that only makes sense if they are `Document`.
+**Mental check:** in `solucion_framework.py`, `retrieved_chunks = retriever.invoke(query)` and then you iterate `for doc in retrieved_chunks: doc.page_content` — that only makes sense if they are `Document`.
 
 ---
 
@@ -257,35 +257,35 @@ Additional nodes:
 
 | Function | LangChain | Why |
 |---------|-----------|---------|
-| `cargar_chunks()` | **C** — `TextLoader` + `CharacterTextSplitter` | Reads the file and splits by `\n---\n` into `list[Document]`. |
+| `load_chunks()` | **C** — `TextLoader` + `CharacterTextSplitter` | Reads the file and splits by `\n---\n` into `list[Document]`. |
 | `embed()` | **A** — `OpenAIEmbeddings` | Converts text into a vector; implements the `Embeddings` interface. |
-| `recuperar()` | **B** — `vectorstore.as_retriever(...)` | Searches top-k by similarity and returns the closest documents. |
-| `construir_prompt()` | **D** — `ChatPromptTemplate.from_messages(...)` | Template with variables filled with context and question. |
+| `retrieve()` | **B** — `vectorstore.as_retriever(...)` | Searches top-k by similarity and returns the closest documents. |
+| `build_prompt()` | **D** — `ChatPromptTemplate.from_messages(...)` | Template with variables filled with context and question. |
 
-Confusing `embed()` with the retriever is common: the retriever **uses** embeddings internally, but the scratch function that does search and ranking is `recuperar()`, not `embed()`.
+Confusing `embed()` with the retriever is common: the retriever **uses** embeddings internally, but the scratch function that does search and ranking is `retrieve()`, not `embed()`.
 
 ---
 
 **Exercise 21 → Two bugs**
 
-**Bug 1 — Inconsistent variable name:** the dict uses the key `"context"` but the prompt template expects `{contexto}`. When invoking the chain, `ChatPromptTemplate` cannot find the variable `contexto` → `KeyError` or empty variable.
+**Bug 1 — Inconsistent variable name:** the dict uses the key `"ctx"` but the prompt template expects `{context}`. When invoking the chain, `ChatPromptTemplate` cannot find the variable `context` → `KeyError` or empty variable.
 
 **Fix:**
 
 ```python
 {
-    "contexto": retriever | formatear_chunks,  # not "context"
-    "pregunta": RunnablePassthrough(),
+    "context": retriever | format_chunks,  # not "ctx"
+    "question": RunnablePassthrough(),
 }
 ```
 
-**Bug 2 — Missing `StrOutputParser()` at the end:** without it, `chain.invoke(query)` returns an **`AIMessage`** (rich provider object), not a `str`. If you `print(respuesta)` expecting plain text, you will see the object representation or have to access `.content` manually.
+**Bug 2 — Missing `StrOutputParser()` at the end:** without it, `chain.invoke(query)` returns an **`AIMessage`** (rich provider object), not a `str`. If you `print(response)` expecting plain text, you will see the object representation or have to access `.content` manually.
 
 **Fix:**
 
 ```python
 chain = (
-    {"contexto": retriever | formatear_chunks, "pregunta": RunnablePassthrough()}
+    {"context": retriever | format_chunks, "question": RunnablePassthrough()}
     | prompt
     | llm
     | StrOutputParser()

@@ -42,9 +42,9 @@ A token is not a word. It is a **unit of text** determined by the model's tokeni
 **Why it matters:** models have a maximum token limit per call (the "context window"). If you exceed it, the model cannot process the input.
 
 ```
-Texto:    "Los empleados tienen 15 días de vacaciones anuales."
-Tokens:   ["Los", " emple", "ados", " tienen", " 15", " días", " de", " vac", "aciones", " anuales", "."]
-Conteo:   11 tokens (aproximado — depende del tokenizador)
+Text:     "Employees are entitled to 15 days of annual vacation."
+Tokens:   ["Employees", " are", " entitled", " to", " 15", " days", " of", " annual", " vacation", "."]
+Count:    10 tokens (approximate — depends on the tokenizer)
 ```
 
 ### 1.3 Context window
@@ -82,11 +82,11 @@ LLMs have billions of parameters (network weights). Size matters but is not ever
 **Temperature** controls how "creative" or "deterministic" the model's response is. Technically, it is a divisor of the logit before softmax: low temperature concentrates probability on the most likely tokens; high temperature spreads it out.
 
 ```
-temperatura 0.0 → respuesta casi determinista (mismo input, mismo output)
-temperatura 0.2 → respuestas muy consistentes, con poca variación
-temperatura 0.7 → respuestas variadas, más "creativas"
-temperatura 1.0 → distribución sin modificar
-temperatura > 1.0 → respuestas caóticas, poco coherentes
+temperature 0.0 → nearly deterministic response (same input, same output)
+temperature 0.2 → very consistent responses, with little variation
+temperature 0.7 → varied responses, more "creative"
+temperature 1.0 → unmodified distribution
+temperature > 1.0 → chaotic, incoherent responses
 ```
 
 **Practical rule for RAG:** use low temperature (0.0–0.2) when you need factual responses based on documents. Use higher temperature only when you want variety (e.g. generating wording options).
@@ -115,9 +115,9 @@ Distinct from the context window: it is the limit you set on the generated respo
 Modern chat LLMs use a message format with roles:
 
 ```
-[system]  Eres el asistente oficial de RRHH. Responde basándote SOLO en los documentos.
-[user]    ¿Cuántos días de vacaciones tengo el primer año?
-[assistant]  (respuesta del modelo)
+[system]  You are the official HR assistant. Respond based ONLY on the documents.
+[user]    How many vacation days do I get in the first year?
+[assistant]  (model response)
 ```
 
 - **system:** persistent instructions that define model behavior. Sent once at the start. The model "remembers" it for the whole conversation (while it stays in the window).
@@ -137,19 +137,19 @@ In template 09, the `logic.prompt` node uses:
 **Few-shot** = give a few examples (2–5 typically):
 
 ```
-[system] Clasifica si la siguiente pregunta es sobre vacaciones, beneficios o nómina.
+[system] Classify whether the following question is about vacation, benefits, or payroll.
 
-Pregunta: ¿Cuándo cobro el aguinaldo?
-Categoría: nómina
+Question: When do I get my year-end bonus?
+Category: payroll
 
-Pregunta: ¿Puedo pedir días por enfermedad de un familiar?
-Categoría: vacaciones
+Question: Can I request days off for a family member's illness?
+Category: vacation
 
-Pregunta: ¿Cómo agrego a mi cónyuge al seguro médico?
-Categoría: beneficios
+Question: How do I add my spouse to the health insurance?
+Category: benefits
 
-Pregunta: {nueva_pregunta}
-Categoría:
+Question: {new_question}
+Category:
 ```
 
 **Zero-shot** = no examples. Works well with large models and common tasks. **One-shot** = a single example.
@@ -164,18 +164,18 @@ Categoría:
 **Chain-of-Thought** tells the model to "think out loud" before answering. It significantly improves reasoning on questions that require multiple steps.
 
 ```
-Versión sin CoT:
-[user] ¿Tiene derecho a vacaciones un empleado que lleva 8 meses?
-[assistant] No tiene derecho completo todavía.  ← puede estar bien o mal
+Version without CoT:
+[user] Is an employee who has been here 8 months entitled to vacation?
+[assistant] They are not yet entitled to the full amount.  ← may be right or wrong
 
-Versión con CoT:
-[user] ¿Tiene derecho a vacaciones un empleado que lleva 8 meses?
-       Piensa paso a paso antes de responder.
+Version with CoT:
+[user] Is an employee who has been here 8 months entitled to vacation?
+       Think step by step before answering.
 [assistant]
-1. La política dice que los empleados acumulan 1 día por mes completo trabajado.
-2. 8 meses completos = 8 días acumulados.
-3. Por tanto, sí tiene derecho a 8 días de vacaciones proporcionales.
-Respuesta: Sí, tiene derecho a 8 días de vacaciones proporcionales.
+1. The policy states that employees accrue 1 day per full month worked.
+2. 8 full months = 8 accrued days.
+3. Therefore, yes, they are entitled to 8 proportional vacation days.
+Answer: Yes, they are entitled to 8 proportional vacation days.
 ```
 
 **When to use CoT:**
@@ -183,25 +183,25 @@ Respuesta: Sí, tiene derecho a 8 días de vacaciones proporcionales.
 - When you need to audit the model's reasoning (the "step by step" exposes it).
 - Not necessary for simple fact lookup questions.
 
-**Zero-shot CoT:** simply add "Piensa paso a paso." at the end of the prompt. Works surprisingly well.
+**Zero-shot CoT:** simply add "Think step by step." at the end of the prompt. Works surprisingly well.
 
 ### 3.4 Prompt templates with variables
 
 In production, the prompt is not written "by hand" on each call. **Templates** with variables are used and substituted dynamically:
 
 ```python
-TEMPLATE = """Eres el asistente de RRHH.
+TEMPLATE = """You are the HR assistant.
 
-Pregunta del empleado: {message}
+Employee question: {message}
 
-Fragmentos de política relevantes:
+Relevant policy fragments:
 {chunks}
 
-Responde en markdown con lenguaje sencillo."""
+Respond in markdown with simple language."""
 
 prompt = TEMPLATE.format(
-    message="¿Cuántos días de vacaciones tengo?",
-    chunks="§3.1 Vacaciones: Los empleados acumulan 1 día por mes..."
+    message="How many vacation days do I get?",
+    chunks="§3.1 Vacation: Employees accrue 1 day per month..."
 )
 ```
 
@@ -216,12 +216,12 @@ This is exactly what the `logic.prompt` node in template 09 does.
 LLMs **generate** text — they do not retrieve it from a database. When they do not know the answer, instead of saying "I don't know", they tend to invent a plausible answer with total confidence. This is called **hallucination**.
 
 ```
-Pregunta: ¿Cuántos días de vacaciones por ley corresponden en México?
-LLM sin RAG: "15 días en el primer año, aumentando 2 días por cada año adicional."
-← Correcto para México. Pero si preguntas por la política interna de tu empresa...
+Question: How many vacation days are legally required in Mexico?
+LLM without RAG: "15 days in the first year, increasing by 2 days for each additional year."
+← Correct for Mexico. But if you ask about your company's internal policy...
 
-Pregunta: ¿Cuántos días de vacaciones da Empresa X el primer año?
-LLM sin RAG: "Empresa X otorga 20 días hábiles el primer año..." ← INVENTADO
+Question: How many vacation days does Company X give in the first year?
+LLM without RAG: "Company X grants 20 business days in the first year..." ← FABRICATED
 ```
 
 The model "knows" that companies have vacation policies and generates something plausible — but it has no access to your company's real policy.
@@ -264,7 +264,7 @@ Pretraining has a **knowledge cutoff** date. A model trained through March 2024 
 │                       MINIMAL RAG PATTERN                            │
 │                                                                       │
 │  1. QUESTION                                                          │
-│     The user writes: "¿Cuántos días de vacaciones tengo?"         │
+│     The user writes: "How many vacation days do I get?"            │
 │                │                                                      │
 │                ▼                                                      │
 │  2. RETRIEVE                                                          │
@@ -279,7 +279,7 @@ Pretraining has a **knowledge cutoff** date. A model trained through March 2024 
 │                ▼                                                      │
 │  4. RESPOND (Generate)                                                │
 │     The LLM generates the response using ONLY the given context.         │
-│     "Según §3.1, tienes 12 días hábiles el primer año."              │
+│     "According to §3.1, you get 12 business days in the first year." │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -290,7 +290,7 @@ The RAG pattern has two phases:
 **Offline phase (indexing):** happens once, or when you update documents.
 
 ```
-Documentos PDF/texto
+PDF/text documents
         │
         ▼
   Chunking (split into fragments)
@@ -305,7 +305,7 @@ Documentos PDF/texto
 **Online phase (inference):** happens on each user question.
 
 ```
-Pregunta del usuario
+User question
         │
         ▼
   Embedding of the question → vector
@@ -360,9 +360,9 @@ Even with a huge window, passing all chunks to the model is costly (tokens = mon
 An **embedding** is a function that converts text (or any data) into a high-dimensional numeric vector. The key property: **semantically similar texts end up close in vector space**.
 
 ```
-"política de vacaciones"    → [0.12, -0.34, 0.89, 0.01, ...]  (1536 números)
-"días de descanso anuales"  → [0.11, -0.33, 0.91, 0.02, ...]  (muy cerca)
-"precio del petróleo"       → [-0.67, 0.45, -0.23, 0.78, ...]  (muy lejos)
+"vacation policy"           → [0.12, -0.34, 0.89, 0.01, ...]  (1536 numbers)
+"annual rest days"          → [0.11, -0.33, 0.91, 0.02, ...]  (very close)
+"oil price"                 → [-0.67, 0.45, -0.23, 0.78, ...]  (very far)
 ```
 
 ### 6.2 Geometric intuition
@@ -372,10 +372,10 @@ Imagine each text as a point in a 1,536-dimensional space (the size of `text-emb
 ```
           HR policies
           ┌────────────────────┐
-          │  vacaciones ●      │
-          │  descanso ●        │     prices
-          │  días libres ●     │  ┌──────────────┐
-          └────────────────────┘  │ petróleo ●   │
+          │  vacation ●        │
+          │  time off ●        │     prices
+          │  days off ●        │  ┌──────────────┐
+          └────────────────────┘  │ oil ●        │
                                   │ gas ●        │
                                   └──────────────┘
 ```
@@ -387,9 +387,9 @@ Similarity search consists of: "given the question embedding, which is the close
 The most common metric for comparing embeddings is **cosine similarity**: it measures the angle between two vectors, regardless of magnitude.
 
 ```
-similitud_coseno(A, B) = (A · B) / (||A|| × ||B||)
+cosine_similarity(A, B) = (A · B) / (||A|| × ||B||)
 
-Rango: -1 (opuestos) a 1 (idénticos)
+Range: -1 (opposite) to 1 (identical)
 ```
 
 In pure Python:
@@ -397,7 +397,7 @@ In pure Python:
 ```python
 import math
 
-def coseno(a, b):
+def cosine(a, b):
     dot = sum(x * y for x, y in zip(a, b))
     norm_a = math.sqrt(sum(x**2 for x in a))
     norm_b = math.sqrt(sum(x**2 for x in b))
@@ -527,9 +527,9 @@ Weights are public. You can download them, run them on your hardware or in Ollam
 **Ollama** is the easiest way to run models locally:
 
 ```bash
-ollama run llama3.1         # descarga y corre Llama 3.1 8B
+ollama run llama3.1         # downloads and runs Llama 3.1 8B
 ollama run mistral          # Mistral 7B
-ollama run nomic-embed-text # embeddings locales
+ollama run nomic-embed-text # local embeddings
 ```
 
 In RAGorbit you can point to Ollama by changing `model` to `ollama:llama3.1` in the `model.llm` node.
@@ -645,13 +645,13 @@ In scratch, **you** wrote that wiring function by function. In a real system, th
 ```
 SCRATCH (you wire everything)          LANGCHAIN (pieces + connectors)
 ─────────────────────────              ─────────────────────────────────
-cargar_chunks()          ────────────▶  TextLoader + CharacterTextSplitter
+load_chunks()            ────────────▶  TextLoader + CharacterTextSplitter
 embed()                  ────────────▶  OpenAIEmbeddings (Embeddings interface)
-lista en memoria         ────────────▶  Chroma.from_documents(...)
-similitud + sort         ────────────▶  vectorstore.as_retriever(...)
-construir_prompt()       ────────────▶  ChatPromptTemplate
-llm fake                 ────────────▶  ChatOpenAI / ChatAnthropic
-main() secuencial        ────────────▶  LCEL chain with | operator
+in-memory list           ────────────▶  Chroma.from_documents(...)
+similarity + sort        ────────────▶  vectorstore.as_retriever(...)
+build_prompt()           ────────────▶  ChatPromptTemplate
+fake llm                 ────────────▶  ChatOpenAI / ChatAnthropic
+sequential main()        ────────────▶  LCEL chain with | operator
 ```
 
 **What problem it removes:**
@@ -671,12 +671,12 @@ This table maps **each function** in `solucion_scratch.py` to its LangChain abst
 
 | What you did by hand (layer ②) | LangChain piece (layer ③) | RAGorbit node (template 09) |
 |--------------------------------|--------------------------|----------------------------|
-| `cargar_chunks(ruta)` — read txt and split by `---` | `TextLoader(...).load()` + `CharacterTextSplitter(...).split_documents(...)` | `loader` + `ingest.chunker` |
-| `embed(texto)` — bag-of-words → `dict` | `OpenAIEmbeddings(model=...)` (implements `Embeddings` interface) | `model.embedding` |
+| `load_chunks(path)` — read txt and split by `---` | `TextLoader(...).load()` + `CharacterTextSplitter(...).split_documents(...)` | `loader` + `ingest.chunker` |
+| `embed(text)` — bag-of-words → `dict` | `OpenAIEmbeddings(model=...)` (implements `Embeddings` interface) | `model.embedding` |
 | In-memory `chunks` list + vectors computed on the fly | `Chroma.from_documents(documents, embedding, collection_name=...)` | `store.chroma` |
-| `similitud_coseno()` + `sort` in `recuperar()` | `vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})` | `retrieval.vector` |
-| `recuperar()` returns `(index, sim, text)` | `retriever.invoke(query)` returns `list[Document]` | (same retriever) |
-| `construir_prompt()` — f-string with numbered chunks | `ChatPromptTemplate.from_messages([("system",...), ("human",...)])` | `logic.prompt` |
+| `cosine_similarity()` + `sort` in `retrieve()` | `vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})` | `retrieval.vector` |
+| `retrieve()` returns `(index, sim, text)` | `retriever.invoke(query)` returns `list[Document]` | (same retriever) |
+| `build_prompt()` — f-string with numbered chunks | `ChatPromptTemplate.from_messages([("system",...), ("human",...)])` | `logic.prompt` |
 | (no real LLM in scratch) | `ChatOpenAI(model=..., temperature=...)` or `ChatAnthropic(...)` | `model.llm` |
 | `main()` calls functions in order | LCEL chain: `dict | prompt | llm | StrOutputParser()` | edges of `flow.json` |
 
@@ -687,8 +687,8 @@ LangChain does not work with loose strings for indexable documents. It uses **`D
 ```python
 # Conceptual — each chunk is a Document
 doc = Document(
-    page_content="POLÍTICA DE VACACIONES §3 — Acumulación y disfrute\nLos empleados...",
-    metadata={"source": "datos/politicas_rrhh.txt", "chunk": 0},
+    page_content="VACATION POLICY §3 — Accrual and use\nEmployees...",
+    metadata={"source": "data/hr_policies.txt", "chunk": 0},
 )
 ```
 
@@ -704,35 +704,35 @@ A **loader** reads an external source and converts it into LangChain documents.
 ```python
 from langchain_community.document_loaders import TextLoader
 
-loader = TextLoader("datos/politicas_rrhh.txt", encoding="utf-8")
-documentos_raw = loader.load()
-# documentos_raw: list[Document] — typically ONE Document with the whole file
+loader = TextLoader("data/hr_policies.txt", encoding="utf-8")
+raw_documents = loader.load()
+# raw_documents: list[Document] — typically ONE Document with the whole file
 ```
 
-**Scratch equivalent:** open the file and read `contenido = f.read()` — but wrapped in a `Document` with `metadata={"source": "datos/politicas_rrhh.txt"}`.
+**Scratch equivalent:** open the file and read `content = f.read()` — but wrapped in a `Document` with `metadata={"source": "data/hr_policies.txt"}`.
 
 In M2 you will see loaders for PDF, web, SQL, etc. The pattern is always the same: `.load()` → `list[Document]`.
 
 ### 11.5 Text splitters: `CharacterTextSplitter`
 
-The policy file has **8 fragments** separated by `\n---\n`. In scratch you did `re.split(r"\n---\n", contenido)`. In LangChain:
+The policy file has **8 fragments** separated by `\n---\n`. In scratch you did `re.split(r"\n---\n", content)`. In LangChain:
 
 ```python
 from langchain.text_splitter import CharacterTextSplitter
 
 splitter = CharacterTextSplitter(
-    separator="\n---\n",    # dónde cortar (igual que tu separador)
-    chunk_size=1000,         # máximo de caracteres por chunk (respaldo si un bloque es enorme)
-    chunk_overlap=0,         # cuántos caracteres se solapan entre chunks consecutivos
-    keep_separator=False,    # si True, el separador queda dentro del chunk
+    separator="\n---\n",    # where to cut (same as your separator)
+    chunk_size=1000,         # maximum characters per chunk (fallback if a block is huge)
+    chunk_overlap=0,         # how many characters overlap between consecutive chunks
+    keep_separator=False,    # if True, the separator stays inside the chunk
 )
-chunks = splitter.split_documents(documentos_raw)
-# chunks: list[Document] — 8 Document, uno por fragmento de política
+chunks = splitter.split_documents(raw_documents)
+# chunks: list[Document] — 8 Documents, one per policy fragment
 ```
 
 | Parameter | What it does |
 |-----------|----------|
-| `separator` | String (or regex) where to split. Here it replicates `cargar_chunks()`. |
+| `separator` | String (or regex) where to split. Here it replicates `load_chunks()`. |
 | `chunk_size` | Character limit. If a block exceeds 1000, it splits again. |
 | `chunk_overlap` | Repeat N characters from the end of the previous chunk at the start of the next — useful to avoid cutting sentences in half (M2). |
 | `keep_separator` | `False` = the `---` does not appear in `page_content`. |
@@ -747,21 +747,21 @@ In scratch, `embed()` returned a `dict[str, float]`. In production, an embedding
 from langchain_openai import OpenAIEmbeddings
 
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-# La API key se lee de la variable de entorno OPENAI_API_KEY
+# The API key is read from the OPENAI_API_KEY environment variable
 
-vec = embeddings.embed_query("¿Cuántos días de vacaciones?")
-# vec: list[float] de 1536 dimensiones
+vec = embeddings.embed_query("How many vacation days do I get?")
+# vec: list[float] of 1536 dimensions
 
-vectores = embeddings.embed_documents(["chunk 1", "chunk 2"])
-# vectores: list[list[float]] — uno por documento
+vectors = embeddings.embed_documents(["chunk 1", "chunk 2"])
+# vectors: list[list[float]] — one per document
 ```
 
 **Key methods:**
 
 | Method | When used | Scratch equivalent |
 |--------|---------------|---------------------|
-| `embed_query(texto)` | A user question (online phase) | `embed(query)` |
-| `embed_documents(lista)` | Many chunks when indexing (offline phase) | `embed(chunk)` in a loop |
+| `embed_query(text)` | A user question (online phase) | `embed(query)` |
+| `embed_documents(list)` | Many chunks when indexing (offline phase) | `embed(chunk)` in a loop |
 
 **Local alternative (no API key):**
 
@@ -781,21 +781,21 @@ A **vector store** stores `(Document, vector)` pairs and enables similarity sear
 from langchain_community.vectorstores import Chroma
 
 vectorstore = Chroma.from_documents(
-    documents=chunks,              # los 8 Document del splitter
-    embedding=embeddings,            # objeto OpenAIEmbeddings
-    collection_name="hr_policies",   # nombre de la colección (como en template 09)
+    documents=chunks,              # the 8 Documents from the splitter
+    embedding=embeddings,            # OpenAIEmbeddings object
+    collection_name="hr_policies",   # collection name (as in template 09)
 )
 ```
 
 **What `.from_documents` does internally (offline phase):**
 
 ```
-chunks (8 Document)
+chunks (8 Documents)
     │
     ├──▶ embeddings.embed_documents([doc.page_content for doc in chunks])
-    │         → 8 vectores de 1536 floats
+    │         → 8 vectors of 1536 floats
     │
-    └──▶ Chroma almacena (id, vector, page_content, metadata) en índice HNSW
+    └──▶ Chroma stores (id, vector, page_content, metadata) in HNSW index
 ```
 
 Equivalent to your loop `for chunk in chunks: embed(chunk)` + store in memory, but with an index optimized for millions of vectors. To persist to disk: `persist_directory="./chroma_db"` (M3).
@@ -806,19 +806,19 @@ The vector store knows how to search, but the RAG pipeline wants an object with 
 
 ```python
 retriever = vectorstore.as_retriever(
-    search_type="similarity",      # búsqueda por similitud coseno
-    search_kwargs={"k": 3},        # top-3, como k=3 en recuperar()
+    search_type="similarity",      # search by cosine similarity
+    search_kwargs={"k": 3},        # top-3, like k=3 in retrieve()
 )
 
-resultado = retriever.invoke("¿Cuántos días de vacaciones si llevo 3 años?")
-# resultado: list[Document] — 3 documentos, del más al menos similar
+result = retriever.invoke("How many vacation days if I've been here 3 years?")
+# result: list[Document] — 3 documents, from most to least similar
 ```
 
 **Scratch equivalent:**
 
 ```python
-# recuperar(query, chunks, k=3) → list[tuple[int, float, str]]
-# retriever.invoke(query)        → list[Document]  (sin índice ni score expuesto por defecto)
+# retrieve(query, chunks, k=3) → list[tuple[int, float, str]]
+# retriever.invoke(query)       → list[Document]  (no index or score exposed by default)
 ```
 
 | Parameter | Meaning |
@@ -839,7 +839,7 @@ llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)
 ```
 
 ```python
-# Alternativa Anthropic (default en RAGorbit):
+# Anthropic alternative (default in RAGorbit):
 from langchain_anthropic import ChatAnthropic
 
 llm = ChatAnthropic(model="claude-opus-4-8", temperature=0.2)
@@ -852,25 +852,25 @@ The `llm` object is a **`Runnable`**: you can compose it with `|` (see §11.10).
 
 ### 11.10 Prompt templates: `ChatPromptTemplate`
 
-In scratch, `construir_prompt()` was an f-string. In LangChain, prompts are **templates with variables**:
+In scratch, `build_prompt()` was an f-string. In LangChain, prompts are **templates with variables**:
 
 ```python
 from langchain.prompts import ChatPromptTemplate
 
 prompt = ChatPromptTemplate.from_messages([
-    ("system", "Eres el asistente de RRHH. Responde SOLO con los fragmentos dados."),
-    ("human", """Fragmentos relevantes:
-{contexto}
+    ("system", "You are the HR assistant. Respond ONLY with the given fragments."),
+    ("human", """Relevant fragments:
+{context}
 
-Pregunta del empleado: {pregunta}
+Employee question: {question}
 
-Responde en markdown."""),
+Respond in markdown."""),
 ])
 ```
 
 - **`("system", ...)`** → system message (§3.1).
-- **`("human", ...)`** → user message with variables `{contexto}` and `{pregunta}`.
-- When invoked with `{"contexto": "...", "pregunta": "..."}`, LangChain fills the variables and produces a **`ChatPromptValue`** ready for the LLM.
+- **`("human", ...)`** → user message with variables `{context}` and `{question}`.
+- When invoked with `{"context": "...", "question": "..."}`, LangChain fills the variables and produces a **`ChatPromptValue`** ready for the LLM.
 
 Variables must match **exactly** the keys of the dict that feeds the chain (next section).
 
@@ -889,14 +889,14 @@ A | B | C
   ≡  C(B(A(input)))
 ```
 
-Think Unix pipes: `query | retriever | formatear | prompt | llm | parser`.
+Think Unix pipes: `query | retriever | format | prompt | llm | parser`.
 
 #### Idea 2: `RunnablePassthrough` passes input through unchanged
 
 ```python
 from langchain.schema.runnable import RunnablePassthrough
 
-RunnablePassthrough()  # invoke("hola") → "hola"
+RunnablePassthrough()  # invoke("hello") → "hello"
 ```
 
 Useful when one branch of the pipeline needs the **original input** (the question) while another branch transforms it (retrieve chunks).
@@ -906,13 +906,13 @@ Useful when one branch of the pipeline needs the **original input** (the questio
 ```python
 from langchain.schema.output_parser import StrOutputParser
 
-def formatear_chunks(docs: list) -> str:
+def format_chunks(docs: list) -> str:
     return "\n\n".join(f"[{i+1}] {d.page_content}" for i, d in enumerate(docs))
 
 chain = (
     {
-        "contexto": retriever | formatear_chunks,
-        "pregunta": RunnablePassthrough(),
+        "context": retriever | format_chunks,
+        "question": RunnablePassthrough(),
     }
     | prompt
     | llm
@@ -923,25 +923,25 @@ chain = (
 **Step-by-step flow** when you call `chain.invoke(query)`:
 
 ```
-INPUT: query = "¿Cuántos días de vacaciones...?"
+INPUT: query = "How many vacation days...?"
 
 STEP 1 — The dict (parallel branches):
 ┌─────────────────────────────────────────────────────────────┐
-│  "contexto": retriever | formatear_chunks                   │
+│  "context": retriever | format_chunks                       │
 │      query ──▶ retriever.invoke(query)                      │
 │             ──▶ list[Document] (3 docs)                       │
-│             ──▶ formatear_chunks(docs)                      │
-│             ──▶ "[1] POLÍTICA §4...\n\n[2] POLÍTICA §3..."   │
+│             ──▶ format_chunks(docs)                          │
+│             ──▶ "[1] POLICY §4...\n\n[2] POLICY §3..."       │
 │                                                             │
-│  "pregunta": RunnablePassthrough()                          │
-│      query ──▶ query  (sin cambios)                         │
+│  "question": RunnablePassthrough()                          │
+│      query ──▶ query  (unchanged)                           │
 └─────────────────────────────────────────────────────────────┘
         │
         ▼
-  {"contexto": "[1] ...", "pregunta": "¿Cuántos días..."}
+  {"context": "[1] ...", "question": "How many days..."}
 
 STEP 2 — prompt:
-  ChatPromptTemplate fills {contexto} and {pregunta}
+  ChatPromptTemplate fills {context} and {question}
         │
         ▼
   ChatPromptValue (system + human messages ready)
@@ -954,10 +954,10 @@ STEP 4 — StrOutputParser:
   Extracts text string from AIMessage
         │
         ▼
-OUTPUT: "Según la Política §3, tienes derecho a 18 días hábiles..."
+OUTPUT: "According to Policy §3, you are entitled to 18 business days..."
 ```
 
-**Why the dict and not a single linear chain:** the question must reach the prompt **intact** (`{pregunta}`), but the retriever needs the same question as input to search. `RunnablePassthrough()` prevents the question from being lost or overwritten by chunks.
+**Why the dict and not a single linear chain:** the question must reach the prompt **intact** (`{question}`), but the retriever needs the same question as input to search. `RunnablePassthrough()` prevents the question from being lost or overwritten by chunks.
 
 **`StrOutputParser`:** the LLM returns a rich object (`AIMessage`). The parser extracts `.content` as `str` — what you print or return to the user.
 
@@ -975,44 +975,44 @@ This is the complete walkthrough of `lab/solucion_framework.py`, line by line co
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│  BLOCK 1 — LOAD AND CHUNK          (≈ cargar_chunks)          │
-│  loader = TextLoader("datos/politicas_rrhh.txt")                 │
-│  documentos_raw = loader.load()        # 1 Document grande       │
+│  BLOCK 1 — LOAD AND CHUNK          (≈ load_chunks)             │
+│  loader = TextLoader("data/hr_policies.txt")                     │
+│  raw_documents = loader.load()         # 1 large Document        │
 │  splitter = CharacterTextSplitter(separator="\n---\n", ...)       │
-│  chunks = splitter.split_documents(...)  # 8 Document            │
+│  chunks = splitter.split_documents(...)  # 8 Documents           │
 └──────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│  BLOCK 2 — EMBEDDINGS + CHROMA       (≈ embed + índice)         │
+│  BLOCK 2 — EMBEDDINGS + CHROMA       (≈ embed + index)          │
 │  embeddings = OpenAIEmbeddings(model="text-embedding-3-small")   │
 │  vectorstore = Chroma.from_documents(chunks, embeddings, ...)    │
-│  # Indexa 8 vectores semánticos en memoria                       │
+│  # Indexes 8 semantic vectors in memory                          │
 └──────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│  BLOCK 3 — RETRIEVER                 (≈ recuperar)              │
+│  BLOCK 3 — RETRIEVER                 (≈ retrieve)               │
 │  retriever = vectorstore.as_retriever(                           │
 │      search_type="similarity", search_kwargs={"k": 3})           │
 └──────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│  BLOCK 4 — PROMPT + LLM              (≈ construir_prompt + LLM) │
+│  BLOCK 4 — PROMPT + LLM              (≈ build_prompt + LLM)     │
 │  llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2)        │
 │  prompt = ChatPromptTemplate.from_messages([                     │
 │      ("system", SYSTEM_PROMPT),                                  │
-│      ("human", HUMAN_TEMPLATE),  # {contexto}, {pregunta}        │
+│      ("human", HUMAN_TEMPLATE),  # {context}, {question}         │
 │  ])                                                              │
 └──────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│  BLOCK 5 — LCEL CHAIN                (≈ main orquestado)        │
+│  BLOCK 5 — LCEL CHAIN                (≈ orchestrated main)      │
 │  chain = (                                                       │
-│      {"contexto": retriever | formatear_chunks,                  │
-│       "pregunta": RunnablePassthrough()}                        │
+│      {"context": retriever | format_chunks,                      │
+│       "question": RunnablePassthrough()}                         │
 │      | prompt | llm | StrOutputParser()                         │
 │  )                                                               │
 └──────────────────────────────────────────────────────────────────┘
@@ -1020,12 +1020,12 @@ This is the complete walkthrough of `lab/solucion_framework.py`, line by line co
                               ▼
 ┌──────────────────────────────────────────────────────────────────┐
 │  BLOCK 6 — EXECUTE                                             │
-│  chunks_recuperados = retriever.invoke(query)  # inspección      │
-│  respuesta = chain.invoke(query)               # respuesta final │
+│  retrieved_chunks = retriever.invoke(query)   # inspection       │
+│  response = chain.invoke(query)               # final response   │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-**Ranking difference vs scratch:** with real semantic embeddings, §3 ("Después de 3 años… 18 días") usually ranks **first** — not §4 as in bag-of-words. The mechanism is identical; vector quality changes (§6.4).
+**Ranking difference vs scratch:** with real semantic embeddings, §3 ("After 3 years… 18 days") usually ranks **first** — not §4 as in bag-of-words. The mechanism is identical; vector quality changes (§6.4).
 
 ### 11.13 When to use LangChain / when NOT — and gotchas
 

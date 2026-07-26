@@ -40,11 +40,11 @@ This process looks simple but hides most production RAG failures. Four frequent 
 The right approach is to choose the **chunking strategy** according to document structure and enrich each chunk with **metadata** that enables hard filters in the retriever.
 
 ```
-Documentos crudos
+Raw documents
       │
       ▼
  ┌─────────┐    parsing    ┌──────────────┐   chunking   ┌────────────┐
- │ Loader  │ ────────────▶ │  texto limpio│ ────────────▶ │  chunks[]  │
+ │ Loader  │ ────────────▶ │  clean text  │ ────────────▶ │  chunks[]  │
  └─────────┘               └──────────────┘              └────────────┘
                                                                 │
                                                           metadata
@@ -83,7 +83,7 @@ PDFs have two variants:
 
 ### 2.3 loader.sql: converting rows into documents
 
-`loader.sql` runs a query and converts each row into a document. Example: the query `SELECT sku, descripcion, especificaciones FROM productos WHERE activo = true` produces one document per product. This enables RAG over product catalogs without exporting to CSV.
+`loader.sql` runs a query and converts each row into a document. Example: the query `SELECT sku, description, specifications FROM products WHERE active = true` produces one document per product. This enables RAG over product catalogs without exporting to CSV.
 
 **When to use:** when data lives in an operational DB and you want ingestion always synced with the source (by running the query periodically).
 
@@ -113,16 +113,16 @@ PDFs have two variants:
 **Practical fix:** normalize text after extraction:
 ```python
 import unicodedata
-texto_limpio = unicodedata.normalize("NFKC", texto_crudo)
+clean_text = unicodedata.normalize("NFKC", raw_text)
 ```
 
 ### 3.2 Tabular parsing
 
-`loader.tabular` reads CSV/Parquet with `pandas` (or equivalent). The `schemaHint` config helps the loader interpret ambiguous columns. For example, a `periodo` column may be a string "2023-Q3" or an integer `20234`.
+`loader.tabular` reads CSV/Parquet with `pandas` (or equivalent). The `schemaHint` config helps the loader interpret ambiguous columns. For example, a `period` column may be a string "2023-Q3" or an integer `20234`.
 
 **Conversion to text:** each row becomes readable text:
 ```
-concepto: ingreso_anual | valor: 85000 | periodo: 2023
+concept: annual_income | value: 85000 | period: 2023
 ```
 
 This enables semantic similarity search over data that would otherwise be only numbers.
@@ -144,21 +144,21 @@ Chunking is the most important design decision in the ingestion pipeline. A poor
 Splits text into blocks of N characters (or N tokens), with an overlap of O characters between consecutive blocks.
 
 ```
-Texto original:
+Original text:
   [──────── 1000 chars ────────][──────── 1000 chars ────────]
                             [── overlap 200 ──]
 
-Chunks resultantes:
+Resulting chunks:
   Chunk 0: chars 0..1000
-  Chunk 1: chars 800..1800    ← overlap cubre el contexto de transición
+  Chunk 1: chars 800..1800    ← overlap covers the transition context
   Chunk 2: chars 1600..2600
 ```
 
 **ASCII diagram:**
 ```
-TEXTO: "La indemnización...límite de 2×...plazo de 30 días..."
-        |<──── 1000 ────>|<──200──>|<──── 1000 ────>|
-        Chunk 0           overlap    Chunk 1
+TEXT: "The indemnity...limit of 2×...deadline of 30 days..."
+      |<──── 1000 ────>|<──200──>|<──── 1000 ────>|
+      Chunk 0           overlap    Chunk 1
 ```
 
 **When to use:**
@@ -185,16 +185,16 @@ Tries separators in order of semantic preference. If the resulting chunk exceeds
 Typical hierarchy: `\n\n` (paragraphs) → `\n` (lines) → `. ` (sentences) → ` ` (words)
 
 ```
-TEXTO con párrafos bien marcados:
+TEXT with well-marked paragraphs:
 ┌──────────────────────────────────────┐
-│ Párrafo 1 (400 chars)                │ ← chunk 0 (cabe en 1000)
+│ Paragraph 1 (400 chars)              │ ← chunk 0 (fits in 1000)
 ├──────────────────────────────────────┤
-│ Párrafo 2 (600 chars)                │ ← chunk 1 (cabe en 1000)
+│ Paragraph 2 (600 chars)              │ ← chunk 1 (fits in 1000)
 ├──────────────────────────────────────┤
-│ Párrafo 3 larguísimo (2000 chars)    │ ← se parte por oraciones
-│   Oración 1 (400)                    │   chunk 2
-│   Oración 2 (300)                    │   chunk 3
-│   Oración 3 + Oración 4 (900)        │   chunk 4
+│ Paragraph 3 very long (2000 chars)   │ ← split by sentences
+│   Sentence 1 (400)                   │   chunk 2
+│   Sentence 2 (300)                   │   chunk 3
+│   Sentence 3 + Sentence 4 (900)      │   chunk 4
 └──────────────────────────────────────┘
 ```
 
@@ -214,12 +214,12 @@ TEXTO con párrafos bien marcados:
 Computes embeddings of consecutive sentences and cuts where similarity falls below a threshold. Each chunk is a coherent "thematic block".
 
 ```
-Oraciones con su embedding:
+Sentences with their embedding:
   S1 ─── S2 ─── S3 ─── S4 ─── S5 ─── S6
-         │similitud alta│      │baja│   │alta│
-                          ← corte →    ← corte →
+         │high similarity│     │low │   │high│
+                          ← cut →      ← cut →
 
-Chunks resultantes:
+Resulting chunks:
   Chunk A: S1+S2+S3
   Chunk B: S4
   Chunk C: S5+S6
@@ -242,13 +242,13 @@ Chunks resultantes:
 Leverages document structure: titles, subtitles, lists, tables. Tools like Unstructured.io classify each PDF block ("Title", "NarrativeText", "Table", "ListItem") and group them semantically.
 
 ```
-PDF con estructura:
+PDF with structure:
 ┌─────────────────────────────────────────┐
-│ [Título] Capítulo 3. Resultados         │ ─── Chunk "Capítulo 3"
-│ [NarrativeText] El análisis muestra...  │
-│ [Table] | Año | Ingresos | Costos |     │ ─── Chunk tabla (→ JSON)
+│ [Title] Chapter 3. Results              │ ─── Chunk "Chapter 3"
+│ [NarrativeText] The analysis shows...   │
+│ [Table] | Year | Revenue | Costs |      │ ─── Chunk table (→ JSON)
 │         | 2022 | 1.2M    | 0.8M  |     │
-│ [NarrativeText] La tabla anterior...   │ ─── Chunk "texto post-tabla"
+│ [NarrativeText] The table above...      │ ─── Chunk "post-table text"
 └─────────────────────────────────────────┘
 ```
 
@@ -262,20 +262,20 @@ PDF con estructura:
 
 ### 4.5 Strategy 5 — By-clause/section chunking (domain-based)
 
-Defines domain-specific separators: `CLÁUSULA N.` (contracts), `ATA-XX-YY-ZZ` (aircraft manuals), `Artículo N.` (regulations), `SECCIÓN N.` (policies).
+Defines domain-specific separators: `CLAUSE N.` (contracts), `ATA-XX-YY-ZZ` (aircraft manuals), `Article N.` (regulations), `SECTION N.` (policies).
 
 **This is the most precise strategy when the domain has predictable structure.**
 
 ```
-Contrato legal:
-CLÁUSULA 1. OBJETO  ←── separador de dominio
-  texto...
-CLÁUSULA 2. DURACIÓN  ←── separador de dominio
-  texto...
-CLÁUSULA 3. PAGO  ←── separador de dominio
-  texto...
+Legal contract:
+CLAUSE 1. PURPOSE  ←── domain separator
+  text...
+CLAUSE 2. DURATION  ←── domain separator
+  text...
+CLAUSE 3. PAYMENT  ←── domain separator
+  text...
 
-→ 3 chunks perfectos, sin overhead de overlap
+→ 3 perfect chunks, no overlap overhead
 ```
 
 **When to use:**
@@ -300,16 +300,16 @@ CLÁUSULA 3. PAGO  ←── separador de dominio
 Overlap is the number of characters (or tokens) shared between consecutive chunks. Its role is to preserve context at the boundary between chunks.
 
 ```
-Sin overlap:
-  Chunk 0: "...La cláusula establece que el plazo"
-  Chunk 1: "será de 30 días naturales. La penalización..."
-  ← La oración queda partida; el retriever puede devolver solo Chunk 1
-    y el LLM no sabe qué plazo son "30 días".
+Without overlap:
+  Chunk 0: "...The clause establishes that the deadline"
+  Chunk 1: "shall be 30 calendar days. The penalty..."
+  ← The sentence is split; the retriever may return only Chunk 1
+    and the LLM does not know what "30 days" refers to.
 
-Con overlap de 50 chars:
-  Chunk 0: "...La cláusula establece que el plazo"
-  Chunk 1: "...que el plazo será de 30 días naturales. La penalización..."
-  ← El contexto "que el plazo" se repite en Chunk 1, dando coherencia.
+With overlap of 50 chars:
+  Chunk 0: "...The clause establishes that the deadline"
+  Chunk 1: "...that the deadline shall be 30 calendar days. The penalty..."
+  ← The context "that the deadline" is repeated in Chunk 1, providing coherence.
 ```
 
 **Empirical rule:**
@@ -327,7 +327,7 @@ Con overlap de 50 chars:
 | Recursive | yes | paragraphs | no | Articles, reports, policies |
 | Semantic | no | no (uses embeddings) | no | Dense narrative text |
 | By-layout | yes (with Unstructured) | visual structure | block type | Reports with tables, rich PDFs |
-| By-clause/section | yes | domain structure | clausula_id, tipo | Contracts, technical manuals, regulations |
+| By-clause/section | yes | domain structure | clause_id, type | Contracts, technical manuals, regulations |
 
 ---
 
@@ -339,14 +339,14 @@ Each chunk in the vector store is more than text + embedding. It carries a metad
 
 ```python
 chunk = {
-    "text": "CLÁUSULA 9. CONFIDENCIALIDAD ...",
-    "embedding": [0.023, -0.117, ...],   # generado por model.embedding
+    "text": "CLAUSE 9. CONFIDENTIALITY ...",
+    "embedding": [0.023, -0.117, ...],   # generated by model.embedding
     "metadata": {
-        "clausula_id": 9,
-        "tipo": "confidencialidad",
-        "contrato": "CSP-2024-0087",
-        "fecha": "2024-01-15",
-        "source": "contrato_muestra.txt"
+        "clause_id": 9,
+        "type": "confidentiality",
+        "contract": "CSP-2024-0087",
+        "date": "2024-01-15",
+        "source": "sample_contract.txt"
     }
 }
 ```
@@ -385,9 +385,9 @@ Each domain has its canonical fields. The `ingest.metadata` table in RAGorbit su
 |---------|-------------------|-----------------|
 | Aviation (template 08) | `aircraft_type`, `ata_chapter`, `revision_date` | Only chunks for the correct aircraft and chapter |
 | Financial (template 02) | `doc_type`, `period` | Only documents from the applicant's fiscal period |
-| Legal (template 05) | `clausula_id`, `tipo` | Only clauses of a specific type |
-| Insurance (template 04) | `fare_class`, `cobertura` | Only policies of the contracted fare class |
-| HR (template 09) | `departamento`, `nivel`, `version` | Only current policies for the department |
+| Legal (template 05) | `clause_id`, `type` | Only clauses of a specific type |
+| Insurance (template 04) | `fare_class`, `coverage` | Only policies of the contracted fare class |
+| HR (template 09) | `department`, `level`, `version` | Only current policies for the department |
 
 ### 5.4 How the `ingest.metadata` node produces these fields
 
@@ -399,7 +399,7 @@ In RAGorbit, the `ingest.metadata` node receives `Documents` from the chunker an
 
 ### 5.5 Metadata and reproducibility
 
-The fields `contrato`, `fecha`, and `revision_date` allow re-running exactly the same historical query. If an auditor asks "which manual version answered the technician on March 15, 2024?", the system can filter by `revision_date <= 2024-03-15` and reproduce the answer.
+The fields `contract`, `date`, and `revision_date` allow re-running exactly the same historical query. If an auditor asks "which manual version answered the technician on March 15, 2024?", the system can filter by `revision_date <= 2024-03-15` and reproduce the answer.
 
 ---
 
@@ -420,13 +420,13 @@ If you only extract text, you lose the semantic content of tables and diagrams. 
 
 ```json
 {
-  "tipo": "tabla",
-  "titulo": "Límites de tolerancia — Tren de aterrizaje principal",
-  "datos": [
-    {"parametro": "juego_lateral_pivote", "min": "0.00 mm", "max": "0.35 mm", "unidad": "mm"},
-    {"parametro": "torque_perno_superior", "nominal": "45", "tolerancia": "±5%", "unidad": "Nm"}
+  "type": "table",
+  "title": "Tolerance limits — Main landing gear",
+  "data": [
+    {"parameter": "pivot_lateral_play", "min": "0.00 mm", "max": "0.35 mm", "unit": "mm"},
+    {"parameter": "upper_bolt_torque", "nominal": "45", "tolerance": "±5%", "unit": "Nm"}
   ],
-  "referencia": "Tabla 32-11-00-991-001"
+  "reference": "Table 32-11-00-991-001"
 }
 ```
 
@@ -437,10 +437,10 @@ This JSON is indexed as text. Now the query "what is the maximum lateral play of
 For diagrams, `loader.multimodal` with `describeImages: true` sends each figure to `model.vision` (Claude Opus 4.8 or another multimodal model). The model returns a text description:
 
 ```
-"Diagrama del sistema hidráulico del tren de aterrizaje principal del A320.
-Muestra el actuador hidráulico (referencia 10-43200-00) conectado a la línea
-hidráulica verde (sistema 1) mediante dos válvulas de cierre. La presión
-nominal del sistema es 3000 PSI. Figura 32-21-11-991-020."
+"Diagram of the main landing gear hydraulic system of the A320.
+Shows the hydraulic actuator (reference 10-43200-00) connected to the
+green hydraulic line (system 1) via two shutoff valves. The nominal
+system pressure is 3000 PSI. Figure 32-21-11-991-020."
 ```
 
 This description is indexed and retrieved as normal text. The retriever can find "hydraulic actuator" even though the figure does not contain that text explicitly.
@@ -474,15 +474,15 @@ LangChain includes more than 100 loaders in `langchain-community`. They are gene
 from langchain_community.document_loaders import PyPDFLoader, CSVLoader, WebBaseLoader
 
 # PDF
-loader = PyPDFLoader("contrato.pdf")
-docs = loader.load()  # una página = un Document
+loader = PyPDFLoader("contract.pdf")
+docs = loader.load()  # one page = one Document
 
 # CSV
-loader = CSVLoader("datos.csv", metadata_columns=["doc_type", "period"])
-docs = loader.load()  # una fila = un Document
+loader = CSVLoader("data.csv", metadata_columns=["doc_type", "period"])
+docs = loader.load()  # one row = one Document
 
 # Web
-loader = WebBaseLoader(["https://example.com/politica"])
+loader = WebBaseLoader(["https://example.com/policy"])
 docs = loader.load()
 ```
 
@@ -497,11 +497,11 @@ LlamaIndex uses the term "reader" instead of "loader". The `llama-hub` ecosystem
 from llama_index.readers.file import PDFReader, CSVReader
 from llama_index.core import SimpleDirectoryReader
 
-# PDF con metadatos por página
+# PDF with metadata per page
 reader = PDFReader()
-docs = reader.load_data("contrato.pdf")  # carga con page_label
+docs = reader.load_data("contract.pdf")  # loads with page_label
 
-# Directorio completo (detecta tipo de archivo automáticamente)
+# Full directory (auto-detects file type)
 reader = SimpleDirectoryReader("data/contracts/", recursive=True)
 docs = reader.load_data()
 ```
@@ -516,11 +516,11 @@ Unstructured is a tool specialized in parsing unstructured documents. It categor
 ```python
 from unstructured.partition.pdf import partition_pdf
 
-elements = partition_pdf("manual_tecnico.pdf", strategy="hi_res")
-# elements es una lista de objetos tipados:
-# Title("Capítulo 32 Landing Gear")
-# NarrativeText("El tren de aterrizaje principal...")
-# Table(text="| Parámetro | Min | Max |...", metadata={"page_number": 47})
+elements = partition_pdf("technical_manual.pdf", strategy="hi_res")
+# elements is a list of typed objects:
+# Title("Chapter 32 Landing Gear")
+# NarrativeText("The main landing gear...")
+# Table(text="| Parameter | Min | Max |...", metadata={"page_number": 47})
 # Image(metadata={"filename": "fig_32-11.png"})
 ```
 
@@ -558,7 +558,7 @@ The node receives `Documents` from the loader and produces `Documents` (chunks).
 The three strategies the node supports:
 - `recursive` — RecursiveCharacterTextSplitter (default).
 - `by-section` — splits on section headers (`#`, `##`, or domain patterns).
-- `by-clause` — splits on numbered clauses (`CLÁUSULA N.`, `Artículo N.`).
+- `by-clause` — splits on numbered clauses (`CLAUSE N.`, `Article N.`).
 
 ### 8.2 `ingest.metadata` node
 
@@ -575,7 +575,7 @@ Receives `Documents` from the chunker and adds metadata:
 
 Fields can be populated from three sources:
 1. **Propagated from loader** (e.g.: `source`, `page_number`).
-2. **Extracted from chunk text** with regex (e.g.: `clausula_id` from header).
+2. **Extracted from chunk text** with regex (e.g.: `clause_id` from header).
 3. **Injected at runtime** from session context (e.g.: `aircraft_type` from user JWT).
 
 ### 8.3 Typical pipeline
@@ -583,9 +583,9 @@ Fields can be populated from three sources:
 ```
 [loader.pdf]          [ingest.chunker]       [ingest.metadata]
   Documents ─────────▶   Documents ──────────▶  Documents
-                          strategy: by-clause    fields: [clausula_id,
-                          chunkSize: 900              tipo, contrato,
-                          overlap: 120                fecha]
+                          strategy: by-clause    fields: [clause_id,
+                          chunkSize: 900              type, contract,
+                          overlap: 120                date]
                                                        │
                                               ┌────────┘
                                               ▼
@@ -595,7 +595,7 @@ Fields can be populated from three sources:
                                               │
                                               ▼
                                          Retriever ──▶ [retrieval.vector]
-                                                        hardFilters: [tipo]
+                                                        hardFilters: [type]
 ```
 
 ### 8.4 Connection with template 09 (HR)
@@ -610,7 +610,7 @@ No explicit `ingest.metadata` because the chatbot does not need to filter by doc
 
 When you add multiple departments or policy versions, you do need metadata:
 ```json
-{ "fields": ["departamento", "vigente_desde", "version"] }
+{ "fields": ["department", "effective_since", "version"] }
 ```
 
 ---
@@ -654,19 +654,19 @@ This section bridges what you did by hand in the lab (`solucion_scratch.py`) and
 |-------------------------------|----------------------------------------|
 | `open(path).read()` | `TextLoader(path).load()` → list of `Document` |
 | Your `Chunk` dataclass | `Document(page_content=..., metadata={...})` |
-| `re.compile(r'^CLÁUSULA...', re.MULTILINE)` | Logic inside `split_text()` of a custom splitter |
+| `re.compile(r'^CLAUSE...', re.MULTILINE)` | Logic inside `split_text()` of a custom splitter |
 | Loop `matches[i].start()` → `matches[i+1].start()` | Same algorithm, but encapsulated in `ClauseSplitter` |
-| `clasificar_clausula(titulo)` | `_clasificar(titulo)` inside the custom splitter |
-| `chunk.metadata["source"] = "contrato_muestra.txt"` | Parent `Document` metadata propagated in `split_documents()` |
+| `classify_clause(title)` | `_classify(title)` inside the custom splitter |
+| `chunk.metadata["source"] = "sample_contract.txt"` | Parent `Document` metadata propagated in `split_documents()` |
 | `print(json.dumps(chunk))` | `splitter.split_documents(docs)` → list ready for `Chroma.from_documents()` |
 
 ```
-Capa ② (scratch)                    Capa ③ (LangChain)
+Layer ② (scratch)                   Layer ③ (LangChain)
 ─────────────────                   ─────────────────────
-texto = open(...).read()     →      docs = TextLoader(...).load()
-regex + bucle manual         →      splitter.split_documents(docs)
-dict metadata a mano         →      Document.metadata automático
-script suelto                →      integración con vector stores
+text = open(...).read()      →      docs = TextLoader(...).load()
+regex + manual loop          →      splitter.split_documents(docs)
+dict metadata by hand        →      Document.metadata automatic
+standalone script            →      integration with vector stores
 ```
 
 ### 10.2 `RecursiveCharacterTextSplitter`: the recursive algorithm
@@ -679,13 +679,13 @@ It is LangChain's **generic** default splitter. It does not know your domain (cl
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 splitter = RecursiveCharacterTextSplitter(
-    separators=["\n\n", "\n", ". ", " ", ""],  # orden: más semántico → menos
+    separators=["\n\n", "\n", ". ", " ", ""],  # order: most semantic → least
     chunk_size=1000,
     chunk_overlap=150,
     keep_separator=True,
 )
-chunks = splitter.create_documents([texto_largo])
-# chunks[i] es un Document(page_content=..., metadata={})
+chunks = splitter.create_documents([long_text])
+# chunks[i] is a Document(page_content=..., metadata={})
 ```
 
 #### The algorithm, step by step
@@ -693,25 +693,25 @@ chunks = splitter.create_documents([texto_largo])
 Imagine text of 2500 characters and `chunk_size=1000`. The splitter works **recursively** on each fragment:
 
 ```
-                    TEXTO (2500 chars)
+                    TEXT (2500 chars)
                            │
-              ¿Cabe en chunk_size=1000?  NO
+              Fits in chunk_size=1000?  NO
                            │
-         Prueba separador[0] = "\n\n" (párrafos)
+         Try separator[0] = "\n\n" (paragraphs)
                            │
               ┌────────────┴────────────┐
-         Párrafo A (400)          Párrafo B (2100)
-         ¿Cabe? SÍ → chunk 0      ¿Cabe? NO
+         Paragraph A (400)        Paragraph B (2100)
+         Fits? YES → chunk 0       Fits? NO
                                         │
-                         Prueba separador[1] = "\n" (líneas)
+                         Try separator[1] = "\n" (lines)
                                         │
                          ┌──────────────┴──────────────┐
-                    Línea 1 (500)              Resto (1600)
-                    ¿Cabe? SÍ → chunk 1        ¿Cabe? NO
+                    Line 1 (500)              Remainder (1600)
+                    Fits? YES → chunk 1        Fits? NO
                                                     │
-                                    Prueba separador[2] = ". " (oraciones)
+                                    Try separator[2] = ". " (sentences)
                                                     │
-                                    ... y así hasta que cada trozo ≤ 1000
+                                    ... and so on until each piece ≤ 1000
 ```
 
 **Algorithm rules:**
@@ -719,17 +719,17 @@ Imagine text of 2500 characters and `chunk_size=1000`. The splitter works **recu
 1. Receives a text block and the separator list (most to least semantic).
 2. Tries to split with the **first** separator in the list.
 3. For each resulting sub-block:
-   - If `len(sub_bloque) ≤ chunk_size` → it is a candidate chunk.
-   - If `len(sub_bloque) > chunk_size` → **recursion**: return to step 2 with the **next** separator in the list.
+   - If `len(sub_block) ≤ chunk_size` → it is a candidate chunk.
+   - If `len(sub_block) > chunk_size` → **recursion**: return to step 2 with the **next** separator in the list.
 4. If separators are exhausted, cut by characters (separator `""` forces hard cut).
 5. Apply `chunk_overlap` between consecutive chunks (sliding; see [§4.6](#46-the-overlap-parameter)).
 
 **Concrete mini-example:**
 
 ```python
-texto = (
-    "Párrafo corto.\n\n"
-    "Párrafo larguísimo que supera el límite. " * 30  # ~1500 chars
+text = (
+    "Short paragraph.\n\n"
+    "Very long paragraph that exceeds the limit. " * 30  # ~1500 chars
 )
 
 splitter = RecursiveCharacterTextSplitter(
@@ -737,41 +737,41 @@ splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,
     chunk_overlap=0,
 )
-chunks = splitter.create_documents([texto])
-# Resultado aproximado:
-#   Chunk 0: "Párrafo corto."           ← cabía entero tras split por "\n\n"
-#   Chunk 1: primeras oraciones del párrafo largo  ← el largo se partió por ". "
-#   Chunk 2: oraciones siguientes...
+chunks = splitter.create_documents([text])
+# Approximate result:
+#   Chunk 0: "Short paragraph."           ← fit entirely after split by "\n\n"
+#   Chunk 1: first sentences of the long paragraph  ← the long one was split by ". "
+#   Chunk 2: next sentences...
 ```
 
 #### Parameters you must understand
 
 | Parameter | What it does | Common gotcha |
 |-----------|----------|--------------|
-| `separators` | Ordered list of preferred cuts | Order matters: `["\nCLÁUSULA ", "\n\n", "\n", " "]` prioritizes clauses over paragraphs |
+| `separators` | Ordered list of preferred cuts | Order matters: `["\nCLAUSE ", "\n\n", "\n", " "]` prioritizes clauses over paragraphs |
 | `chunk_size` | Maximum characters per chunk | Too small fragments excessively; too large fills the LLM window |
 | `chunk_overlap` | Characters repeated between neighboring chunks | With domain separators (clauses), usually `0` — see [§4.6](#46-the-overlap-parameter) |
-| `keep_separator` | If `True`, separator stays at the start of the next chunk | With `"\nCLÁUSULA "` and `keep_separator=True`, each chunk starts with `CLÁUSULA N.` |
+| `keep_separator` | If `True`, separator stays at the start of the next chunk | With `"\nCLAUSE "` and `keep_separator=True`, each chunk starts with `CLAUSE N.` |
 
 #### `.create_documents()` vs `.split_documents()`
 
 ```python
-# Desde texto crudo (sin metadata de origen):
-chunks = splitter.create_documents([texto])
-# metadata vacía: {}
+# From raw text (no source metadata):
+chunks = splitter.create_documents([text])
+# empty metadata: {}
 
-# Desde Documents que ya trajo un loader (con source, page, etc.):
+# From Documents already loaded by a loader (with source, page, etc.):
 from langchain_community.document_loaders import TextLoader
-docs = TextLoader("contrato.txt").load()
+docs = TextLoader("contract.txt").load()
 chunks = splitter.split_documents(docs)
-# cada chunk hereda metadata del Document padre (source, etc.)
+# each chunk inherits metadata from the parent Document (source, etc.)
 ```
 
 For real ingestion, you almost always use `split_documents()` because the loader already added `source` and other fields. See [§7.1](#71-langchain-loaders) for the loader comparison.
 
 ### 10.3 Writing your own splitter: inherit from `TextSplitter`
 
-When the domain has predictable structure (clauses, articles, ATA sections), a generic splitter is not enough: you need **rich metadata** (`clausula_id`, `tipo`, `contrato`) that you can only extract with domain regex. The solution is to inherit from `TextSplitter`.
+When the domain has predictable structure (clauses, articles, ATA sections), a generic splitter is not enough: you need **rich metadata** (`clause_id`, `type`, `contract`) that you can only extract with domain regex. The solution is to inherit from `TextSplitter`.
 
 #### The interface you must implement
 
@@ -779,13 +779,13 @@ When the domain has predictable structure (clauses, articles, ATA sections), a g
 from langchain_text_splitters import TextSplitter
 from langchain_core.documents import Document
 
-class MiSplitter(TextSplitter):
+class MySplitter(TextSplitter):
     def split_text(self, text: str) -> list[str]:
-        """OBLIGATORIO: recibe texto, devuelve lista de strings."""
+        """REQUIRED: receives text, returns list of strings."""
         ...
 
     def split_documents(self, documents: list[Document]) -> list[Document]:
-        """OPCIONAL pero recomendado: override para metadata rica."""
+        """OPTIONAL but recommended: override for rich metadata."""
         ...
 ```
 
@@ -794,28 +794,28 @@ class MiSplitter(TextSplitter):
 | `split_text(text)` | One string | `list[str]` | Base API; other methods call it internally |
 | `split_documents(docs)` | `list[Document]` | `list[Document]` | Real pipeline: preserves and enriches metadata |
 
-**Why override `split_documents()`:** the default `TextSplitter` implementation calls `split_text()` and wraps each string in a `Document` with minimal metadata. If you only implement `split_text()`, you lose the chance to add `clausula_id`, `tipo`, etc. The override lets you return complete `Document` objects.
+**Why override `split_documents()`:** the default `TextSplitter` implementation calls `split_text()` and wraps each string in a `Document` with minimal metadata. If you only implement `split_text()`, you lose the chance to add `clause_id`, `type`, etc. The override lets you return complete `Document` objects.
 
 #### Minimal skeleton connected to the lab
 
 ```python
 class ClauseSplitter(TextSplitter):
     def split_text(self, text: str) -> list[str]:
-        # Delega al método que construye Documents completos
+        # Delegates to the method that builds complete Documents
         return [d.page_content for d in self._split_to_docs(text)]
 
     def _split_to_docs(self, text: str) -> list[Document]:
-        matches = list(self._PATRON.finditer(text))
+        matches = list(self._PATTERN.finditer(text))
         docs = []
         for i, m in enumerate(matches):
-            inicio = m.start()
-            fin = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+            start = m.start()
+            end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
             docs.append(Document(
-                page_content=text[inicio:fin].strip(),
+                page_content=text[start:end].strip(),
                 metadata={
-                    "clausula_id": int(m.group(1)),
-                    "titulo": m.group(2).strip(),
-                    "tipo": self._clasificar(m.group(2)),
+                    "clause_id": int(m.group(1)),
+                    "title": m.group(2).strip(),
+                    "type": self._classify(m.group(2)),
                     # ...
                 },
             ))
@@ -825,7 +825,7 @@ class ClauseSplitter(TextSplitter):
         all_docs = []
         for doc in documents:
             for chunk in self._split_to_docs(doc.page_content):
-                # Preservar metadata del padre (source del loader)
+                # Preserve parent metadata (source from the loader)
                 chunk.metadata["source"] = doc.metadata.get("source", "")
                 all_docs.append(chunk)
         return all_docs
@@ -838,7 +838,7 @@ This is exactly the pattern of `ClauseSplitter` in `lab/solucion_framework.py` �
 ```
 ┌─────────────┐     load()      ┌──────────────────┐   split_documents()   ┌─────────────┐
 │ TextLoader  │ ──────────────▶ │ list[Document]   │ ────────────────────▶ │ list[Document│
-│ contrato.txt│                 │ metadata: source │                       │ chunks con  │
+│ contract.txt│                 │ metadata: source │                       │ chunks with │
 └─────────────┘                 └──────────────────┘                       │ metadata    │
                                                                            └─────────────┘
 ```
@@ -846,14 +846,14 @@ This is exactly the pattern of `ClauseSplitter` in `lab/solucion_framework.py` �
 ```python
 from langchain_community.document_loaders import TextLoader
 
-loader = TextLoader("datos/contrato_muestra.txt")
+loader = TextLoader("data/sample_contract.txt")
 docs = loader.load()
-# docs[0].page_content = texto completo del archivo
-# docs[0].metadata = {"source": "datos/contrato_muestra.txt"}
+# docs[0].page_content = full text of the file
+# docs[0].metadata = {"source": "data/sample_contract.txt"}
 
-splitter = ClauseSplitter(contract_id="CSP-2024-0087", fecha="2024-01-15")
+splitter = ClauseSplitter(contract_id="CSP-2024-0087", date="2024-01-15")
 chunks = splitter.split_documents(docs)
-# 13 Documents, cada uno con clausula_id, titulo, tipo, contrato, fecha, source
+# 13 Documents, each with clause_id, title, type, contract, date, source
 ```
 
 **Where each ingestion framework fits** (summary; detail in [§7](#7-ingestion-framework-comparison)):
@@ -875,50 +875,50 @@ Open `lab/solucion_framework.py` and follow along with this section. The file ha
 
 ```python
 splitter_a = RecursiveCharacterTextSplitter(
-    separators=["\nCLÁUSULA ", "\n\n", "\n", " "],
+    separators=["\nCLAUSE ", "\n\n", "\n", " "],
     chunk_size=1200,
     chunk_overlap=0,
     keep_separator=True,
 )
-chunks_a = splitter_a.create_documents([texto_contrato])
+chunks_a = splitter_a.create_documents([contract_text])
 ```
 
 | Line / decision | What it does | Why |
 |------------------|----------|---------|
-| `"\nCLÁUSULA "` first | Tries to cut before each clause header | Leverages contract structure without custom regex |
+| `"\nCLAUSE "` first | Tries to cut before each clause header | Leverages contract structure without custom regex |
 | `chunk_size=1200` | Limit per chunk | If a clause exceeds 1200 chars, the algorithm falls back to the next separator (`\n\n`, `\n`, ` `) and splits into smaller pieces |
 | `chunk_overlap=0` | No overlap | Clauses are autonomous units — see [§4.6](#46-the-overlap-parameter) |
-| `keep_separator=True` | Keeps `CLÁUSULA N.` at chunk start | Retriever returns identifiable context |
-| `create_documents([texto])` | Splits raw text | No intermediate loader; metadata stays empty |
+| `keep_separator=True` | Keeps `CLAUSE N.` at chunk start | Retriever returns identifiable context |
+| `create_documents([text])` | Splits raw text | No intermediate loader; metadata stays empty |
 
-**Pedagogical limitation:** Approach A does not produce `clausula_id` or `tipo`. It is a good *baseline* for comparison, not the production solution for contracts.
+**Pedagogical limitation:** Approach A does not produce `clause_id` or `type`. It is a good *baseline* for comparison, not the production solution for contracts.
 
 #### Block 2 — Approach B: custom `ClauseSplitter`
 
 | Component | Scratch equivalent | Function |
 |------------|------------------------|---------|
-| `_PATRON` with `re.MULTILINE` | `_PATRON_CLAUSULA` | Detect only line-start headers |
-| Loop `matches[i].start()` → `fin` | Same loop in `parsear_clausulas()` | Delimit each clause's text |
-| `_clasificar(titulo)` | `clasificar_clausula(titulo)` | Infer `tipo` from keywords |
-| `split_documents([doc_base])` | `main()` that reads and splits | Integration with `source` metadata |
+| `_PATTERN` with `re.MULTILINE` | `_CLAUSE_PATTERN` | Detect only line-start headers |
+| Loop `matches[i].start()` → `end` | Same loop in `parse_clauses()` | Delimit each clause's text |
+| `_classify(title)` | `classify_clause(title)` | Infer `type` from keywords |
+| `split_documents([base_doc])` | `main()` that reads and splits | Integration with `source` metadata |
 
 ```python
-doc_base = Document(
-    page_content=texto_contrato,
-    metadata={"source": "contrato_muestra.txt"},
+base_doc = Document(
+    page_content=contract_text,
+    metadata={"source": "sample_contract.txt"},
 )
-chunks_b = splitter_b.split_documents([doc_base])
-# Esperado: 13 chunks, mismos metadatos que solucion_scratch.py
+chunks_b = splitter_b.split_documents([base_doc])
+# Expected: 13 chunks, same metadata as solucion_scratch.py
 ```
 
 #### Block 3 — Vector store integration (commented out)
 
 ```python
 # vectordb = Chroma.from_documents(documents=chunks_b, embedding=OpenAIEmbeddings(), ...)
-# results = vectordb.similarity_search(query="...", k=3, filter={"tipo": "responsabilidad"})
+# results = vectordb.similarity_search(query="...", k=3, filter={"type": "liability"})
 ```
 
-This block closes the `loader → splitter → store` pipeline from [§8.3](#83-typical-pipeline). Approach B chunks carry `tipo` in metadata, enabling the **hard filter** from [§5](#5-metadata-and-its-role-in-hard-filters): only chunks with `tipo="responsabilidad"` compete in search.
+This block closes the `loader → splitter → store` pipeline from [§8.3](#83-typical-pipeline). Approach B chunks carry `type` in metadata, enabling the **hard filter** from [§5](#5-metadata-and-its-role-in-hard-filters): only chunks with `type="liability"` compete in search.
 
 ### 10.6 When to use generic vs domain custom splitter
 
@@ -933,7 +933,7 @@ This block closes the `loader → splitter → store` pipeline from [§8.3](#83-
 
 **1. `keep_separator` and the first chunk**
 
-With `keep_separator=True` and separator `"\nCLÁUSULA "`, text *before* the first clause (contract header, date, parties) may remain as a loose chunk 0. In real contracts, discard or merge that preface in post-processing.
+With `keep_separator=True` and separator `"\nCLAUSE "`, text *before* the first clause (contract header, date, parties) may remain as a loose chunk 0. In real contracts, discard or merge that preface in post-processing.
 
 **2. Overlap in domain chunks**
 
@@ -942,10 +942,10 @@ With `by-clause`, overlap is usually **0**: repeating the end of Clause 3 at the
 **3. Metadata that gets lost**
 
 ```python
-# ❌ Solo split_text — metadata del padre no se propaga bien
+# ❌ Only split_text — parent metadata is not propagated properly
 chunks = splitter.split_text(doc.page_content)
 
-# ✅ split_documents — preserva source y enriquece
+# ✅ split_documents — preserves source and enriches
 chunks = splitter.split_documents([doc])
 ```
 
@@ -953,7 +953,7 @@ If you only call `split_text()` and build `Document` manually forgetting `doc.me
 
 **4. `RecursiveCharacterTextSplitter` without `^` anchor**
 
-The separator `"\nCLÁUSULA "` does not distinguish headers from references like `"conforme a la Cláusula 9..."` if that reference starts after a line break. That is why Approach A may generate spurious chunks; Approach B with `^` in the regex does not.
+The separator `"\nCLAUSE "` does not distinguish headers from references like `"pursuant to Clause 9..."` if that reference starts after a line break. That is why Approach A may generate spurious chunks; Approach B with `^` in the regex does not.
 
 ### 10.7 Guided exercise: write your version before looking at the solution
 

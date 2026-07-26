@@ -4,13 +4,13 @@
 
 ### Core idea
 
-The contract has a predictable structure: each clause begins with `CLÁUSULA N. TÍTULO` at the start of a line. The key to the problem is **not** confusing those headers with clause references inside the body text (e.g., "conforme a la Cláusula 9 del presente instrumento").
+The contract has a predictable structure: each clause begins with `CLAUSE N. TITLE` at the start of a line. The key to the problem is **not** confusing those headers with clause references inside the body text (e.g., "in accordance with Clause 9 of this instrument").
 
 The solution uses `re.MULTILINE` with the `^` anchor so the regex only matches at the beginning of a line:
 
 ```python
-_PATRON_CLAUSULA = re.compile(
-    r'^CL[AÁ]USULA\s+(\d+)[\.:\-–—]?\s+([A-ZÁÉÍÓÚÑÜ][^\n]+)',
+_CLAUSE_PATTERN = re.compile(
+    r'^CL[AÁ]US[UE]LA\s+(\d+)[\.:\-–—]?\s+([A-ZÁÉÍÓÚÑÜ][^\n]+)',
     re.IGNORECASE | re.MULTILINE
 )
 ```
@@ -21,28 +21,28 @@ Without `re.MULTILINE`, `^` only anchors to the start of the full text. With it,
 
 | Text | With `re.MULTILINE` |
 |-------|-------------------|
-| `CLÁUSULA 9. CONFIDENCIALIDAD\n` (start of line) | match |
-| `conforme a la Cláusula 9 del presente instrumento` (mid-line) | no match |
+| `CLAUSE 9. CONFIDENTIALITY\n` (start of line) | match |
+| `in accordance with Clause 9 of this instrument` (mid-line) | no match |
 
 ### Step-by-step algorithm
 
 1. `finditer` returns all matches ordered by position in the text.
 2. For chunk `i`, the text runs from `matches[i].start()` to `matches[i+1].start()`.
-3. The last chunk runs from `matches[-1].start()` to `len(texto)`.
+3. The last chunk runs from `matches[-1].start()` to `len(text)`.
 4. Normalization: line breaks within paragraphs are collapsed (contiguous lines are joined with a space); paragraphs are separated with `\n\n`.
 5. Metadata is built from fixed contract data (`CSP-2024-0087`, `2024-01-15`) plus the groups captured by the regex.
 
 ### Type classifier
 
-The `clasificar_clausula` function applies a list of `(keywords, tipo)` tuples in order. The first keyword that appears in the title (lowercased) determines the type. It is deterministic: the same title always produces the same type.
+The `classify_clause` function applies a list of `(keywords, type)` tuples in order. The first keyword that appears in the title (lowercased) determines the type. It is deterministic: the same title always produces the same type.
 
 **Tradeoff:** a keyword-based classifier is fragile with unusual titles. A real classifier would use embeddings or a lightweight intent model (`model.intent` in RAGorbit). For this lab, the keyword table is sufficient and keeps the "no LLM" constraint.
 
 ### Result
 
-- **13 chunks**, one per clause (CLÁUSULA 1 through CLÁUSULA 13).
+- **13 chunks**, one per clause (CLAUSE 1 through CLAUSE 13).
 - **0 false positives** — internal references do not generate spurious chunks.
-- Ascending order guaranteed by `.sort(key=lambda c: c.metadata["clausula_id"])`.
+- Ascending order guaranteed by `.sort(key=lambda c: c.metadata["clause_id"])`.
 
 ---
 
@@ -56,13 +56,13 @@ The file shows two approaches (detailed walkthrough in [guide §10.5](../guia.md
 
 ```python
 splitter = RecursiveCharacterTextSplitter(
-    separators=["\nCLÁUSULA ", "\n\n", "\n", " "],
+    separators=["\nCLAUSE ", "\n\n", "\n", " "],
     chunk_size=1200,
     chunk_overlap=0,
 )
 ```
 
-LangChain tries the first separator (`"\nCLÁUSULA "`); if the resulting chunk exceeds `chunk_size`, it tries `"\n\n"`, then `"\n"`, etc. It is a **generic** splitter — it does not produce metadata automatically and the number of chunks may vary with `chunk_size`.
+LangChain tries the first separator (`"\nCLAUSE "`); if the resulting chunk exceeds `chunk_size`, it tries `"\n\n"`, then `"\n"`, etc. It is a **generic** splitter — it does not produce metadata automatically and the number of chunks may vary with `chunk_size`.
 
 **When to use it:** when you do not know the document structure and want a quick starting point.
 
@@ -71,7 +71,7 @@ LangChain tries the first separator (`"\nCLÁUSULA "`); if the resulting chunk e
 Inherits from `TextSplitter` and implements the same regex logic as `solucion_scratch.py`, but integrates with the LangChain ecosystem:
 
 ```python
-splitter = ClauseSplitter(contract_id="CSP-2024-0087", fecha="2024-01-15")
+splitter = ClauseSplitter(contract_id="CSP-2024-0087", date="2024-01-15")
 chunks = splitter.split_documents([doc])
 ```
 
@@ -121,10 +121,10 @@ The code RAGorbit generates for this node is equivalent to the Approach B `Claus
 The regex detects the first clause but ignores the rest because `^` only anchors to the start of the full text. Fix: add the flag.
 
 **Mistake 2 — Matching internal references**
-If the pattern lacks `^`, "la Cláusula 9 del presente instrumento" generates a spurious chunk. Result: 15 chunks instead of 13, with 1–2 word chunks.
+If the pattern lacks `^`, "Clause 9 of this instrument" generates a spurious chunk. Result: 15 chunks instead of 13, with 1–2 word chunks.
 
 **Mistake 3 — Forgetting the last chunk**
-The loop `for i, match in enumerate(matches)` must handle the case `i + 1 == len(matches)` using `len(texto)` as the limit. Forgetting this truncates the last clause.
+The loop `for i, match in enumerate(matches)` must handle the case `i + 1 == len(matches)` using `len(text)` as the limit. Forgetting this truncates the last clause.
 
 **Mistake 4 — Unordered chunks**
 `finditer` returns matches in text position order, which should be numeric order. But if the text had out-of-order clauses, explicit sorting guarantees the correct order.

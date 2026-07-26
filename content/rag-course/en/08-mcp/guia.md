@@ -127,7 +127,7 @@ Client                               Server
 | Primitive | Analogy | Airline example |
 |-----------|----------|-------------------|
 | **Tool** | Callable function | `policy_rag(fare_class, route_type)` |
-| **Resource** | Readable data (URI) | `policy://ECONOMY_FLEX/internacional` → rule text |
+| **Resource** | Readable data (URI) | `policy://ECONOMY_FLEX/international` → rule text |
 | **Prompt** | Message template | `flight_change_analysis(fare_class)` → prompt for the LLM |
 
 In RAGorbit:
@@ -197,7 +197,7 @@ Server ──sampling/createMessage──▶ Client ──▶ LLM ──▶ resp
 **Roots** define which filesystem directories an MCP server may read/write (e.g. a file server).
 
 ```
-Client declares roots: ["/home/user/proyecto", "/tmp/shared"]
+Client declares roots: ["/home/user/project", "/tmp/shared"]
 Server only accesses paths within those roots
 ```
 
@@ -377,7 +377,7 @@ from fastmcp import FastMCP
 
 mcp = FastMCP(
     name="airline-policy-rag-mcp",
-    instructions="Servidor MCP de políticas tarifarias de la aerolínea.",
+    instructions="MCP server for airline fare policies.",
 )
 ```
 
@@ -399,7 +399,7 @@ In scratch you defined schemas manually:
 ```python
 TOOL_DEFINITIONS = [{
     "name": "policy_rag",
-    "description": "Consulta reglas de tarifa...",
+    "description": "Queries fare rules and penalties...",
     "inputSchema": {"type": "object", "properties": {...}},
 }]
 ```
@@ -410,8 +410,8 @@ In FastMCP:
 @mcp.tool(annotations={"readOnlyHint": True})
 def policy_rag(fare_class: str, route_type: str, query: str = "") -> dict:
     """
-    Consulta reglas de tarifa y penalidades filtradas por
-    fare_class y route_type. Úsala para determinar si aplican cargos.
+    Queries fare rules and penalties filtered by
+    fare_class and route_type. Use it to determine if charges apply.
     """
     ...
 ```
@@ -431,14 +431,14 @@ Resources are data the client **reads** (does not execute):
 ```python
 @mcp.resource("policy://{fare_class}/{route_type}")
 def policy_resource(fare_class: str, route_type: str) -> str:
-    """Texto completo de la política para una tarifa y ruta."""
+    """Full text of the policy for a given fare and route."""
     ...
 ```
 
 The client accesses with:
 
 ```python
-text = await client.read_resource("policy://ECONOMY_FLEX/internacional")
+text = await client.read_resource("policy://ECONOMY_FLEX/international")
 ```
 
 **When to use resource vs tool:**
@@ -450,15 +450,15 @@ text = await client.read_resource("policy://ECONOMY_FLEX/internacional")
 ```python
 @mcp.prompt
 def flight_change_analysis(fare_class: str, route_type: str) -> str:
-    """Plantilla para analizar viabilidad de un cambio de vuelo."""
-    return f"Analiza si un pasajero con tarifa {fare_class}..."
+    """Template for analyzing the feasibility of a flight change."""
+    return f"Analyze whether a passenger with fare {fare_class}..."
 ```
 
 The client gets the rendered prompt:
 
 ```python
 prompt = await client.get_prompt("flight_change_analysis",
-    {"fare_class": "ECONOMY_FLEX", "route_type": "internacional"})
+    {"fare_class": "ECONOMY_FLEX", "route_type": "international"})
 ```
 
 Useful for the host (Cursor) to offer predefined actions to the user without the LLM inventing the prompt.
@@ -472,7 +472,7 @@ async with Client("solucion_framework.py") as client:
     tools = await client.list_tools()
     result = await client.call_tool("policy_rag", {
         "fare_class": "ECONOMY_FLEX",
-        "route_type": "internacional",
+        "route_type": "international",
     })
 ```
 
@@ -504,7 +504,7 @@ Same client API, different transport — the client negotiates automatically.
 ```python
 async with Client(["policy_server.py", "inventory_server.py"]) as client:
     tools = await client.list_tools()
-    # tools prefijadas: policy_policy_rag, inventory_search_flights
+    # prefixed tools: policy_policy_rag, inventory_search_flights
 ```
 
 Useful pattern when each domain (policies, inventory, payments) is an independent MCP server — like the separate `tool.service` nodes in template 01.
@@ -539,7 +539,7 @@ async with Client(server_script) as client:
     await client.read_resource("policy://...")
     await client.get_prompt("flight_change_analysis", {...})
     await client.call_tool("policy_rag", {...})
-    # manejar permission_required en apply_flight_change
+    # handle permission_required in apply_flight_change
 ```
 
 **Scratch bridge:** equivalent to `PolicyRAGAgent.run()` but with async API and no manual JSON-RPC.

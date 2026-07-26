@@ -584,18 +584,18 @@ LIMIT 5;
 
 ```python
 metadata = {
-    "source_uri": "s3://corpus/policies/2025-vacaciones.pdf",
+    "source_uri": "s3://corpus/policies/2025-vacation.pdf",
     "page": 12,
     "tenant_id": "acme",
 }
-# El vector vive en el store; el PDF crudo solo en S3.
+# The vector lives in the store; the raw PDF only in S3.
 ```
 
 **When semantic cache (GPTCache concept)**
 
 ```python
-# Si similitud(query_nueva, query_cacheada) > umbral → devolver respuesta cacheada
-# Cuidado: políticas que cambian invalidan entradas por versión de corpus
+# If similarity(new_query, cached_query) > threshold → return cached response
+# Warning: policies that change invalidate entries by corpus version
 ```
 
 ---

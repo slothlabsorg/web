@@ -13,13 +13,13 @@
 ### Decision: normalized bag-of-words as toy embedding
 
 ```python
-def embed(texto: str) -> dict[str, float]:
-    tokens = tokenizar(texto)
-    conteos = {}
+def embed(text: str) -> dict[str, float]:
+    tokens = tokenize(text)
+    counts = {}
     for token in tokens:
-        conteos[token] = conteos.get(token, 0) + 1
+        counts[token] = counts.get(token, 0) + 1
     total = len(tokens)
-    return {palabra: conteo / total for palabra, conteo in conteos.items()}
+    return {word: count / total for word, count in counts.items()}
 ```
 
 **Why sparse dictionary and not dense list:**
@@ -30,44 +30,44 @@ If the vocabulary of all documents has 800 unique words, a dense vector would be
 
 Without normalization, a long chunk has higher counts than a short one simply because it is long, not because it is more relevant. Normalization makes weights comparable regardless of fragment size.
 
-**Known limitation:** bag-of-words is lexical, not semantic. It does not understand that "vacaciones" and "descanso" are related concepts unless they share literal words. In actual output, chunk §4 (additional vacation by seniority) ranks above §3 (accrual and use) because §4 has more repetitions of "días" and "años" — two words also present in the query. With real semantic embeddings, §3 would rank first because it contains the exact answer.
+**Known limitation:** bag-of-words is lexical, not semantic. It does not understand that "vacation" and "rest" are related concepts unless they share literal words. In actual output, chunk §4 (additional vacation by seniority) ranks above §3 (accrual and use) because §4 has more repetitions of "days" and "years" — two words also present in the query. With real semantic embeddings, §3 would rank first because it contains the exact answer.
 
 ### Decision: cosine similarity over dictionaries
 
 ```python
-def similitud_coseno(a, b):
-    claves_comunes = set(a.keys()) & set(b.keys())
-    dot = sum(a[k] * b[k] for k in claves_comunes)
-    norma_a = math.sqrt(sum(v * v for v in a.values()))
-    norma_b = math.sqrt(sum(v * v for v in b.values()))
-    return dot / (norma_a * norma_b)
+def cosine_similarity(a, b):
+    common_keys = set(a.keys()) & set(b.keys())
+    dot = sum(a[k] * b[k] for k in common_keys)
+    norm_a = math.sqrt(sum(v * v for v in a.values()))
+    norm_b = math.sqrt(sum(v * v for v in b.values()))
+    return dot / (norm_a * norm_b)
 ```
 
 The trick of `set(a.keys()) & set(b.keys())` is the key optimization: if the dictionaries have 500 entries each but only 20 words in common, we only do 20 multiplications in the dot product, not 500. This is O(min(|a|, |b|)) instead of O(|vocabulary|).
 
-**Why cosine and not Euclidean distance:** Euclidean distance is sensitive to vector magnitude. If one chunk mentions "vacaciones" 5 times and another only once, Euclidean distance separates them even though they talk about the same topic. Cosine similarity measures the **angle** between vectors — if both "point" in the same direction in semantic space, they are similar regardless of magnitude.
+**Why cosine and not Euclidean distance:** Euclidean distance is sensitive to vector magnitude. If one chunk mentions "vacation" 5 times and another only once, Euclidean distance separates them even though they talk about the same topic. Cosine similarity measures the **angle** between vectors — if both "point" in the same direction in semantic space, they are similar regardless of magnitude.
 
 ### Main flow
 
 ```
-cargar_chunks("datos/politicas_rrhh.txt")   # 8 fragments
+load_chunks("data/hr_policies.txt")        # 8 fragments
         ↓
-recuperar(query, chunks, k=3)
+retrieve(query, chunks, k=3)
   ├── embed(query)                          # question vector
   ├── embed(chunk_i)  for each i           # vector for each chunk
-  ├── similitud_coseno(vec_query, vec_i)    # score per chunk
+  ├── cosine_similarity(vec_query, vec_i)   # score per chunk
   └── sort(scores, desc) → top-3            # ranking
         ↓
-construir_prompt(query, resultados)         # augmented prompt
+build_prompt(query, results)                # augmented prompt
         ↓
-print(índices, similitudes, prompt)
+print(indices, similarities, prompt)
 ```
 
 ### Result obtained
 
 ```
-Índices recuperados (0-based): 1, 0, 7
-Similitudes:                   0.5080, 0.4397, 0.3384
+Retrieved indices (0-based): 1, 0, 7
+Similarities:                0.5080, 0.4397, 0.3384
 ```
 
 See `expected.md` for the full analysis of why these chunks.
@@ -85,12 +85,12 @@ See `expected.md` for the full analysis of why these chunks.
 ### TextLoader + CharacterTextSplitter
 
 ```python
-loader = TextLoader("datos/politicas_rrhh.txt")
+loader = TextLoader("data/hr_policies.txt")
 splitter = CharacterTextSplitter(separator="\n---\n", chunk_size=1000)
-chunks = splitter.split_documents(documentos_raw)
+chunks = splitter.split_documents(raw_documents)
 ```
 
-`CharacterTextSplitter` does exactly what `cargar_chunks()` does in scratch, but adds metadata (`source`, chunk number) to each `Document`. That metadata later enables hard filters in `retrieval.vector` (e.g. show only chunks from a certain section).
+`CharacterTextSplitter` does exactly what `load_chunks()` does in scratch, but adds metadata (`source`, chunk number) to each `Document`. That metadata later enables hard filters in `retrieval.vector` (e.g. show only chunks from a certain section).
 
 ### OpenAIEmbeddings → Chroma
 
@@ -107,14 +107,14 @@ This is exactly equivalent to the `model.embedding` + `store.chroma` pair in tem
 
 ```python
 chain = (
-    {"contexto": retriever | formatear_chunks, "pregunta": RunnablePassthrough()}
+    {"context": retriever | format_chunks, "question": RunnablePassthrough()}
     | prompt
     | llm
     | StrOutputParser()
 )
 ```
 
-LCEL (LangChain Expression Language) uses the `|` operator to compose steps. It is equivalent to RAGorbit's visual wiring but in code. The retriever output passes through `formatear_chunks`, combines with `pregunta` to fill the `prompt`, which goes to the `llm`, whose output passes through `StrOutputParser` to extract the string.
+LCEL (LangChain Expression Language) uses the `|` operator to compose steps. It is equivalent to RAGorbit's visual wiring but in code. The retriever output passes through `format_chunks`, combines with `question` to fill the `prompt`, which goes to the `llm`, whose output passes through `StrOutputParser` to extract the string.
 
 **Detailed explanation of the dict and each `|`:** guide [§11.11](../guia.md#111-lcel-the--operator-runnable-and-the-dict-pattern).
 
@@ -128,7 +128,7 @@ retrieval.vector → logic.prompt → model.llm → io.output
 | Aspect | Scratch | Framework |
 |---------|---------|-----------|
 | Embeddings | Bag-of-words (lexical) | Semantic (1536D) |
-| False positives | Frequent (training chunk §7 appears because of "días") | Rare (understands meaning) |
+| False positives | Frequent (training chunk §7 appears because of "days") | Rare (understands meaning) |
 | Chunks with metadata | No | Yes (`source`, section) |
 | Metadata filters | Manual | `.as_retriever(filter={"section": "§3"})` |
 | Index persistence | No (in memory) | `persist_directory="./chroma_db"` |
@@ -143,10 +143,10 @@ The lab is a miniaturization of the full flow of the `09-hr-policy-assistant` te
 
 | Scratch function | RAGorbit node | Description |
 |-----------------|---------------|-------------|
-| `cargar_chunks()` | `loader.pdf` + `ingest.chunker` | Load and chunk documents |
+| `load_chunks()` | `loader.pdf` + `ingest.chunker` | Load and chunk documents |
 | `embed()` | `model.embedding` | Convert text into vector |
-| `recuperar()` | `retrieval.vector` | Search top-k by similarity |
-| `construir_prompt()` | `logic.prompt` | Build the augmented prompt |
+| `retrieve()` | `retrieval.vector` | Search top-k by similarity |
+| `build_prompt()` | `logic.prompt` | Build the augmented prompt |
 | LLM (stub/fake) | `model.llm` | Generate the response |
 
 The difference is that in template 09:

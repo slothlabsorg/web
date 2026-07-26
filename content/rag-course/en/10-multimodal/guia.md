@@ -121,7 +121,7 @@ In batch, local Whisper is the reference option (open-weights, no per-token cost
 # Conceptual — see §10 for full implementation
 import whisper
 model = whisper.load_model("base")
-result = model.transcribe("nota_tecnico.wav", language="es")
+result = model.transcribe("technician_note.wav", language="es")
 print(result["text"])
 ```
 
@@ -236,7 +236,7 @@ Converts the LLM response into synthetic audio:
 
 ```python
 # Conceptual
-client.audio.speech.create(model="tts-1", voice="nova", input=respuesta)
+client.audio.speech.create(model="tts-1", voice="nova", input=response)
 ```
 
 **When to use TTS:**
@@ -337,7 +337,7 @@ Call audio → io.stt (Deepgram) → model.intent → query.rewrite → retrieva
 io.batch → loader.multimodal (photos + policy) → model.vision → logic.rules → logic.structured
 ```
 
-- Damage photos → description → deductible rules → JSON with `clausula_aplicada`.
+- Damage photos → description → deductible rules → JSON with `applied_clause`.
 - See [`examples/04-insurance-claims/README.md`](../../examples/04-insurance-claims/README.md).
 
 ### Template 08 · Manufacturing MRO — multimodal AMM
@@ -385,9 +385,9 @@ import whisper
 
 model = whisper.load_model("base")  # tiny|base|small|medium|large
 result = model.transcribe(
-    "nota_tecnico.wav",
-    language="es",       # hint de idioma mejora precisión
-    fp16=False,            # obligatorio en CPU/MPS
+    "technician_note.wav",
+    language="es",       # language hint improves accuracy
+    fp16=False,            # required on CPU/MPS
 )
 text = result["text"]
 segments = result["segments"]  # [{start, end, text}, ...]
@@ -427,7 +427,7 @@ from openai import OpenAI
 
 client = OpenAI()
 
-with open("foto_fuga.jpg", "rb") as f:
+with open("leak_photo.jpg", "rb") as f:
     b64 = base64.b64encode(f.read()).decode()
 
 response = client.chat.completions.create(
@@ -435,7 +435,7 @@ response = client.chat.completions.create(
     messages=[{
         "role": "user",
         "content": [
-            {"type": "text", "text": "Describe daño aeronáutico. Responde JSON."},
+            {"type": "text", "text": "Describe aeronautical damage. Respond in JSON."},
             {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{b64}"}},
         ],
     }],
@@ -463,7 +463,7 @@ result = llm.invoke([msg])
 
 ```bash
 ollama pull llava
-ollama run llava "Describe esta imagen de tren de aterrizaje" --image foto.jpg
+ollama run llava "Describe this landing gear image" --image photo.jpg
 ```
 
 #### Vision gotchas
@@ -492,7 +492,7 @@ Generation with citations:
 ```python
 from langchain_openai import ChatOpenAI
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
-# Prompt: "Responde SOLO con evidencia del AMM. Incluye citations: [...]"
+# Prompt: "Respond ONLY with evidence from the AMM. Include citations: [...]"
 ```
 
 ### 10.5 TTS and DALL·E — output generation
@@ -501,11 +501,11 @@ llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
 
 ```python
 response = client.audio.speech.create(
-    model="tts-1",       # o tts-1-hd para mayor calidad
+    model="tts-1",       # or tts-1-hd for higher quality
     voice="nova",        # alloy, echo, fable, onyx, nova, shimmer
-    input="Procedimiento AMM 32-11-00: inspeccionar actuador...",
+    input="AMM procedure 32-11-00: inspect actuator...",
 )
-response.stream_to_file("respuesta.mp3")
+response.stream_to_file("response.mp3")
 ```
 
 **When to use / NOT:**
@@ -517,7 +517,7 @@ response.stream_to_file("respuesta.mp3")
 ```python
 result = client.images.generate(
     model="dall-e-3",
-    prompt="Diagrama técnico esquemático de actuador MLG A320, estilo manual mantenimiento",
+    prompt="Schematic technical diagram of MLG A320 actuator, maintenance manual style",
     size="1024x1024",
     quality="standard",
 )
@@ -590,7 +590,7 @@ Orchestrates everything with `use_mocks_if_missing=True`: if there is no `.wav`/
 - [ ] Does `transcribe_with_whisper` use `language="es"` and `fp16=False` on CPU?
 - [ ] Does `describe_image_with_vision` request JSON with `aircraft_type`, `ata_chapter`, `severity_hint`?
 - [ ] Does the FAISS retriever apply filter `aircraft_type` + `ata_chapter`?
-- [ ] Does the generation prompt require non-empty `citations` or "no determinable"?
+- [ ] Does the generation prompt require non-empty `citations` or "not determinable"?
 - [ ] Does `run_multimodal_pipeline_real` degrade to mocks if binary files are missing?
 - [ ] *(Optional)* Does `synthesize_tts` generate audio for the response?
 - [ ] *(Optional)* Do you understand why DALL·E does not replace real photographic evidence?

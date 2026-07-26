@@ -54,7 +54,7 @@ Implement `lab/solucion_scratch.py` with:
 
 3. **`retrieve_chunks(query, aircraft_type, ata_chapter, top_k=2)`** — bag-of-words + cosine similarity on `amm_chunks.json` with **hard filters** by `aircraft_type` and `ata_chapter`.
 
-4. **`generate_answer(transcript, vision, chunks)`** — deterministic fake LLM that synthesizes a response with non-empty `citations` (or "no determinable" if there are no chunks).
+4. **`generate_answer(transcript, vision, chunks)`** — deterministic fake LLM that synthesizes a response with non-empty `citations` (or "not determinable" if there are no chunks).
 
 5. **`run_multimodal_pipeline()`** — orchestrates the 4 steps and returns JSON with:
    - `transcript`
@@ -137,7 +137,7 @@ if str(meta["ata_chapter"]) != str(ata_chapter):
 ```python
 citations = [c["source"] for c in chunks]
 if not citations:
-    return {"answer": "No determinable...", "citations": []}
+    return {"answer": "Not determinable...", "citations": []}
 ```
 
 ## Acceptance criteria

@@ -2,7 +2,7 @@
 
 ---
 
-## Layer ② — From-scratch solution (`solucion_scratch.py`)
+## Layer ② — From-scratch solution (`solution_scratch.py`)
 
 ### Overall architecture
 
@@ -66,11 +66,11 @@ For the lab, regex patterns are sufficient and deterministic. In production:
 
 ---
 
-## Layer ③ — Framework solution (`solucion_framework.py`)
+## Layer ③ — Framework solution (`solution_framework.py`)
 
 ### Scratch → framework bridge table
 
-| Scratch | Framework | Block in solucion_framework.py |
+| Scratch | Framework | Block in solution_framework.py |
 |---------|-----------|--------------------------------|
 | `PromptGuardrail` | Guardrails AI `Guard().use(DetectPII, ToxicLanguage)` | Block 1 |
 | `AuditBus` | Langfuse `@observe` | Block 2 |
@@ -94,7 +94,7 @@ For the lab, regex patterns are sufficient and deterministic. In production:
 
 ### What the framework does NOT do that scratch does
 
-`solucion_framework.py` does not implement `guardrail.resilience` (circuit breaker). That would be added with `tenacity` or at service mesh level (Istio). Template 01 has it on PaymentService for payment APIs with variable availability.
+`solution_framework.py` does not implement `guardrail.resilience` (circuit breaker). That would be added with `tenacity` or at service mesh level (Istio). Template 01 has it on PaymentService for payment APIs with variable availability.
 
 ---
 

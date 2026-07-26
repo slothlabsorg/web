@@ -80,7 +80,7 @@ class FanOut:
         if shipment_id in self.processed:
             return "duplicate"
         result = sub_agent(event)
-        return result  # Bug: falta algo para idempotencia
+        return result  # Bug: missing something for idempotency
 
     def run(self, events):
         results = []

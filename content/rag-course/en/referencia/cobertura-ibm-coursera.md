@@ -61,7 +61,7 @@ Each row breaks down **IBM course topics**, where they are covered in **this cou
 
 | IBM topic | Module(s) | Folder | Notes |
 |----------|-----------|---------|-------|
-| RAG pattern (retrieve → synthesize) | **M1**, **M5** | M1 + M5 | Template [09-RRHH](../../examples/09-hr-policy-assistant/) |
+| RAG pattern (retrieve → synthesize) | **M1**, **M5** | M1 + M5 | Template [09-HR](../../examples/09-hr-policy-assistant/) |
 | Loaders and document preparation | **M2** | [`../02-ingesta/`](../02-ingesta/) | PDF, tabular, web, SQL, S3; chunking and metadata |
 | Embeddings and indexing | **M3** | [`../03-embeddings-y-stores/`](../03-embeddings-y-stores/) | Chroma, FAISS, pgvector; see course 3 |
 | Retrieval and generation with context | **M4**, **M5** | M4 + M5 | Hybrid, rerank, mandatory citations |
@@ -282,16 +282,16 @@ Templates in `examples/` — each spans several modules:
 
 | Template | Industry | Dominant modules |
 |----------|-----------|-------------------|
-| [09-RRHH](../../examples/09-hr-policy-assistant/) | HR | M1 → M3 |
-| [02-Banca](../../examples/02-banking-credit-scoring/) | Banking | M2 → M5 |
-| [03-Salud](../../examples/03-healthcare-prior-auth/) | Healthcare | M4 → M9 |
-| [04-Seguros](../../examples/04-insurance-claims/) | Insurance | M2 → M5, M10 |
+| [09-HR](../../examples/09-hr-policy-assistant/) | HR | M1 → M3 |
+| [02-Banking](../../examples/02-banking-credit-scoring/) | Banking | M2 → M5 |
+| [03-Healthcare](../../examples/03-healthcare-prior-auth/) | Healthcare | M4 → M9 |
+| [04-Insurance](../../examples/04-insurance-claims/) | Insurance | M2 → M5, M10 |
 | [05-Legal](../../examples/05-legal-contract-review/) | Legal | M4 |
 | [06-Retail](../../examples/06-retail-postsale-bot/) | Retail | M6 |
 | [07-Telecom](../../examples/07-telecom-callcenter-copilot/) | Telecom | M4 → M7, M10 |
-| [08-Manufactura](../../examples/08-manufacturing-maintenance-rag/) | Manufacturing | M2 → M4, M10 |
-| [01-Aerolínea](../../examples/01-airline-flight-change/) | Airline | M6 → M8, M9, M11 |
-| [10-Logística](../../examples/10-logistics-disruption-rebooking/) | Logistics | M7 → M9, M11 |
+| [08-Manufacturing](../../examples/08-manufacturing-maintenance-rag/) | Manufacturing | M2 → M4, M10 |
+| [01-Airline](../../examples/01-airline-flight-change/) | Airline | M6 → M8, M9, M11 |
+| [10-Logistics](../../examples/10-logistics-disruption-rebooking/) | Logistics | M7 → M9, M11 |
 
 ### Rebuild from scratch (not just use frameworks)
 
@@ -332,13 +332,13 @@ Quick equivalence map so you do not repeat what you already master and can find 
 ### You already completed IBM course 5 (Multimodal)
 
 - [ ] M10 ([`../10-multimodal/`](../10-multimodal/)) — quick review if you already used Whisper.
-- [ ] Connect with M2: `loader.multimodal` and template [08-Manufactura](../../examples/08-manufacturing-maintenance-rag/).
+- [ ] Connect with M2: `loader.multimodal` and template [08-Manufacturing](../../examples/08-manufacturing-maintenance-rag/).
 
 ### You already completed IBM courses 6–8 (Agents)
 
 - [ ] M6 ([`../06-agentes-i/`](../06-agentes-i/)): validate ReAct + memory + agentic RAG in scratch.
 - [ ] **M7 is mandatory** ([`../07-agentes-ii/`](../07-agentes-ii/)): same problem in CrewAI **and** LangGraph — IBM separates frameworks; here we compare them in a single workshop.
-- [ ] Template [01-Aerolínea](../../examples/01-airline-flight-change/) to see agent + tools + guardrails.
+- [ ] Template [01-Airline](../../examples/01-airline-flight-change/) to see agent + tools + guardrails.
 
 ### You already completed IBM course 9 (MCP)
 
