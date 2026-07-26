@@ -111,17 +111,13 @@ export default function ProductCarousel({ products }: { products: Product[] }) {
 
               {/* Preview image */}
               {product.previewImage ? (
-                <div className="mb-4 h-[120px] relative overflow-hidden rounded-xl mt-1">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center opacity-20 group-hover:opacity-30 transition-opacity duration-300 scale-105"
-                    style={{ backgroundImage: `url(${product.previewImage})` }}
+                <div className="mb-4 mt-1 rounded-xl overflow-hidden border border-[#1a3060]/60">
+                  <img
+                    src={product.previewImage}
+                    alt={product.name}
+                    className="w-full h-auto object-contain block group-hover:scale-[1.02] transition-transform duration-300"
+                    style={{ maxHeight: '200px', objectFit: 'cover', objectPosition: 'top' }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0d1b3e] via-[#0d1b3e]/60 to-transparent" />
-                  <div className="absolute inset-0 flex items-center justify-center" style={{ color: product.accent }}>
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" opacity="0.4">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
-                    </svg>
-                  </div>
                 </div>
               ) : product.slug === '/container-orbit' ? (
                 <div className="mb-4 h-[120px] relative rounded-xl mt-1 overflow-hidden"
