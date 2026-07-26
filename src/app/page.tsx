@@ -437,6 +437,7 @@ function WhyRust() {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 // ── Other Tools teaser ────────────────────────────────────────────────────────
+import { LIBRARY_LIST } from '@/data/libraries'
 
 function OtherTools() {
   return (
@@ -449,7 +450,7 @@ function OtherTools() {
               Other tools
             </h2>
             <p className="text-[#8BA3C7] text-sm mt-1 max-w-md">
-              IDE plugins, scripts, and one-trick tools for the gaps the Orbit suite doesn&apos;t cover.
+              IDE plugins, CLI tools, and polyglot developer libraries — all free, all open source.
             </p>
           </div>
           <Link
@@ -460,7 +461,8 @@ function OtherTools() {
           </Link>
         </ScrollReveal>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Mermaid Preview */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           <ScrollReveal>
             <Link
               href="/mermaid-preview"
@@ -474,33 +476,59 @@ function OtherTools() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-bold text-white text-sm" style={{ fontFamily: 'Syne, sans-serif' }}>Mermaid Preview</h3>
                     <span className="text-[10px] px-2 py-0.5 rounded-full border font-semibold" style={{ color: '#FF3670', borderColor: '#FF367040', background: '#FF367012' }}>
-                      Released
+                      Live
                     </span>
                   </div>
-                  <p className="text-[10px] text-[#4A6080] mt-0.5">JetBrains Plugin · v0.1.0</p>
+                  <p className="text-[10px] text-[#4A6080] mt-0.5">JetBrains Plugin</p>
                 </div>
               </div>
               <p className="text-[#8BA3C7] text-xs leading-relaxed">
                 Live Mermaid diagram preview in a side panel. Per-block toggle, 250ms refresh, offline. All JetBrains IDEs 2023.3+.
               </p>
-              <div className="flex gap-1.5 mt-3 flex-wrap">
-                {['JetBrains', 'Mermaid', 'Markdown'].map(tag => (
-                  <span key={tag} className="px-2 py-0.5 rounded-full text-[10px] bg-[#0d1b3e] text-[#4A6080] border border-[#1a3060]">{tag}</span>
-                ))}
-              </div>
-              <span className="inline-flex items-center gap-1 text-xs font-semibold mt-4" style={{ color: '#FF3670' }}>
+              <span className="inline-flex items-center gap-1 text-xs font-semibold mt-4 block" style={{ color: '#FF3670' }}>
                 Learn more →
               </span>
             </Link>
           </ScrollReveal>
+        </div>
 
-          {/* Placeholder — more coming */}
-          <ScrollReveal delay={80}>
-            <div className="rounded-2xl p-5 border border-dashed border-[#1a3060] bg-[#040810] flex flex-col items-center justify-center text-center gap-2 min-h-[180px]">
-              <span className="text-2xl opacity-40">🦥</span>
-              <p className="text-xs text-[#2a3a54]">More tools coming soon</p>
-            </div>
-          </ScrollReveal>
+        {/* Developer libraries */}
+        <ScrollReveal>
+          <div className="flex items-center gap-2 mb-4 mt-2">
+            <span className="text-xs font-semibold tracking-widest uppercase text-[#4A6080]">Developer libraries</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full border border-[#1a3060] text-[#4A6080]">Rust · TS · Kotlin</span>
+          </div>
+        </ScrollReveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {LIBRARY_LIST.map((lib, i) => (
+            <ScrollReveal key={lib.slug} delay={i * 60}>
+              <Link
+                href={`/${lib.slug}`}
+                className="group block rounded-2xl p-5 border border-[#1a3060] bg-[#060d1e] hover:-translate-y-1 transition-all duration-200"
+                style={{ ['--hover-border' as string]: `${lib.accent}40` }}
+              >
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 group-hover:scale-110 transition-transform"
+                    style={{ background: `${lib.accent}12`, border: `1px solid ${lib.accent}30` }}>
+                    {lib.icon}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-white text-sm font-mono" style={{ fontFamily: 'monospace' }}>{lib.name}</h3>
+                    <p className="text-[10px] text-[#4A6080] mt-0.5">{lib.tags.slice(0, 3).join(' · ')}</p>
+                  </div>
+                </div>
+                <p className="text-[#8BA3C7] text-xs leading-relaxed line-clamp-3">{lib.tagline}</p>
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex gap-1 flex-wrap">
+                    {lib.install.npm && (
+                      <code className="text-[10px] px-1.5 py-0.5 rounded bg-[#0d1b3e] text-[#4A6080] font-mono">npm i {lib.install.npm.replace('npm i ', '')}</code>
+                    )}
+                  </div>
+                  <span className="text-xs font-semibold flex-shrink-0 ml-2" style={{ color: lib.accent }}>→</span>
+                </div>
+              </Link>
+            </ScrollReveal>
+          ))}
         </div>
       </div>
     </section>
