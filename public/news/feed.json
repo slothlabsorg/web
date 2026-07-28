@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-26T11:06:54.911Z",
+  "generatedAt": "2026-07-28T22:24:20.079Z",
   "items": [
     {
       "id": "co-v1-launch-jul-27",
@@ -9,7 +9,7 @@
       "publishedAt": "2026-07-26T00:00:00Z",
       "badge": "LAUNCH",
       "badgeTone": "primary",
-      "title": "CloudOrbit launches Monday July 27, 2026",
+      "title": "CloudOrbit launches Monday August 3, 2026",
       "body": "CloudOrbit is now available — the AWS session manager you wish Leapp was.\n\n## What's included\n\n- **AWS SSO** — switch accounts without touching a config file\n- **Auto-kubeconfig** — EKS clusters detected and written automatically\n- **Session persistence** — active sessions survive app restarts\n- **Region selector** — pick any AWS region per profile\n- **IAM / Chained / Federated** — all auth methods supported\n- **Cloudflare & corporate proxy** compatible\n\nFree. Native Rust. No Electron.",
       "collapsed": false,
       "action": {
@@ -27,7 +27,7 @@
       "publishedAt": "2026-07-26T00:00:00Z",
       "badge": "LAUNCH",
       "badgeTone": "primary",
-      "title": "DataOrbit launches Monday July 27, 2026",
+      "title": "DataOrbit launches Monday August 3, 2026",
       "body": "DataOrbit is the DynamoDB GUI the AWS console never was.\n\n## What's included\n\n- **Browse** — grid + JSON views, row detail panel, schema inspector\n- **Explore** — query builder with GSI support, filter expressions, cost warnings\n- **Live Streams** — real-time DynamoDB Streams event viewer\n- **Cross-table joins** — inner, left, left-anti, right, right-anti\n- **Query history** — full history with search\n- **CouchDB** support\n- **No Electron, no JVM** — pure Rust + Tauri\n\nFree forever. MIT licensed.",
       "collapsed": false,
       "action": {
@@ -63,8 +63,8 @@
       "publishedAt": "2026-07-26T00:00:00Z",
       "badge": "LAUNCH",
       "badgeTone": "primary",
-      "title": "CloudOrbit + DataOrbit launch Monday July 27",
-      "body": "Two apps, one day. **CloudOrbit** (AWS session manager) and **DataOrbit** (DynamoDB GUI) both go live on **Monday July 27, 2026**.\n\n- CloudOrbit: AWS SSO, EKS, kubeconfig auto-update, works behind Cloudflare\n- DataOrbit: live streams, cross-table joins, query builder with GSI support\n\nBoth are free, native Rust, open source.",
+      "title": "CloudOrbit + DataOrbit launch Monday August 3",
+      "body": "Two apps, one day. **CloudOrbit** (AWS session manager) and **DataOrbit** (DynamoDB GUI) both go live on **Monday August 3, 2026**.\n\n- CloudOrbit: AWS SSO, EKS, kubeconfig auto-update, works behind Cloudflare\n- DataOrbit: live streams, cross-table joins, query builder with GSI support\n\nBoth are free, native Rust, open source.",
       "collapsed": false,
       "action": {
         "label": "See all apps",
