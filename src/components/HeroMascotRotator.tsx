@@ -10,7 +10,7 @@ export default function HeroMascotRotator() {
   const [active, setActive] = useState(0)
 
   useEffect(() => {
-    const t = setInterval(() => setActive(i => (i + 1) % IMAGES.length), 5000)
+    const t = setInterval(() => setActive(i => (i + 1) % IMAGES.length), 7000)
     return () => clearInterval(t)
   }, [])
 
@@ -30,7 +30,8 @@ export default function HeroMascotRotator() {
               backgroundSize: '100%',
               backgroundPosition: '50% 50%',
               opacity: i === active ? 1 : 0,
-              transition: 'opacity 1s ease-in-out',
+              transform: i === active ? 'scale(1)' : 'scale(0.97)',
+              transition: 'opacity 2.5s cubic-bezier(0.4, 0, 0.2, 1), transform 3s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
             role={i === active ? 'img' : 'presentation'}
             aria-label={i === active ? img.alt : undefined}
