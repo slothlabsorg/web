@@ -52,7 +52,6 @@ function drawGear(ctx: CanvasRenderingContext2D, x: number, y: number, size: num
   }
   ctx.closePath()
   ctx.stroke()
-  // Inner circle
   ctx.beginPath()
   ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2)
   ctx.stroke()
@@ -65,10 +64,8 @@ function drawWrench(ctx: CanvasRenderingContext2D, x: number, y: number, size: n
   ctx.rotate(rotation)
   const len = size * 0.8
   ctx.beginPath()
-  // Handle
   ctx.moveTo(-len * 0.5, 0)
   ctx.lineTo(len * 0.3, 0)
-  // Head
   ctx.moveTo(len * 0.3, -size * 0.2)
   ctx.arc(len * 0.3, 0, size * 0.2, -Math.PI * 0.5, Math.PI * 0.5, false)
   ctx.moveTo(len * 0.3, -size * 0.2)
@@ -91,7 +88,6 @@ function drawBracket(ctx: CanvasRenderingContext2D, x: number, y: number, size: 
   ctx.lineTo(0, h)
   ctx.lineTo(w, h)
   ctx.stroke()
-  // Closing bracket
   ctx.beginPath()
   ctx.moveTo(size * 0.4, -h)
   ctx.lineTo(size * 0.4 + w, -h)
@@ -126,15 +122,13 @@ export function ToolsBackground() {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-
     if (prefersReducedMotion()) return
 
     let animId: number
     let w = 0
     let h = 0
-
     const shapes: Shape[] = []
-    const shapeCount = 18
+    const shapeCount = 22
 
     function resize() {
       const dpr = window.devicePixelRatio || 1
@@ -153,14 +147,14 @@ export function ToolsBackground() {
         shapes.push({
           x: Math.random() * w,
           y: Math.random() * h,
-          size: 20 + Math.random() * 40,
+          size: 24 + Math.random() * 44,
           rotation: Math.random() * Math.PI * 2,
-          rotationSpeed: (Math.random() - 0.5) * 0.003,
+          rotationSpeed: (Math.random() - 0.5) * 0.004,
           floatOffset: Math.random() * Math.PI * 2,
           floatSpeed: 0.3 + Math.random() * 0.5,
           type: types[i % types.length],
           color: colors[i % colors.length],
-          opacity: 0.08 + Math.random() * 0.07, // 0.08 - 0.15
+          opacity: 0.1 + Math.random() * 0.1,
         })
       }
     }
@@ -170,25 +164,15 @@ export function ToolsBackground() {
       for (const shape of shapes) {
         shape.rotation += shape.rotationSpeed
         const floatY = Math.sin(time * 0.001 * shape.floatSpeed + shape.floatOffset) * 8
-
         ctx!.strokeStyle = shape.color
         ctx!.globalAlpha = shape.opacity
-        ctx!.lineWidth = 1
-
+        ctx!.lineWidth = 1.2
         const drawY = shape.y + floatY
         switch (shape.type) {
-          case 'gear':
-            drawGear(ctx!, shape.x, drawY, shape.size, shape.rotation)
-            break
-          case 'wrench':
-            drawWrench(ctx!, shape.x, drawY, shape.size, shape.rotation)
-            break
-          case 'bracket':
-            drawBracket(ctx!, shape.x, drawY, shape.size, shape.rotation)
-            break
-          case 'hexagon':
-            drawHexagon(ctx!, shape.x, drawY, shape.size, shape.rotation)
-            break
+          case 'gear': drawGear(ctx!, shape.x, drawY, shape.size, shape.rotation); break
+          case 'wrench': drawWrench(ctx!, shape.x, drawY, shape.size, shape.rotation); break
+          case 'bracket': drawBracket(ctx!, shape.x, drawY, shape.size, shape.rotation); break
+          case 'hexagon': drawHexagon(ctx!, shape.x, drawY, shape.size, shape.rotation); break
         }
       }
       ctx!.globalAlpha = 1
@@ -198,21 +182,12 @@ export function ToolsBackground() {
     resize()
     initShapes()
     animId = requestAnimationFrame(draw)
-
-    window.addEventListener('resize', () => { resize(); initShapes() })
-    return () => {
-      cancelAnimationFrame(animId)
-      window.removeEventListener('resize', () => { resize(); initShapes() })
-    }
+    const handleResize = () => { resize(); initShapes() }
+    window.addEventListener('resize', handleResize)
+    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', handleResize) }
   }, [])
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      aria-hidden="true"
-    />
-  )
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" />
 }
 
 // ── MatrixBackground ──────────────────────────────────────────────────────────
@@ -236,7 +211,6 @@ export function MatrixBackground() {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-
     if (prefersReducedMotion()) return
 
     let animId: number
@@ -255,20 +229,20 @@ export function MatrixBackground() {
 
     function initColumns() {
       columns.length = 0
-      const colCount = Math.floor(w / 28) // Sparse columns
+      const colCount = Math.floor(w / 22)
       for (let i = 0; i < colCount; i++) {
-        const fontSize = 10 + Math.random() * 4
+        const fontSize = 11 + Math.random() * 3
         const charCount = Math.floor(h / fontSize)
         const chars: string[] = []
         for (let j = 0; j < charCount; j++) {
           chars.push(MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)])
         }
         columns.push({
-          x: (i / colCount) * w + Math.random() * 14,
+          x: (i / colCount) * w + Math.random() * 10,
           chars,
-          y: Math.random() * h * 2 - h, // Start at random positions
-          speed: 0.3 + Math.random() * 0.7,
-          opacity: 0.04 + Math.random() * 0.08, // 0.04 - 0.12
+          y: Math.random() * h * 2 - h,
+          speed: 0.4 + Math.random() * 1.0,
+          opacity: 0.12 + Math.random() * 0.14, // 0.12 - 0.26
           fontSize,
         })
       }
@@ -276,19 +250,17 @@ export function MatrixBackground() {
 
     function draw() {
       ctx!.clearRect(0, 0, w, h)
-      ctx!.font = '12px monospace'
 
       for (const col of columns) {
         col.y += col.speed
+        const visibleChars = 14 + Math.floor(Math.random() * 8)
 
-        // Draw visible characters with fade
-        const visibleChars = 12 + Math.floor(Math.random() * 6)
         for (let i = 0; i < visibleChars; i++) {
           const charY = col.y - i * col.fontSize
           if (charY < -col.fontSize || charY > h + col.fontSize) continue
 
           const fadeProgress = i / visibleChars
-          const alpha = col.opacity * (1 - fadeProgress * 0.8)
+          const alpha = col.opacity * (1 - fadeProgress * 0.7)
 
           ctx!.globalAlpha = alpha
           ctx!.fillStyle = i === 0 ? CYAN : BLUE
@@ -298,10 +270,8 @@ export function MatrixBackground() {
           ctx!.fillText(col.chars[Math.abs(charIdx)], col.x, charY)
         }
 
-        // Reset column when it scrolls past bottom
         if (col.y - visibleChars * col.fontSize > h) {
           col.y = -visibleChars * col.fontSize
-          // Randomize chars
           for (let j = 0; j < col.chars.length; j++) {
             if (Math.random() < 0.3) {
               col.chars[j] = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)]
@@ -317,53 +287,43 @@ export function MatrixBackground() {
     resize()
     initColumns()
     animId = requestAnimationFrame(draw)
-
     const handleResize = () => { resize(); initColumns() }
     window.addEventListener('resize', handleResize)
-    return () => {
-      cancelAnimationFrame(animId)
-      window.removeEventListener('resize', handleResize)
-    }
+    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', handleResize) }
   }, [])
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      aria-hidden="true"
-    />
-  )
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" />
 }
 
 // ── SlothAbstractBackground ───────────────────────────────────────────────────
+// Constellation pattern that tiles across the full width
 
-// Sloth silhouette as normalized points (0-1 range) forming a recognizable outline
-// Includes body, head, limbs, and branch
 const SLOTH_POINTS: [number, number][] = [
-  // Branch (top)
-  [0.15, 0.18], [0.25, 0.16], [0.35, 0.15], [0.45, 0.14], [0.55, 0.13],
-  [0.65, 0.14], [0.75, 0.16], [0.85, 0.19],
-  // Arms hanging from branch
-  [0.35, 0.15], [0.33, 0.22], [0.32, 0.28],
-  [0.55, 0.13], [0.54, 0.20], [0.53, 0.26],
-  // Body (hanging below)
-  [0.32, 0.28], [0.34, 0.34], [0.36, 0.40], [0.38, 0.46], [0.40, 0.50],
-  [0.53, 0.26], [0.52, 0.32], [0.50, 0.38], [0.48, 0.44], [0.46, 0.50],
-  // Body outline (rounded belly)
-  [0.40, 0.50], [0.39, 0.54], [0.40, 0.58], [0.42, 0.61], [0.44, 0.62],
-  [0.46, 0.50], [0.47, 0.54], [0.46, 0.58], [0.44, 0.61], [0.44, 0.62],
+  // Branch
+  [0.1, 0.15], [0.2, 0.13], [0.3, 0.12], [0.4, 0.11], [0.5, 0.10],
+  [0.6, 0.11], [0.7, 0.13], [0.8, 0.15], [0.9, 0.18],
+  // Arms
+  [0.3, 0.12], [0.28, 0.20], [0.27, 0.27],
+  [0.5, 0.10], [0.49, 0.18], [0.48, 0.25],
+  // Body
+  [0.27, 0.27], [0.29, 0.34], [0.31, 0.40], [0.33, 0.46], [0.35, 0.52],
+  [0.48, 0.25], [0.47, 0.32], [0.45, 0.38], [0.43, 0.44], [0.41, 0.52],
+  // Belly
+  [0.35, 0.52], [0.34, 0.57], [0.35, 0.61], [0.37, 0.64], [0.39, 0.65],
+  [0.41, 0.52], [0.42, 0.57], [0.41, 0.61], [0.39, 0.64], [0.39, 0.65],
   // Head
-  [0.38, 0.46], [0.36, 0.44], [0.34, 0.43], [0.33, 0.45], [0.33, 0.48],
-  [0.34, 0.50], [0.36, 0.51], [0.38, 0.50],
-  // Eyes (two dots)
-  [0.345, 0.46], [0.365, 0.46],
+  [0.33, 0.46], [0.30, 0.44], [0.28, 0.43], [0.27, 0.46], [0.27, 0.49],
+  [0.28, 0.52], [0.30, 0.53], [0.33, 0.51],
+  // Eyes
+  [0.29, 0.47], [0.31, 0.47],
   // Tail
-  [0.44, 0.62], [0.46, 0.64], [0.48, 0.65], [0.50, 0.64],
-  // Claws on branch
-  [0.33, 0.22], [0.31, 0.18], [0.34, 0.16],
-  [0.54, 0.20], [0.56, 0.15], [0.53, 0.13],
-  // Extra body particles
-  [0.41, 0.42], [0.43, 0.38], [0.45, 0.35], [0.42, 0.55], [0.44, 0.57],
+  [0.39, 0.65], [0.42, 0.68], [0.44, 0.69], [0.46, 0.67],
+  // Claws
+  [0.28, 0.20], [0.26, 0.14], [0.29, 0.12],
+  [0.49, 0.18], [0.51, 0.12], [0.48, 0.10],
+  // Extra fill particles
+  [0.36, 0.42], [0.38, 0.38], [0.40, 0.35], [0.37, 0.56], [0.39, 0.58],
+  [0.32, 0.30], [0.44, 0.30], [0.36, 0.48], [0.40, 0.48],
 ]
 
 interface Particle {
@@ -384,7 +344,6 @@ export function SlothAbstractBackground() {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
-
     if (prefersReducedMotion()) return
 
     let animId: number
@@ -402,53 +361,60 @@ export function SlothAbstractBackground() {
     }
 
     function initParticles() {
-      // Center the sloth and scale to fit
-      const scale = Math.min(w, h) * 0.8
-      const offsetX = (w - scale) / 2
-      const offsetY = (h - scale) / 2
+      particles = []
+      // Tile the sloth pattern across the full width
+      // Determine how many copies fit side by side
+      const unitH = h * 0.9
+      const unitW = unitH * 0.7
+      const copies = Math.ceil(w / unitW) + 1
+      const totalW = copies * unitW
+      const startX = (w - totalW) / 2
 
-      particles = SLOTH_POINTS.map(([nx, ny]) => ({
-        baseX: nx * scale + offsetX,
-        baseY: ny * scale + offsetY,
-        x: nx * scale + offsetX,
-        y: ny * scale + offsetY,
-        phase: Math.random() * Math.PI * 2,
-        amplitude: 1.5 + Math.random() * 3,
-        speed: 0.5 + Math.random() * 0.8,
-      }))
+      for (let c = 0; c < copies; c++) {
+        const offsetX = startX + c * unitW
+        const offsetY = h * 0.05
+
+        for (const [nx, ny] of SLOTH_POINTS) {
+          const baseX = nx * unitW + offsetX
+          const baseY = ny * unitH + offsetY
+          particles.push({
+            baseX,
+            baseY,
+            x: baseX,
+            y: baseY,
+            phase: Math.random() * Math.PI * 2,
+            amplitude: 2 + Math.random() * 3,
+            speed: 0.4 + Math.random() * 0.6,
+          })
+        }
+      }
     }
 
-    const connectionDistance = 60
+    const connectionDistance = 55
 
     function draw(time: number) {
       ctx!.clearRect(0, 0, w, h)
       const t = time * 0.001
+      const breathe = 1 + Math.sin(t * 0.35) * 0.012
+      const centerY = h / 2
 
-      // Breathing effect — scale oscillation
-      const breathe = 1 + Math.sin(t * 0.4) * 0.015
-
-      // Update particle positions
       for (const p of particles) {
-        const cx = w / 2
-        const cy = h / 2
-        // Apply breathing from center
-        const dx = p.baseX - cx
-        const dy = p.baseY - cy
-        p.x = cx + dx * breathe + Math.sin(t * p.speed + p.phase) * p.amplitude
-        p.y = cy + dy * breathe + Math.cos(t * p.speed * 0.7 + p.phase) * p.amplitude
+        const dy = p.baseY - centerY
+        p.x = p.baseX + Math.sin(t * p.speed + p.phase) * p.amplitude
+        p.y = centerY + dy * breathe + Math.cos(t * p.speed * 0.7 + p.phase) * p.amplitude
       }
 
-      // Draw connections (constellation lines)
-      ctx!.strokeStyle = CYAN
-      ctx!.lineWidth = 0.5
+      // Draw connections
+      ctx!.lineWidth = 0.6
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x
           const dy = particles[i].y - particles[j].y
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < connectionDistance) {
-            const alpha = (1 - dist / connectionDistance) * 0.15
+            const alpha = (1 - dist / connectionDistance) * 0.25
             ctx!.globalAlpha = alpha
+            ctx!.strokeStyle = CYAN
             ctx!.beginPath()
             ctx!.moveTo(particles[i].x, particles[i].y)
             ctx!.lineTo(particles[j].x, particles[j].y)
@@ -460,10 +426,10 @@ export function SlothAbstractBackground() {
       // Draw particles
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i]
-        ctx!.globalAlpha = 0.2 + Math.sin(t + i) * 0.05
-        ctx!.fillStyle = i % 3 === 0 ? GOLD : (i % 2 === 0 ? CYAN : BLUE)
+        ctx!.globalAlpha = 0.35 + Math.sin(t + i * 0.3) * 0.1
+        ctx!.fillStyle = i % 5 === 0 ? GOLD : (i % 2 === 0 ? CYAN : BLUE)
         ctx!.beginPath()
-        ctx!.arc(p.x, p.y, 1.5 + Math.sin(t * 0.5 + p.phase) * 0.5, 0, Math.PI * 2)
+        ctx!.arc(p.x, p.y, 2 + Math.sin(t * 0.5 + p.phase) * 0.5, 0, Math.PI * 2)
         ctx!.fill()
       }
 
@@ -474,22 +440,174 @@ export function SlothAbstractBackground() {
     resize()
     initParticles()
     animId = requestAnimationFrame(draw)
-
     const handleResize = () => { resize(); initParticles() }
     window.addEventListener('resize', handleResize)
-    return () => {
-      cancelAnimationFrame(animId)
-      window.removeEventListener('resize', handleResize)
-    }
+    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', handleResize) }
   }, [])
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none"
-      aria-hidden="true"
-    />
-  )
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" />
+}
+
+// ── LogoBackground ────────────────────────────────────────────────────────────
+// SlothLabs logo formed by orbiting particles — represents the "orbit" brand
+// Circular orbits with particles tracing paths, forming an abstract "S" + orbital rings
+
+interface OrbitParticle {
+  angle: number
+  speed: number
+  radius: number
+  centerX: number
+  centerY: number
+  size: number
+  color: string
+  trail: [number, number][]
+  trailLength: number
+}
+
+export function LogoBackground() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    if (prefersReducedMotion()) return
+
+    let animId: number
+    let w = 0
+    let h = 0
+    let orbitParticles: OrbitParticle[] = []
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1
+      w = canvas!.clientWidth
+      h = canvas!.clientHeight
+      canvas!.width = w * dpr
+      canvas!.height = h * dpr
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0)
+    }
+
+    function initOrbits() {
+      orbitParticles = []
+      // Create multiple orbital rings spread across the width
+      const ringCount = Math.max(3, Math.floor(w / 300))
+      const spacing = w / (ringCount + 1)
+
+      for (let r = 0; r < ringCount; r++) {
+        const cx = spacing * (r + 1)
+        const cy = h * (0.35 + Math.sin(r * 1.2) * 0.15)
+        const baseRadius = 60 + Math.random() * 80
+
+        // Each ring has multiple particles orbiting
+        const particlesPerRing = 4 + Math.floor(Math.random() * 4)
+        for (let p = 0; p < particlesPerRing; p++) {
+          const radiusVar = baseRadius * (0.6 + Math.random() * 0.8)
+          orbitParticles.push({
+            angle: (p / particlesPerRing) * Math.PI * 2 + Math.random() * 0.5,
+            speed: (0.3 + Math.random() * 0.5) * (Math.random() > 0.5 ? 1 : -1),
+            radius: radiusVar,
+            centerX: cx + (Math.random() - 0.5) * 30,
+            centerY: cy + (Math.random() - 0.5) * 30,
+            size: 1.5 + Math.random() * 2,
+            color: [BLUE, CYAN, GOLD][Math.floor(Math.random() * 3)],
+            trail: [],
+            trailLength: 12 + Math.floor(Math.random() * 10),
+          })
+        }
+      }
+
+      // Add connecting "S" curve particles — floating between rings
+      const sParticles = 8
+      for (let i = 0; i < sParticles; i++) {
+        const t = i / sParticles
+        orbitParticles.push({
+          angle: t * Math.PI * 4,
+          speed: 0.2 + Math.random() * 0.3,
+          radius: 30 + Math.random() * 20,
+          centerX: w * (0.2 + t * 0.6),
+          centerY: h * (0.3 + Math.sin(t * Math.PI) * 0.2),
+          size: 1.2 + Math.random() * 1.5,
+          color: CYAN,
+          trail: [],
+          trailLength: 8,
+        })
+      }
+    }
+
+    function draw(time: number) {
+      ctx!.clearRect(0, 0, w, h)
+      const t = time * 0.001
+
+      // Draw faint orbital ring outlines
+      const ringCount = Math.max(3, Math.floor(w / 300))
+      const spacing = w / (ringCount + 1)
+      for (let r = 0; r < ringCount; r++) {
+        const cx = spacing * (r + 1)
+        const cy = h * (0.35 + Math.sin(r * 1.2) * 0.15)
+        const radius = 60 + (r % 3) * 30
+        ctx!.beginPath()
+        ctx!.ellipse(cx, cy, radius, radius * 0.6, r * 0.3, 0, Math.PI * 2)
+        ctx!.strokeStyle = BLUE
+        ctx!.globalAlpha = 0.06
+        ctx!.lineWidth = 1
+        ctx!.stroke()
+      }
+
+      // Update and draw particles
+      for (const p of orbitParticles) {
+        p.angle += p.speed * 0.016
+
+        // Elliptical orbit
+        const x = p.centerX + Math.cos(p.angle) * p.radius
+        const y = p.centerY + Math.sin(p.angle) * p.radius * 0.6
+
+        // Update trail
+        p.trail.unshift([x, y])
+        if (p.trail.length > p.trailLength) p.trail.pop()
+
+        // Draw trail
+        if (p.trail.length > 1) {
+          for (let i = 1; i < p.trail.length; i++) {
+            const alpha = (1 - i / p.trail.length) * 0.2
+            ctx!.globalAlpha = alpha
+            ctx!.strokeStyle = p.color
+            ctx!.lineWidth = p.size * 0.5
+            ctx!.beginPath()
+            ctx!.moveTo(p.trail[i - 1][0], p.trail[i - 1][1])
+            ctx!.lineTo(p.trail[i][0], p.trail[i][1])
+            ctx!.stroke()
+          }
+        }
+
+        // Draw particle
+        ctx!.globalAlpha = 0.4 + Math.sin(t * 2 + p.angle) * 0.15
+        ctx!.fillStyle = p.color
+        ctx!.beginPath()
+        ctx!.arc(x, y, p.size, 0, Math.PI * 2)
+        ctx!.fill()
+
+        // Glow
+        ctx!.globalAlpha = 0.1
+        ctx!.beginPath()
+        ctx!.arc(x, y, p.size * 3, 0, Math.PI * 2)
+        ctx!.fillStyle = p.color
+        ctx!.fill()
+      }
+
+      ctx!.globalAlpha = 1
+      animId = requestAnimationFrame(draw)
+    }
+
+    resize()
+    initOrbits()
+    animId = requestAnimationFrame(draw)
+    const handleResize = () => { resize(); initOrbits() }
+    window.addEventListener('resize', handleResize)
+    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', handleResize) }
+  }, [])
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" />
 }
 
 // ── BackgroundSelector ────────────────────────────────────────────────────────
@@ -499,12 +617,12 @@ const backgrounds = [
   { id: 'tools', Component: ToolsBackground },
   { id: 'matrix', Component: MatrixBackground },
   { id: 'sloth', Component: SlothAbstractBackground },
+  { id: 'logo', Component: LogoBackground },
 ] as const
 
 export function BackgroundSelector() {
   const [selectedIdx] = useState(() => Math.floor(Math.random() * backgrounds.length))
   const { Component } = backgrounds[selectedIdx]
-
   return <Component />
 }
 
