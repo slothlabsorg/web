@@ -239,8 +239,8 @@ function Screenshots() {
         <div className="grid md:grid-cols-2 gap-5">
           {SCREENSHOTS.map((s, i) => (
             <ScrollReveal key={s.label} delay={i * 80}>
-              <div className="rounded-2xl overflow-hidden border" style={{ borderColor: BORDER }}>
-                <div className="aspect-video bg-cover bg-top" style={{ backgroundImage: `url(${s.src})` }} />
+              <div className="rounded-2xl overflow-hidden" style={{ boxShadow: '0 0 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(13,43,30,0.3)' }}>
+                <div className="aspect-video bg-cover bg-top" style={{ backgroundImage: `url(${s.src})`, maskImage: 'linear-gradient(to bottom, black 65%, transparent 100%)' }} />
                 <div className="px-4 py-3" style={{ background: BG_CARD }}>
                   <p className="text-sm font-medium" style={{ color: ACCENT }}>{s.label}</p>
                 </div>

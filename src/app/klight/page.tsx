@@ -693,8 +693,8 @@ function UISection() {
                 </div>
 
                 {/* Primary screenshot */}
-                <div className="rounded-2xl border overflow-hidden shadow-2xl" style={{ borderColor: `${ACCENT}25` }}>
-                  <div className="flex items-center gap-2 px-4 py-3 bg-[#071020] border-b border-[#1a3060]">
+                <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ boxShadow: `0 0 60px rgba(0,0,0,0.6), 0 0 0 1px ${ACCENT}15` }}>
+                  <div className="flex items-center gap-2 px-4 py-3 bg-[#071020] border-b border-[#1a3060]/50">
                     <span className="w-3 h-3 rounded-full bg-red-500/80" />
                     <span className="w-3 h-3 rounded-full bg-yellow-500/80" />
                     <span className="w-3 h-3 rounded-full bg-green-500/80" />
@@ -712,7 +712,7 @@ function UISection() {
                 {/* Supporting grid */}
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {world.grid.map(({ src, alt, label }) => (
-                    <div key={src} className="rounded-xl overflow-hidden border border-[#1a3060] hover:border-[#B4FF3C]/30 transition-colors group">
+                    <div key={src} className="rounded-xl overflow-hidden group transition-all" style={{ boxShadow: '0 0 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(26,48,96,0.25)' }}>
                       <Image
                         src={src}
                         alt={alt}

@@ -53,8 +53,8 @@ export default function ScreenshotGrid({ screenshots, accent, cardBg, border, la
             key={s.src}
             type="button"
             onClick={() => setOpenIdx(i)}
-            className="block w-full rounded-2xl overflow-hidden border text-left group cursor-zoom-in transition-all hover:-translate-y-0.5"
-            style={{ borderColor: border }}
+            className="block w-full rounded-2xl overflow-hidden text-left group cursor-zoom-in transition-all hover:-translate-y-0.5"
+            style={{ boxShadow: `0 0 40px rgba(0,0,0,0.5), 0 0 0 1px ${border}40` }}
             aria-label={`View full screenshot: ${s.label}`}
           >
             <div className="relative">

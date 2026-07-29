@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
 import CustomCursor from '@/components/CustomCursor'
-import HeroParallaxBg from '@/components/HeroParallaxBg'
+import { BackgroundSelector } from '@/components/WebGLBackgrounds'
 import ProductCarousel from '@/components/ProductCarousel'
 import SupportBanner from '@/components/SupportBanner'
 import HeroMascotRotator from '@/components/HeroMascotRotator'
@@ -70,7 +70,7 @@ function Hero() {
     <section className="relative noise" style={{ minHeight: 'min(100vh, 720px)' }}>
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-[#050d1f]" />
-        <HeroParallaxBg />
+        <BackgroundSelector />
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div
             className="absolute rounded-full opacity-60 blur-[120px]"

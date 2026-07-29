@@ -410,10 +410,10 @@ function ScreenshotsSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {CLOUDORBIT_SCREENSHOTS.map((shot, i) => (
             <ScrollReveal key={shot.src} delay={i * 60}>
-              <div className="rounded-xl border border-[#1a3060] bg-[#0d1b3e] overflow-hidden group hover:border-[#00D4FF]/40 transition-colors">
+              <div className="rounded-xl overflow-hidden group transition-all" style={{ boxShadow: '0 0 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(26,48,96,0.3)' }}>
                 <div
                   className="aspect-video bg-cover bg-top group-hover:scale-105 transition-transform duration-300"
-                  style={{ backgroundImage: `url(${shot.src})` }}
+                  style={{ backgroundImage: `url(${shot.src})`, maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)' }}
                 />
                 <p className="text-xs text-[#4A6080] p-3 text-center">{shot.label}</p>
               </div>
