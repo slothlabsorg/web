@@ -713,13 +713,15 @@ function UISection() {
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {world.grid.map(({ src, alt, label }) => (
                     <div key={src} className="rounded-xl overflow-hidden group transition-all" style={{ boxShadow: '0 0 30px rgba(0,0,0,0.5), 0 0 0 1px rgba(26,48,96,0.25)' }}>
-                      <Image
-                        src={src}
-                        alt={alt}
-                        width={700}
-                        height={450}
-                        className="w-full h-auto block group-hover:scale-[1.01] transition-transform duration-300"
-                      />
+                      <div className="overflow-hidden">
+                        <Image
+                          src={src}
+                          alt={alt}
+                          width={700}
+                          height={450}
+                          className="w-full h-auto block group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
                       <div className="px-3 py-2 bg-[#071020]">
                         <p className="text-[10px] text-[#4A6080] font-mono">{label}</p>
                       </div>
