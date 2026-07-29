@@ -80,7 +80,7 @@ export default function ProductCarousel({ products }: { products: Product[] }) {
             >
               {/* Hover glow */}
               <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"
+                className="absolute inset-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[14px] pointer-events-none"
                 style={{ background: `radial-gradient(circle at 50% 0%, ${product.accent}12 0%, transparent 70%)` }}
               />
 
@@ -111,7 +111,7 @@ export default function ProductCarousel({ products }: { products: Product[] }) {
 
               {/* Preview image */}
               {product.previewImage ? (
-                <div className="mb-4 mt-1 rounded-xl overflow-hidden border border-[#1a3060]/60">
+                <div className="mb-4 mt-1 rounded-xl overflow-hidden" style={{ boxShadow: '0 0 30px rgba(0,0,0,0.4)' }}>
                   <img
                     src={product.previewImage}
                     alt={product.name}
@@ -121,7 +121,7 @@ export default function ProductCarousel({ products }: { products: Product[] }) {
                 </div>
               ) : product.slug === '/container-orbit' ? (
                 <div className="mb-4 h-[120px] relative rounded-xl mt-1 overflow-hidden"
-                  style={{ background: `${product.accent}08`, border: `1px solid ${product.accent}20` }}>
+                  style={{ background: `${product.accent}08`, boxShadow: `0 0 20px rgba(0,0,0,0.3), 0 0 0 1px ${product.accent}15` }}>
                   <ContainerOrbitCanvas
                     accent={product.accent}
                     accent2="#22D3EE"
@@ -131,7 +131,7 @@ export default function ProductCarousel({ products }: { products: Product[] }) {
                 </div>
               ) : (
                 <div className="mb-4 h-[120px] rounded-xl mt-1 flex items-center justify-center overflow-hidden"
-                  style={{ background: `${product.accent}10`, border: `1px solid ${product.accent}20` }}>
+                  style={{ background: `${product.accent}10`, boxShadow: `0 0 20px rgba(0,0,0,0.3), 0 0 0 1px ${product.accent}15` }}>
                   {product.iconSrc ? (
                     <img src={product.iconSrc} alt={product.name} className="w-16 h-16 object-contain" />
                   ) : (
