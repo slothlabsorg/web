@@ -3,20 +3,36 @@ import ProductNavbar from '@/components/ProductNavbar'
 import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
 import CustomCursor from '@/components/CustomCursor'
-import SubscribeModal from '@/components/SubscribeModal'
-import ContainerOrbitCanvas from '@/components/ContainerOrbitCanvas'
+import RuntimeOrbitCanvas from '@/components/RuntimeOrbitCanvas'
+import RuntimeWordRotator from '@/components/RuntimeWordRotator'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 const ACCENT = '#4F8CFF'
 const ACCENT2 = '#22D3EE'
-const REPO = 'https://github.com/slothlabsorg/container-orbit'
+const REPO = 'https://github.com/slothlabsorg/runtime-orbit'
+const DOCS = '/runtime-orbit/docs'
+
+// The runtimes runtime-orbit can borrow. "runtime" rests first, then the blind
+// rolls through the list — the compatibility claim, made by the headline itself.
+const RUNTIMES = [
+  'runtime',
+  'Docker',
+  'OrbStack',
+  'Kubernetes',
+  'Rancher',
+  'Podman',
+  'colima',
+  'Lima',
+  'containerd',
+]
 
 export const metadata: Metadata = {
-  title: 'container-orbit — Run Docker on a beefier machine, transparently',
+  title: "runtime-orbit — Borrow a beefier machine's container runtime",
   description:
-    'container-orbit (orbit) delegates your local Docker to a beefier machine on your LAN over SSH — heavy builds and containers run there while published ports are forwarded straight back to your localhost. One command per machine. Works with Docker Desktop, OrbStack, Rancher, and colima.',
+    "runtime-orbit points this machine's docker at another machine's container runtime over SSH — heavy builds and containers run there while published ports are forwarded straight back to your localhost. Two commands, one per machine. Works with Docker Desktop, OrbStack, Rancher Desktop, colima, Lima, Podman and containerd.",
   keywords: [
     'remote docker',
+    'borrow container runtime',
     'docker over ssh',
     'DOCKER_HOST ssh',
     'docker context remote',
@@ -25,25 +41,29 @@ export const metadata: Metadata = {
     'docker port forwarding ssh',
     'remote docker daemon mac',
     'free up laptop ram docker',
-    'orbit docker',
+    'orbstack remote socket',
+    'podman remote socket',
+    'runtime-orbit',
     'container-orbit',
     'SlothLabs',
   ],
   openGraph: {
-    title: 'container-orbit — Run Docker on a beefier machine, transparently',
+    title: "runtime-orbit — Borrow a beefier machine's container runtime",
     description:
-      'Delegate Docker to a beefier machine on your LAN over SSH. Builds and containers run there; published ports come back to your localhost automatically. One command per side.',
-    url: `${SITE_URL}/container-orbit`,
+      "Borrow another machine's container runtime over your LAN. Builds and containers run there; published ports come back to your localhost automatically. One command per side.",
+    url: `${SITE_URL}/runtime-orbit`,
     siteName: 'SlothLabs',
     type: 'website',
-    images: [{ url: '/images/slothlabs-hero.png', width: 1200, height: 630, alt: 'container-orbit — remote Docker, transparently' }],
+    images: [{ url: '/images/slothlabs-hero.png', width: 1200, height: 630, alt: 'runtime-orbit — borrow a container runtime, transparently' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'container-orbit — Run Docker on a beefier machine, transparently',
-    description: 'Delegate Docker to a beefier LAN machine over SSH. Ports forwarded back to localhost automatically. One command per side.',
+    title: "runtime-orbit — Borrow a beefier machine's container runtime",
+    description:
+      "Your laptop is out of RAM. The machine in the other room isn't. Borrow its container runtime over SSH and keep your localhost.",
+    images: ['/images/slothlabs-hero.png'],
   },
-  alternates: { canonical: `${SITE_URL}/container-orbit` },
+  alternates: { canonical: `${SITE_URL}/runtime-orbit` },
 }
 
 // ── Terminal helper ─────────────────────────────────────────────────────────
@@ -65,7 +85,7 @@ function Hero() {
       {/* WebGL background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[#050d1f]" />
-        <ContainerOrbitCanvas accent={ACCENT} accent2={ACCENT2} className="opacity-90" />
+        <RuntimeOrbitCanvas accent={ACCENT} accent2={ACCENT2} className="opacity-90" />
         {/* readability gradient over the canvas, left-weighted */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#050d1f] via-[#050d1f]/70 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#050d1f] to-transparent" />
@@ -75,7 +95,7 @@ function Hero() {
         <div className="max-w-2xl space-y-7 py-[52px]">
           <div className="fade-up" style={{ animationDelay: '0s' }}>
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium bg-[#0d1b3e] border" style={{ borderColor: `${ACCENT}40`, color: ACCENT }}>
-              🛰️ Remote Docker · Zero-config port forwarding · Rust CLI
+              🛰️ v0.2 out now · Rust CLI · macOS · Linux · Windows
             </span>
           </div>
 
@@ -83,14 +103,16 @@ function Hero() {
             className="fade-up break-words text-[2.75rem] sm:text-5xl lg:text-[3.5rem] xl:text-[68px] font-bold leading-[1.08] tracking-tight"
             style={{ fontFamily: 'Syne, sans-serif', letterSpacing: '-0.02em', animationDelay: '0.1s' }}
           >
-            <span className="block text-white">Your laptop stops</span>
-            <span className="block" style={{ color: ACCENT }}>choking on Docker.</span>
+            <span className="block text-white">Borrow another</span>
+            <span className="block text-white">machine&apos;s</span>
+            <RuntimeWordRotator words={RUNTIMES} accent={ACCENT} className="block" />
           </h1>
 
           <p className="fade-up text-lg xl:text-xl text-[#8BA3C7] leading-relaxed max-w-xl" style={{ animationDelay: '0.2s' }}>
-            <span className="text-white font-semibold">container-orbit</span> sends your Docker builds and
-            containers to a beefier machine on your LAN — over plain SSH — while published ports come
-            straight back to <code className="text-sm px-1 rounded bg-[#0d1b3e]" style={{ color: ACCENT2 }}>localhost</code>.
+            Your laptop is out of RAM. The machine in the other room isn&apos;t.{' '}
+            <span className="text-white font-semibold">runtime-orbit</span> runs your builds and
+            containers over there — over plain SSH — while published ports come straight back to{' '}
+            <code className="text-sm px-1 rounded bg-[#0d1b3e]" style={{ color: ACCENT2 }}>localhost</code>.
             You keep working. Your fans stop spinning.
           </p>
 
@@ -99,26 +121,28 @@ function Hero() {
             <TerminalChrome label="terminal" />
             <pre className="p-4 text-sm font-mono leading-relaxed overflow-x-auto">
               <code>
-                <span className="text-[#4A6080]"># install (macOS / Linux)</span>{'\n'}
-                <span style={{ color: ACCENT }}>$</span> <span className="text-white">brew install slothlabsorg/tap/container-orbit</span>{'\n\n'}
-                <span className="text-[#4A6080]"># one guided command — ~2 min, done</span>{'\n'}
-                <span style={{ color: ACCENT }}>$</span> <span className="text-white">orbit setup</span>{'\n'}
-                <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">found host on your LAN · key authorized</span>{'\n'}
-                <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">docker → the beefy machine</span>{'\n'}
+                <span className="text-[#4A6080]"># install on both machines (macOS / Linux)</span>{'\n'}
+                <span style={{ color: ACCENT }}>$</span> <span className="text-white">curl -fsSL https://slothlabs.org/install/runtime-orbit | sh</span>{'\n\n'}
+                <span className="text-[#4A6080]"># on the beefy machine — the donor</span>{'\n'}
+                <span style={{ color: ACCENT }}>$</span> <span className="text-white">runtime-orbit donor setup</span>{'\n\n'}
+                <span className="text-[#4A6080]"># on the laptop that needs the RAM</span>{'\n'}
+                <span style={{ color: ACCENT }}>$</span> <span className="text-white">runtime-orbit setup --ip 192.168.1.20</span>{'\n'}
+                <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">authorized · no password to copy anywhere</span>{'\n'}
+                <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">docker → the donor · 64 GB, 16 cores</span>{'\n'}
                 <span className="text-green-400">✓</span> <span className="text-[#8BA3C7]">self-test passed — localhost works</span>{'\n'}
-                <span style={{ color: ACCENT2 }} className="font-bold">✦ builds & RAM on the host · ports on your localhost</span>
+                <span style={{ color: ACCENT2 }} className="font-bold">✦ its RAM and CPU · your localhost</span>
               </code>
             </pre>
           </div>
 
           <div className="fade-up flex flex-col sm:flex-row gap-3 items-start" style={{ animationDelay: '0.3s' }}>
-            <SubscribeModal
-              accent={ACCENT}
-              source="container-orbit"
-              buttonLabel="Get early access"
+            <a
+              href={`${DOCS}#install`}
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT, color: '#050d1f' }}
-            />
+            >
+              Install runtime-orbit
+            </a>
             <a
               href={REPO}
               target="_blank"
@@ -131,7 +155,7 @@ function Hero() {
           </div>
 
           <p className="fade-up text-xs text-[#4A6080]" style={{ animationDelay: '0.35s' }}>
-            Open source · Docker Desktop · OrbStack · Rancher · colima · Rust CLI · MIT
+            Open source · Docker Desktop · OrbStack · Rancher Desktop · colima · Lima · Podman · containerd · MIT
           </p>
         </div>
       </div>
@@ -203,8 +227,8 @@ function HowItWorks() {
             <span style={{ color: ACCENT }}>Ports that follow you home.</span>
           </h2>
           <p className="text-[#8BA3C7] text-lg max-w-2xl mx-auto">
-            Docker already speaks to remote daemons over SSH. orbit does the two things that make it
-            actually usable every day: it sets everything up with one command per side, and it keeps your
+            Docker already speaks to remote daemons over SSH. runtime-orbit does the two things that make
+            it usable every day: it sets everything up with one command per machine, and it keeps your
             published ports reachable on your own <code className="text-sm px-1 rounded bg-[#0d1b3e]" style={{ color: ACCENT2 }}>localhost</code>.
           </p>
         </ScrollReveal>
@@ -217,7 +241,7 @@ function HowItWorks() {
                 {/* laptop */}
                 <div className="space-y-2">
                   <div className="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center text-3xl border" style={{ background: `${ACCENT}12`, borderColor: `${ACCENT}30` }}>💻</div>
-                  <p className="text-sm font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Your laptop</p>
+                  <p className="text-sm font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Borrower</p>
                   <p className="text-[11px] text-[#4A6080] font-mono">docker CLI · localhost</p>
                 </div>
                 {/* link */}
@@ -226,17 +250,17 @@ function HowItWorks() {
                   <div className="w-16 sm:w-24 h-px" style={{ background: `linear-gradient(90deg, ${ACCENT}, ${ACCENT2})` }} />
                   <span className="text-[10px] text-[#4A6080] font-mono">multiplexed</span>
                 </div>
-                {/* host */}
+                {/* donor */}
                 <div className="space-y-2">
                   <div className="mx-auto w-16 h-16 rounded-2xl flex items-center justify-center text-3xl border" style={{ background: `${ACCENT2}12`, borderColor: `${ACCENT2}30` }}>🖥️</div>
-                  <p className="text-sm font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>The beefy host</p>
-                  <p className="text-[11px] text-[#4A6080] font-mono">dockerd · RAM · disk</p>
+                  <p className="text-sm font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>Donor</p>
+                  <p className="text-[11px] text-[#4A6080] font-mono">runtime · RAM · disk</p>
                 </div>
               </div>
               <div className="mt-8 space-y-3">
                 {[
-                  { c: ACCENT, t: 'docker context orbit → forwarded daemon socket. Build & run happen on the host.' },
-                  { c: ACCENT2, t: 'orbit watches the remote daemon\'s events and opens an SSH tunnel for every published port.' },
+                  { c: ACCENT, t: 'A standard docker context points at the donor\'s runtime socket, forwarded over SSH. Build and run happen there.' },
+                  { c: ACCENT2, t: 'runtime-orbit watches the donor\'s event stream and opens an SSH tunnel for every published port.' },
                   { c: ACCENT, t: 'Container stops → its tunnel is torn down. The set of forwards always matches reality.' },
                 ].map((row, i) => (
                   <div key={i} className="flex items-start gap-3 text-sm text-[#8BA3C7]">
@@ -254,17 +278,17 @@ function HowItWorks() {
               {
                 n: '1',
                 title: 'One command per machine',
-                body: 'orbit host init on the host prints a join string. orbit link <user@host> on your laptop installs an SSH key, detects the remote socket (Docker Desktop, OrbStack, Rancher, colima), and creates a standard orbit docker context. Idempotent — safe to re-run.',
+                body: 'runtime-orbit donor setup on the beefy machine gets it ready to lend and prints the other side\u2019s command. runtime-orbit setup --ip <donor> on the laptop authorizes itself, detects the donor\u2019s runtime socket, and creates a standard docker context. Both idempotent — safe to re-run.',
               },
               {
                 n: '2',
                 title: 'A real docker context — not a wrapper',
-                body: 'orbit forwards the remote daemon socket to a local unix socket and points the context at it. Because it\'s a stock context, docker, docker compose, and every tool that respects DOCKER_HOST just work. Nothing wraps or shadows your docker binary.',
+                body: 'The donor\u2019s runtime socket is forwarded to a local unix socket, and the context points at that. Because it\u2019s a stock context, docker, docker compose, Testcontainers and every tool that respects DOCKER_HOST just work. Nothing wraps or shadows your docker binary.',
               },
               {
                 n: '3',
                 title: 'Ports reconciled on every event',
-                body: 'orbit up opens one multiplexed SSH master and starts a reconciler. It subscribes to the daemon\'s event stream and keeps ssh -L tunnels in sync with the published ports — so -p 8080:80 on the host is curl localhost:8080 on your laptop, automatically.',
+                body: 'runtime-orbit up opens one multiplexed SSH connection and starts a reconciler. It subscribes to the runtime\u2019s event stream and keeps ssh -L tunnels in sync with the published ports — so -p 8080:80 on the donor is curl localhost:8080 here, automatically.',
               },
             ].map(step => (
               <div key={step.n} className="flex gap-4">
@@ -289,43 +313,55 @@ const FEATURES = [
   {
     icon: '🔌',
     title: 'Automatic port forwarding',
-    desc: 'The core trick. orbit watches the remote daemon and opens/closes SSH tunnels as containers start and stop. Published ports are always live on your localhost — no manual -L juggling.',
+    desc: 'The core trick. runtime-orbit watches the donor\'s runtime and opens/closes SSH tunnels as containers start and stop. Published ports are always live on your localhost — no manual -L juggling.',
     badge: 'The magic',
+  },
+  {
+    icon: '📊',
+    title: 'A dashboard for both machines',
+    desc: 'RAM meters, cores, IPs and load for each side; the donor\'s containers with CPU, memory and network; tunnel throughput as live rates; and how much RAM is not on this machine. --json for scripts.',
+    badge: 'New in 0.2',
+  },
+  {
+    icon: '🔑',
+    title: 'Authorization without the ceremony',
+    desc: 'No ssh-copy-id, no editing authorized_keys. Type the donor\'s password once inside setup — or use a 6-digit pairing code and no password at all. The donor can enable SSH and stop sleeping from its own setup.',
+    badge: null,
   },
   {
     icon: '🧭',
     title: 'Standard docker context',
-    desc: 'orbit manages a normal docker context. No shim over the docker binary — full native compatibility with docker, compose, and anything that reads DOCKER_HOST.',
+    desc: 'It manages a normal docker context. No shim over the docker binary — full native compatibility with docker, compose, Testcontainers and anything that reads DOCKER_HOST.',
     badge: null,
   },
   {
     icon: '🐳',
-    title: 'Engine-agnostic',
-    desc: 'Auto-detects the remote socket for Docker Desktop, OrbStack, Rancher Desktop, or colima. Whatever the host runs, orbit finds it.',
+    title: 'Runtime-agnostic',
+    desc: 'Docker Desktop, OrbStack, Rancher Desktop, colima, Lima, Podman, containerd. It probes for all of them, resolves symlinks so one engine is never listed twice, and tells you which socket it picked.',
+    badge: null,
+  },
+  {
+    icon: '🚦',
+    title: 'Routing tables and RAM budgets',
+    desc: 'Delegate everything, or set a borrow ceiling and a local budget — stay here until 5 GB is used, then route away. Rules like postgres:* → local keep a database on your own disk. route explain says why.',
+    badge: 'New in 0.2',
+  },
+  {
+    icon: '🩺',
+    title: 'doctor, on both sides',
+    desc: 'Every check with a clear ✓/✗/! and the exact fix. The donor\'s doctor catches the things that actually break a borrow: no runtime, SSH off, and a machine that falls asleep mid-build.',
     badge: null,
   },
   {
     icon: '⚡',
     title: 'One multiplexed connection',
-    desc: 'A single SSH ControlMaster carries the daemon socket and every port tunnel. Low overhead, fast reconnects, clean teardown on orbit down.',
-    badge: null,
-  },
-  {
-    icon: '🩺',
-    title: 'orbit doctor',
-    desc: 'A Flutter-style health check — every check with a clear ✓/✗/! and the exact fix. When it\'s all green, Docker on the host is guaranteed to work.',
-    badge: null,
-  },
-  {
-    icon: '📊',
-    title: 'See what you\'re saving',
-    desc: 'orbit status and the live foreground dashboard show the RAM and CPU your containers are burning on the host instead of your laptop — cores, load, memory. The numbers that make you smile.',
+    desc: 'A single SSH ControlMaster carries the runtime socket and every port tunnel. Low overhead, fast reconnects, clean teardown — and it survives the event stream dropping without killing your tunnels.',
     badge: null,
   },
   {
     icon: '↩️',
     title: 'Reversible by design',
-    desc: 'orbit up remembers your previous context; orbit down restores it and drops every tunnel. Your local Docker is exactly where you left it.',
+    desc: 'up remembers your previous context; down restores it and drops every tunnel. Your local Docker is exactly where you left it — and it refuses to restore into a context it manages.',
     badge: null,
   },
 ]
@@ -379,13 +415,18 @@ function Features() {
 
 // ── CLI reference ─────────────────────────────────────────────────────────────
 const COMMANDS = [
-  { cmd: 'orbit host init', where: 'host', what: 'Verify Docker + SSH, detect the socket adapter, print the join string. Idempotent.' },
-  { cmd: 'orbit link <user@host>', where: 'client', what: 'Install the SSH key, detect the remote socket, create the orbit docker context.' },
-  { cmd: 'orbit up', where: 'client', what: 'Switch to the host, open the multiplexed SSH master + socket forward, start the port reconciler.' },
-  { cmd: 'orbit down', where: 'client', what: 'Restore your previous context, close every forward and the master connection.' },
-  { cmd: 'orbit status', where: 'client', what: 'Linked host, connection state, forwarded ports, and remote CPU / RAM / image counts.' },
-  { cmd: 'orbit ports [add|rm]', where: 'client', what: 'List active forwards; manually add or remove a TCP forward for non-Docker services.' },
-  { cmd: 'orbit doctor', where: 'both', what: 'Diagnose SSH, remote daemon, forwarded socket and context — with the fix for each.' },
+  { cmd: 'runtime-orbit setup --ip <donor>', where: 'borrower', what: 'The whole thing: authorize this machine, link, route docker over, and self-test end to end.' },
+  { cmd: 'runtime-orbit donor setup', where: 'donor', what: 'Get ready to lend: find the runtime, offer to switch SSH on and sleep off, print the borrower\'s command.' },
+  { cmd: 'runtime-orbit dashboard', where: 'borrower', what: 'Live view of both machines: RAM, cores, load, containers, traffic, budgets. --once and --json too.' },
+  { cmd: 'runtime-orbit up / down', where: 'borrower', what: 'Start or stop routing docker to the donor. down restores the context you were on before.' },
+  { cmd: 'runtime-orbit doctor', where: 'borrower', what: 'Check every link in the chain — SSH, the donor\'s runtime, the forwarded socket, the context — with a fix each.' },
+  { cmd: 'runtime-orbit donor doctor', where: 'donor', what: 'Can this machine lend? Runtime, SSH, authorized borrowers, resources, and whether it will fall asleep.' },
+  { cmd: 'runtime-orbit engines', where: 'both', what: 'Which container runtimes exist on each machine, and which socket is in use.' },
+  { cmd: 'runtime-orbit limits set …', where: 'borrower', what: 'Budgets: --max-ram caps what you borrow, --local-ram-threshold keeps small work at home.' },
+  { cmd: 'runtime-orbit route add …', where: 'borrower', what: 'Routing table. First match wins; route explain <image> justifies any decision.' },
+  { cmd: 'runtime-orbit donor pair <ip>', where: 'donor', what: 'Pull a borrower\'s key over the LAN with a 6-digit code. No password anywhere.' },
+  { cmd: 'runtime-orbit service install', where: 'borrower', what: 'Keep the borrow alive across logins and reboots (launchd / systemd).' },
+  { cmd: 'runtime-orbit mcp', where: 'both', what: 'MCP server over stdio — 18 tools, so an AI assistant can drive and read all of this.' },
 ]
 
 function CliReference() {
@@ -396,29 +437,30 @@ function CliReference() {
         <ScrollReveal className="text-center mb-14 space-y-4">
           <span className="text-xs font-semibold tracking-widest uppercase text-[#4A6080]">The whole CLI</span>
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
-            Seven commands. That&apos;s the manual.
+            Two commands to start.<br />The rest for when you want them.
           </h2>
           <p className="text-[#8BA3C7] max-w-xl mx-auto">
-            No daemon to babysit, no config file to learn. Two commands set it up; the rest are there when you need them.
+            No daemon to babysit, no config file to learn. One command on each machine sets it up — everything
+            else exists for the day something goes sideways, or you want a say in where things run.
           </p>
         </ScrollReveal>
 
         <ScrollReveal delay={80}>
           <div className="overflow-x-auto">
-            <div className="min-w-[640px] overflow-hidden rounded-xl border border-[#1a3060]">
-              <div className="grid grid-cols-[minmax(180px,1fr)_90px_2fr] bg-[#0d1b3e]">
+            <div className="min-w-[760px] overflow-hidden rounded-xl border border-[#1a3060]">
+              <div className="grid grid-cols-[minmax(250px,1fr)_100px_2fr] bg-[#0d1b3e]">
                 <div className="px-5 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider">Command</div>
                 <div className="px-3 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider text-center border-x border-[#1a3060]">Where</div>
                 <div className="px-5 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider">What it does</div>
               </div>
               {COMMANDS.map((row, i) => (
-                <div key={row.cmd} className={`grid grid-cols-[minmax(180px,1fr)_90px_2fr] border-t border-[#1a3060] ${i % 2 === 0 ? 'bg-[#071020]' : 'bg-[#050d1f]'}`}>
+                <div key={row.cmd} className={`grid grid-cols-[minmax(250px,1fr)_100px_2fr] border-t border-[#1a3060] ${i % 2 === 0 ? 'bg-[#071020]' : 'bg-[#050d1f]'}`}>
                   <div className="px-5 py-4 text-sm font-mono" style={{ color: ACCENT }}>{row.cmd}</div>
                   <div className="px-3 py-4 text-center border-x border-[#1a3060]">
                     <span className="text-[10px] px-2 py-0.5 rounded-full font-mono border" style={{
-                      color: row.where === 'host' ? ACCENT2 : row.where === 'both' ? '#B4FF3C' : ACCENT,
-                      borderColor: `${row.where === 'host' ? ACCENT2 : row.where === 'both' ? '#B4FF3C' : ACCENT}40`,
-                      background: `${row.where === 'host' ? ACCENT2 : row.where === 'both' ? '#B4FF3C' : ACCENT}10`,
+                      color: row.where === 'donor' ? ACCENT2 : row.where === 'both' ? '#B4FF3C' : ACCENT,
+                      borderColor: `${row.where === 'donor' ? ACCENT2 : row.where === 'both' ? '#B4FF3C' : ACCENT}40`,
+                      background: `${row.where === 'donor' ? ACCENT2 : row.where === 'both' ? '#B4FF3C' : ACCENT}10`,
                     }}>{row.where}</span>
                   </div>
                   <div className="px-5 py-4 text-sm text-[#8BA3C7]">{row.what}</div>
@@ -437,10 +479,12 @@ const COMPARISON_ROWS = [
   { feature: 'Runs builds/containers on a remote machine', orbit: '✅', ctx: '✅', dm: '✅', local: '❌' },
   { feature: 'Published ports on your localhost, automatically', orbit: '✅', ctx: '❌ Manual -L', dm: '❌', local: '✅' },
   { feature: 'One-command setup per machine', orbit: '✅', ctx: '⚠️ Manual', dm: '⚠️ Provisioner', local: '✅' },
-  { feature: 'Works with existing engine (OrbStack, colima…)', orbit: '✅', ctx: '✅', dm: '❌ VM only', local: '✅' },
+  { feature: 'Works with your existing runtime (OrbStack, Podman…)', orbit: '✅', ctx: '✅', dm: '❌ VM only', local: '✅' },
   { feature: 'No wrapper around the docker binary', orbit: '✅', ctx: '✅', dm: '✅', local: '✅' },
   { feature: 'Auto-reconnect + clean teardown', orbit: '✅', ctx: '❌', dm: '⚠️', local: 'n/a' },
-  { feature: 'Built-in diagnostics', orbit: '✅ doctor', ctx: '❌', dm: '⚠️', local: 'n/a' },
+  { feature: 'Built-in diagnostics, both sides', orbit: '✅ doctor', ctx: '❌', dm: '⚠️', local: 'n/a' },
+  { feature: 'Per-workload routing + RAM budgets', orbit: '✅', ctx: '❌', dm: '❌', local: 'n/a' },
+  { feature: 'Live view of what you\'re saving', orbit: '✅ dashboard', ctx: '❌', dm: '❌', local: 'n/a' },
 ]
 
 function Comparison() {
@@ -460,7 +504,7 @@ function Comparison() {
           <p className="text-[#8BA3C7] text-lg max-w-2xl mx-auto">
             A raw <code className="text-sm px-1 rounded bg-[#0d1b3e]" style={{ color: ACCENT }}>DOCKER_HOST=ssh://</code> runs
             the build remotely — then leaves your ports stranded on the wrong machine and the setup to you.
-            orbit closes that last, most annoying gap.
+            runtime-orbit closes that last, most annoying gap.
           </p>
         </ScrollReveal>
 
@@ -469,7 +513,7 @@ function Comparison() {
             <div className="min-w-[680px] overflow-hidden rounded-xl border border-[#1a3060]">
               <div className="grid grid-cols-5 bg-[#0d1b3e]">
                 <div className="px-5 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider">Capability</div>
-                <div className="px-4 py-4 text-xs font-semibold uppercase tracking-wider text-center border-x border-[#1a3060]" style={{ color: ACCENT }}>orbit</div>
+                <div className="px-4 py-4 text-xs font-semibold uppercase tracking-wider text-center border-x border-[#1a3060]" style={{ color: ACCENT }}>runtime-orbit</div>
                 <div className="px-4 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider text-center">docker context</div>
                 <div className="px-4 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider text-center border-x border-[#1a3060]">docker-machine</div>
                 <div className="px-4 py-4 text-xs font-semibold text-[#4A6080] uppercase tracking-wider text-center">Local only</div>
@@ -493,9 +537,9 @@ function Comparison() {
 
 // ── Roadmap ─────────────────────────────────────────────────────────────────
 const ROADMAP = [
-  { tag: 'v1 · shipping', color: ACCENT, title: 'Mac → Mac', body: 'The unix socket adapter. Full auto port-forwarding between two macOS machines on the same LAN. Linux hosts work the same way.', done: true },
-  { tag: 'v1.1', color: ACCENT2, title: 'Mac → Windows (WSL2)', body: 'Reach the Docker socket inside a WSL2 distro through an SSH bridge, so your Windows gaming rig can be the host.', done: false },
-  { tag: 'future', color: '#8B5CF6', title: 'Windows-native + code sync', body: 'Named-pipe relay for Docker Desktop on Windows without WSL, plus optional source sync so bind-mounts and hot-reload work across machines.', done: false },
+  { tag: 'v0.2 · shipping', color: ACCENT, title: 'Mac & Linux, either side', body: 'The unix socket path, in both directions: any mix of macOS and Linux, with automatic port forwarding, the live dashboard, in-app pairing, and the routing table.', done: true },
+  { tag: 'next', color: ACCENT2, title: 'Windows donors without WSL gymnastics', body: 'Today a Windows machine lends fine from inside a WSL2 distro. Next is reaching Docker Desktop\'s socket from Windows itself, so the gaming rig needs no setup you can see.', done: false },
+  { tag: 'future', color: '#8B5CF6', title: 'Source sync + more than one donor', body: 'Optional file sync so bind-mounts and hot-reload work across machines, and picking between several donors — the routing table already has the right shape for it.', done: false },
 ]
 
 function Roadmap() {
@@ -506,10 +550,11 @@ function Roadmap() {
         <ScrollReveal className="text-center mb-16 space-y-4">
           <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: ACCENT }}>Roadmap</span>
           <h2 className="text-3xl md:text-4xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
-            Mac first. Every host next.
+            Mac and Linux today.<br />Every machine next.
           </h2>
           <p className="text-[#8BA3C7] max-w-xl mx-auto">
-            The host adapter is a trait — new platforms plug in without touching the core. Mac→Mac is done today.
+            Runtime detection is one probe and the transport is one thin layer, so new platforms plug in
+            without touching the core. macOS and Linux work on both sides today.
           </p>
         </ScrollReveal>
 
@@ -542,38 +587,63 @@ function CtaSection() {
       <div className="relative z-10 site-container text-center space-y-8">
         <ScrollReveal>
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold border mb-4" style={{ color: ACCENT, borderColor: `${ACCENT}40`, background: `${ACCENT}10` }}>
-            🛰️ Coming soon
+            🛰️ v0.2 available now
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
-            Give Docker back<br />
+            Give the work<br />
             <span style={{ color: ACCENT }}>to the machine that can take it.</span>
           </h2>
           <p className="text-[#8BA3C7] text-lg mt-4 max-w-xl mx-auto">
-            Get early access when container-orbit launches. Free and open source — always.
+            Install it on both machines, run one command on each. Free and open source — always.
           </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={60}>
+          <div className="max-w-2xl mx-auto text-left rounded-xl border border-[#1a3060] overflow-hidden bg-[#0a1628]">
+            <TerminalChrome label="install" />
+            <pre className="p-5 text-sm font-mono leading-relaxed overflow-x-auto">
+              <code>
+                <span className="text-[#4A6080]"># macOS / Linux</span>{'\n'}
+                <span style={{ color: ACCENT }}>$</span> <span className="text-white">curl -fsSL https://slothlabs.org/install/runtime-orbit | sh</span>{'\n\n'}
+                <span className="text-[#4A6080]"># or with Homebrew</span>{'\n'}
+                <span style={{ color: ACCENT }}>$</span> <span className="text-white">brew install slothlabsorg/tap/runtime-orbit</span>{'\n\n'}
+                <span className="text-[#4A6080]"># Windows (PowerShell)</span>{'\n'}
+                <span style={{ color: ACCENT }}>&gt;</span> <span className="text-white">irm https://slothlabs.org/install/runtime-orbit.ps1 | iex</span>
+              </code>
+            </pre>
+          </div>
         </ScrollReveal>
 
         <ScrollReveal delay={80}>
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-            <SubscribeModal
-              accent={ACCENT}
-              source="container-orbit-cta"
-              buttonLabel="Get early access"
+            <a
+              href={DOCS}
               className="inline-flex items-center justify-center px-8 py-3.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
               style={{ background: ACCENT, color: '#050d1f' }}
-            />
+            >
+              Read the docs →
+            </a>
             <a
-              href={REPO}
+              href={`${REPO}/releases/latest`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all"
               style={{ borderColor: `${ACCENT}50`, color: ACCENT }}
             >
-              Star on GitHub →
+              Download binaries
+            </a>
+            <a
+              href={REPO}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-6 py-3.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all"
+              style={{ borderColor: '#1a3060', color: '#8BA3C7' }}
+            >
+              Star on GitHub
             </a>
           </div>
           <p className="text-xs text-[#4A6080] mt-4">
-            SSH transport · Docker Desktop · OrbStack · Rancher · colima · Rust CLI · MIT license
+            SSH transport · Docker Desktop · OrbStack · Rancher Desktop · colima · Lima · Podman · containerd · Rust CLI · MIT license
           </p>
         </ScrollReveal>
       </div>
@@ -582,17 +652,18 @@ function CtaSection() {
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
-export default function ContainerOrbitPage() {
+export default function RuntimeOrbitPage() {
   return (
     <main className="bg-[#050d1f]">
       <CustomCursor />
       <ProductNavbar
         icon="🛰️"
-        name="container-orbit"
+        name="runtime-orbit"
         accent={ACCENT}
-        ctaKind="subscribe"
-        ctaLabel="Get early access"
-        docsHref="/container-orbit/docs"
+        ctaKind="link"
+        ctaLabel="Install"
+        ctaHref={`${DOCS}#install`}
+        docsHref={DOCS}
       />
       <Hero />
       <ProblemSection />

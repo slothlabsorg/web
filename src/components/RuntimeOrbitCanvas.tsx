@@ -2,12 +2,12 @@
 import { useEffect, useRef } from 'react'
 
 /**
- * WebGL hero for container-orbit.
+ * WebGL hero for runtime-orbit.
  *
- * A fragment-shader scene: a bright "host" core (the beefy LAN machine) with a
+ * A fragment-shader scene: a bright "donor" core (the beefy LAN machine) with a
  * swarm of container bodies orbiting it, faint orbit rings, a drifting starfield,
  * and a stream of packets flowing down to the bottom-left corner — the published
- * ports being forwarded back to your laptop's localhost.
+ * ports being forwarded back to the borrower's localhost.
  *
  * No three.js, no deps — raw WebGL. DPR-capped, pauses off-screen and on hidden
  * tabs, and renders a single still frame when prefers-reduced-motion is set.
@@ -133,7 +133,7 @@ interface Props {
   className?: string
 }
 
-export default function ContainerOrbitCanvas({
+export default function RuntimeOrbitCanvas({
   accent = '#4F8CFF',
   accent2 = '#22D3EE',
   className = '',

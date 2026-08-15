@@ -68,6 +68,44 @@
   status = 200
   force  = true
 
+# ── runtime-orbit install one-liners ─────────────────────────────────────────
+# Short, memorable URLs the docs and README can print:
+#   curl -fsSL https://slothlabs.org/install/runtime-orbit | sh
+#   irm https://slothlabs.org/install/runtime-orbit.ps1 | iex
+# 302 rather than a 200 proxy so the script is always whatever main has, and so
+# curl -L / irm resolve it without Netlify caching a stale copy.
+[[redirects]]
+  from   = "/install/runtime-orbit"
+  to     = "https://raw.githubusercontent.com/slothlabsorg/runtime-orbit/main/dist/install.sh"
+  status = 302
+  force  = true
+
+[[redirects]]
+  from   = "/install/runtime-orbit.sh"
+  to     = "https://raw.githubusercontent.com/slothlabsorg/runtime-orbit/main/dist/install.sh"
+  status = 302
+  force  = true
+
+[[redirects]]
+  from   = "/install/runtime-orbit.ps1"
+  to     = "https://raw.githubusercontent.com/slothlabsorg/runtime-orbit/main/dist/install.ps1"
+  status = 302
+  force  = true
+
+# ── container-orbit → runtime-orbit (renamed in 0.2) ─────────────────────────
+# Permanent, because the old URLs are indexed and linked from the repo's history.
+[[redirects]]
+  from   = "/container-orbit"
+  to     = "/runtime-orbit"
+  status = 301
+  force  = true
+
+[[redirects]]
+  from   = "/container-orbit/*"
+  to     = "/runtime-orbit/:splat"
+  status = 301
+  force  = true
+
 # Static export fallback — serve each route's own index.html, not the root
 [[redirects]]
   from   = "/*"
