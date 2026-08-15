@@ -225,18 +225,22 @@ function buildSections(): Record<string, React.ReactNode> {
         <H3>Homebrew</H3>
         <CodeBlock code={`brew install slothlabsorg/tap/runtime-orbit`} />
 
-        <H3>Windows (PowerShell)</H3>
-        <CodeBlock filename="powershell" code={`irm https://slothlabs.org/install/runtime-orbit.ps1 | iex`} />
-
         <H3>From source</H3>
         <P>Needs Rust 1.75 or newer.</P>
         <CodeBlock code={`git clone ${REPO}
 cd runtime-orbit && cargo install --path .`} />
 
+        <H3>Windows</H3>
+        <P>
+          Install the Linux binary inside a WSL2 distro. There is no native Windows build: the
+          transport is a forwarded unix socket, which Windows can&apos;t take part in as a borrower.
+          A WSL2 distro makes a perfectly good donor — see <em>Donor setup</em>.
+        </P>
+
         <H3>Prebuilt binaries</H3>
         <P>
-          Every release ships archives for macOS (Apple Silicon + Intel), Linux (x86_64 + arm64)
-          and Windows, each with a <C>.sha256</C>. Grab them from the{' '}
+          Every release ships archives for macOS (Apple Silicon + Intel) and Linux (x86_64 + arm64),
+          each with a <C>.sha256</C>. Grab them from the{' '}
           <a href={`${REPO}/releases/latest`} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: ACCENT }}>releases page</a>.
         </P>
 
@@ -727,7 +731,6 @@ runtime-orbit service uninstall`} />
         <FlagTable rows={[
           ['macOS', 'A launchd LaunchAgent at ~/Library/LaunchAgents/org.slothlabs.runtime-orbit.plist'],
           ['Linux', 'A systemd --user unit at ~/.config/systemd/user/runtime-orbit.service'],
-          ['Windows', 'Prints the schtasks one-liner to run at logon'],
         ]} />
         <P>
           The service keeps <C>up</C> running and reconnects if the donor reboots or the network
@@ -1187,8 +1190,9 @@ curl -fsSL https://slothlabs.org/install/runtime-orbit | sh`} />
         <H3>A Windows donor doesn&apos;t forward ports</H3>
         <P>
           Automatic forwarding needs the runtime&apos;s socket reachable over SSH; on Windows it
-          lives inside WSL2. Run <C>runtime-orbit donor setup</C> <em>inside</em> the WSL distro and
-          it looks like a normal unix donor. <C>doctor</C> flags this case explicitly.
+          lives inside WSL2, not on the Windows side. Install the Linux binary in the distro and run{' '}
+          <C>runtime-orbit donor setup</C> <em>there</em> — it then looks like a normal unix donor.{' '}
+          <C>doctor</C> flags this case explicitly.
         </P>
 
         <H3>docker still points at the donor after down</H3>
@@ -1214,7 +1218,7 @@ curl -fsSL https://slothlabs.org/install/runtime-orbit | sh`} />
 
         <H3>v0.2 — shipping</H3>
         <ul className="mb-4">
-          <Li>macOS and Linux on either side, with automatic port forwarding</Li>
+          <Li>macOS and Linux on either side, with automatic port forwarding (Windows lends via WSL2)</Li>
           <Li>In-app authorization: password-once, or passwordless LAN pairing</Li>
           <Li>The live dashboard, plus <C>--json</C> for scripting</Li>
           <Li>RAM budgets and the routing table</Li>
@@ -1224,7 +1228,7 @@ curl -fsSL https://slothlabs.org/install/runtime-orbit | sh`} />
 
         <H3>Next</H3>
         <ul className="mb-4">
-          <Li><strong className="text-white">Windows donors without WSL gymnastics.</strong> A Windows machine lends fine from inside a WSL2 distro today; next is reaching Docker Desktop&apos;s socket from Windows itself.</Li>
+          <Li><strong className="text-white">A native Windows build.</strong> A Windows machine lends fine from inside a WSL2 distro today. Being a borrower needs the socket forwarded over TCP instead of a unix socket — that&apos;s the change, and it&apos;s next.</Li>
         </ul>
 
         <H3>Later</H3>

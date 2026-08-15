@@ -5,7 +5,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 export const metadata: Metadata = {
   title: 'runtime-orbit Docs — Install, donor & borrower setup, CLI reference, MCP | SlothLabs',
   description:
-    'runtime-orbit documentation: install on macOS/Linux/Windows (Homebrew, curl, PowerShell), donor and borrower setup, in-app authorization and LAN pairing, the live dashboard, RAM budgets and routing tables, full CLI reference, service mode, the MCP server, and upgrading from container-orbit.',
+    'runtime-orbit documentation: install on macOS and Linux (Homebrew, curl), donor and borrower setup, in-app authorization and LAN pairing, the live dashboard, RAM budgets and routing tables, full CLI reference, service mode, the MCP server, and upgrading from container-orbit.',
   keywords: [
     'runtime-orbit docs',
     'runtime-orbit setup',

@@ -95,7 +95,7 @@ function Hero() {
         <div className="max-w-2xl space-y-7 py-[52px]">
           <div className="fade-up" style={{ animationDelay: '0s' }}>
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium bg-[#0d1b3e] border" style={{ borderColor: `${ACCENT}40`, color: ACCENT }}>
-              🛰️ v0.2 out now · Rust CLI · macOS · Linux · Windows
+              🛰️ v0.2 out now · Rust CLI · macOS · Linux
             </span>
           </div>
 
@@ -607,8 +607,7 @@ function CtaSection() {
                 <span style={{ color: ACCENT }}>$</span> <span className="text-white">curl -fsSL https://slothlabs.org/install/runtime-orbit | sh</span>{'\n\n'}
                 <span className="text-[#4A6080]"># or with Homebrew</span>{'\n'}
                 <span style={{ color: ACCENT }}>$</span> <span className="text-white">brew install slothlabsorg/tap/runtime-orbit</span>{'\n\n'}
-                <span className="text-[#4A6080]"># Windows (PowerShell)</span>{'\n'}
-                <span style={{ color: ACCENT }}>&gt;</span> <span className="text-white">irm https://slothlabs.org/install/runtime-orbit.ps1 | iex</span>
+                <span className="text-[#4A6080]"># Windows: run the same line inside a WSL2 distro</span>
               </code>
             </pre>
           </div>

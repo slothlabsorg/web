@@ -71,9 +71,9 @@
 # ── runtime-orbit install one-liners ─────────────────────────────────────────
 # Short, memorable URLs the docs and README can print:
 #   curl -fsSL https://slothlabs.org/install/runtime-orbit | sh
-#   irm https://slothlabs.org/install/runtime-orbit.ps1 | iex
 # 302 rather than a 200 proxy so the script is always whatever main has, and so
-# curl -L / irm resolve it without Netlify caching a stale copy.
+# curl -L resolves it without Netlify caching a stale copy. There's no Windows
+# script: the binary is unix-only, and Windows installs inside a WSL2 distro.
 [[redirects]]
   from   = "/install/runtime-orbit"
   to     = "https://raw.githubusercontent.com/slothlabsorg/runtime-orbit/main/dist/install.sh"
@@ -83,12 +83,6 @@
 [[redirects]]
   from   = "/install/runtime-orbit.sh"
   to     = "https://raw.githubusercontent.com/slothlabsorg/runtime-orbit/main/dist/install.sh"
-  status = 302
-  force  = true
-
-[[redirects]]
-  from   = "/install/runtime-orbit.ps1"
-  to     = "https://raw.githubusercontent.com/slothlabsorg/runtime-orbit/main/dist/install.ps1"
   status = 302
   force  = true
 
