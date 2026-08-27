@@ -58,7 +58,7 @@ export default function DropOrbitPage() {
             style={{ color: ACCENT, background: ACCENT_DIM, borderColor: ACCENT_MID }}
           >
             <span className="text-lg leading-none">📡</span>
-            Launching Monday, September 28, 2026
+            Launching Monday, October 5, 2026
           </div>
 
           <h1

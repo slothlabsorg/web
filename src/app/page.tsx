@@ -197,12 +197,12 @@ function Products() {
 // ── Launch Roadmap ─────────────────────────────────────────────────────────────
 
 const RAW_ROADMAP = [
-  { name: 'CloudOrbit',   launchDate: '2026-08-24', date: 'Aug 24',  desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
-  { name: 'WattsOrbit',   launchDate: '2026-08-24', date: 'Aug 24',  desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
-  { name: 'DataOrbit',    launchDate: '2026-08-24', date: 'Aug 24',  desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
-  { name: 'klight',       launchDate: '2026-09-21', date: 'Sep 21',  desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
-  { name: 'ProxyOrbit',   launchDate: '2026-09-07', date: 'Sep 7',   desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
-  { name: 'BastionOrbit', launchDate: '2026-09-14', date: 'Sep 14',  desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
+  { name: 'CloudOrbit',   launchDate: '2026-08-31', date: 'Aug 31',  desc: 'AWS session manager',             accent: '#00D4FF', icon: '☁️', slug: '/cloudorbit' },
+  { name: 'WattsOrbit',   launchDate: '2026-08-31', date: 'Aug 31',  desc: 'Mac power & USB monitor',         accent: '#F59E0B', icon: '⚡', slug: '/wattsorbit' },
+  { name: 'DataOrbit',    launchDate: '2026-08-31', date: 'Aug 31',  desc: 'DynamoDB & CouchDB query client', accent: '#8B5CF6', icon: '🗄️', slug: '/dataorbit' },
+  { name: 'klight',       launchDate: '2026-09-28', date: 'Sep 28',  desc: 'K8s dev environments for teams',  accent: '#B4FF3C', icon: '🚀', slug: '/klight' },
+  { name: 'ProxyOrbit',   launchDate: '2026-09-14', date: 'Sep 14',  desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
+  { name: 'BastionOrbit', launchDate: '2026-09-21', date: 'Sep 21',  desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
   { name: 'runtime-orbit', launchDate: '2026-08-15', date: 'Aug 15', desc: "Borrow a machine's container runtime", accent: '#4F8CFF', icon: '🛰️', slug: '/runtime-orbit' },
 ]
 

@@ -14,7 +14,7 @@ import MacInstallNote from '@/components/MacInstallNote'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
 
-const CLOUDORBIT_LAUNCH = new Date('2026-08-24T12:00:00Z')
+const CLOUDORBIT_LAUNCH = new Date('2026-08-31T12:00:00Z')
 const launchingSoon = new Date() < CLOUDORBIT_LAUNCH
 
 const { hero, features, comparison } = cloudOrbitContent
