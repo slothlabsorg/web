@@ -8,7 +8,7 @@
       "publishedAt": "2026-07-26T00:00:00Z",
       "badge": "LAUNCH",
       "badgeTone": "primary",
-      "title": "CloudOrbit launches Monday August 3, 2026",
+      "title": "CloudOrbit launches Monday August 31, 2026",
       "body": "CloudOrbit is now available — the AWS session manager you wish Leapp was.\n\n## What's included\n\n- **AWS SSO** — switch accounts without touching a config file\n- **Auto-kubeconfig** — EKS clusters detected and written automatically\n- **Session persistence** — active sessions survive app restarts\n- **Region selector** — pick any AWS region per profile\n- **IAM / Chained / Federated** — all auth methods supported\n- **Cloudflare & corporate proxy** compatible\n\nFree. Native Rust. No Electron.",
       "collapsed": false,
       "action": { "label": "Download CloudOrbit", "url": "https://slothlabs.org/cloudorbit" },
