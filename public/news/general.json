@@ -8,8 +8,8 @@
       "publishedAt": "2026-07-26T00:00:00Z",
       "badge": "LAUNCH",
       "badgeTone": "primary",
-      "title": "CloudOrbit + DataOrbit launch Monday August 31",
-      "body": "Two apps, one day. **CloudOrbit** (AWS session manager) and **DataOrbit** (DynamoDB GUI) both go live on **Monday August 31, 2026**.\n\n- CloudOrbit: AWS SSO, EKS, kubeconfig auto-update, works behind Cloudflare\n- DataOrbit: live streams, cross-table joins, query builder with GSI support\n\nBoth are free, native Rust, open source.",
+      "title": "CloudOrbit + DataOrbit launch Monday September 7",
+      "body": "Two apps, one day. **CloudOrbit** (AWS session manager) and **DataOrbit** (DynamoDB GUI) both go live on **Monday September 7, 2026**.\n\n- CloudOrbit: AWS SSO, EKS, kubeconfig auto-update, works behind Cloudflare\n- DataOrbit: live streams, cross-table joins, query builder with GSI support\n\nBoth are free, native Rust, open source.",
       "collapsed": false,
       "action": { "label": "See all apps", "url": "https://slothlabs.org" },
       "targetApps": ["all"]

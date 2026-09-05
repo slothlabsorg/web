@@ -5,12 +5,12 @@ import { usePathname } from 'next/navigation'
 
 const PRODUCTS = [
   { icon: '🧜', name: 'Mermaid Preview', href: '/mermaid-preview', badge: 'Released', accent: '#FF3670' },
-  { icon: '☁️', name: 'CloudOrbit',      href: '/cloudorbit',      badge: 'Aug 31',  accent: '#00D4FF' },
-  { icon: '⚡', name: 'WattsOrbit',      href: '/wattsorbit',      badge: 'Aug 31',   accent: '#F59E0B' },
-  { icon: '🗄️', name: 'DataOrbit',       href: '/dataorbit',       badge: 'Aug 31',   accent: '#8B5CF6' },
-  { icon: '🚀', name: 'klight',          href: '/klight',          badge: 'Sep 28',   accent: '#B4FF3C' },
-  { icon: '🔍', name: 'ProxyOrbit',      href: '/proxyorbit',      badge: 'Sep 14',    accent: '#94A3B8' },
-  { icon: '🔐', name: 'BastionOrbit',    href: '/bastionorbit',    badge: 'Sep 21',   accent: '#10B981' },
+  { icon: '☁️', name: 'CloudOrbit',      href: '/cloudorbit',      badge: 'Sep 7',   accent: '#00D4FF' },
+  { icon: '⚡', name: 'WattsOrbit',      href: '/wattsorbit',      badge: 'Sep 7',    accent: '#F59E0B' },
+  { icon: '🗄️', name: 'DataOrbit',       href: '/dataorbit',       badge: 'Sep 7',    accent: '#8B5CF6' },
+  { icon: '🚀', name: 'klight',          href: '/klight',          badge: 'Oct 5',    accent: '#B4FF3C' },
+  { icon: '🔍', name: 'ProxyOrbit',      href: '/proxyorbit',      badge: 'Sep 21',    accent: '#94A3B8' },
+  { icon: '🔐', name: 'BastionOrbit',    href: '/bastionorbit',    badge: 'Sep 28',   accent: '#10B981' },
   { icon: '🛰️', name: 'runtime-orbit',   href: '/runtime-orbit',   badge: 'New',      accent: '#4F8CFF' },
 ]
 
