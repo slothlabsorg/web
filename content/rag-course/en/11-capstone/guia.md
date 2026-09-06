@@ -536,7 +536,7 @@ Open [`lab/solucion_framework.py`](lab/solucion_framework.py) and follow this ma
 #### Block 1 — Loader (M1 §11.4, M2 §10)
 
 ```python
-loader = TextLoader("data/hr_policies.txt", encoding="utf-8")
+loader = TextLoader("datos/politicas_rrhh.txt", encoding="utf-8")
 raw_documents = loader.load()
 ```
 

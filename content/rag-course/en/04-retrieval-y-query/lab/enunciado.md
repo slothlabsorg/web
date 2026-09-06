@@ -13,7 +13,7 @@ The problem: the current system returns policies from any fare regardless of whi
 The `data/` directory contains **9 policies** in JSON format, 3 per fare, with metadata `fare_class` and `route_type`:
 
 ```
-data/policies.json   ← list of 9 documents with text and metadata
+datos/politicas.json   ← list of 9 documents with text and metadata
 ```
 
 Each document has:
@@ -31,7 +31,7 @@ Each document has:
 
 ## Task
 
-Implement in `solution_scratch.py` (stdlib only, deterministic):
+Implement in `solucion_scratch.py` (stdlib only, deterministic):
 
 ### Step 1: BM25 from scratch
 Implement BM25 (k1=1.5, b=0.75) over the full corpus. Given a query, return all 9 documents with their scores.
@@ -57,7 +57,7 @@ Run the full pipeline for the test query with target `fare_class` `"Basic"`:
 
 - Without filter: the top-3 contains at least one document that is NOT `fare_class="Basic"`.
 - With filter: the top-3 contains ONLY `fare_class="Basic"` documents and results are correctly citable.
-- The script runs with `python3 solution_scratch.py` and produces exactly what `expected.md` describes.
+- The script runs with `python3 solucion_scratch.py` and produces exactly what `expected.md` describes.
 
 ## Staged hints
 
@@ -75,19 +75,19 @@ Run the full pipeline for the test query with target `fare_class` `"Basic"`:
 
 ## Layer ③ — LangChain pipeline (guided task)
 
-> **Mandatory prerequisite:** layer ② (`solution_scratch.py`) must run with stdlib and produce what `expected.md` shows. Layer ③ is **additional** — you write it when you have `pip` and network.
+> **Mandatory prerequisite:** layer ② (`solucion_scratch.py`) must run with stdlib and produce what `expected.md` shows. Layer ③ is **additional** — you write it when you have `pip` and network.
 >
-> **Do not start here without reading** [guide.md §13](../guia.md#13-layer--explained-langchain-retrievers-from-scratch). That section teaches each API from scratch. If you only open `solution_framework.py`, layer ③ will appear "all at once".
+> **Do not start here without reading** [guide.md §13](../guia.md#13-layer--explained-langchain-retrievers-from-scratch). That section teaches each API from scratch. If you only open `solucion_framework.py`, layer ③ will appear "all at once".
 
 ### Objective
 
-Write (or rewrite) `solution_framework.py` implementing the **same pipeline** as your scratch, but with LangChain retrievers:
+Write (or rewrite) `solucion_framework.py` implementing the **same pipeline** as your scratch, but with LangChain retrievers:
 
 ```
 BM25Retriever + Chroma/vector + EnsembleRetriever + CrossEncoderReranker + hard filter
 ```
 
-When done, compare your code with `solution_framework.py` and verify the with/without filter pattern matches `expected.md` (noise without filter, Basic only with filter).
+When done, compare your code with `solucion_framework.py` and verify the with/without filter pattern matches `expected.md` (noise without filter, Basic only with filter).
 
 ### Installation (networked environment)
 
@@ -97,11 +97,11 @@ pip install langchain langchain-community rank-bm25 sentence-transformers chroma
 
 ### Guided task — staged hints
 
-**Level 1 — Documents:** Load `data/policies.json` and convert each item to `Document(page_content=..., metadata={id, fare_class, ...})`. See [guide §13.4](../guia.md#134-document-with-filter-metadata-brief-reminder) and reminder in [M1 §11.3](../../01-fundamentos/guia.md#113-the-document-object).
+**Level 1 — Documents:** Load `datos/politicas.json` and convert each item to `Document(page_content=..., metadata={id, fare_class, ...})`. See [guide §13.4](../guia.md#134-document-with-filter-metadata-brief-reminder) and reminder in [M1 §11.3](../../01-fundamentos/guia.md#113-the-document-object).
 
 **Level 2 — BM25Retriever:** Create `BM25Retriever.from_documents(documents)` and set `.k = 9`. What does `.invoke(QUERY)` return for the lab query? See [guide §13.5](../guia.md#135-bm25retriever--your-manual-bm25-packaged).
 
-**Level 3 — Vector retriever:** Instantiate `HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")`, create `Chroma.from_documents(documents, embeddings)`, and get `as_retriever(search_kwargs={"k": 9})`. Chroma reminder: [M1 §11](../01-fundamentos/guia.md#11-layer--explained-langchain-from-scratch). M4 detail: [guide §13.6](../guia.md#136-vector-retriever--chroma--local-embeddings).
+**Level 3 — Vector retriever:** Instantiate `HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")`, create `Chroma.from_documents(documents, embeddings)`, and get `as_retriever(search_kwargs={"k": 9})`. Chroma reminder: [M1 §11](../../01-fundamentos/guia.md#11-layer--explained-langchain-from-scratch). M4 detail: [guide §13.6](../guia.md#136-vector-retriever--chroma--local-embeddings).
 
 **Level 4 — EnsembleRetriever:** Combine both retrievers with `EnsembleRetriever(retrievers=[bm25, vector], weights=[0.4, 0.6])`. How does it relate to your scratch `rrf_fusion()`? See [guide §13.7](../guia.md#137-ensembleretriever--your-manual-rrf-automated) and RRF concept in [guide §4](../guia.md#4-hybrid-search).
 
@@ -129,4 +129,4 @@ pip install langchain langchain-community rank-bm25 sentence-transformers chroma
 | Rerank | token intersection | `CrossEncoderReranker` (BGE) |
 | Filter | filter `CORPUS` at start | `create_filtered_retriever()` |
 
-When finished, read `solution_framework.py` and `solution.md` to compare design decisions.
+When finished, read `solucion_framework.py` and `solution.md` to compare design decisions.

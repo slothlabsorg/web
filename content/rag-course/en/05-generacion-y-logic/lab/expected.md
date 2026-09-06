@@ -1,6 +1,6 @@
 # Expected — Lab M5 · Structured decision with citations
 
-When you run `python3 solution_scratch.py` from the `lab/` folder, the output should be:
+When you run `python3 solucion_scratch.py` from the `lab/` folder, the output should be:
 
 ```
 ============================================================
@@ -23,7 +23,7 @@ Request: Personal loan application for $45,000 over 60 months for debt consolida
   "factors": [
     "Declared annual income: $85,000 [tax_return_2023.pdf]",
     "On-time payment history: 97% [account_statement_q3_2023.pdf]",
-    "Debt-to-income ratio: 14.1% — job tenure: 6 years [financial_data.csv]",
+    "Debt-to-income ratio: 14.1% — job tenure: 6 years [datos_financieros.csv]",
     "No negative reports in credit bureau (last 24 months) [credit_bureau_query.pdf]"
   ],
   "citations": [
@@ -37,7 +37,7 @@ Request: Personal loan application for $45,000 over 60 months for debt consolida
     },
     {
       "text": "Total debt: $12,000, job tenure: 6 years",
-      "source": "financial_data.csv"
+      "source": "datos_financieros.csv"
     },
     {
       "text": "No negative reports in the last 24 months",
@@ -90,7 +90,7 @@ All verifications passed.
 | `decision` | `"approve"` | Score 84 ≥ 70 → deterministic rule: approve |
 | `score` | `84` | Formula: income(25.5) + debt(25.8) + payments(24.25) + tenure(9.0) = 84 |
 | `citations` | 4 entries | One per chunk with verifiable numeric data |
-| `citations[*].source` | Only sources from `file_001.json` | Groundedness: all sources exist in the chunks |
+| `citations[*].source` | Only sources from `expediente_001.json` | Groundedness: all sources exist in the chunks |
 | `_original_llm_decision` | `"approve"` | In this case the LLM and the rule agree (high score) |
 
 **Score 84 breakdown:**

@@ -52,7 +52,7 @@ Implement `lab/solucion_scratch.py` with:
 
 ### Part B — Agent with LangGraph (layer ③, guided task)
 
-> **Read first:** [guia.md §8 — Layer ③ Explained: LangGraph from Scratch](guia.md#8-layer--explained-langgraph-from-scratch-from-your-react-loop-to-the-graph). That section teaches each API you need. Do not copy `solucion_framework.py` wholesale — write it yourself following the hints.
+> **Read first:** [guia.md §8 — Layer ③ Explained: LangGraph from Scratch](../guia.md#8-layer--explained-langgraph-from-scratch-from-your-react-loop-to-the-graph). That section teaches each API you need. Do not copy `solucion_framework.py` wholesale — write it yourself following the hints.
 
 **Goal:** reimplement the same agent from scratch using LangGraph + LangChain, with memory across two turns. When done, compare your file with `lab/solucion_framework.py`.
 

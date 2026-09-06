@@ -127,7 +127,7 @@ All verifications passed.
 
 ## Properties that must hold
 
-1. **Fan-out:** processes the 6 events from `data/disruption_events.json`.
+1. **Fan-out:** processes the 6 events from `datos/disruption_events.json`.
 2. **Segmentation:** P1 for premium/multi-leg/CRITICAL; P2 for flexible; P3 for the rest simple.
 3. **Auto-confirm:** the 3 simple cases confirm without LLM.
 4. **LLM:** the 3 complex cases delegate to `FakeLLMAgent`.

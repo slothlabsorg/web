@@ -30,14 +30,14 @@ In `lab/data/`:
 
 | File | Content |
 |------|---------|
-| `payment_requests.json` | Charge request for flight change SCL-BOG-001 (USD 130) + thresholds |
-| `malicious_prompts.json` | Injection/jailbreak/PII leakage cases + legitimate confirmation input |
+| `solicitudes_pago.json` | Charge request for flight change SCL-BOG-001 (USD 130) + thresholds |
+| `prompts_maliciosos.json` | Injection/jailbreak/PII leakage cases + legitimate confirmation input |
 
 ## Task
 
 ### Part A — Guardrails from scratch (layer ②)
 
-Implement `lab/solution_scratch.py` with **stdlib only**:
+Implement `lab/solucion_scratch.py` with **stdlib only**:
 
 1. **`AuditBus`** — in-memory list that publishes events with `type`, fixed `ts`, and payload. Prints `[AUDIT] type: {...}`.
 
@@ -58,7 +58,7 @@ Implement `lab/solution_scratch.py` with **stdlib only**:
 
 ### Part B — Real frameworks (layer ③, guided task)
 
-> **Read first:** [guia.md §12 — Layer ③ explained](guia.md#12-layer-explained-guardrails-observability-and-uis-with-frameworks-from-scratch).
+> **Read first:** [guia.md §12 — Layer ③ explained](../guia.md#12-layer-explained-guardrails-observability-and-uis-with-frameworks-from-scratch).
 
 **Goal:** reimplement the same flow with Guardrails AI, Langfuse, OpenTelemetry, Gradio, and FastAPI.
 
@@ -69,7 +69,7 @@ pip install guardrails-ai langfuse gradio fastapi uvicorn \
             opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
 ```
 
-**Pieces to implement** (see `solution_framework.py` as reference):
+**Pieces to implement** (see `solucion_framework.py` as reference):
 
 | Scratch piece | Framework |
 |---------------|-----------|
@@ -168,8 +168,8 @@ Also: exactly **1** `tool.call` (one real charge) and **≥ 1** total audit even
 ## Verification
 
 ```bash
-python3 -m py_compile solution_scratch.py
-python3 solution_scratch.py
+python3 -m py_compile solucion_scratch.py
+python3 solucion_scratch.py
 ```
 
 Output must match `expected.md`.

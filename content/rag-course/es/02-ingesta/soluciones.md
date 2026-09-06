@@ -252,7 +252,7 @@ La opción **d** (Python puro con `pathlib.glob`) es viable para un script pero 
 
 **b) 3 chunks: Chunk 0 = solo intro; Chunk 1 = CLÁUSULA 1; Chunk 2 = CLÁUSULA 2**
 
-Razonamiento paso a paso (algoritmo recursivo de [guía §10.2](../guia.md#102-recursivecharactertextsplitter-el-algoritmo-recursivo)):
+Razonamiento paso a paso (algoritmo recursivo de [guía §10.2](guia.md#102-recursivecharactertextsplitter-el-algoritmo-recursivo)):
 
 1. El separador prioritario es `"\n\nCLÁUSULA "`. El texto tiene dos ocurrencias: antes de CLÁUSULA 1 y antes de CLÁUSULA 2.
 2. Con `keep_separator=True`, el split produce tres bloques:
@@ -297,7 +297,7 @@ El desarrollador:
 
 1. Usa `split_text()` (solo strings) en lugar del pipeline de `Document`.
 2. Reconstruye `Document` a mano con `_last_meta`, que nunca copia `source` del padre.
-3. Ignora el override de `split_documents()` que [guía §10.3](../guia.md#103-escribir-tu-propio-splitter-heredar-de-textsplitter) diseña precisamente para propagar metadata.
+3. Ignora el override de `split_documents()` que [guía §10.3](guia.md#103-escribir-tu-propio-splitter-heredar-de-textsplitter) diseña precisamente para propagar metadata.
 
 **Corrección mínima:**
 

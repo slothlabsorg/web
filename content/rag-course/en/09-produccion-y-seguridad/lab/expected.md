@@ -1,6 +1,6 @@
 # Expected — Payment with Guardrails
 
-> Concrete output produced by `solution_scratch.py` when running `python3 solution_scratch.py`.
+> Concrete output produced by `solucion_scratch.py` when running `python3 solucion_scratch.py`.
 > Output has been verified; this file is the source of truth for the workshop.
 
 ---
@@ -80,7 +80,7 @@ All verifications passed.
 3. **Idempotency:** Scenario 3 returns `status=deduplicated` with the same `charge_id` without a new `tool.call`.
 4. **Anti-injection:** Scenario 4 returns `status=rejected` with `reason=prompt_injection_detected`.
 5. **Audit:** ≥ 1 audit event; exactly 1 `tool.call` (one real charge).
-6. **Determinism:** runs with `python3 solution_scratch.py` without pip or network.
+6. **Determinism:** runs with `python3 solucion_scratch.py` without pip or network.
 
 ---
 

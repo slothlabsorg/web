@@ -128,7 +128,7 @@ Category:
 
 ```
 1. loader.pdf (node "HR Docs")
-   Input: PDF files in data/hr_docs/
+   Input: PDF files in datos/hr_docs/
    Output: Documents (list of documents with text and metadata)
 
 2. ingest.chunker (node "Section Chunker")

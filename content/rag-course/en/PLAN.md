@@ -82,14 +82,14 @@ rag-training/
   PLAN.md  README.md
   00-setup/ … 11-capstone/        (each: guia.md · ejercicios.md · soluciones.md · lab/)
   referencia/
-    node-catalog.md               card per node: what it does · when to use · alternatives
-    compared-technologies.md      tables (stores, agent frameworks, rerankers, eval, UIs…)
-    glossary.md
-    mapped-templates.md           the 10 templates explained and mapped to modules
-    ibm-coursera-coverage.md      IBM syllabus mapping ↔ this course (§11)
+    catalogo-nodos.md               card per node: what it does · when to use · alternatives
+    tecnologias-comparadas.md      tables (stores, agent frameworks, rerankers, eval, UIs…)
+    glosario.md
+    plantillas-mapeadas.md           the 10 templates explained and mapped to modules
+    cobertura-ibm-coursera.md      IBM syllabus mapping ↔ this course (§11)
   solutions/                      workshop solutions (separate)
 ```
-Each `lab/`: `statement.md`, `data/`, `expected.md`, `solution-scratch.py`, `solution-framework.py`, `solution.md`.
+Each `lab/`: `enunciado.md`, `datos/`, `expected.md`, `solucion_scratch.py`, `solucion_framework.py`, `solucion.md`.
 
 ---
 

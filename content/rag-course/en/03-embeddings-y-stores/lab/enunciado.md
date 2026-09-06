@@ -165,7 +165,7 @@ print(len(vec))  # should be 768
 
 ### Hint 2 — Load the 12 documents (same as scratch)
 
-Reuse the scratch loading logic: iterate over `data/doc_*.json` and build parallel lists `ids`, `texts`, `metadatas`.
+Reuse the scratch loading logic: iterate over `datos/doc_*.json` and build parallel lists `ids`, `texts`, `metadatas`.
 
 ```python
 import json

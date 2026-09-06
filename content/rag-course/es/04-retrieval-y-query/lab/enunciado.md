@@ -101,7 +101,7 @@ pip install langchain langchain-community rank-bm25 sentence-transformers chroma
 
 **Nivel 2 — BM25Retriever:** Crea `BM25Retriever.from_documents(documentos)` y asigna `.k = 9`. ¿Qué devuelve `.invoke(QUERY)` para la query del lab? Ver [guia §13.5](../guia.md#135-bm25retriever--tu-bm25-manual-empaquetado).
 
-**Nivel 3 — Vector retriever:** Instancia `HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")`, crea `Chroma.from_documents(documentos, embeddings)` y obtén `as_retriever(search_kwargs={"k": 9})`. Recordatorio Chroma: [M1 §11](../01-fundamentos/guia.md#11-la-capa--explicada-langchain-desde-cero). Detalle M4: [guia §13.6](../guia.md#136-vector-retriever--chroma--embeddings-locales).
+**Nivel 3 — Vector retriever:** Instancia `HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")`, crea `Chroma.from_documents(documentos, embeddings)` y obtén `as_retriever(search_kwargs={"k": 9})`. Recordatorio Chroma: [M1 §11](../../01-fundamentos/guia.md#11-la-capa--explicada-langchain-desde-cero). Detalle M4: [guia §13.6](../guia.md#136-vector-retriever--chroma--embeddings-locales).
 
 **Nivel 4 — EnsembleRetriever:** Combina ambos retrievers con `EnsembleRetriever(retrievers=[bm25, vector], weights=[0.4, 0.6])`. ¿Cómo se relaciona con tu `rrf_fusion()` de scratch? Ver [guia §13.7](../guia.md#137-ensembleretriever--tu-rrf-manual-automático) y concepto RRF en [guia §4](../guia.md#4-búsqueda-híbrida).
 

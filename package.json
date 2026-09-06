@@ -9,6 +9,9 @@
     "start": "next start",
     "lint": "next lint",
     "build-news": "node scripts/build-news-feed.mjs",
+    "sync-course": "node scripts/sync-rag-course.mjs",
+    "sync-course:check": "node scripts/sync-rag-course.mjs --check",
+    "check-course-links": "node scripts/check-course-links.mjs",
     "crop-character-sheet": "node scripts/crop-character-sheet.mjs",
     "extract-favicon": "node scripts/extract-favicon.mjs"
   },

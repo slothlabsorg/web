@@ -502,7 +502,7 @@ reader = PDFReader()
 docs = reader.load_data("contract.pdf")  # loads with page_label
 
 # Full directory (auto-detects file type)
-reader = SimpleDirectoryReader("data/contracts/", recursive=True)
+reader = SimpleDirectoryReader("datos/contracts/", recursive=True)
 docs = reader.load_data()
 ```
 
@@ -846,10 +846,10 @@ This is exactly the pattern of `ClauseSplitter` in `lab/solucion_framework.py` â
 ```python
 from langchain_community.document_loaders import TextLoader
 
-loader = TextLoader("data/sample_contract.txt")
+loader = TextLoader("datos/sample_contract.txt")
 docs = loader.load()
 # docs[0].page_content = full text of the file
-# docs[0].metadata = {"source": "data/sample_contract.txt"}
+# docs[0].metadata = {"source": "datos/sample_contract.txt"}
 
 splitter = ClauseSplitter(contract_id="CSP-2024-0087", date="2024-01-15")
 chunks = splitter.split_documents(docs)

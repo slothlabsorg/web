@@ -67,7 +67,7 @@ The `_original_llm_decision` field records the LLM's tentative decision for audi
 
 ### Pydantic + instructor
 
-`solution_framework.py` shows the production approach in six parts (A–F). The block-by-block walkthrough is in [guide §10.7](../guia.md#107-block-by-block-walkthrough-of-labsolucion_frameworkpy).
+`solucion_framework.py` shows the production approach in six parts (A–F). The block-by-block walkthrough is in [guide §10.7](../guia.md#107-block-by-block-walkthrough-of-labsolucion_frameworkpy).
 
 **Pydantic (schema):** defines the contract with explicit validators (`@field_validator`). The advantage over manual JSON Schema is that validation errors include field context and the received value — easier debugging.
 

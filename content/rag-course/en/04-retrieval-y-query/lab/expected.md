@@ -1,6 +1,6 @@
 # Expected — Lab M4
 
-> Exact results produced by `python3 solution_scratch.py` on the `data/policies.json` corpus.
+> Exact results produced by `python3 solucion_scratch.py` on the `datos/politicas.json` corpus.
 > Query: `"can I make changes to my flight without paying additional fees?"`
 > Target fare class: `Basic`
 

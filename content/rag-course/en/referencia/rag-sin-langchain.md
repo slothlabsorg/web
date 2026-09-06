@@ -98,7 +98,7 @@ from llama_index.core import Document
 
 doc = Document(
     text="VACATION POLICY §3 — Accrual and use\nEmployees...",
-    metadata={"source": "data/hr_policies.txt", "section": "§3"},
+    metadata={"source": "datos/politicas_rrhh.txt", "section": "§3"},
 )
 ```
 
@@ -289,7 +289,7 @@ Settings.llm = Anthropic(model="claude-opus-4-8", temperature=0.2)
 # ---------------------------------------------------------------------------
 # BLOCK 1 — LOAD AND CHUNK (≈ cargar_chunks from scratch)
 # ---------------------------------------------------------------------------
-ruta = Path("data/hr_policies.txt")
+ruta = Path("datos/politicas_rrhh.txt")
 contenido = ruta.read_text(encoding="utf-8")
 fragmentos = [p.strip() for p in re.split(r"\n---\n", contenido) if p.strip()]
 # fragmentos: 8 strings — one per policy
@@ -549,7 +549,7 @@ def cargar_chunks(ruta: str) -> list[str]:
     partes = re.split(r"\n---\n", contenido)
     return [p.strip() for p in partes if p.strip()]
 
-RUTA_DATOS = "data/hr_policies.txt"
+RUTA_DATOS = "datos/politicas_rrhh.txt"
 fragmentos = cargar_chunks(RUTA_DATOS)
 print(f"Total chunks: {len(fragmentos)}")  # Expected: 8
 
@@ -751,7 +751,7 @@ from haystack import Document
 
 doc = Document(
     content="VACATION POLICY §3 — Accrual and use\n...",
-    meta={"source": "hr_policies.txt", "chunk_id": 0},
+    meta={"source": "politicas_rrhh.txt", "chunk_id": 0},
 )
 ```
 
@@ -826,7 +826,7 @@ from haystack.utils import Secret
 # ---------------------------------------------------------------------------
 # BLOCK 1 — LOAD AND CHUNK (≈ cargar_chunks from scratch)
 # ---------------------------------------------------------------------------
-ruta = Path("data/hr_policies.txt")
+ruta = Path("datos/politicas_rrhh.txt")
 contenido = ruta.read_text(encoding="utf-8")
 fragmentos = [p.strip() for p in re.split(r"\n---\n", contenido) if p.strip()]
 
@@ -1025,7 +1025,7 @@ Do you need stateful agents, HITL, fan-out?
 
 ```
                     ┌─────────────────────────────────────┐
-                    │  hr_policies.txt (8 fragments)   │
+                    │  politicas_rrhh.txt (8 fragments)   │
                     └──────────────────┬──────────────────┘
                                        │
            ┌───────────┬───────────────┼───────────────┬───────────────┐

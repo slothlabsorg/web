@@ -22,7 +22,7 @@ All reference material is in [`../../referencia/plantillas-mapeadas.md`](../../r
 
 ### Objective
 
-Implement in **scratch (stdlib)** and **framework (LangChain/LangGraph)** the three templates in increasing difficulty order. The reference script `solution_scratch.py` rebuilds **09** and should serve as your model; you complete 02 and 01.
+Implement in **scratch (stdlib)** and **framework (LangChain/LangGraph)** the three templates in increasing difficulty order. The reference script `solucion_scratch.py` rebuilds **09** and should serve as your model; you complete 02 and 01.
 
 ### Mandatory order
 
@@ -34,20 +34,20 @@ Implement in **scratch (stdlib)** and **framework (LangChain/LangGraph)** the th
 
 **Read:** `flow.json` + template README.
 
-**Your scratch deliverable (`your_scratch_09.py` or extension of `solution_scratch.py`):**
+**Your scratch deliverable (`your_scratch_09.py` or extension of `solucion_scratch.py`):**
 
 - Pipeline: loader → chunker → embed → store → retrieve → prompt → LLM stub → citations enforce.
-- Data: `data/hr_policies.txt`.
+- Data: `datos/politicas_rrhh.txt`.
 - Must match [`expected.md`](expected.md) (indices, similarities, response with 18 days).
 
 **Your framework deliverable (`your_framework_09.py`):**
 
 - LangChain + Chroma following [guide §12](../guia.md#12-layer--explained-how-to-rebuild-a-template-with-a-framework).
-- Compare block by block with `solution_framework.py`.
+- Compare block by block with `solucion_framework.py`.
 
 ### Part B — Template 02 (`examples/02-banking-credit-scoring/`)
 
-**Read:** `flow.json` + README. Mock data: `data/applicants/applicant_001/`.
+**Read:** `flow.json` + README. Mock data: `datos/applicants/applicant_001/`.
 
 **Scratch:**
 
@@ -89,7 +89,7 @@ Implement in **scratch (stdlib)** and **framework (LangChain/LangGraph)** the th
 <details>
 <summary>Hint 1 — Where do I start with 09?</summary>
 
-Open `solution_scratch.py` and run `python3 solution_scratch.py`. If the output matches `expected.md`, you understand the skeleton. Then rewrite it yourself without copying.
+Open `solucion_scratch.py` and run `python3 solucion_scratch.py`. If the output matches `expected.md`, you understand the skeleton. Then rewrite it yourself without copying.
 </details>
 
 <details>
@@ -107,7 +107,7 @@ Implement `guardrail.idempotency` as a wrapper on the Payment tool: key `(pnr, s
 <details>
 <summary>Hint 4 — Framework for 01</summary>
 
-Start with the M6 graph (`06-agents-i/lab/solution_framework.py`) and add service tools + guardrail chain. PolicyRAG is `tool.retriever` — a retriever wrapped as an invocable function.
+Start with the M6 graph (`06-agents-i/lab/solucion_framework.py`) and add service tools + guardrail chain. PolicyRAG is `tool.retriever` — a retriever wrapped as an invocable function.
 </details>
 
 ---
@@ -116,7 +116,7 @@ Start with the M6 graph (`06-agents-i/lab/solution_framework.py`) and add servic
 
 ### Business brief
 
-Read [`data/brief_telemedicine.json`](data/brief_telemedicine.json): telemedicine copilot for SaludPlus Insurance.
+Read [`datos/brief_telemedicina.json`](datos/brief_telemedicina.json): telemedicine copilot for SaludPlus Insurance.
 
 ### Your deliverable
 

@@ -1,6 +1,6 @@
 # Expected — M11 · Capstone · Template 09 (scratch)
 
-> Concrete result when running `python3 solution_scratch.py` from the `lab/` directory.
+> Concrete result when running `python3 solucion_scratch.py` from the `lab/` directory.
 > Generated with the script's actual output — if your solution matches, you're on track.
 
 ---
@@ -59,10 +59,10 @@ citations:    ['VACATION POLICY §4 — Additional vacation by seniority', 'VACA
 
 ## Acceptance criteria — Challenge 1 (template 09 scratch)
 
-Your `solution_scratch.py` **passes** if:
+Your `solucion_scratch.py` **passes** if:
 
-1. Runs with `python3 solution_scratch.py` without external dependencies.
-2. Indexes exactly **8** chunks from `data/hr_policies.txt`.
+1. Runs with `python3 solucion_scratch.py` without external dependencies.
+2. Indexes exactly **8** chunks from `datos/politicas_rrhh.txt`.
 3. For the vacation/3 years query, retrieved indices are **`1, 0, 7, 3`** (order and values).
 4. Similarities match to **4 decimal places**: `0.5080, 0.4397, 0.3384, 0.3215`.
 5. Final response mentions **18 business days** and a **source** (§3 or equivalent).
@@ -76,7 +76,7 @@ There is no executable reference script here (higher complexity). Your deliverab
 
 ### Template 02 (banking)
 
-- Processes `data/applicants/applicant_001/` and emits JSON with `score`, `decision`, `factors`, `justification`.
+- Processes `datos/applicants/applicant_001/` and emits JSON with `score`, `decision`, `factors`, `justification`.
 - `logic.rules` overrides `decision`: score ≥ 70 → `"approve"` (deterministic, not delegated to LLM).
 - Hard-filters by `doc_type`/`period` avoid mixing files.
 - Each factor in `factors` references a document from the file.
@@ -96,7 +96,7 @@ There is no executable reference script here (higher complexity). Your deliverab
 Your `flow.json` + diagram + justification pass if:
 
 1. **RAGorbit validation:** 0 contract errors when clicking Validate.
-2. **Test with mocks:** answers at least 2 of the 3 questions in `data/brief_telemedicine.json`.
+2. **Test with mocks:** answers at least 2 of the 3 questions in `datos/brief_telemedicina.json`.
 3. Includes: retrieval with hard-filters, mandatory citations, HITL escalation, and audit.
 4. Justifies each node against an alternative from [`compared-technologies.md`](../../referencia/tecnologias-comparadas.md).
 

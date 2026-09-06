@@ -60,7 +60,7 @@ Ejecutar: `python3 solucion_scratch.py` — debe coincidir con [`expected.md`](e
 
 ### Parte B — CrewAI + LangGraph (capa ③, tarea guiada)
 
-> **Lee primero:** [guia.md §9 — La capa ③ explicada: frameworks multi-agente desde cero](../guia.md#9-la-capa--explicada-frameworks-multi-agente-desde-cero). También repasa [M6 §8](../06-agentes-i/guia.md#8-la-capa--explicada-langgraph-desde-cero-de-tu-bucle-react-al-grafo).
+> **Lee primero:** [guia.md §9 — La capa ③ explicada: frameworks multi-agente desde cero](../guia.md#9-la-capa--explicada-frameworks-multi-agente-desde-cero). También repasa [M6 §8](../../06-agentes-i/guia.md#8-la-capa--explicada-langgraph-desde-cero-de-tu-bucle-react-al-grafo).
 
 **Objetivo:** el **mismo problema** resuelto en **CrewAI** y en **LangGraph multi-agente**; comparar trade-offs.
 

@@ -1,6 +1,6 @@
 # Expected — MCP PolicyRAG Server + Client
 
-> Concrete output produced by `solution_scratch.py` when running `python3 solution_scratch.py`.
+> Concrete output produced by `solucion_scratch.py` when running `python3 solucion_scratch.py`.
 > Output has been verified; this file is the source of truth for the lab.
 
 ---
@@ -60,7 +60,7 @@ All checks passed.
 4. **Permission gate:** the first call to `apply_flight_change` returns `permission_required` without executing the charge.
 5. **Approval:** after `permissions/respond` with `approved`, the second call charges USD 130.00.
 6. **Determinism:** `transaction_id` is always `txn-mcp-20260617-001`.
-7. **Stdlib only:** the script runs with `python3 solution_scratch.py` without installing anything.
+7. **Stdlib only:** the script runs with `python3 solucion_scratch.py` without installing anything.
 
 ---
 

@@ -262,7 +262,7 @@ d) Any order
 
 ---
 
-**Exercise 32 (P)** — Vacation/3 years query on `hr_policies.txt` with bag-of-words (M11 scratch). Expected top-4 indices (0-based):
+**Exercise 32 (P)** — Vacation/3 years query on `politicas_rrhh.txt` with bag-of-words (M11 scratch). Expected top-4 indices (0-based):
 
 a) 0, 1, 2, 3  
 b) 1, 0, 7, 3  

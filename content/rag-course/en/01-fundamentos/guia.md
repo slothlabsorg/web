@@ -688,7 +688,7 @@ LangChain does not work with loose strings for indexable documents. It uses **`D
 # Conceptual — each chunk is a Document
 doc = Document(
     page_content="VACATION POLICY §3 — Accrual and use\nEmployees...",
-    metadata={"source": "data/hr_policies.txt", "chunk": 0},
+    metadata={"source": "datos/politicas_rrhh.txt", "chunk": 0},
 )
 ```
 
@@ -704,12 +704,12 @@ A **loader** reads an external source and converts it into LangChain documents.
 ```python
 from langchain_community.document_loaders import TextLoader
 
-loader = TextLoader("data/hr_policies.txt", encoding="utf-8")
+loader = TextLoader("datos/politicas_rrhh.txt", encoding="utf-8")
 raw_documents = loader.load()
 # raw_documents: list[Document] — typically ONE Document with the whole file
 ```
 
-**Scratch equivalent:** open the file and read `content = f.read()` — but wrapped in a `Document` with `metadata={"source": "data/hr_policies.txt"}`.
+**Scratch equivalent:** open the file and read `content = f.read()` — but wrapped in a `Document` with `metadata={"source": "datos/politicas_rrhh.txt"}`.
 
 In M2 you will see loaders for PDF, web, SQL, etc. The pattern is always the same: `.load()` → `list[Document]`.
 
@@ -976,7 +976,7 @@ This is the complete walkthrough of `lab/solucion_framework.py`, line by line co
                               ▼
 ┌──────────────────────────────────────────────────────────────────┐
 │  BLOCK 1 — LOAD AND CHUNK          (≈ load_chunks)             │
-│  loader = TextLoader("data/hr_policies.txt")                     │
+│  loader = TextLoader("datos/politicas_rrhh.txt")                     │
 │  raw_documents = loader.load()         # 1 large Document        │
 │  splitter = CharacterTextSplitter(separator="\n---\n", ...)       │
 │  chunks = splitter.split_documents(...)  # 8 Documents           │

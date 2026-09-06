@@ -32,7 +32,7 @@ If 09 does not pass tests, do not advance: it is the **MV-RAG** everything depen
 
 ### 2.1 Script architecture
 
-`solution_scratch.py` implements the full template 09 pipeline with stdlib:
+`solucion_scratch.py` implements the full template 09 pipeline with stdlib:
 
 | Block | Equivalent RAGorbit node |
 |--------|---------------------------|
@@ -52,7 +52,7 @@ The `fake_llm` looks for the "3 years" + "18 days" pattern in chunks and produce
 ### 2.3 Verification
 
 ```bash
-cd lab && python3 solution_scratch.py
+cd lab && python3 solucion_scratch.py
 ```
 
 Must match [`expected.md`](expected.md).
@@ -61,7 +61,7 @@ Must match [`expected.md`](expected.md).
 
 ## 3. Framework solution — Template 09
 
-See [`solution_framework.py`](solution_framework.py) block by block with [guide §12](../guia.md#12-layer--explained-how-to-rebuild-a-template-with-a-framework).
+See [`solucion_framework.py`](solucion_framework.py) block by block with [guide §12](../guia.md#12-layer--explained-how-to-rebuild-a-template-with-a-framework).
 
 **Scratch → LangChain correspondence summary:**
 
@@ -81,7 +81,7 @@ See [`solution_framework.py`](solution_framework.py) block by block with [guide 
 
 ### 4.1 Scratch — additional pieces
 
-1. **Multiple loaders:** read `declaration_2023.txt`, `account_statement_q3.txt`, `financial_data.csv` from `data/applicants/applicant_001/`.
+1. **Multiple loaders:** read `declaracion_2023.txt`, `estado_cuenta_q3.txt`, `datos_financieros.csv` from `datos/applicants/applicant_001/`.
 2. **Metadata:** each chunk carries `doc_type` and `period`.
 3. **Hard-filter:** `retrieve(query, filters={"period": "2023"})`.
 4. **Structured stub:**
@@ -92,9 +92,9 @@ def fake_structured_llm(chunks) -> dict:
         "score": 72,
         "decision": "approve",  # will be overridden
         "factors": [
-            "Income $85,000 [declaration_2023.txt §Income]",
-            "On-time payments 97% [account_statement_q3.txt §History]",
-            "Debt-to-income ratio 14% [financial_data.csv]",
+            "Income $85,000 [declaracion_2023.txt §Income]",
+            "On-time payments 97% [estado_cuenta_q3.txt §History]",
+            "Debt-to-income ratio 14% [datos_financieros.csv]",
         ],
         "justification": "Solid profile documented in file 001.",
     }
@@ -127,7 +127,7 @@ def apply_rules(result: dict) -> dict:
 
 ### 5.1 Scratch — ReAct structure
 
-Reuses patterns from [`06-agents-i/lab/solution_scratch.py`](../../06-agents-i/lab/solution_scratch.py):
+Reuses patterns from [`06-agentes-i/lab/solucion_scratch.py`](../../06-agentes-i/lab/solucion_scratch.py):
 
 ```python
 TOOLS = {
@@ -156,7 +156,7 @@ TOOLS = {
 
 ## 6. Reference design — Challenge 2 (telemedicine)
 
-Brief: [`data/brief_telemedicine.json`](data/brief_telemedicine.json).
+Brief: [`datos/brief_telemedicina.json`](datos/brief_telemedicina.json).
 
 ### 6.1 Proposed diagram
 

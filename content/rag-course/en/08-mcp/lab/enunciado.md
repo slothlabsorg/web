@@ -12,9 +12,9 @@ In `lab/data/`:
 
 | File | Content |
 |---------|-----------|
-| `policy.json` | Penalties by `fare_class` and `route_type` |
-| `reservations.json` | Mock booking `SCL-BOG-001` (Ana García, ECONOMY_FLEX) |
-| `permissions.json` | Permission scopes (`financial`, `read_policy`) |
+| `politica.json` | Penalties by `fare_class` and `route_type` |
+| `reservas.json` | Mock booking `SCL-BOG-001` (Ana García, ECONOMY_FLEX) |
+| `permisos.json` | Permission scopes (`financial`, `read_policy`) |
 
 ## MCP server tools
 
@@ -27,11 +27,11 @@ In `lab/data/`:
 
 ### Part A — Mini MCP protocol from scratch (layer ②)
 
-Implement `lab/solution_scratch.py` with:
+Implement `lab/solucion_scratch.py` with:
 
 1. **MCP server** (`MCPServer`) speaking JSON-RPC 2.0 over STDIO (one JSON line per message).
 2. Methods: `initialize`, `tools/list`, `tools/call`, `permissions/respond`.
-3. Tool `policy_rag` that reads `policy.json` (simplified RAG: deterministic lookup).
+3. Tool `policy_rag` that reads `politica.json` (simplified RAG: deterministic lookup).
 4. Tool `apply_flight_change` marked sensitive — the first call returns `permission_required` without executing the charge.
 5. **MCP client** (`MCPStdioClient`) that launches the server as a subprocess and sends/receives JSON-RPC.
 6. **Agent** (`PolicyRAGAgent`) deterministic that:
@@ -39,7 +39,7 @@ Implement `lab/solution_scratch.py` with:
    - Lists tools
    - Calls `policy_rag` for ECONOMY_FLEX international
    - Tries `apply_flight_change` → receives permission gate → approves → retries → success
-7. Server mode: `python3 solution_scratch.py --server` (used internally by the subprocess).
+7. Server mode: `python3 solucion_scratch.py --server` (used internally by the subprocess).
 
 ### Part B — FastMCP (layer ③, guided task)
 
@@ -70,7 +70,7 @@ pip install fastmcp
 1. `mcp.run(transport="streamable-http", port=8765)`.
 2. `Client("http://127.0.0.1:8765/mcp")`.
 
-#### Step B.4 — Compare with `solution_framework.py`
+#### Step B.4 — Compare with `solucion_framework.py`
 
 Open block by block (guide §8.8) and note differences.
 
@@ -126,7 +126,7 @@ The Python function docstring becomes the description the LLM sees — same as `
 
 ## Success criteria
 
-Your `solution_scratch.py` must produce the output in [`expected.md`](expected.md) and pass all `assert` checks at the end.
+Your `solucion_scratch.py` must produce the output in [`expected.md`](expected.md) and pass all `assert` checks at the end.
 
 ## RAGorbit connection
 
@@ -142,4 +142,4 @@ with:
 tool.mcp "PolicyRAG MCP" ──▶ agent.react
 ```
 
-The `tool.mcp` node connects to the MCP server via STDIO or HTTP and exposes discovered tools to the agent. See [`flow.json`](../../../examples/01-airline-flight-change/flow.json) and [`catalogo-nodos.md`](../referencia/catalogo-nodos.md#toolmcp).
+The `tool.mcp` node connects to the MCP server via STDIO or HTTP and exposes discovered tools to the agent. See [`flow.json`](../../../examples/01-airline-flight-change/flow.json) and [`catalogo-nodos.md`](../../referencia/catalogo-nodos.md#toolmcp).

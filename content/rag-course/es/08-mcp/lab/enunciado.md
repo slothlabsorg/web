@@ -142,4 +142,4 @@ por:
 tool.mcp "PolicyRAG MCP" ──▶ agent.react
 ```
 
-El nodo `tool.mcp` se conecta al servidor MCP vía STDIO o HTTP y expone las tools descubiertas al agente. Ver [`flow.json`](../../../examples/01-airline-flight-change/flow.json) y [`catalogo-nodos.md`](../referencia/catalogo-nodos.md#toolmcp).
+El nodo `tool.mcp` se conecta al servidor MCP vía STDIO o HTTP y expone las tools descubiertas al agente. Ver [`flow.json`](../../../examples/01-airline-flight-change/flow.json) y [`catalogo-nodos.md`](../../referencia/catalogo-nodos.md#toolmcp).

@@ -1059,7 +1059,7 @@ The framework may rank slightly differently from scratch (real embeddings vs BoW
 ### 13.12 Full pipeline diagram (framework)
 
 ```
-policies.json
+politicas.json
       │
       ▼
  list[Document]  ──────────────────────────────────────────────┐

@@ -250,7 +250,7 @@ CreditDecision(
     score=55,
     factors=["f1", "f2", "f3", "f4", "f5", "f6"],
     justification="Intermediate score that requires manual review by the risk analyst.",
-    citations=[Citation(text="Total debt: $12,000", source="financial_data.csv")]
+    citations=[Citation(text="Total debt: $12,000", source="datos_financieros.csv")]
 )
 ```
 
@@ -258,7 +258,7 @@ CreditDecision(
 
 ## E20 · Complete the Field with the correct constraints
 
-**Context:** In `solution_framework.py`, the Pydantic schema must be equivalent to the JSON Schema from exercise E15. Complete the missing `Field(...)` declarations:
+**Context:** In `solucion_framework.py`, the Pydantic schema must be equivalent to the JSON Schema from exercise E15. Complete the missing `Field(...)` declarations:
 
 ```python
 from pydantic import BaseModel, Field
@@ -285,7 +285,7 @@ class CreditDecision(BaseModel):
 
 ## E21 · Scratch → framework mapping and RAGAS metric
 
-**Context:** Review the functions in `lab/solution_scratch.py` and the pipeline in `lab/solution_framework.py`.
+**Context:** Review the functions in `lab/solucion_scratch.py` and the pipeline in `lab/solucion_framework.py`.
 
 **Question A.** Complete the table:
 

@@ -60,7 +60,7 @@ Run: `python3 solucion_scratch.py` — must match [`expected.md`](expected.md).
 
 ### Part B — CrewAI + LangGraph (layer ③, guided task)
 
-> **Read first:** [guide.md §9 — Layer ③ explained: multi-agent frameworks from scratch](../guia.md#9-layer--explained-multi-agent-frameworks-from-scratch). Also review [M6 §8](../06-agentes-i/guia.md#8-layer--explained-langgraph-from-scratch-from-your-react-loop-to-the-graph).
+> **Read first:** [guide.md §9 — Layer ③ explained: multi-agent frameworks from scratch](../guia.md#9-layer--explained-multi-agent-frameworks-from-scratch). Also review [M6 §8](../../06-agentes-i/guia.md#8-layer--explained-langgraph-from-scratch-from-your-react-loop-to-the-graph).
 
 **Goal:** the **same problem** solved in **CrewAI** and **LangGraph multi-agent**; compare trade-offs.
 

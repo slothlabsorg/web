@@ -2,7 +2,7 @@
 
 ---
 
-## Layer ② — From-scratch solution (`solution_scratch.py`)
+## Layer ② — From-scratch solution (`solucion_scratch.py`)
 
 ### Overall architecture
 
@@ -50,7 +50,7 @@ Using `subprocess.Popen` replicates the real MCP model (Cursor launches `python 
 
 ---
 
-## Layer ③ — FastMCP solution (`solution_framework.py`)
+## Layer ③ — FastMCP solution (`solucion_framework.py`)
 
 ### Scratch → FastMCP mapping
 
@@ -65,16 +65,16 @@ Using `subprocess.Popen` replicates the real MCP model (Cursor launches `python 
 ### What FastMCP does not do for you
 
 - **Permissions:** you must implement `permission_required` inside the tool (same as in scratch).
-- **Business logic:** read `policy.json`, validate PNR — that is your code.
+- **Business logic:** read `politica.json`, validate PNR — that is your code.
 - **Guardrails:** combine MCP permissions with `guardrail.confirm` in the RAGorbit graph.
 
 ### Run when you have pip
 
 ```bash
 pip install fastmcp
-python3 solution_framework.py              # demo STDIO
-python3 solution_framework.py --server     # server only (for Cursor)
-python3 solution_framework.py --http       # demo HTTP
+python3 solucion_framework.py              # demo STDIO
+python3 solucion_framework.py --server     # server only (for Cursor)
+python3 solucion_framework.py --http       # demo HTTP
 ```
 
 ---

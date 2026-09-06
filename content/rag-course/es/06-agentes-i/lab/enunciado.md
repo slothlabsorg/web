@@ -52,7 +52,7 @@ Implementa `lab/solucion_scratch.py` con:
 
 ### Parte B — Agente con LangGraph (capa ③, tarea guiada)
 
-> **Lee primero:** [guia.md §8 — La capa ③ explicada: LangGraph desde cero](guia.md#8-la-capa--explicada-langgraph-desde-cero-de-tu-bucle-react-al-grafo). Esta sección te enseña cada API que necesitas. No copies `solucion_framework.py` de golpe — escríbelo tú siguiendo las pistas.
+> **Lee primero:** [guia.md §8 — La capa ③ explicada: LangGraph desde cero](../guia.md#8-la-capa--explicada-langgraph-desde-cero-de-tu-bucle-react-al-grafo). Esta sección te enseña cada API que necesitas. No copies `solucion_framework.py` de golpe — escríbelo tú siguiendo las pistas.
 
 **Objetivo:** reimplementar el mismo agente del scratch usando LangGraph + LangChain, con memoria entre dos turnos. Al terminar, compara tu archivo con `lab/solucion_framework.py`.
 

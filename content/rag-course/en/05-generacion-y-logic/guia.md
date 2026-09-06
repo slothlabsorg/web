@@ -278,7 +278,7 @@ In high-consequence domains (healthcare, credit, insurance, aviation), a respons
 ```
 Claim: "The applicant's annual income is $85,000"
                             ↓
-Source chunk: "annual_income,85000,2023" [financial_data.csv]
+Source chunk: "annual_income,85000,2023" [datos_financieros.csv]
                             ↓
 Groundedness: VERIFIED
 ```
@@ -636,7 +636,7 @@ Score: 32
   ↑
 LLM factors: ["debt_to_income_ratio: 0.68", "on_time_payments_pct: 61%"]
   ↑
-Source chunks: [financial_data.csv, account_statement_q3.pdf §History]
+Source chunks: [datos_financieros.csv, account_statement_q3.pdf §History]
   ↑
 Original documents in the case file
 ```
@@ -754,8 +754,8 @@ from datasets import Dataset
 # Evaluation data: question, generated answer, retrieved chunks, ideal answer
 data = {
     "question": ["What is the credit score?"],
-    "answer": ["The score is 72, indicating a solid credit profile [financial_data.csv]"],
-    "contexts": [["annual_income: 85000 [financial_data.csv]", "total_debt: 12000 [financial_data.csv]"]],
+    "answer": ["The score is 72, indicating a solid credit profile [datos_financieros.csv]"],
+    "contexts": [["annual_income: 85000 [datos_financieros.csv]", "total_debt: 12000 [datos_financieros.csv]"]],
     "ground_truth": ["The calculated score is 72 based on income and debt-to-income ratio"]
 }
 

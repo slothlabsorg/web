@@ -3,7 +3,7 @@
 Run from the repo root:
 
 ```
-python3 rag-training/00-setup/lab/solution_scratch.py
+python3 rag-training/00-setup/lab/solucion_scratch.py
 ```
 
 ---

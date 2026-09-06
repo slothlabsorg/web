@@ -50,7 +50,7 @@ The trick of `set(a.keys()) & set(b.keys())` is the key optimization: if the dic
 ### Main flow
 
 ```
-load_chunks("data/hr_policies.txt")        # 8 fragments
+load_chunks("datos/politicas_rrhh.txt")        # 8 fragments
         ↓
 retrieve(query, chunks, k=3)
   ├── embed(query)                          # question vector
@@ -85,7 +85,7 @@ See `expected.md` for the full analysis of why these chunks.
 ### TextLoader + CharacterTextSplitter
 
 ```python
-loader = TextLoader("data/hr_policies.txt")
+loader = TextLoader("datos/politicas_rrhh.txt")
 splitter = CharacterTextSplitter(separator="\n---\n", chunk_size=1000)
 chunks = splitter.split_documents(raw_documents)
 ```

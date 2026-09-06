@@ -23,8 +23,8 @@ This layer **must run** with the Python standard library, no `pip`, no network. 
 
 Sample chunks are in `data/`. There are two files:
 
-- **`file_001.json`** — complete data (case with evidence).
-- **`file_002.json`** — incomplete data (case with insufficient evidence).
+- **`expediente_001.json`** — complete data (case with evidence).
+- **`expediente_002.json`** — incomplete data (case with insufficient evidence).
 
 ### Step 2 — Implement the deterministic fake LLM
 
@@ -99,7 +99,7 @@ Each chunk in the files has: `id`, `text`, `source`, `metadata` (dict with numer
 
 ### Hint 4 — The no-evidence case
 
-In `file_002.json`, chunks do not contain numeric financial data (only incomplete information). The fake LLM must detect this and return:
+In `expediente_002.json`, chunks do not contain numeric financial data (only incomplete information). The fake LLM must detect this and return:
 
 ```python
 {
@@ -127,11 +127,11 @@ return True, "OK"
 
 ## Layer ③ — Framework (GUIDED TASK)
 
-> **When to do it:** after your `solution_scratch.py` passes `expected.md` **and** you have read [§10 of the guide](../guia.md#10-layer-③-explained-structured-output-and-evaluation-with-frameworks-from-scratch). LangChain basics (LCEL, `|`, `ChatPromptTemplate`) were covered in [M1 §11](../../01-fundamentos/guia.md#11-layer-③-explained-langchain-from-scratch).
+> **When to do it:** after your `solucion_scratch.py` passes `expected.md` **and** you have read [§10 of the guide](../guia.md#10-layer-③-explained-structured-output-and-evaluation-with-frameworks-from-scratch). LangChain basics (LCEL, `|`, `ChatPromptTemplate`) were covered in [M1 §11](../../01-fundamentos/guia.md#11-layer-③-explained-langchain-from-scratch).
 >
 > **Environment:** requires `pip install instructor pydantic ragas langchain-anthropic` and `ANTHROPIC_API_KEY`. Not run on the course study machine.
 
-The goal is not to copy the reference file: it is to **write** `solution_framework.py` (or a new file) yourself, understanding each block. At the end, compare with [`solution_framework.py`](./solucion_framework.py).
+The goal is not to copy the reference file: it is to **write** `solucion_framework.py` (or a new file) yourself, understanding each block. At the end, compare with [`solucion_framework.py`](./solucion_framework.py).
 
 ### Step F1 — Pydantic schema (replaces `validate_schema`)
 
@@ -143,7 +143,7 @@ The goal is not to copy the reference file: it is to **write** `solution_framewo
 
 **Hint 1:** read [§10.3](../guia.md#103-pydantic-from-scratch-for-a-python-dev). Try creating a valid object and an invalid one (`decision="MAYBE"`) and observe the `ValidationError`.
 
-**Verify:** the `if __name__ == "__main__"` block at the end of `solution_framework.py` demonstrates validation without LLM — run it when you have pip.
+**Verify:** the `if __name__ == "__main__"` block at the end of `solucion_framework.py` demonstrates validation without LLM — run it when you have pip.
 
 ### Step F2 — Structured output with instructor (replaces `fake_llm` + JSON parsing)
 
@@ -187,8 +187,8 @@ Copy the logic from your scratch `apply_threshold_rule()` almost literally — o
 ### Step F6 — Pipeline and comparison
 
 1. Implement `framework_pipeline(file_path)` chaining: instructor → rule → RAGAS.
-2. Run on `data/file_001.json` and compare the final decision with your scratch.
-3. Open [`solution_framework.py`](./solucion_framework.py) block by block ([§10.7](../guia.md#107-block-by-block-walkthrough-of-labsolucion_frameworkpy)) and note differences.
+2. Run on `datos/expediente_001.json` and compare the final decision with your scratch.
+3. Open [`solucion_framework.py`](./solucion_framework.py) block by block ([§10.7](../guia.md#107-block-by-block-walkthrough-of-labsolucion_frameworkpy)) and note differences.
 
 ### Success criteria (layer ③)
 
@@ -196,7 +196,7 @@ Copy the logic from your scratch `apply_threshold_rule()` almost literally — o
 |---|---|
 | Pydantic schema equivalent to scratch | `CreditDecision(...)` valid with file 001 data; invalid with `decision="MAYBE"` |
 | Structured output returns `CreditDecision` | `type(result) == CreditDecision`, not `dict` or `str` |
-| Deterministic rule identical to scratch | Same score → same final `decision` as `solution_scratch.py` |
+| Deterministic rule identical to scratch | Same score → same final `decision` as `solucion_scratch.py` |
 | RAGAS runs without error (optional) | `evaluate()` returns dict with key `faithfulness` |
 
 ---
@@ -207,6 +207,6 @@ See [`expected.md`](./expected.md) for the exact expected output.
 
 ## Solutions
 
-- **Scratch (stdlib):** [`solution_scratch.py`](./solucion_scratch.py) — run with `python3 solution_scratch.py`. **Required.**
-- **Framework (instructor + Pydantic + RAGAS):** write it following the [layer ③ guided task](#layer-③--framework-guided-task); reference in [`solution_framework.py`](./solucion_framework.py).
+- **Scratch (stdlib):** [`solucion_scratch.py`](./solucion_scratch.py) — run with `python3 solucion_scratch.py`. **Required.**
+- **Framework (instructor + Pydantic + RAGAS):** write it following the [layer ③ guided task](#layer-③--framework-guided-task); reference in [`solucion_framework.py`](./solucion_framework.py).
 - **Explanation:** [`solution.md`](./solucion.md) · layer ③ teaching: [guide §10](../guia.md#10-layer-③-explained-structured-output-and-evaluation-with-frameworks-from-scratch).

@@ -17,7 +17,7 @@ Implement the **minimal RAG pattern** (retrieve → augment → respond) in two 
 
 ## Input data
 
-Policy documents are in `data/hr_policies.txt`. The file contains **8 policy fragments**, separated by `---` lines. Each fragment has a first line that is its title.
+Policy documents are in `datos/politicas_rrhh.txt`. The file contains **8 policy fragments**, separated by `---` lines. Each fragment has a first line that is its title.
 
 **Test query:**
 ```
@@ -29,7 +29,7 @@ How many vacation days do I get if I have been at the company for 3 years?
 ## Scratch solution specification (`solucion_scratch.py`)
 
 ### Step 1 — Load and parse fragments
-Read `data/hr_policies.txt`, split by `---`, and strip whitespace. Result: list of strings, one per fragment.
+Read `datos/politicas_rrhh.txt`, split by `---`, and strip whitespace. Result: list of strings, one per fragment.
 
 ### Step 2 — Toy embeddings (normalized bag-of-words)
 Implement an `embed(text)` function that:
@@ -102,7 +102,7 @@ The script must print:
 
 A `solucion_framework.py` file that replicates the scratch pipeline with LangChain:
 
-1. Load and chunk `data/hr_policies.txt` → 8 `Document`s.
+1. Load and chunk `datos/politicas_rrhh.txt` → 8 `Document`s.
 2. Index in Chroma with `OpenAIEmbeddings`.
 3. Retrieve top-3 with a retriever.
 4. Build prompt with `ChatPromptTemplate` (variables `{context}` and `{question}`).
@@ -133,7 +133,7 @@ Create `solucion_framework.py` with the dependency header (as in the reference s
 ### Step 2 — Loader + splitter (≈ `load_chunks`)
 
 ```python
-loader = TextLoader("data/hr_policies.txt", encoding="utf-8")
+loader = TextLoader("datos/politicas_rrhh.txt", encoding="utf-8")
 raw_documents = loader.load()
 
 splitter = CharacterTextSplitter(

@@ -85,7 +85,7 @@ policy_store:Retriever → policy_tool:Retriever
 
 **Exercise 31 (A)** — **b)** 09 → 02 → 01 (PLAN §6 M11, mapped-templates).
 
-**Exercise 32 (P)** — **b)** `1, 0, 7, 3` — actual output of `solution_scratch.py` / `expected.md`.
+**Exercise 32 (P)** — **b)** `1, 0, 7, 3` — actual output of `solucion_scratch.py` / `expected.md`.
 
 **Exercise 33 (A)** — **b)** Zero friction, no DB server (README 09 §9).
 

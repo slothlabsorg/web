@@ -230,7 +230,7 @@ In RAGorbit, the `ingest.metadata` node with `fields: [aircraft_type, ata_chapte
 from llama_index.core import SimpleDirectoryReader
 
 reader = SimpleDirectoryReader(
-    "data/docs/",
+    "datos/docs/",
     recursive=True,
     # Automatically detects: PDF → PDFReader, .md → MarkdownReader, .json → JSONReader
 )
@@ -252,7 +252,7 @@ Option **d** (pure Python with `pathlib.glob`) is viable for a script but does n
 
 **b) 3 chunks: Chunk 0 = intro only; Chunk 1 = CLAUSE 1; Chunk 2 = CLAUSE 2**
 
-Step-by-step reasoning (recursive algorithm from [guide §10.2](../guia.md#102-recursivecharactertextsplitter-the-recursive-algorithm)):
+Step-by-step reasoning (recursive algorithm from [guide §10.2](guia.md#102-recursivecharactertextsplitter-the-recursive-algorithm)):
 
 1. The priority separator is `"\n\nCLAUSE "`. The text has two occurrences: before CLAUSE 1 and before CLAUSE 2.
 2. With `keep_separator=True`, the split produces three blocks:
@@ -297,7 +297,7 @@ The developer:
 
 1. Uses `split_text()` (strings only) instead of the `Document` pipeline.
 2. Rebuilds `Document` manually with `_last_meta`, which never copies `source` from the parent.
-3. Ignores the `split_documents()` override that [guide §10.3](../guia.md#103-writing-your-own-splitter-inheriting-from-textsplitter) designs precisely to propagate metadata.
+3. Ignores the `split_documents()` override that [guide §10.3](guia.md#103-writing-your-own-splitter-inheriting-from-textsplitter) designs precisely to propagate metadata.
 
 **Minimal fix:**
 
