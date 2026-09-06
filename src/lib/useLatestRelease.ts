@@ -17,6 +17,7 @@ export type AssetKey =
   | 'linux_deb_x64' | 'linux_deb_arm64'
   | 'linux_rpm_x64' | 'linux_rpm_arm64'
   | 'plugin_zip'
+  | 'python_pyz' | 'python_wheel' | 'python_sdist'
 
 export interface ReleaseAsset { url: string; name: string; size: number }
 
@@ -49,6 +50,9 @@ export const ASSET_LABELS: Record<AssetKey, { label: string; os: OS; icon: strin
   linux_rpm_x64:        { label: 'Linux · .rpm (x86_64)',         os: 'Linux',   icon: '🐧' },
   linux_rpm_arm64:      { label: 'Linux · .rpm (arm64)',          os: 'Linux',   icon: '🐧' },
   plugin_zip:           { label: 'Plugin (.zip)',                 os: 'unknown', icon: '🧩' },
+  python_pyz:           { label: 'Single file · runs on any python3 (.pyz)', os: 'unknown', icon: '🐍' },
+  python_wheel:         { label: 'Python wheel (.whl)',            os: 'unknown', icon: '🐍' },
+  python_sdist:         { label: 'Source distribution (.tar.gz)',  os: 'unknown', icon: '🐍' },
 }
 
 // ── OS / arch detection ────────────────────────────────────────────────────────
@@ -125,6 +129,12 @@ export function pickPrimaryAsset(
   arch: Arch,
 ): PickedAsset | null {
   if (!assets) return null
+  // A zipapp is the same file everywhere — it only needs a python3 — so it wins
+  // outright and there is nothing to detect. Checked before plugin_zip because a
+  // release can ship both a .pyz and a starter .zip.
+  if (assets.python_pyz) {
+    return { key: 'python_pyz', asset: assets.python_pyz, ...ASSET_LABELS.python_pyz }
+  }
   // Plugin artifacts have no OS variants.
   if (assets.plugin_zip) {
     return { key: 'plugin_zip', asset: assets.plugin_zip, ...ASSET_LABELS.plugin_zip }

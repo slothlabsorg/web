@@ -86,6 +86,23 @@
   status = 302
   force  = true
 
+# ── RAGorbit install one-liner ───────────────────────────────────────────────
+#   curl -fsSL https://slothlabs.org/install/ragorbit | sh
+# The script downloads the ragorbit.pyz zipapp from the latest release. Same 302
+# reasoning as above: always whatever main has, and no stale copy cached here.
+# Unix-only (it writes a POSIX launcher); Windows users run `pipx install ragorbit`.
+[[redirects]]
+  from   = "/install/ragorbit"
+  to     = "https://raw.githubusercontent.com/slothlabsorg/ragorbit/main/dist/install.sh"
+  status = 302
+  force  = true
+
+[[redirects]]
+  from   = "/install/ragorbit.sh"
+  to     = "https://raw.githubusercontent.com/slothlabsorg/ragorbit/main/dist/install.sh"
+  status = 302
+  force  = true
+
 # ── container-orbit → runtime-orbit (renamed in 0.2) ─────────────────────────
 # Permanent, because the old URLs are indexed and linked from the repo's history.
 [[redirects]]

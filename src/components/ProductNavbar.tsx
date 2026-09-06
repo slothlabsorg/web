@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import SubscribeModal from './SubscribeModal'
+import DownloadModal from './DownloadModal'
+import { appMeta } from '@/data/apps'
 
 interface Props {
   icon: string        // emoji fallback
@@ -11,8 +13,11 @@ interface Props {
   accent: string
   ctaLabel?: string
   ctaHref?: string
-  /** If true, render a GitHub link instead of the subscribe modal (for released products) */
-  ctaKind?: 'subscribe' | 'link'
+  /** subscribe = waitlist modal (pre-launch) · link = plain href ·
+   *  download = the download modal for a released product (needs appSlug). */
+  ctaKind?: 'subscribe' | 'link' | 'download'
+  /** Key into APPS (src/data/apps.ts). Required when ctaKind is 'download'. */
+  appSlug?: string
   /** Optional in-site link (e.g. '/proxyorbit/docs') shown between "All tools" and the CTA. */
   docsHref?: string
 }
@@ -25,10 +30,13 @@ export default function ProductNavbar({
   ctaLabel = 'Subscribe',
   ctaHref,
   ctaKind = 'subscribe',
+  appSlug,
   docsHref,
 }: Props) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobile] = useState(false)
+  // Resolved once so desktop and mobile render the same CTA.
+  const downloadApp = ctaKind === 'download' && appSlug ? appMeta(appSlug) : undefined
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
@@ -70,7 +78,14 @@ export default function ProductNavbar({
               Docs
             </Link>
           )}
-          {ctaKind === 'link' && ctaHref ? (
+          {downloadApp ? (
+            <DownloadModal
+              app={downloadApp}
+              buttonLabel={ctaLabel}
+              className="text-sm px-4 py-2 rounded-full font-semibold hover:brightness-110 transition-all"
+              style={{ background: accent, color: '#050d1f' }}
+            />
+          ) : ctaKind === 'link' && ctaHref ? (
             <a
               href={ctaHref}
               target="_blank"
@@ -116,7 +131,14 @@ export default function ProductNavbar({
               Docs
             </Link>
           )}
-          {ctaKind === 'link' && ctaHref ? (
+          {downloadApp ? (
+            <DownloadModal
+              app={downloadApp}
+              buttonLabel={ctaLabel}
+              className="mt-2 w-full text-sm px-4 py-3 rounded-full font-semibold text-center"
+              style={{ background: accent, color: '#050d1f' }}
+            />
+          ) : ctaKind === 'link' && ctaHref ? (
             <a
               href={ctaHref}
               target="_blank"

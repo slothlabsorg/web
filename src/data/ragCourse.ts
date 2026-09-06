@@ -201,6 +201,20 @@ export const UI = {
   viewRepo: { es: 'Ver en GitHub', en: 'View on GitHub' },
   backToCourse: { es: '← Volver al curso', en: '← Back to course' },
   runnable: { es: 'Ejecutable en el navegador', en: 'Runnable in the browser' },
+  tool: {
+    badge: { es: 'La herramienta del curso', en: 'The tool behind the course' },
+    title: { es: 'RAGorbit', en: 'RAGorbit' },
+    body: {
+      es: 'Cada tema del curso está anclado a un bloque de RAGorbit y a una de sus 10 plantillas de industria: dibujas el flujo en un lienzo y obtiene un proyecto Python desplegable, con mocks y tests. Al terminar el curso podrás reconstruir esas plantillas desde cero — y diseñar las tuyas.',
+      en: 'Every topic in the course is anchored to a RAGorbit block and to one of its 10 industry templates: you draw the flow on a canvas and get a deployable Python project, with mocks and tests. By the end of the course you can rebuild those templates from scratch — and design your own.',
+    },
+    cta: { es: 'Ver RAGorbit →', en: 'See RAGorbit →' },
+    docs: { es: 'Documentación', en: 'Documentation' },
+    note: {
+      es: 'Gratis y open source, igual que el curso. Un solo archivo, sin dependencias.',
+      en: 'Free and open source, like the course. One file, zero dependencies.',
+    },
+  },
 }
 
 export const REPO_URL = 'https://github.com/slothlabsorg/rag-course'

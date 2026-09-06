@@ -204,6 +204,7 @@ const RAW_ROADMAP = [
   { name: 'ProxyOrbit',   launchDate: '2026-09-21', date: 'Sep 21',  desc: 'HTTP/HTTPS proxy inspector',      accent: '#94A3B8', icon: '🔍', slug: '/proxyorbit' },
   { name: 'BastionOrbit', launchDate: '2026-09-28', date: 'Sep 28',  desc: 'SSH tunnel manager',              accent: '#10B981', icon: '🔐', slug: '/bastionorbit' },
   { name: 'runtime-orbit', launchDate: '2026-08-15', date: 'Aug 15', desc: "Borrow a machine's container runtime", accent: '#4F8CFF', icon: '🛰️', slug: '/runtime-orbit' },
+  { name: 'RAGorbit',      launchDate: '2026-09-05', date: 'Sep 5',  desc: 'Visual RAG builder with deployable codegen', accent: '#D946EF', icon: '🛰️', slug: '/ragorbit' },
 ]
 
 // Compute status at build time — live items first, then upcoming by date.

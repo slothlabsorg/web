@@ -24,6 +24,7 @@ const SLUG_TO_REPO = {
   proxyorbit: 'proxyorbit',
   bastionorbit: 'bastionorbit',
   klight: 'kraken-light',
+  ragorbit: 'ragorbit',
   'mermaid-preview': 'mermaid-preview-plugin',
 }
 
@@ -43,8 +44,19 @@ const BUCKETS = [
   ['linux_deb_arm64',     /(arm64|aarch64)\.deb$/i],
   ['linux_rpm_x64',       /(x86_64|amd64)\.rpm$/i],
   ['linux_rpm_arm64',     /(aarch64|arm64)\.rpm$/i],
+  // Last: a bare .zip would otherwise swallow a starter/extra zip.
   ['plugin_zip',          /\.zip$/i],
 ]
+
+// Python distributions, only for the apps that ship them. Kept out of BUCKETS
+// because `.tar.gz` is also how Rust CLIs ship Linux binaries — classifying it as
+// an sdist for every app would mislabel those.
+const PYTHON_BUCKETS = [
+  ['python_pyz',   /\.pyz$/i],
+  ['python_wheel', /\.whl$/i],
+  ['python_sdist', /\.tar\.gz$/i],
+]
+const PYTHON_APPS = new Set(['ragorbit'])
 
 const json = (statusCode, body) => ({
   statusCode,
@@ -56,9 +68,12 @@ const json = (statusCode, body) => ({
   body: JSON.stringify(body),
 })
 
-function classify(assets) {
+function classify(assets, slug) {
   const out = {}
-  for (const [bucket, re] of BUCKETS) {
+  const buckets = PYTHON_APPS.has(slug)
+    ? [...PYTHON_BUCKETS, ...BUCKETS]
+    : BUCKETS
+  for (const [bucket, re] of buckets) {
     if (out[bucket]) continue
     const a = assets.find(
       (x) => re.test(x.name) && !IGNORE.some((ig) => ig.test(x.name)),
@@ -107,7 +122,7 @@ exports.handler = async (event) => {
       date: rel.published_at || null,
       htmlUrl: rel.html_url,
       releasesUrl: `https://github.com/slothlabsorg/${repo}/releases`,
-      assets: classify(rel.assets || []),
+      assets: classify(rel.assets || [], slug),
     })
   } catch (err) {
     return json(200, { available: false, slug, repo, error: String(err) })

@@ -117,6 +117,45 @@ export default function CourseLanding() {
         </div>
       </section>
 
+      {/* The tool the course is built around */}
+      <section className="py-10">
+        <div className="site-container max-w-5xl">
+          <div className="rounded-2xl border p-7 sm:p-9" style={{ background: '#170C33', borderColor: '#D946EF40' }}>
+            <div className="flex flex-col md:flex-row gap-7 items-start">
+              <div className="text-4xl flex-shrink-0">🛰️</div>
+              <div className="space-y-3 min-w-0">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border" style={{ color: '#D946EF', borderColor: '#D946EF50', background: '#D946EF14' }}>
+                  {UI.tool.badge[lang]}
+                </span>
+                <h2 className="text-2xl font-bold text-white" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  {UI.tool.title[lang]}
+                </h2>
+                <p className="text-[15px] leading-relaxed" style={{ color: '#B8A6D9' }}>
+                  {UI.tool.body[lang]}
+                </p>
+                <div className="flex flex-wrap gap-3 pt-1">
+                  <Link
+                    href="/ragorbit"
+                    className="inline-flex items-center justify-center px-5 py-2.5 rounded-full font-bold text-sm hover:brightness-110 transition-all hover:-translate-y-0.5"
+                    style={{ background: '#D946EF', color: '#0B0620' }}
+                  >
+                    {UI.tool.cta[lang]}
+                  </Link>
+                  <Link
+                    href="/ragorbit/docs"
+                    className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border text-sm font-medium hover:opacity-80 transition-all"
+                    style={{ borderColor: '#2A1A4D', color: '#B8A6D9' }}
+                  >
+                    {UI.tool.docs[lang]}
+                  </Link>
+                </div>
+                <p className="text-xs pt-1" style={{ color: '#7C6A9C' }}>{UI.tool.note[lang]}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Reference knowledge base */}
       <section className="py-10 pb-24">
         <div className="site-container max-w-6xl">

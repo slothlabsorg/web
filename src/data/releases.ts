@@ -158,4 +158,26 @@ export const allReleases: Record<string, AppReleases> = {
       },
     ],
   },
+  ragorbit: {
+    appName: 'RAGorbit',
+    slug: 'ragorbit',
+    accent: '#D946EF',
+    icon: '/images/slothlabs-logo-dark.png',
+    releases: [
+      {
+        version: '1.0.1',
+        date: '2026-09-05',
+        notes: 'First public release. Visual builder for RAG and agentic strategies that generates a deployable Python project.',
+        downloadUrl: 'https://github.com/slothlabsorg/ragorbit/releases/latest',
+        highlights: [
+          'Zero-dependency engine — ships as an 80 KB single-file zipapp that runs on any python3',
+          '53 node types in 13 categories, with contract checks that reject a flow that could not work',
+          'Real LangGraph/LangChain codegen for all three deployment targets: chat-service, batch, event-worker',
+          'Every artifact includes mock services, fixtures and end-to-end tests — green before it has a credential',
+          'Rule conditions compiled to Python at generation time, so the artifact contains no eval',
+          '10 industry templates, all validated and tested on every commit',
+        ],
+      },
+    ],
+  },
 }

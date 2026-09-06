@@ -1,7 +1,9 @@
 import type { MetadataRoute } from 'next'
 import { UPCOMING_LAUNCHES } from '@/data/upcomingLaunches'
+import { LANGS, MODULES, REF_DOCS } from '@/data/ragCourse'
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://slothlabs.org'
+const COURSE_UPDATED = new Date('2026-09-05')
 
 // Use real dates — Google uses lastModified to decide recrawl priority.
 // Update these when the page content actually changes significantly.
@@ -12,6 +14,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: 'daily' as const,
     priority: 0.85,
   }))
+
+  // The course's own pages — 12 modules and 10 reference docs per language. They
+  // were absent from the sitemap entirely, so none of the actual content was
+  // being offered for indexing; only the landing page was reachable.
+  const coursePages: MetadataRoute.Sitemap = LANGS.flatMap(lang => [
+    ...MODULES.map(m => ({
+      url: `${BASE}/rag-course/${lang}/${m.slug}/`,
+      lastModified: COURSE_UPDATED,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
+    ...REF_DOCS.map(d => ({
+      url: `${BASE}/rag-course/${lang}/ref/${d.slug}/`,
+      lastModified: COURSE_UPDATED,
+      changeFrequency: 'monthly' as const,
+      priority: 0.65,
+    })),
+  ])
 
   return [
     { url: BASE,                             lastModified: new Date('2026-04-24'), changeFrequency: 'weekly',  priority: 1   },
@@ -39,10 +59,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/health-dsl/docs`,           lastModified: new Date('2026-06-22'), changeFrequency: 'weekly',  priority: 0.8  },
     { url: `${BASE}/runtime-orbit`,            lastModified: new Date('2026-08-15'), changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${BASE}/runtime-orbit/docs`,       lastModified: new Date('2026-08-15'), changeFrequency: 'weekly',  priority: 0.8 },
+    { url: `${BASE}/ragorbit`,                 lastModified: new Date('2026-09-05'), changeFrequency: 'weekly',  priority: 0.95 },
+    { url: `${BASE}/ragorbit/docs`,            lastModified: new Date('2026-09-05'), changeFrequency: 'weekly',  priority: 0.85 },
+    { url: `${BASE}/rag-course`,               lastModified: new Date('2026-09-05'), changeFrequency: 'weekly',  priority: 0.9 },
     { url: `${BASE}/advertise`,                lastModified: new Date('2026-07-26'), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${BASE}/droporbit`,                lastModified: new Date('2026-07-26'), changeFrequency: 'weekly',  priority: 0.85 },
     { url: `${BASE}/news`,                     lastModified: new Date('2026-07-26'), changeFrequency: 'daily',   priority: 0.9 },
     { url: `${BASE}/next/`,                    lastModified: new Date('2026-05-27'), changeFrequency: 'daily',   priority: 0.95 },
     ...nextPermalinks,
+    ...coursePages,
   ]
 }

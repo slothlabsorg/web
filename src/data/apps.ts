@@ -5,7 +5,7 @@
 // NOTE: the URL slug is not always the GitHub repo name — klight lives in the
 // `kraken-light` repo and Mermaid Preview in `mermaid-preview-plugin`.
 
-export type AppKind = 'desktop' | 'plugin'
+export type AppKind = 'desktop' | 'plugin' | 'python'
 
 export interface AppMeta {
   /** URL slug used on the site (and as the /api/releases/<slug> key). */
@@ -18,7 +18,8 @@ export interface AppMeta {
   icon: string
   /** Brand accent hex. */
   accent: string
-  /** desktop = OS/arch installers; plugin = single artifact (e.g. JetBrains zip). */
+  /** desktop = OS/arch installers; plugin = single artifact (e.g. JetBrains zip);
+   *  python = OS-agnostic zipapp + wheel (runs on any python3). */
   kind: AppKind
   /** Optional package-manager install commands (shown as a secondary option). */
   brewCmd?: string
@@ -57,6 +58,12 @@ export const APPS: Record<string, AppMeta> = {
   'mermaid-preview': {
     slug: 'mermaid-preview', repo: 'mermaid-preview-plugin', name: 'Mermaid Preview',
     icon: '/images/mermaid-preview-icon.png', accent: '#FF3670', kind: 'plugin',
+  },
+  ragorbit: {
+    slug: 'ragorbit', repo: 'ragorbit', name: 'RAGorbit',
+    icon: '/images/slothlabs-logo-dark.png', accent: '#D946EF', kind: 'python',
+    brewCmd: 'brew install slothlabsorg/tap/ragorbit',
+    docsUrl: '/ragorbit/docs',
   },
 }
 
