@@ -35,6 +35,16 @@ There are **two repos**, and it helps to keep them straight from the start:
 ```bash
 git clone https://github.com/slothlabsorg/ragorbit
 git clone https://github.com/slothlabsorg/rag-course
+There are **two repos**, and it helps to keep them straight from the start:
+
+| Repo | What it is | You use it to |
+|---|---|---|
+| [`slothlabsorg/ragorbit`](https://github.com/slothlabsorg/ragorbit) | The tool: engine, node catalog, codegen, and the 10 industry templates | Run the canvas, read the `flow.json` files, generate artifacts |
+| [`slothlabsorg/rag-course`](https://github.com/slothlabsorg/rag-course) | This course (es/ + en/) | The labs you are going to solve |
+
+```bash
+git clone https://github.com/slothlabsorg/ragorbit
+git clone https://github.com/slothlabsorg/rag-course
 ```
 
 ```
@@ -45,6 +55,12 @@ ragorbit/          ← root of the tool's repo
 ├── docs/          ← the RAGorbit book
 └── ...
 ```
+
+> **Shortcut:** you do not need to clone anything just to *use* RAGorbit. Every release
+> ships a single-file `ragorbit.pyz` that runs on any `python3`:
+> `python3 ragorbit.pyz list-nodes`. Also `pipx install ragorbit` or
+> `brew install slothlabsorg/tap/ragorbit`. Cloning is for reading the code — which in
+> this course is exactly what you want.
 
 > **Shortcut:** you do not need to clone anything just to *use* RAGorbit. Every release
 > ships a single-file `ragorbit.pyz` that runs on any `python3`:
