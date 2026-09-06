@@ -25,14 +25,32 @@ Este módulo te da todo lo que necesitas para arrancar: el entorno configurado, 
 
 Python tiene un sistema de paquetes global que puede causar conflictos entre proyectos. Un **entorno virtual** (`venv`) crea una copia aislada del intérprete para cada proyecto. Así, las versiones de LangChain que necesita RAGorbit no chocan con las de tu otro proyecto.
 
+Son **dos repos** y conviene tenerlos claros desde el principio:
+
+| Repo | Qué es | Lo usas para |
+|---|---|---|
+| [`slothlabsorg/ragorbit`](https://github.com/slothlabsorg/ragorbit) | La herramienta: engine, catálogo de nodos, codegen y los 10 templates de industria | Correr el lienzo, leer los `flow.json`, generar artefactos |
+| [`slothlabsorg/rag-course`](https://github.com/slothlabsorg/rag-course) | Este curso (es/ + en/) | Los talleres que vas a resolver |
+
+```bash
+git clone https://github.com/slothlabsorg/ragorbit
+git clone https://github.com/slothlabsorg/rag-course
 ```
-ragorbit/          ← raíz del repo
+
+```
+ragorbit/          ← raíz del repo de la herramienta
 ├── venv/          ← tu entorno virtual (NO se sube a git)
-├── app/
-├── examples/
-├── rag-training/  ← este material de estudio
+├── ragorbit/      ← el engine (stdlib, sin dependencias)
+├── examples/      ← los 10 templates de industria
+├── docs/          ← el libro de RAGorbit
 └── ...
 ```
+
+> **Atajo:** para *usar* RAGorbit no necesitas clonar nada. Cada release publica un
+> `ragorbit.pyz` de un solo archivo que corre con cualquier `python3`:
+> `python3 ragorbit.pyz list-nodes`. También `pipx install ragorbit` o
+> `brew install slothlabsorg/tap/ragorbit`. Clonar es para leer el código — que en
+> este curso es justamente lo que quieres.
 
 ### 1.2 Crear y activar el entorno
 
@@ -49,15 +67,20 @@ venv\Scripts\Activate.ps1
 # Verificar que estás dentro:
 which python   # debe apuntar a ragorbit/venv/bin/python
 
-# Instalar dependencias del proyecto:
-pip install -e .          # instala ragorbit y sus deps desde pyproject.toml
-# o si hay requirements:
-pip install -r requirements.txt
+# Instalar el proyecto:
+pip install -e .          # instala ragorbit desde pyproject.toml
 ```
+
+El engine no tiene dependencias, así que `pip install -e .` no descarga nada: es
+solo para tener el comando `ragorbit` en el PATH. Las dependencias aparecen cuando
+las necesitas, y siempre como un extra explícito (`.[api]`, `.[real]`).
 
 Una vez activado, el prompt del shell suele mostrar `(venv)` al inicio. Para salir: `deactivate`.
 
-> **Nota de entorno:** en esta máquina `pip` no está disponible. Los talleres de stdlib corren igualmente con `python3` directamente; los ejercicios de framework se marcan como ilustrativos.
+> **Los talleres de capa ② no necesitan `pip` en absoluto.** Corren con `python3` y la
+> librería estándar, a propósito: así puedes hacer el curso completo en una máquina sin
+> red, sin permisos de instalación o detrás de un proxy corporativo. La capa ③ (framework)
+> sí requiere `pip install` y está marcada como tal en cada taller.
 
 ---
 
@@ -327,12 +350,13 @@ En los talleres del curso, las soluciones scratch son **síncronas** (más simpl
 from pathlib import Path
 
 # Ruta del script actual:
-aqui = Path(__file__).resolve()         # /Users/dany/dev/ragorbit/rag-training/00-setup/lab/script.py
-directorio = aqui.parent                # /Users/dany/dev/ragorbit/rag-training/00-setup/lab
-raiz_repo  = aqui.parents[3]            # /Users/dany/dev/ragorbit
+aqui = Path(__file__).resolve()         # ~/dev/rag-course/es/00-setup/lab/script.py
+directorio = aqui.parent                # ~/dev/rag-course/es/00-setup/lab
+raiz_curso = aqui.parents[3]            # ~/dev/rag-course
 
-# Construir rutas:
-flow = raiz_repo / "examples" / "09-hr-policy-assistant" / "flow.json"
+# Los templates viven en el OTRO repo (ragorbit), clonado al lado:
+raiz_ragorbit = raiz_curso.parent / "ragorbit"
+flow = raiz_ragorbit / "examples" / "09-hr-policy-assistant" / "flow.json"
 
 # Leer:
 texto = flow.read_text(encoding="utf-8")
@@ -342,7 +366,7 @@ if not flow.exists():
     raise FileNotFoundError(f"No encuentro {flow}")
 
 # Listar archivos:
-for json_file in (raiz_repo / "examples").rglob("flow.json"):
+for json_file in (raiz_ragorbit / "examples").rglob("flow.json"):
     print(json_file)
 ```
 

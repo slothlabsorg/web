@@ -4,7 +4,7 @@
 
 ## 1. What this project is
 
-- Repo: `/Users/dany/dev/ragorbit`. Contains **RAGorbit** (a visual builder of RAG/agentic strategies that generates Python artifacts) and this **course** (`rag-training/`) that teaches, from scratch, everything RAGorbit uses.
+- Repos: [`slothlabsorg/ragorbit`](https://github.com/slothlabsorg/ragorbit) contains **RAGorbit** (a visual builder of RAG/agentic strategies that generates Python artifacts). The **course** lives in [`slothlabsorg/rag-course`](https://github.com/slothlabsorg/rag-course) and teaches, from scratch, everything RAGorbit uses.
 - RAGorbit in one sentence: you draw a node graph → it is saved as **Flow IR** (JSON) → a **codegen** produces a Python project with `app/ mocks/ tests/`. There are **53 node types** in **13 categories**. Read `docs/01-concepts.md` (contract/Flow IR) and `docs/02-node-catalog.md` (catalog) — they are the technical source of truth.
 - There are **10 industry templates** in `examples/*/flow.json` (airline, banking, healthcare, insurance, legal, retail, telecom, manufacturing, HR, logistics). Each with its `README.md`.
 - The course teaches how to understand, use, and **rebuild from scratch** those templates.
