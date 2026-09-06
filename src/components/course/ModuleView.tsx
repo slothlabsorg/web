@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import CodePlayground from './CodePlayground'
 import { DOC_TABS, UI, REPO_URL, type DocType, type Lang } from '@/data/ragCourse'
@@ -54,6 +54,65 @@ export default function ModuleView({ lang, slug, n, icon, accent, title, availab
   const tabs = DOC_TABS.filter((t) => available.includes(t.type))
   const [active, setActive] = useState<DocType>(tabs[0]?.type ?? 'guia')
   const l = LABELS[lang]
+  const contentRef = useRef<HTMLDivElement>(null)
+  // Anchor to scroll to once the tab that contains it has rendered.
+  const pendingAnchor = useRef<string | null>(null)
+
+  const isAvailable = useCallback(
+    (tab: string): tab is DocType => available.includes(tab as DocType),
+    [available],
+  )
+
+  /** Open a tab, then scroll to the anchor after React has painted it. */
+  const goToTab = useCallback((tab: DocType, anchor?: string | null) => {
+    setActive(tab)
+    pendingAnchor.current = anchor ?? null
+  }, [])
+
+  // Cross-module links arrive as ?tab=<type>#<anchor>. Read from location rather
+  // than useSearchParams: this is a static export, and reading it here avoids
+  // needing a Suspense boundary for something purely client-side.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const tab = params.get('tab')
+    if (tab && isAvailable(tab)) {
+      goToTab(tab, window.location.hash || null)
+    } else if (window.location.hash) {
+      pendingAnchor.current = window.location.hash
+    }
+  }, [isAvailable, goToTab])
+
+  // Same-module links are rewritten with data-course-tab: switch tab in place
+  // instead of navigating, so the reader keeps their position in the module.
+  useEffect(() => {
+    const root = contentRef.current
+    if (!root) return
+    const onClick = (event: MouseEvent) => {
+      const anchorEl = (event.target as HTMLElement | null)?.closest?.('a[data-course-tab]')
+      if (!(anchorEl instanceof HTMLAnchorElement)) return
+      const tab = anchorEl.dataset.courseTab
+      if (!tab || !isAvailable(tab)) return
+      event.preventDefault()
+      const href = anchorEl.getAttribute('href') || ''
+      const hash = href.startsWith('#') && href !== '#' ? href : null
+      goToTab(tab, hash)
+    }
+    root.addEventListener('click', onClick)
+    return () => root.removeEventListener('click', onClick)
+  }, [isAvailable, goToTab])
+
+  // Scroll after the newly-activated tab is in the DOM; the element does not
+  // exist until then, so this cannot be done in the click handler.
+  useEffect(() => {
+    const hash = pendingAnchor.current
+    if (!hash) return
+    pendingAnchor.current = null
+    const id = decodeURIComponent(hash.slice(1))
+    const target = document.getElementById(id)
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [active])
 
   return (
     <div>
@@ -117,7 +176,8 @@ export default function ModuleView({ lang, slug, n, icon, accent, title, availab
       </div>
 
       {/* Content */}
-      <div className="site-container py-8 max-w-4xl">
+      {/* ref here so one delegated listener covers every tab's rendered markdown */}
+      <div className="site-container py-8 max-w-4xl" ref={contentRef}>
         {active !== 'lab' && html[active] && (
           <div className="course-md" dangerouslySetInnerHTML={{ __html: html[active] as string }} />
         )}

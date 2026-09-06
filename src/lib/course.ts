@@ -8,7 +8,7 @@ import { Marked } from 'marked'
 import { markedHighlight } from 'marked-highlight'
 import hljs from 'highlight.js'
 import type { Lang, DocType } from '@/data/ragCourse'
-import { REF_DOCS } from '@/data/ragCourse'
+import { MODULES, REF_DOCS } from '@/data/ragCourse'
 
 const ROOT = path.join(process.cwd(), 'content', 'rag-course')
 
@@ -47,68 +47,152 @@ function safeRead(p: string): string | null {
   }
 }
 
-// Rewrite a relative link found in course markdown to a web route (or the repo).
-function rewriteHref(href: string, lang: Lang): string {
-  if (!href) return href
-  // Leave absolute URLs, mailto and pure in-page anchors untouched.
-  if (/^(https?:|mailto:|#)/i.test(href)) return href
+// ─── Link rewriting ───────────────────────────────────────────────────────────
+// Course markdown is authored to be read in the repo, so its links are relative
+// file paths. To rewrite one correctly you have to know where it was written
+// FROM — `../guia.md` means different things in `es/02-ingesta/soluciones.md` and
+// in `es/02-ingesta/lab/enunciado.md`. That context is what `LinkCtx` carries.
+
+const COURSE_REPO = 'https://github.com/slothlabsorg/rag-course'
+const RAGORBIT_REPO = 'https://github.com/slothlabsorg/ragorbit'
+const MODULE_SLUGS = new Set(MODULES.map((m) => m.slug))
+
+/** Where the markdown being rendered lives, so relative links can resolve. */
+export interface LinkCtx {
+  lang: Lang
+  /** Module slug, for module and lab docs. Absent for reference docs. */
+  module?: string
+  /** Which directory the file sits in, relative to the module. */
+  dir: 'module' | 'lab' | 'referencia'
+}
+
+/** Directory of the source file, as a path relative to content/rag-course. */
+function sourceDir(ctx: LinkCtx): string {
+  if (ctx.dir === 'referencia') return `${ctx.lang}/referencia`
+  if (ctx.dir === 'lab') return `${ctx.lang}/${ctx.module}/lab`
+  return `${ctx.lang}/${ctx.module}`
+}
+
+/** `docs/` and `examples/` live in the ragorbit repo, not this one.
+ *  The course was originally authored inside ragorbit, so its links reach out
+ *  with `../../docs/…`; resolving those as course paths is what produced 244
+ *  dead links. Intent is detected from the path, not from the `../` depth. */
+function ragorbitTarget(href: string): string | null {
+  const bare = href.replace(/^\.\//, '').replace(/^(?:\.\.\/)+/, '')
+  if (!/^(docs|examples)\//.test(bare)) return null
+  const isDir = bare.endsWith('/') || !bare.split('/').pop()!.includes('.')
+  const kind = isDir ? 'tree' : 'blob'
+  return `${RAGORBIT_REPO}/${kind}/main/${bare.replace(/\/$/, '')}`
+}
+
+const DOC_BY_FILE: Record<string, DocType> = {
+  'guia.md': 'guia',
+  'ejercicios.md': 'ejercicios',
+  'soluciones.md': 'soluciones',
+}
+
+export interface RewrittenHref {
+  href: string
+  /** When set, the link stays on the page and switches to this tab. */
+  tab?: DocType
+}
+
+export function rewriteHref(href: string, ctx: LinkCtx): RewrittenHref {
+  if (!href) return { href }
+  if (/^(https?:|mailto:|#)/i.test(href)) return { href }
 
   const [rawPath, hash] = href.split('#')
   const anchor = hash ? `#${hash}` : ''
-  const clean = rawPath.replace(/^\.\//, '')
+  if (!rawPath) return { href: anchor || href }
 
-  // referencia/<doc>.md  (with any number of ../ in front)
-  const refMatch = clean.match(/(?:\.\.\/)*referencia\/([^/]+)\.md$/)
-  if (refMatch && REF_SLUGS.has(refMatch[1])) {
-    return `/rag-course/${lang}/ref/${refMatch[1]}/${anchor}`
+  const ragorbit = ragorbitTarget(rawPath)
+  if (ragorbit) return { href: `${ragorbit}${anchor}` }
+
+  // Resolve against the source directory to get a path relative to the course root.
+  const resolved = path.posix
+    .normalize(path.posix.join(sourceDir(ctx), rawPath))
+    .replace(/^\/+/, '')
+  const segments = resolved.split('/').filter(Boolean)
+  const [lang, ...rest] = segments
+  const isCourseLang = lang === 'es' || lang === 'en'
+  const file = segments[segments.length - 1]
+
+  if (isCourseLang && rest.length > 0) {
+    // referencia/<slug>.md → the on-site reference page
+    if (rest[0] === 'referencia' && rest.length === 2) {
+      const slug = rest[1].replace(/\.md$/, '')
+      if (REF_SLUGS.has(slug)) return { href: `/rag-course/${lang}/ref/${slug}/${anchor}` }
+    }
+
+    if (MODULE_SLUGS.has(rest[0])) {
+      const mod = rest[0]
+      const tail = rest.slice(1)
+      const sameModule = mod === ctx.module
+
+      // The module directory itself → its page.
+      if (tail.length === 0) return { href: `/rag-course/${lang}/${mod}/${anchor}` }
+
+      // A tabbed document of a module page.
+      let tab: DocType | undefined
+      if (tail.length === 1) tab = DOC_BY_FILE[tail[0]]
+      else if (tail[0] === 'lab' && tail[1] === 'enunciado.md') tab = 'lab'
+
+      if (tab) {
+        const base = `/rag-course/${lang}/${mod}/?tab=${tab}${anchor}`
+        // Same module: keep the reader on the page and switch tab in place.
+        return sameModule ? { href: anchor || '#', tab } : { href: base }
+      }
+
+      // expected.md / solucion.md render inside the lab tab as collapsibles.
+      if (tail[0] === 'lab' && /^(expected|solucion)\.md$/.test(tail[tail.length - 1])) {
+        const base = `/rag-course/${lang}/${mod}/?tab=lab${anchor}`
+        return sameModule ? { href: anchor || '#', tab: 'lab' } : { href: base }
+      }
+
+      // Anything else in a module (the .py solutions, lab data) → the repo.
+      return { href: `${COURSE_REPO}/blob/main/${resolved}${anchor}` }
+    }
   }
-  // Sibling reference doc when already inside referencia/ (e.g. ./glosario.md)
-  const bareRef = clean.match(/^([^/]+)\.md$/)
-  if (bareRef && REF_SLUGS.has(bareRef[1])) {
-    return `/rag-course/${lang}/ref/${bareRef[1]}/${anchor}`
-  }
-  // Cross-module: ../NN-name/<file>.md  → module page
-  const modMatch = clean.match(/(?:\.\.\/)*(\d\d-[a-z0-9-]+)\/[^/]+\.md$/)
-  if (modMatch) {
-    return `/rag-course/${lang}/${modMatch[1]}/${anchor}`
-  }
-  // Same-module docs: guia.md, ejercicios.md, soluciones.md, lab/enunciado.md, ./expected.md …
-  if (/(?:^|\/)(guia|ejercicios|soluciones)\.md$/.test(clean) || /(?:^|\/)lab\/[^/]+\.md$/.test(clean) || /(?:^|\/)expected\.md$/.test(clean)) {
-    // We don't know the module here; keep the anchor and point within the same
-    // page by stripping to a hash so navigation stays on the current module.
-    return anchor || '#'
-  }
-  // Anything else that points at a repo file (.md/.py/examples/…): send to GitHub.
-  const repoRel = clean.replace(/^(?:\.\.\/)+/, '')
-  return `https://github.com/slothlabsorg/rag-course/blob/main/${lang}/${repoRel}${anchor}`
+
+  // Course root docs (PLAN.md, HANDOFF.md, README.md) and anything unresolved.
+  const isDir = rawPath.endsWith('/') || !file.includes('.')
+  const kind = isDir ? 'tree' : 'blob'
+  return { href: `${COURSE_REPO}/${kind}/main/${resolved.replace(/\/$/, '')}${anchor}` }
 }
 
-function rewriteLinks(html: string, lang: Lang): string {
-  return html.replace(/href="([^"]*)"/g, (_m, href) => {
-    const next = rewriteHref(href, lang)
-    const external = /^https?:/i.test(next)
-    return external
-      ? `href="${next}" target="_blank" rel="noopener noreferrer"`
-      : `href="${next}"`
+function rewriteLinks(html: string, ctx: LinkCtx): string {
+  return html.replace(/href="([^"]*)"/g, (_m, raw) => {
+    const { href, tab } = rewriteHref(raw, ctx)
+    if (tab) {
+      // ModuleView delegates clicks on these and switches tab without navigating.
+      return `href="${href}" data-course-tab="${tab}"`
+    }
+    return /^https?:/i.test(href)
+      ? `href="${href}" target="_blank" rel="noopener noreferrer"`
+      : `href="${href}"`
   })
 }
 
-export function renderMarkdown(md: string, lang: Lang): string {
+export function renderMarkdown(md: string, ctx: LinkCtx): string {
   const marked = makeMarked()
   const html = marked.parse(md) as string
-  return rewriteLinks(html, lang)
+  return rewriteLinks(html, ctx)
 }
 
 export function getModuleDocHtml(lang: Lang, slug: string, type: DocType): string | null {
   const md = safeRead(path.join(ROOT, lang, slug, DOC_FILE[type]))
   if (md == null) return null
-  return renderMarkdown(md, lang)
+  return renderMarkdown(md, {
+    lang,
+    module: slug,
+    dir: type === 'lab' ? 'lab' : 'module',
+  })
 }
 
 export function getRefDocHtml(lang: Lang, slug: string): string | null {
   const md = safeRead(path.join(ROOT, lang, 'referencia', `${slug}.md`))
   if (md == null) return null
-  return renderMarkdown(md, lang)
+  return renderMarkdown(md, { lang, dir: 'referencia' })
 }
 
 // ─── Lab playground payload ───────────────────────────────────────────────────
@@ -152,13 +236,16 @@ function collectDataFiles(labDir: string): { path: string; content: string }[] {
 
 export function getLabPayload(lang: Lang, slug: string): LabPayload {
   const labDir = path.join(ROOT, lang, slug, 'lab')
+  const labCtx: LinkCtx = { lang, module: slug, dir: 'lab' }
   const scratch = safeRead(path.join(labDir, 'solucion_scratch.py'))
   const expectedMd = safeRead(path.join(labDir, 'expected.md'))
   const solutionMd = safeRead(path.join(labDir, 'solucion.md'))
   return {
     scratch,
-    expectedHtml: expectedMd ? renderMarkdown(expectedMd, lang) : null,
-    solutionHtml: solutionMd ? renderMarkdown(solutionMd, lang) : null,
+    // expected.md and solucion.md live in lab/, so their relative links resolve
+    // from there — not from the module directory.
+    expectedHtml: expectedMd ? renderMarkdown(expectedMd, labCtx) : null,
+    solutionHtml: solutionMd ? renderMarkdown(solutionMd, labCtx) : null,
     dataFiles: collectDataFiles(labDir),
   }
 }
